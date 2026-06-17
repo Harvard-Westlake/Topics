@@ -1,0 +1,71 @@
+<div align="center">
+
+# Computer Setup
+*<font color="#8b949e">Standardizing your terminal environment for class</font>*
+
+<font color="#3fb950">Environment Configuration</font>
+
+</div>
+
+---
+
+Before we start learning terminal commands together, everyone needs to arrive at the same starting point: a Unix terminal with Git, GitKraken, VS Code, and Java 21 installed.
+
+Mac and PC take different paths to get there — Mac already has a Unix terminal built in, while PC requires installing one through WSL. Once both are done, the commands work the same on either machine.
+
+---
+
+## <font color="#388bfd">Table of Contents</font>
+
+**[Mac](Mac/)**  
+Open Terminal, install Homebrew and Git, set up GitKraken and VS Code, and install Java 21.
+
+**[PC](PC/)**  
+Install WSL and Ubuntu to get a Unix terminal, then install Git, GitKraken, VS Code, and Java 21.
+
+---
+
+## <font color="#388bfd">Your Target Environment</font>
+
+By the end of either guide, your terminal accepts the same Unix commands used throughout this course:
+
+| | Mac | PC |
+|---|---|---|
+| Terminal app | Terminal.app | Ubuntu (WSL) |
+| Shell | zsh | bash |
+| Package manager | Homebrew | apt (built into Ubuntu) |
+| Version control | Git | Git |
+| Visual Git client | GitKraken | GitKraken |
+| Code editor | VS Code | VS Code |
+| Language runtime | Java 21 LTS | Java 21 LTS |
+
+---
+
+## <font color="#388bfd">Lessons</font>
+
+| # | Lesson | Operating system |
+|---|---|---|
+| 1 | [Mac](Mac/) | macOS (Intel or M-chip) |
+| 2 | [PC](PC/) | Windows 10 / 11 |
+
+---
+
+## <font color="#388bfd">Skill Building</font>
+
+### <font color="#79c0ff">Introductory</font>
+
+- [ ] Can you open a terminal on your computer?
+- [ ] Can you log in to your `hwemail.com` GitHub account?
+- [ ] Can you confirm Git is installed by running `git --version`?
+
+### <font color="#79c0ff">Intermediate</font>
+
+- [ ] Can you open GitKraken and confirm it shows your GitHub account?
+- [ ] Can you create and run a Java program in VS Code?
+- [ ] Can you find your GitHub profile URL and open it in an incognito window?
+
+### <font color="#79c0ff">Advanced</font>
+
+- [ ] Can you explain why you have two GitHub accounts and what each is used for?
+- [ ] Can you configure Git with your name and email from the terminal?
+- [ ] Can you clone a public repository from GitHub to your local machine?
