@@ -17,17 +17,14 @@ Mac and PC take different paths to get there — Mac already has a Unix terminal
 
 ## <font color="#388bfd">Table of Contents</font>
 
-**[Mac](Mac/)**  
-Open Terminal, install Homebrew and Git, set up GitKraken and VS Code, and install Java 21.
-
-**[PC](PC/)**  
-Install WSL and Ubuntu to get a Unix terminal, then install Git, GitKraken, VS Code, and Java 21.
+**[Initial Install](InitialInstall/)**  
+Set up your terminal environment, install developer tools, and verify your machine is ready for class.
 
 ---
 
 ## <font color="#388bfd">Your Target Environment</font>
 
-By the end of either guide, your terminal accepts the same Unix commands used throughout this course:
+By the end of the install, your terminal accepts the same Unix commands used throughout this course:
 
 | | Mac | PC |
 |---|---|---|
@@ -43,10 +40,9 @@ By the end of either guide, your terminal accepts the same Unix commands used th
 
 ## <font color="#388bfd">Lessons</font>
 
-| # | Lesson | Operating system |
+| Day | Lesson | What you'll do |
 |---|---|---|
-| 1 | [Mac](Mac/) | macOS (Intel or M-chip) |
-| 2 | [PC](PC/) | Windows 10 / 11 |
+| 1 | [Initial Install](InitialInstall/) | Set up a standardized Unix terminal and install all developer tools |
 
 ---
 

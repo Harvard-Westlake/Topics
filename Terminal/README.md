@@ -35,7 +35,7 @@ ls -la Documents/
 
 This tells `ls` (list) to show all files (`-a`) in long format (`-l`) inside the `Documents/` folder.
 
-> [!NOTE]
+> **Note:**
 > Options always start with a dash (`-`). You can stack multiple options behind one dash — `-la` is the same as `-l -a`.
 
 ---
@@ -70,12 +70,9 @@ The `~` is shorthand for your **home directory** — the folder that belongs to 
 
 ## <font color="#388bfd">Lessons</font>
 
-| # | Lesson | What you'll learn |
+| Day | Lesson | What you'll learn |
 |---|---|---|
-| 1 | [Navigation](Navigation/) | Moving between folders with `cd` and understanding paths |
-| 2 | [Search](Search/) | Listing folder contents with `ls` and its options |
-| 3 | [Experiment](Experiment/) | Exploring command documentation with `man` |
-| 4 | [Files](Files/) | Creating files with `mkdir` and `touch`, editing with `vim` |
+| 1 | [Terminal Basics](Basics/) | Navigating paths, listing files, creating folders and files, finding with `find`, and reading the manual with `man` |
 
 ---
 

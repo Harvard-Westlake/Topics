@@ -16,7 +16,7 @@ Topics/
       README.md         — individual lesson
 ```
 
-Current topics: `ComputerSetup/` (Mac, PC), `Terminal/` (Navigation, Search, Experiment, Files)
+Current topics: `ComputerSetup/` (InitialInstall), `Terminal/` (Basics), `GitUsage/` (RepositoriesAndCommits, BranchingAndMerging, ForksAndCollaboration), `GitProject/` (ProjectSetup, InitAndBlobs, Trees, Commits, Branches)
 
 ## Root README
 
@@ -70,6 +70,41 @@ Each topic's `README.md` must end with a numbered lessons table so students know
 ```
 
 Numbers reflect the recommended consumption order. Update the table whenever subtopics are added or reordered.
+
+## _ prefix convention
+
+Folders whose names begin with `_` (e.g. `_instructions/`) are **ignored by the module importer** and excluded from all student-facing behaviors: do not add them to the root `README.md` TOC, do not add them to any `LESSONS.md`, do not apply lesson type labels or standard title formatting inside them. They exist for admin, documentation, or tooling only.
+
+## Module and day-lesson structure
+
+Each top-level subfolder (e.g. `Terminal/`, `ComputerSetup/`) is a **module**. Each interior subfolder is a **day lesson** — one or more class periods of content. A lesson folder always contains a `README.md` and optionally an `ASSIGNMENT.md`.
+
+Lesson folders may also contain sibling `.md` files instead of further nested subfolders when content naturally splits by variant (e.g. `InitialInstall/Mac.md` and `InitialInstall/PC.md`). In this pattern, the lesson's `README.md` links to those files rather than to sub-subfolders.
+
+**When adding a new day lesson to a module** (e.g. "add a PipeAndGREP day to Terminal"):
+1. Create `Terminal/PipeAndGREP/` with a `README.md`
+2. Add a row to `Terminal/LESSONS.md`
+3. Add a row to the `## Lessons` table in `Terminal/README.md`
+4. Add a subtopic bullet to the `Terminal` entry in the root `README.md`
+
+## LESSONS.md
+
+Every module folder contains a `LESSONS.md` listing day lessons in delivery order. It is used by the module importer to build the course schedule.
+
+Format:
+
+```markdown
+# [Module Name] — Lesson Plan
+
+| Day | Lesson | Path |
+|---|---|---|
+| 1 | Lesson Name | [FolderName/](FolderName/) |
+```
+
+Column definitions:
+- **Day** — lesson number in delivery order; use `1-2` for multi-day lessons
+- **Lesson** — human-readable name matching the lesson folder's `README.md` title
+- **Path** — relative link to the lesson subfolder
 
 ## Lesson classifications
 
@@ -128,11 +163,337 @@ When an `ASSIGNMENT.md` exists in the same folder as a `README.md`, the README m
 
 Never add a placeholder link if no `ASSIGNMENT.md` exists — only include it when the file is actually present in that folder.
 
+### review/ folder
+
+Every lesson folder may contain a `review/` subfolder. Inside it, any number of `.md` files can exist — one per concept being reviewed. These files are **composable review components**: the module importer can inject one or more of them at the beginning or end of any assignment, in any module, not just the one they live in.
+
+```
+LessonFolder/
+  README.md
+  ASSIGNMENT.md        (optional)
+  review/
+    concept-name.md    (one file per reviewable concept)
+    another-concept.md
+```
+
+**review file format:**
+
+```markdown
+# Review — [Concept Name]
+
+*Originally covered in [Lesson](../README.md)*
+
+---
+
+[Terse reference — a table or bullet list of commands/syntax only. No explanations. Jog memory, do not re-teach.]
+
+---
+
+## Tasks
+
+1. [Concrete action the student performs]
+2. [Next action — builds on the prior one]
+```
+
+Rules for review files:
+- **Task-based, not checkbox-based.** Reviews are exercises the student performs, not self-assessments. Use a numbered `## Tasks` list, not "Can you…" checkboxes (those belong in Skill Building sections).
+- **Terse reference only.** The top section must fit in a table or a few bullet points. If you find yourself writing a sentence of explanation, stop — that belongs in the lesson README.
+- **Self-contained.** Must make sense when inserted into any other assignment with no surrounding context.
+- **Cumulative scope.** Each review file covers content up to and including the current lesson, plus any earlier lessons in the same module.
+- **Progressive complexity within a set.** When creating multiple review files for one lesson, each should be harder than the last — Day 1 tests isolated commands, Day 2 chains them, Day 3 requires multi-step reasoning.
+- **Name files descriptively in kebab-case.** For ordered review sets: `review-day-1.md`, `review-day-2.md`. For topic-specific fragments: `absolute-vs-relative-paths.md`.
+- **Source link is required.** Points back to the lesson where the content was originally taught.
+- **No navigation links at the bottom.** These are fragments, not standalone pages.
+
+### ASSIGNMENT.md format
+
+Every assignment file follows this structure:
+
+```markdown
+# Assignment — [Lesson Name]
+
+**Due:** [due date or relative deadline]
+
+---
+
+## Success Criteria
+
+Confirm each of the following before submitting:
+
+- [ ] **Item** — one-sentence description of what "done" looks like
+- [ ] **Item** — ...
+
+---
+
+## Submission
+
+Submit **[text / screenshot / both]** on Canvas.
+
+### Text response
+
+Copy the stencil below, fill in each line, and paste it into the Canvas text box:
+
+\`\`\`
+Field label:   value
+Field label:   value
+\`\`\`
+
+### Screenshot
+
+[Description of what the screenshot must show and what it must NOT show]
+```
+
+When converting old-format assignments (pasted from Notion or elsewhere), always:
+1. Rewrite success criteria as explicit checkboxes with a one-sentence pass/fail description
+2. Add a Submission section with a copy-paste stencil for any text fields
+3. Specify exactly what the screenshot must show (and what disqualifies it)
+4. Clarify any ambiguous criteria with a `> [!NOTE]` callout
+
 ## Content conventions
 
 - All lessons are GitHub-rendered Markdown — write for GitHub's renderer, not a local previewer.
-- Use `> [!NOTE]`, `> [!TIP]`, `> [!WARNING]` callouts for key asides (GitHub renders these as colored blocks).
+- Use bold-label blockquotes for key asides: `> **Note:** text`, `> **Tip:** text`, `> **Warning:** text`. Do not use the `> [!NOTE]` GitHub alert syntax — it does not render correctly in this repo's context.
 - Use fenced code blocks with `bash` syntax highlighting for all terminal commands.
 - Each subtopic README ends with `← prev — Next: next` navigation links using relative paths.
 - No emojis. No frontmatter. No HTML unless Markdown genuinely can't express it.
 - Audience: high school students new to CS. Be precise, not condescending.
+
+## Multi-day assignments
+
+When an assignment spans more than one class period, add a `**Duration:**` field on the line immediately after the title, before `**Due:**`:
+
+```markdown
+# Assignment — [Lesson Name]
+
+**Duration:** 3 class periods  
+**Due:** [due date or relative deadline]
+```
+
+In `LESSONS.md`, show the day range in the Day column using an en dash:
+
+```markdown
+| Day | Lesson | Path |
+|---|---|---|
+| 2–4 | Lesson Name | [FolderName/](FolderName/) |
+```
+
+Single-day lessons omit the `**Duration:**` field entirely and use a single number in the Day column.
+
+---
+
+## milestones/ subfolder
+
+When an assignment contains multiple distinct milestones (typically multi-day work), split it into a menu-plus-subfiles structure rather than one long file.
+
+**Folder layout:**
+```
+LessonName/
+  ASSIGNMENT.md            — menu only (links to docs + each milestone)
+  milestones/
+    gp-X-1.md              — one file per milestone
+    gp-X-2.md
+    gp-X-3.md
+```
+
+**`ASSIGNMENT.md` menu format:**
+```markdown
+# Assignment — [Lesson Name]
+
+**Duration:** N class periods
+**Due:** [due date]
+
+---
+
+## Reference Documentation
+
+| Doc | Read before |
+|---|---|
+| [Doc Name](../Docs/doc-name.md) | Starting this assignment |
+
+---
+
+## Milestones
+
+| Milestone | Description |
+|---|---|
+| [GP-X.1](milestones/gp-X-1.md) | One-line description |
+| [GP-X.2](milestones/gp-X-2.md) | One-line description |
+
+---
+
+## Success Criteria
+
+- [ ] **Item** — what "done" looks like overall
+```
+
+**Individual milestone file format:**
+```markdown
+# GP-X.N — Milestone Title
+
+*Part of the [LessonName](../ASSIGNMENT.md) assignment*
+
+---
+
+## Recall   (optional — brief refresher linking to relevant Docs)
+
+## Instructions
+
+[Numbered steps]
+
+---
+
+**Commit summary:** `(GP-X.N): Short Description`
+
+---
+
+← [GP-X.prev](gp-X-prev.md) — [Back to assignment](../ASSIGNMENT.md) — Next: [GP-X.next](gp-X-next.md) →
+```
+
+Rules:
+- **ASSIGNMENT.md becomes a menu**, not the full assignment. Move all milestone content into subfiles.
+- Each milestone file is **self-contained** — it must make sense without the surrounding assignment.
+- Include a **Recall** section only when the student needs a quick pointer to prior content or reference docs.
+- The milestone file nav links follow the same first/middle/last pattern as lesson bottom navs, replacing prev/next with the adjacent milestone files.
+- **No Skill Building section** in milestone files — those belong in the lesson README only.
+
+**When adding milestone files to an existing lesson (Common Operations checklist):**
+1. Create `LessonName/milestones/` folder
+2. Create `milestones/gp-X-N.md` for each milestone
+3. Rewrite `LessonName/ASSIGNMENT.md` as a menu (links to docs + milestones table + overall success criteria)
+
+---
+
+## Docs/ folders
+
+A module may contain a `Docs/` folder for standalone reference documentation — conceptual explanations, data format specs, or key concept summaries that students consult throughout the module. These are not day lessons.
+
+Rules for `Docs/` folders:
+- **Not added to `LESSONS.md`** — it is not a day lesson
+- **Not listed as a subtopic bullet in the root `README.md`** — it is not a course topic
+- **Linked from the module `README.md`** under a "Reference Documentation" section or table
+- **Linked from individual lesson READMEs** as relevant
+- The index file inside `Docs/` is named **`README.md`** (GitHub renders it automatically when browsing the folder)
+- Individual doc files use lowercase kebab-case: `blobs.md`, `index-file.md`
+- Doc files follow the standard title format (centered `<div>` block with `#` title and italic subtitle) but have **no lesson type label**, **no Skill Building section**, and **no bottom nav** — only a simple `← Back to [Docs](README.md)` link
+- Doc files use the same `##` / `###` color scheme as lesson pages
+
+**When adding a new module with reference documentation:**
+1. Create `ModuleName/Docs/README.md` — index of all docs in the folder
+2. Create individual doc files: `ModuleName/Docs/concept-name.md`
+3. Add a "Reference Documentation" table to `ModuleName/README.md` linking each doc file
+4. Do NOT add `Docs/` to `LESSONS.md` or the root `README.md`
+
+---
+
+## Common Operations
+
+These checklists are the authoritative source for keeping the repo consistent. Every item is required unless marked optional.
+
+### Add a new module
+
+A module is a new top-level folder (e.g. `Python/`, `DataStructures/`).
+
+**Create:**
+1. `ModuleName/README.md` — centered title block + type label + one-paragraph intro + TOC linking to each lesson + Lessons table at bottom
+2. `ModuleName/LESSONS.md` — machine-readable lesson index
+3. For each day lesson inside it: see **Add a lesson to an existing module** below
+
+**Update:**
+4. Root `README.md` — add a bold linked entry under the correct `■ Type Label` group (create the group if the type is new); include one-sentence summary and a subtopic bullet per lesson
+5. `CLAUDE.md` — add the new module to the "Current topics:" line with its lessons in parentheses
+
+---
+
+### Add a lesson to an existing module
+
+A lesson is a new subfolder inside a module (e.g. `Terminal/PipeAndGREP/`).
+
+**Create:**
+1. `ModuleName/LessonName/README.md` — centered title block + type label + all lesson content + Skill Building section + bottom nav
+2. `ModuleName/LessonName/ASSIGNMENT.md` — optional; if present, add `[Assignment](ASSIGNMENT.md)` link above the nav line in the README
+3. `ModuleName/LessonName/review/` — optional; see **Add review files** below
+
+**Update:**
+4. `ModuleName/LESSONS.md` — add a row for the new lesson
+5. `ModuleName/README.md` — add a row to the Lessons table; if the module README has a TOC, add an entry there too
+6. Root `README.md` — add a subtopic bullet under the module's entry
+7. `CLAUDE.md` — add the new lesson name to the module's parenthetical in "Current topics:"
+8. Previous lesson's README — update its bottom nav to add `Next: [NewLesson](../NewLesson/)`
+9. New lesson's README bottom nav — add `← [PrevLesson](../PrevLesson/)` on the left side
+
+---
+
+### Add review files to a lesson
+
+Review files are composable fragments in `LessonFolder/review/`. The module importer picks them up automatically — no index changes are needed.
+
+**Create:**
+1. `LessonFolder/review/review-day-N.md` (or a descriptive kebab-case name)
+   - Title: `# Review — [Concept Name]`
+   - Source link: `*Originally covered in [Lesson Title](../README.md)*`
+   - Terse reference table (commands/syntax only — no explanations)
+   - `## Tasks` numbered list (concrete actions, not "Can you…" checkboxes)
+   - Cumulative scope: cover content up to and including this lesson plus all prior lessons in the module
+   - Progressive complexity: each file in a set must be harder than the last
+
+**No other files need updating.**
+
+---
+
+### Rename a lesson folder
+
+1. `mv ModuleName/OldName/ ModuleName/NewName/` (bash)
+2. `ModuleName/LESSONS.md` — update the Path cell for that row; update the Lesson name if it changed
+3. `ModuleName/README.md` — update the Lessons table link and label; update any TOC entry
+4. Root `README.md` — update the subtopic bullet link and label
+5. `CLAUDE.md` — update the lesson name in "Current topics:"
+6. Previous lesson's README bottom nav — update its `Next:` link to `NewName/`
+7. Next lesson's README bottom nav — update its `←` link to `NewName/`
+8. Any review files in sibling lessons that link back to this lesson (source links) — update the path and label
+
+---
+
+### Rename a module
+
+1. `mv OldModule/ NewModule/` (bash)
+2. Root `README.md` — update the bold linked entry path and all subtopic bullet paths
+3. `CLAUDE.md` — update the module name in "Current topics:"
+4. Any review files in other modules that link back to a lesson in this module — scan with `grep -r "OldModule"` and update paths
+
+---
+
+### Edit lesson content (no rename)
+
+When updating content inside an existing lesson:
+
+- **New commands or concepts added:** add or update Skill Building questions to test them; add the commands to any existing review files that cover this lesson
+- **Commands or concepts removed:** remove them from Skill Building; update or remove the corresponding review file tasks; update the source link label in any review files that referenced the removed content
+- **ASSIGNMENT.md criteria change:** update the Success Criteria checkboxes; update the submission stencil if new fields are needed
+- **Section renamed within a README:** search for anchor links (`#section-name`) in the same file's TOC and in any review files — update them
+
+---
+
+### Navigation link format reference
+
+Bottom nav lines use this pattern. Adapt based on position in the module:
+
+```markdown
+← [Prev Lesson](../PrevLesson/) — Next: [Next Lesson](../NextLesson/)
+```
+
+First lesson in a module (no prev):
+```markdown
+← Back to [Module Name](../) — Next: [NextLesson](../NextLesson/)
+```
+
+Last lesson in a module (no next):
+```markdown
+← [PrevLesson](../PrevLesson/) — Back to [Module Name](../)
+```
+
+When an `ASSIGNMENT.md` is present, the assignment link goes on the line immediately above the nav line with a blank line between them:
+```markdown
+[Assignment](ASSIGNMENT.md)
+
+← [Prev](../Prev/) — Next: [Next](../Next/)
+```

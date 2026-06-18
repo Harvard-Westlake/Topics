@@ -27,15 +27,29 @@ Student-facing lessons organized by topic.
 **[Computer Setup](ComputerSetup/)**  
 Step-by-step guide to standardizing your terminal environment and installing developer tools on Mac or PC.
 
-- [Mac](ComputerSetup/Mac/) — Terminal, Homebrew, Git, GitKraken, VS Code, Java (Intel or M-chip)
-- [PC](ComputerSetup/PC/) — Terminal via WSL/Ubuntu, Git, GitKraken, VS Code, Java
+- [Initial Install](ComputerSetup/InitialInstall/) — terminal, Git, GitKraken, VS Code, and Java 21 on Mac or PC
 
 <font color="#a371f7">■ Learning</font>
 
 **[Terminal](Terminal/)**  
 Introduction to the command line: how commands work, navigating the file system, listing files, and creating your own structure.
 
-- [Navigation](Terminal/Navigation/) — file system overview, paths, and `cd`
-- [Search](Terminal/Search/) — listing contents with `ls` and its options
-- [Experiment](Terminal/Experiment/) — exploring command documentation with `man`
-- [Files](Terminal/Files/) — creating files and editing them with `vim`
+- [Terminal Basics](Terminal/Basics/) — navigation, listing, creating files and folders, `find`, and `man`
+
+**[Git Usage](GitUsage/)**  
+Core Git concepts and workflows: staging, committing, branching, merging, and contributing through forks and pull requests.
+
+- [Repositories and Commits](GitUsage/RepositoriesAndCommits/) — repositories, cloning, staging, committing, pushing, and pulling
+- [Branching and Merging](GitUsage/BranchingAndMerging/) — branches, `git merge`, fast-forward merges, pull requests, and `.gitignore`
+- [Forks and Collaboration](GitUsage/ForksAndCollaboration/) — forking, upstream remotes, syncing forks, and cross-fork pull requests
+
+<font color="#a371f7">■ Reinforce</font>
+
+**[Git Project](GitProject/)**  
+Recreate the core of Git in Java — hashing, blobs, trees, and commits — to understand how version control actually works under the hood.
+
+- [Project Setup](GitProject/ProjectSetup/) — GitHub repo, `Git.java`, `.gitignore`, and initial HEAD
+- [Initialization and Blobs](GitProject/InitAndBlobs/) — `init()`, SHA-1 hashing, blob files, and the index
+- [Trees](GitProject/Trees/) — index formatting, tree files, and building trees from staged files
+- [Commits](GitProject/Commits/) — commit files, HEAD chain, and the `GitWrapper` interface
+- [Branches](GitProject/Branches/) — branch pointers and HEAD *(coming soon)*
