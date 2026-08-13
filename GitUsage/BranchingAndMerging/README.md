@@ -215,4 +215,4 @@ Commit and push your `.gitignore` like any other file. It applies to everyone wh
 
 [Assignment](ASSIGNMENT.md)
 
-← [Repositories and Commits](../RepositoriesAndCommits/) — Back to [Git Usage](../)
+← [Repositories and Commits](../RepositoriesAndCommits/) — Next: [Forks and Collaboration](../ForksAndCollaboration/)

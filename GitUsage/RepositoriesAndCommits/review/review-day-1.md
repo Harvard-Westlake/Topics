@@ -1,6 +1,6 @@
-# Review — Staging and Committing, Day 1
+# Review — Repositories and Commits, Day 1
 
-*Originally covered in [Staging and Committing](../README.md)*
+*Originally covered in [Repositories and Commits](../README.md)*
 
 ---
 

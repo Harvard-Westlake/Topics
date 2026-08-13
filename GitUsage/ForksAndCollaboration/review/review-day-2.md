@@ -1,6 +1,6 @@
 # Review — Forks and Collaboration, Day 2
 
-*Originally covered in [Staging and Committing](../RepositoriesAndCommits/README.md), [Branching and Merging](../BranchingAndMerging/README.md), and [Forks and Collaboration](../README.md)*
+*Originally covered in [Repositories and Commits](../../RepositoriesAndCommits/README.md), [Branching and Merging](../../BranchingAndMerging/README.md), and [Forks and Collaboration](../README.md)*
 
 ---
 

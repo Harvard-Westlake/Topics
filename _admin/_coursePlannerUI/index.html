@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Topics Course Planner</title>
+<script>
+/* Same MathJax delimiters Canvas uses: \(...\) inline, $$...$$ display.
+   Single-dollar math is intentionally NOT enabled — Canvas never renders it. */
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] },
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:      #0f1117;
+  --surface: #1a1d27;
+  --surface2:#1f2335;
+  --border:  #2a2d3a;
+  --accent:  #4f8ef7;
+  --text:    #e2e4ed;
+  --muted:   #6b7280;
+  --yellow:  #fbbf24;
+  --red:     #f87171;
+  --green:   #34d399;
+  --purple:  #a78bfa;
+}
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+header { padding: 18px 32px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+header h1  { font-size: 17px; font-weight: 600; letter-spacing: -.3px; }
+header .sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.layout { display: grid; grid-template-columns: 300px 1fr; min-height: calc(100vh - 61px); }
+
+/* Sidebar — saved modules */
+.sidebar { border-right: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+.sidebar h2 { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+.saved-item {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 10px 12px; cursor: pointer; transition: border-color .15s;
+}
+.saved-item:hover  { border-color: var(--accent); }
+.saved-item.active { border-color: var(--accent); background: var(--surface2); }
+.saved-item .name { font-size: 13px; font-weight: 500; }
+.saved-item .meta { font-size: 11px; color: var(--muted); margin-top: 3px; }
+.btn-new { background: transparent; border: 1px dashed var(--border); color: var(--muted); padding: 9px; border-radius: 8px; font-size: 12px; cursor: pointer; font-family: inherit; transition: border-color .15s, color .15s; }
+.btn-new:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Editor */
+.editor { padding: 24px 32px; max-width: 620px; display: flex; flex-direction: column; gap: 16px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font-size: 12px; color: var(--muted); font-weight: 500; }
+.field input, .field select, .field textarea {
+  background: var(--surface); border: 1px solid var(--border); color: var(--text);
+  padding: 8px 10px; border-radius: 6px; font-size: 13px; outline: none;
+  font-family: inherit; width: 100%;
+}
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); }
+.field textarea { resize: vertical; min-height: 54px; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.scale-note { font-size: 12px; color: var(--purple); }
+
+/* Lesson table (same as hub drawer) */
+.lesson-table-head {
+  display: grid; grid-template-columns: 24px 44px 1fr 110px;
+  gap: 8px; padding: 0 8px 6px; font-size: 11px; color: var(--muted); font-weight: 500;
+  border-bottom: 1px solid var(--border);
+}
+.lesson-row-wrap { border-bottom: 1px solid var(--border); }
+.lesson-row-wrap:last-child { border-bottom: none; }
+.lesson-row {
+  display: grid; grid-template-columns: 24px 44px 1fr 110px;
+  gap: 8px; padding: 7px 8px; align-items: center; font-size: 13px;
+  transition: background .1s;
+}
+.lesson-row:hover { background: var(--surface); }
+.lesson-row.unchecked { opacity: .4; }
+.lesson-day { font-size: 12px; color: var(--accent); font-weight: 600; font-variant-numeric: tabular-nums; }
+.review-toggle {
+  display: flex; align-items: center; justify-content: flex-end; gap: 6px;
+  font-size: 11px; color: var(--muted); cursor: pointer; user-select: none;
+}
+.review-toggle input { accent-color: var(--purple); cursor: pointer; }
+.review-toggle.on { color: var(--purple); }
+.review-panel {
+  background: var(--bg); border-top: 1px solid var(--border);
+  padding: 10px 8px 10px 76px; font-size: 12px; color: var(--muted);
+}
+.review-picker { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.review-picker select {
+  font-size: 12px; background: var(--surface); color: var(--text);
+  border: 1px solid var(--border); border-radius: 5px; padding: 3px 6px;
+  font-family: inherit; cursor: pointer; outline: none;
+}
+.review-picker select:focus { border-color: var(--purple); }
+.review-picker select:disabled { opacity: .4; cursor: default; }
+.review-badge {
+  font-size: 11px; padding: 2px 8px; background: var(--purple);
+  color: #fff; border-radius: 10px; white-space: nowrap;
+}
+
+/* Module chips */
+.chip-input {
+  display: flex; flex-wrap: wrap; gap: 5px; padding: 5px 8px;
+  border: 1px solid var(--border); border-radius: 6px;
+  background: var(--surface); cursor: text; min-height: 36px;
+  align-items: center; width: 100%;
+}
+.chip-input:focus-within { border-color: var(--accent); }
+.chip-input input {
+  border: none; background: transparent; color: var(--text);
+  font-family: inherit; font-size: 13px; outline: none;
+  flex: 1; min-width: 120px; padding: 0;
+}
+.chip-input input::placeholder { color: var(--muted); }
+.module-chip {
+  display: inline-flex; align-items: center; gap: 3px;
+  background: var(--accent); color: #fff; border-radius: 4px;
+  padding: 2px 7px 2px 8px; font-size: 12px; white-space: nowrap;
+}
+.module-chip-x { cursor: pointer; opacity: .7; font-size: 15px; line-height: 1; margin-left: 1px; }
+.module-chip-x:hover { opacity: 1; }
+
+/* Lesson editor */
+.lesson-title { cursor: pointer; }
+.lesson-title:hover { color: var(--accent); text-decoration: underline; }
+#editorOverlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:99; }
+#editor {
+  display:none; position:fixed; top:0; right:0; width:min(860px, 92vw); height:100vh;
+  background:var(--surface); border-left:1px solid var(--border); z-index:100;
+  flex-direction:column;
+}
+.editor-header { padding: 16px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.editor-header h2 { font-size: 14px; font-weight: 600; }
+.editor-header .sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.editor-tabs { display: flex; gap: 4px; padding: 10px 24px 0; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+.editor-tab {
+  background: transparent; border: 1px solid transparent; border-bottom: none; color: var(--muted);
+  padding: 6px 12px; border-radius: 6px 6px 0 0; font-size: 12px; cursor: pointer; font-family: inherit;
+}
+.editor-tab:hover  { color: var(--text); }
+.editor-tab.active { background: var(--bg); border-color: var(--border); color: var(--text); }
+.editor-tab.create { color: var(--green); font-style: italic; }
+.editor-toolbar { display: flex; gap: 10px; align-items: center; padding: 10px 24px; border-bottom: 1px solid var(--border); }
+.toggle-group { display: flex; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.toggle-btn { background: transparent; color: var(--muted); border: none; padding: 6px 13px; font-size: 12px; cursor: pointer; font-family: inherit; }
+.toggle-btn.active { background: var(--accent); color: #fff; }
+.engine-hint { font-size: 11px; color: var(--yellow); }
+#edText {
+  flex: 1; margin: 0; border: none; border-radius: 0; background: var(--bg); color: var(--text);
+  font-family: "SF Mono", "Fira Code", Menlo, monospace; font-size: 12.5px; line-height: 1.6;
+  padding: 16px 24px; outline: none; resize: none; width: 100%;
+}
+/* Canvas-style preview: white page, like the assignment will render in Canvas */
+.mdview { flex: 1; overflow-y: auto; background: #ffffff; color: #1f2328; padding: 24px 32px; font-size: 14px; line-height: 1.6; }
+.mdview h1, .mdview h2, .mdview h3 { margin: 18px 0 10px; line-height: 1.25; }
+.mdview h1 { font-size: 24px; border-bottom: 1px solid #d1d9e0; padding-bottom: 6px; }
+.mdview h2 { font-size: 19px; border-bottom: 1px solid #d1d9e0; padding-bottom: 4px; }
+.mdview h3 { font-size: 16px; }
+.mdview p, .mdview ul, .mdview ol, .mdview table, .mdview pre, .mdview blockquote { margin: 0 0 12px; }
+.mdview ul, .mdview ol { padding-left: 24px; }
+.mdview a { color: #0969da; }
+.mdview img { max-width: 100%; }
+.mdview code { background: #f0f1f3; padding: 1px 5px; border-radius: 4px; font-size: 12.5px; font-family: "SF Mono", Menlo, monospace; }
+.mdview pre { background: #f6f8fa; padding: 12px 14px; border-radius: 6px; overflow-x: auto; }
+.mdview pre code { background: none; padding: 0; }
+.mdview blockquote { border-left: 4px solid #d1d9e0; padding: 2px 14px; color: #59636e; }
+.mdview table { border-collapse: collapse; }
+.mdview th, .mdview td { border: 1px solid #d1d9e0; padding: 5px 12px; }
+.mdview th { background: #f6f8fa; }
+.mdview hr { border: none; border-top: 1px solid #d1d9e0; margin: 18px 0; }
+
+.btn-create { background: var(--accent); color: #fff; border: none; padding: 9px 20px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; transition: opacity .15s; }
+.btn-create:disabled { opacity: .4; cursor: default; }
+.btn-create:not(:disabled):hover { opacity: .85; }
+.btn-danger { background: transparent; border: 1px solid var(--border); color: var(--red); padding: 9px 16px; border-radius: 6px; font-size: 13px; cursor: pointer; font-family: inherit; }
+.btn-danger:hover { border-color: var(--red); }
+.btn-row { display: flex; gap: 10px; align-items: center; }
+.result-ok  { color: var(--green); font-size: 13px; }
+.result-err { color: var(--red);   font-size: 13px; white-space: pre-wrap; }
+.stale-note { background: #2d1e0d; color: var(--yellow); font-size: 12px; padding: 8px 12px; border-radius: 6px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Topics Course Planner</h1>
+    <div class="sub">Curated curriculum modules — saved to <code>_modules/&lt;slug&gt;.json</code></div>
+  </div>
+</header>
+
+<div class="layout">
+  <div class="sidebar">
+    <h2>Saved Modules</h2>
+    <div id="savedList"></div>
+    <button class="btn-new" onclick="newModule()">+ New module</button>
+  </div>
+
+  <div class="editor">
+    <div class="field">
+      <label>Module name</label>
+      <input type="text" id="fName" placeholder="e.g. Computer Setup and Git Usage" oninput="onNameInput()">
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label>Slug <span style="color:var(--muted)">(filename)</span></label>
+        <input type="text" id="fSlug" placeholder="auto-generated" oninput="slugTouched = true">
+      </div>
+      <div class="field">
+        <label>Unit number <span style="color:var(--muted)">(suggested)</span></label>
+        <input type="number" id="fUnit" min="0" value="0" oninput="refreshAll()">
+      </div>
+    </div>
+    <div class="field">
+      <label>Description</label>
+      <textarea id="fDesc" placeholder="One-paragraph summary of what this module covers"></textarea>
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label>Points per assignment <span style="color:var(--muted)">(base)</span></label>
+        <input type="number" id="fPoints" value="10" min="0" oninput="refreshAll()">
+      </div>
+      <div class="field">
+        <label>Scale factor / unit</label>
+        <input type="number" id="fScale" value="1.15" min="0.01" step="0.01" oninput="refreshAll()">
+      </div>
+    </div>
+    <div class="scale-note">&#x2715;&thinsp;<span id="scaleFactor">1.000</span> scale &rarr; <span id="scaledPts">10</span>&thinsp;pts applied at import</div>
+
+    <div class="field">
+      <label>Lessons from Topics repo</label>
+      <div class="chip-input" id="moduleChips" onclick="document.getElementById('moduleText').focus()">
+        <input type="text" id="moduleText" list="topicList" placeholder="Search topic…"
+               oninput="refreshTopicDatalist()" onchange="onTopicTextChange()" onkeydown="onTopicTextKey(event)">
+        <datalist id="topicList"></datalist>
+      </div>
+    </div>
+
+    <div id="lessonsBlock" style="display:none">
+      <div class="lesson-table-head">
+        <div></div><div>Day</div><div>Title</div><div style="text-align:right">Contains Review</div>
+      </div>
+      <div id="lessonRows"></div>
+    </div>
+    <div id="staleNote" class="stale-note" style="display:none"></div>
+
+    <div class="btn-row">
+      <button id="saveBtn" class="btn-create" onclick="saveModule()" disabled>Save Module</button>
+      <button id="deleteBtn" class="btn-danger" onclick="deleteModule()" style="display:none">Delete</button>
+      <span id="result"></span>
+    </div>
+  </div>
+</div>
+
+<div id="editorOverlay" onclick="closeEditor()"></div>
+<div id="editor">
+  <div class="editor-header">
+    <div>
+      <h2 id="edTitle"></h2>
+      <div class="sub" id="edSub">Files render exactly as the hub uploads them to Canvas</div>
+    </div>
+    <button onclick="closeEditor()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1">&#x2715;</button>
+  </div>
+  <div class="editor-tabs" id="edTabs"></div>
+  <div class="editor-toolbar">
+    <div class="toggle-group">
+      <button class="toggle-btn active" id="edModeEdit" onclick="setEditorMode('edit')">Edit</button>
+      <button class="toggle-btn" id="edModePreview" onclick="setEditorMode('preview')">Canvas Preview</button>
+    </div>
+    <button class="btn-create" id="edSaveBtn" onclick="saveFile()" style="padding:6px 16px">Save</button>
+    <span id="edResult" style="font-size:12px"></span>
+    <span class="engine-hint" id="edEngine" style="margin-left:auto"></span>
+  </div>
+  <textarea id="edText" spellcheck="false" oninput="editorDirty = true"></textarea>
+  <div id="edPreview" class="mdview" style="display:none"></div>
+</div>
+
+<script>
+let allTopics = [];
+let selectedTopics = [];
+let assignments = [];        // merged lesson rows for selected topics
+let reviewSelections = {};   // idx -> {module, path, file}
+let savedModules = [];
+let currentSlug = null;      // slug of the loaded saved module (null = new)
+let slugTouched = false;
+
+const $ = id => document.getElementById(id);
+
+function slugify(s) {
+  return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+}
+
+function fmtDayLabel(unitNum, a) {
+  const dur = a.duration || 1;
+  const base = unitNum + '.' + a.day;
+  return dur > 1 ? base + ' · ' + dur + 'd' : base;
+}
+
+function smartRound(n) {
+  if (n >= 1000) return Math.round(n / 50) * 50;
+  if (n >= 100)  return Math.round(n / 10) * 10;
+  if (n >= 50)   return Math.round(n / 5)  * 5;
+  return Math.round(n);
+}
+
+// ── Saved modules sidebar ─────────────────────────────────────────────────────
+
+async function loadSavedList() {
+  const res = await fetch('/api/saved').then(r => r.json());
+  savedModules = res.modules || [];
+  $('savedList').innerHTML = savedModules.map(m =>
+    '<div class="saved-item' + (m.slug === currentSlug ? ' active' : '') + '" onclick="loadSaved(\'' + m.slug + '\')">' +
+      '<div class="name">' + m.name + '</div>' +
+      '<div class="meta">Unit ' + (m.unit_number ?? '—') + ' · ' + m.lesson_count + ' lessons · ' + (m.topic_names || []).join(', ') + '</div>' +
+    '</div>'
+  ).join('') || '<div style="font-size:12px;color:var(--muted)">No saved modules yet</div>';
+}
+
+function newModule() {
+  currentSlug = null;
+  slugTouched = false;
+  selectedTopics = [];
+  assignments = [];
+  reviewSelections = {};
+  $('fName').value = ''; $('fSlug').value = ''; $('fDesc').value = '';
+  $('fUnit').value = 0; $('fPoints').value = 10; $('fScale').value = 1.15;
+  $('deleteBtn').style.display = 'none';
+  $('result').textContent = '';
+  $('staleNote').style.display = 'none';
+  renderTopicChips(); renderLessonTable(); refreshAll();
+  loadSavedList();
+}
+
+async function loadSaved(slug) {
+  const m = await fetch('/api/saved/' + encodeURIComponent(slug)).then(r => r.json());
+  if (m.error) { $('result').innerHTML = '<span class="result-err">✕ ' + m.error + '</span>'; return; }
+  currentSlug = slug;
+  slugTouched = true;
+  $('fName').value  = m.name || '';
+  $('fSlug').value  = m.slug || slug;
+  $('fDesc').value  = m.description || '';
+  $('fUnit').value  = m.unit_number ?? 0;
+  $('fPoints').value = m.points_per_assignment ?? 10;
+  $('fScale').value  = m.scale_factor ?? 1.15;
+  $('deleteBtn').style.display = 'inline-block';
+  $('result').textContent = '';
+
+  selectedTopics = (m.topic_names || []).slice();
+  renderTopicChips();
+  await reloadAllLessons();   // fresh rows from the repo (source of truth)
+
+  // Re-apply the saved selection: check only saved lessons, restore reviews
+  const savedKey = a => a._module + '/' + a.path;
+  const savedMap = new Map((m.assignments || []).map(a => [savedKey(a), a]));
+  const freshKeys = new Set(assignments.map(savedKey));
+  assignments.forEach((a, i) => {
+    const saved = savedMap.get(savedKey(a));
+    $('lcheck_' + i).checked = !!saved;
+    if (saved && saved.review) applyReview(i, saved.review);
+  });
+  onLessonCheck();
+
+  // Anything saved that no longer exists in the repo
+  const missing = [...savedMap.keys()].filter(k => !freshKeys.has(k));
+  $('staleNote').style.display = missing.length ? 'block' : 'none';
+  $('staleNote').textContent = missing.length
+    ? 'Saved lessons no longer found in the repo (removed on next save): ' + missing.join(', ')
+    : '';
+  loadSavedList();
+}
+
+async function deleteModule() {
+  if (!currentSlug) return;
+  if (!confirm('Delete _modules/' + currentSlug + '.json and its lesson plan?')) return;
+  await fetch('/api/saved/' + encodeURIComponent(currentSlug), {method: 'DELETE'});
+  newModule();
+}
+
+// ── Topic chips ───────────────────────────────────────────────────────────────
+
+async function loadTopics() {
+  const res = await fetch('/api/topics').then(r => r.json());
+  allTopics = res.topics || [];
+  refreshTopicDatalist();
+}
+
+function refreshTopicDatalist() {
+  const filter = $('moduleText').value || '';
+  const dl = $('topicList');
+  dl.innerHTML = '';
+  allTopics
+    .filter(n => !selectedTopics.includes(n))
+    .filter(n => !filter || n.toLowerCase().includes(filter.toLowerCase()))
+    .forEach(name => {
+      const o = document.createElement('option');
+      o.value = name;
+      dl.appendChild(o);
+    });
+}
+
+function onTopicTextChange() {
+  const val = $('moduleText').value.trim();
+  if (allTopics.includes(val) && !selectedTopics.includes(val)) addTopicChip(val);
+}
+
+function onTopicTextKey(e) {
+  const input = $('moduleText');
+  if (e.key === 'Enter') {
+    const val = input.value.trim();
+    if (allTopics.includes(val) && !selectedTopics.includes(val)) { addTopicChip(val); e.preventDefault(); }
+  }
+  if (e.key === 'Backspace' && !input.value && selectedTopics.length) {
+    removeTopicChip(selectedTopics[selectedTopics.length - 1]);
+  }
+}
+
+function addTopicChip(name)    { selectedTopics.push(name); $('moduleText').value = ''; renderTopicChips(); refreshTopicDatalist(); reloadAllLessons(); }
+function removeTopicChip(name) { selectedTopics = selectedTopics.filter(n => n !== name); renderTopicChips(); refreshTopicDatalist(); reloadAllLessons(); }
+
+function renderTopicChips() {
+  const container = $('moduleChips');
+  container.querySelectorAll('.module-chip').forEach(c => c.remove());
+  const input = $('moduleText');
+  input.placeholder = selectedTopics.length ? '' : 'Search topic…';
+  [...selectedTopics].reverse().forEach(name => {
+    const chip = document.createElement('span');
+    chip.className = 'module-chip';
+    chip.innerHTML = name + '<span class="module-chip-x" onclick="removeTopicChip(\'' + name + '\')">&#x2715;</span>';
+    container.insertBefore(chip, input);
+  });
+}
+
+// ── Lesson table ──────────────────────────────────────────────────────────────
+
+async function reloadAllLessons() {
+  if (!selectedTopics.length) {
+    assignments = []; reviewSelections = {};
+    renderLessonTable(); refreshAll();
+    return;
+  }
+  const results = await Promise.all(
+    selectedTopics.map(name => fetch('/api/topics/' + encodeURIComponent(name)).then(r => r.json()))
+  );
+  assignments = results.flatMap((r, idx) =>
+    (r.assignments || []).map(a => Object.assign({}, a, {_module: selectedTopics[idx]}))
+  );
+  renderLessonTable();
+  refreshAll();
+}
+
+function renderLessonTable() {
+  const unitNum = parseInt($('fUnit').value) || 0;
+  $('lessonsBlock').style.display = assignments.length ? 'block' : 'none';
+  reviewSelections = {};
+  $('lessonRows').innerHTML = assignments.map((a, i) =>
+    '<div class="lesson-row-wrap">' +
+      '<div class="lesson-row" id="lrow_' + i + '">' +
+        '<input type="checkbox" checked id="lcheck_' + i + '" onchange="onLessonCheck()">' +
+        '<div class="lesson-day" id="lday_' + i + '">' + fmtDayLabel(unitNum, a) + '</div>' +
+        '<div class="lesson-title" title="View / edit lesson files" onclick="openEditor(' + i + ')">' + a.title + '</div>' +
+        '<label class="review-toggle" id="lrevlabel_' + i + '">' +
+          '<input type="checkbox" id="lreview_' + i + '" onchange="toggleReview(' + i + ')">' +
+          '<span>+ Review</span>' +
+        '</label>' +
+      '</div>' +
+      '<div class="review-panel" id="rpanel_' + i + '" style="display:none">' +
+        '<div class="review-picker">' +
+          '<select id="rmod_' + i + '" onchange="onReviewModuleChange(' + i + ')"></select>' +
+          '<select id="rlesson_' + i + '" onchange="onReviewLessonChange(' + i + ')" disabled></select>' +
+          '<select id="rfile_' + i + '" onchange="onReviewFileChange(' + i + ')" disabled></select>' +
+          '<span id="rbadge_' + i + '" class="review-badge" style="display:none"></span>' +
+        '</div>' +
+      '</div>' +
+    '</div>'
+  ).join('');
+  onLessonCheck();
+}
+
+function onLessonCheck() {
+  assignments.forEach((_, i) => {
+    const cb = $('lcheck_' + i), row = $('lrow_' + i);
+    if (cb && row) row.classList.toggle('unchecked', !cb.checked);
+  });
+  refreshAll();
+}
+
+function toggleReview(i) {
+  const cb = $('lreview_' + i);
+  $('rpanel_' + i).style.display = cb.checked ? 'block' : 'none';
+  $('lrevlabel_' + i).classList.toggle('on', cb.checked);
+  if (cb.checked) populateReviewModules(i);
+  else { delete reviewSelections[i]; $('rbadge_' + i).style.display = 'none'; }
+}
+
+function populateReviewModules(i) {
+  const sel = $('rmod_' + i);
+  if (sel.options.length > 1) return;
+  sel.innerHTML = '<option value="">Module…</option>';
+  allTopics.forEach(name => {
+    const o = document.createElement('option');
+    o.value = name; o.textContent = name;
+    sel.appendChild(o);
+  });
+}
+
+async function onReviewModuleChange(i) {
+  const module = $('rmod_' + i).value;
+  const lessonSel = $('rlesson_' + i), fileSel = $('rfile_' + i), badge = $('rbadge_' + i);
+  lessonSel.innerHTML = '<option value="">Lesson…</option>'; lessonSel.disabled = true;
+  fileSel.innerHTML = '<option value="">Day…</option>'; fileSel.disabled = true;
+  badge.style.display = 'none';
+  delete reviewSelections[i];
+  if (!module) return;
+  const res = await fetch('/api/topics/' + encodeURIComponent(module)).then(r => r.json());
+  const lessons = (res.assignments || []).filter(a => a.path);
+  if (!lessons.length) { lessonSel.innerHTML = '<option value="">No lessons</option>'; return; }
+  lessons.forEach(a => {
+    const o = document.createElement('option');
+    o.value = a.path; o.textContent = a.title;
+    lessonSel.appendChild(o);
+  });
+  lessonSel.disabled = false;
+}
+
+async function onReviewLessonChange(i) {
+  const module = $('rmod_' + i).value, lessonPath = $('rlesson_' + i).value;
+  const fileSel = $('rfile_' + i), badge = $('rbadge_' + i);
+  fileSel.innerHTML = '<option value="">Day…</option>'; fileSel.disabled = true;
+  badge.style.display = 'none';
+  delete reviewSelections[i];
+  if (!lessonPath) return;
+  const res = await fetch('/api/reviews?module=' + encodeURIComponent(module) +
+                          '&path=' + encodeURIComponent(lessonPath)).then(r => r.json());
+  const files = res.files || [];
+  if (!files.length) { fileSel.innerHTML = '<option value="">No reviews</option>'; return; }
+  files.forEach(f => {
+    const o = document.createElement('option');
+    o.value = f; o.textContent = f.replace(/\.md$/, '');
+    fileSel.appendChild(o);
+  });
+  fileSel.disabled = false;
+}
+
+function onReviewFileChange(i) {
+  const module = $('rmod_' + i).value, lessonPath = $('rlesson_' + i).value, file = $('rfile_' + i).value;
+  const badge = $('rbadge_' + i);
+  if (!file) { badge.style.display = 'none'; delete reviewSelections[i]; return; }
+  reviewSelections[i] = {module: module, path: lessonPath, file: file};
+  badge.textContent = file.replace(/\.md$/, '');
+  badge.style.display = 'inline-block';
+}
+
+// Restore a saved review ref into row i's pickers
+async function applyReview(i, rev) {
+  $('lreview_' + i).checked = true;
+  $('rpanel_' + i).style.display = 'block';
+  $('lrevlabel_' + i).classList.add('on');
+  populateReviewModules(i);
+  $('rmod_' + i).value = rev.module;
+  await onReviewModuleChange(i);
+  $('rmod_' + i).value = rev.module;
+  $('rlesson_' + i).value = rev.path;
+  await onReviewLessonChange(i);
+  $('rlesson_' + i).value = rev.path;
+  $('rfile_' + i).value = rev.file;
+  onReviewFileChange(i);
+}
+
+// ── Save ──────────────────────────────────────────────────────────────────────
+
+function onNameInput() {
+  if (!slugTouched) $('fSlug').value = slugify($('fName').value);
+  refreshAll();
+}
+
+function checkedAssignments() {
+  return assignments
+    .map((a, i) => ({a, i}))
+    .filter(({i}) => { const cb = $('lcheck_' + i); return cb && cb.checked; })
+    .map(({a, i}) => ({
+      day: a.day, duration: a.duration || 1, title: a.title,
+      path: a.path, _module: a._module,
+      review: reviewSelections[i] || null,
+    }));
+}
+
+function refreshAll() {
+  const unitNum = parseInt($('fUnit').value) || 0;
+  const base    = parseFloat($('fPoints').value) || 10;
+  const scale   = parseFloat($('fScale').value) || 1.15;
+  const mult    = Math.pow(scale, unitNum);
+  $('scaleFactor').textContent = mult.toFixed(3);
+  $('scaledPts').textContent   = smartRound(base * mult);
+  assignments.forEach((a, i) => {
+    const el = $('lday_' + i);
+    if (el) el.textContent = fmtDayLabel(unitNum, a);
+  });
+  $('saveBtn').disabled = !$('fName').value.trim() || !checkedAssignments().length;
+}
+
+async function saveModule() {
+  const slug = $('fSlug').value.trim() || slugify($('fName').value);
+  const body = {
+    name: $('fName').value.trim(),
+    slug: slug,
+    description: $('fDesc').value.trim(),
+    unit_number: parseInt($('fUnit').value) || 0,
+    points_per_assignment: parseFloat($('fPoints').value) || 10,
+    scale_factor: parseFloat($('fScale').value) || 1.15,
+    start_date: null,
+    topic_names: selectedTopics,
+    assignments: checkedAssignments(),
+  };
+  const btn = $('saveBtn');
+  btn.disabled = true; btn.textContent = 'Saving…';
+  const res = await fetch('/api/saved/' + encodeURIComponent(slug), {
+    method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(body),
+  }).then(r => r.json());
+  btn.textContent = 'Save Module'; btn.disabled = false;
+  if (res.error) {
+    $('result').innerHTML = '<span class="result-err">✕ ' + res.error +
+      (res.problems ? '\n' + res.problems.join('\n') : '') + '</span>';
+    return;
+  }
+  currentSlug = slug;
+  $('deleteBtn').style.display = 'inline-block';
+  $('result').innerHTML = '<span class="result-ok">✓ Saved _modules/' + slug + '.json</span>';
+  loadSavedList();
+}
+
+// ── Lesson editor (view/edit lesson files, preview as Canvas will render) ────
+
+let editorCtx = null;   // {module, path, row, file}
+let editorDirty = false;
+
+async function openEditor(i) {
+  const a = assignments[i];
+  editorCtx = {module: a._module, path: a.path, row: i, file: null};
+  $('edTitle').textContent = a._module + '/' + a.path;
+  const listing = await fetch('/api/lesson-files?module=' + encodeURIComponent(a._module) +
+                              '&path=' + encodeURIComponent(a.path)).then(r => r.json());
+  if (listing.error) return;
+  buildEditorTabs(listing);
+  $('editor').style.display = 'flex';
+  $('editorOverlay').style.display = 'block';
+  const first = listing.files.includes('ASSIGNMENT.md') ? 'ASSIGNMENT.md' : listing.files[0];
+  openEditorTab(first);
+}
+
+function tabId(file) { return 'edtab_' + file.replace(/[^A-Za-z0-9]/g, '_'); }
+
+function buildEditorTabs(listing) {
+  const tabs = [];
+  (listing.files || []).forEach(f => tabs.push({file: f, create: false}));
+  (listing.review || []).forEach(f => tabs.push({file: f, create: false}));
+  (listing.can_create || []).forEach(f => tabs.push({file: f, create: true}));
+  $('edTabs').innerHTML = tabs.map(t =>
+    '<button class="editor-tab' + (t.create ? ' create' : '') + '" id="' + tabId(t.file) + '"' +
+    ' onclick="openEditorTab(\'' + t.file + '\')">' + (t.create ? '+ ' : '') + t.file + '</button>'
+  ).join('');
+}
+
+async function openEditorTab(file) {
+  if (editorDirty && !confirm('Discard unsaved changes?')) return;
+  editorDirty = false;
+  editorCtx.file = file;
+  document.querySelectorAll('.editor-tab').forEach(t => t.classList.remove('active'));
+  const tab = $(tabId(file));
+  if (tab) tab.classList.add('active');
+  const res = await fetch('/api/file?module=' + encodeURIComponent(editorCtx.module) +
+                          '&path=' + encodeURIComponent(editorCtx.path) +
+                          '&file=' + encodeURIComponent(file)).then(r => r.json());
+  $('edText').value = res.content || '';
+  $('edResult').textContent = '';
+  setEditorMode('edit');
+}
+
+function setEditorMode(mode) {
+  $('edModeEdit').classList.toggle('active', mode === 'edit');
+  $('edModePreview').classList.toggle('active', mode === 'preview');
+  $('edText').style.display = mode === 'edit' ? 'block' : 'none';
+  $('edPreview').style.display = mode === 'preview' ? 'block' : 'none';
+  if (mode === 'preview') renderEditorPreview();
+}
+
+async function renderEditorPreview() {
+  const body = {
+    markdown: $('edText').value,
+    base_path: editorCtx.module + '/' + editorCtx.path,
+  };
+  // ASSIGNMENT.md previews include the attached review block, exactly like the hub upload
+  const rev = editorCtx.file === 'ASSIGNMENT.md' ? reviewSelections[editorCtx.row] : null;
+  if (rev) {
+    const rc = await fetch('/api/file?module=' + encodeURIComponent(rev.module) +
+                           '&path=' + encodeURIComponent(rev.path) +
+                           '&file=' + encodeURIComponent('review/' + rev.file)).then(r => r.json());
+    if (rc.content) body.review_markdown = rc.content;
+  }
+  const res = await fetch('/api/render', {
+    method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(body),
+  }).then(r => r.json());
+  $('edPreview').innerHTML = res.html || '';
+  $('edEngine').textContent = res.engine === 'builtin'
+    ? 'approximate preview — pip3 install markdown for exact hub rendering' : '';
+  // typeset math the way Canvas does (MathJax; CDN — needs internet)
+  if (window.MathJax && MathJax.typesetPromise) {
+    if (MathJax.typesetClear) MathJax.typesetClear([$('edPreview')]);
+    MathJax.typesetPromise([$('edPreview')]).catch(() => {});
+  }
+}
+
+async function saveFile() {
+  const res = await fetch('/api/file', {
+    method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({module: editorCtx.module, path: editorCtx.path,
+                          file: editorCtx.file, content: $('edText').value}),
+  }).then(r => r.json());
+  if (res.error) { $('edResult').innerHTML = '<span class="result-err">✕ ' + res.error + '</span>'; return; }
+  editorDirty = false;
+  $('edResult').innerHTML = res.broken_links && res.broken_links.length
+    ? '<span style="color:var(--yellow)">Saved, but broken links: ' + res.broken_links.join(', ') + '</span>'
+    : '<span class="result-ok">✓ Saved ' + res.saved + '</span>';
+  // A newly created file (e.g. ASSIGNMENT.md) becomes a real tab after saving
+  const listing = await fetch('/api/lesson-files?module=' + encodeURIComponent(editorCtx.module) +
+                              '&path=' + encodeURIComponent(editorCtx.path)).then(r => r.json());
+  buildEditorTabs(listing);
+  const tab = $(tabId(editorCtx.file));
+  if (tab) tab.classList.add('active');
+}
+
+function closeEditor() {
+  if (editorDirty && !confirm('Discard unsaved changes?')) return;
+  editorDirty = false;
+  $('editor').style.display = 'none';
+  $('editorOverlay').style.display = 'none';
+}
+
+loadTopics().then(loadSavedList);
+</script>
+</body>
+</html>

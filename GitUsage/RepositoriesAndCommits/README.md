@@ -230,4 +230,4 @@ git pull
 
 [Assignment](ASSIGNMENT.md)
 
-← Back to [Git Usage](../)
+← Back to [Git Usage](../) — Next: [Branching and Merging](../BranchingAndMerging/)

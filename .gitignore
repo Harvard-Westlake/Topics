@@ -1,0 +1,13 @@
+# Instructor solutions are NEVER committed to this public repo.
+# Canonical copies live in the private sibling Admin repo (solutions/<Topic>/<Lesson>/).
+# _admin/_solutions/ is a local working area only.
+_admin/_solutions/
+
+# Compiled Java artifacts from testing starter/solution code
+*.class
+
+# Python bytecode from the planner UI and verifier
+__pycache__/
+*.pyc
+
+.DS_Store

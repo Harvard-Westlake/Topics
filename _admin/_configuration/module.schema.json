@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Curated Curriculum Module",
+  "description": "A saved, reusable unit plan: an ordered selection of lessons from this repo, with optional review fragments attached. Consumed by the course hub (../Admin) to create Canvas modules.",
+  "type": "object",
+  "required": ["name", "slug", "topic_names", "assignments"],
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Human-readable module name, e.g. \"Computer Setup and Git Usage\""
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "description": "Kebab-case identifier. Must match the filename: _modules/<slug>.json"
+    },
+    "description": {
+      "type": "string",
+      "description": "One-paragraph summary of what this module covers"
+    },
+    "unit_number": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Suggested unit number. The hub may override this at import time based on the target course's existing modules."
+    },
+    "points_per_assignment": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Base points per assignment, BEFORE unit scaling is applied"
+    },
+    "scale_factor": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "description": "Per-unit point multiplier (points × scale_factor^unit_number, smart-rounded). Hub default is 1.15."
+    },
+    "start_date": {
+      "type": ["string", "null"],
+      "description": "Almost always null — start dates belong to course scheduling at import time, not the curated module"
+    },
+    "topic_names": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" },
+      "description": "Top-level topic folders the lessons are drawn from, in the order they were added. Used by the hub to build the Canvas module name."
+    },
+    "assignments": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["day", "title", "path", "_module"],
+        "additionalProperties": false,
+        "properties": {
+          "day": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "1-indexed day within the unit (from the topic's LESSONS.md)"
+          },
+          "duration": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Number of class periods this assignment spans (default 1)"
+          },
+          "title": { "type": "string" },
+          "path": {
+            "type": "string",
+            "description": "Lesson folder name inside the topic folder, e.g. \"RepositoriesAndCommits\""
+          },
+          "_module": {
+            "type": "string",
+            "description": "Top-level topic folder the lesson lives in, e.g. \"GitUsage\". Named to match the hub's create-module payload."
+          },
+          "review": {
+            "type": ["object", "null"],
+            "required": ["module", "path", "file"],
+            "additionalProperties": false,
+            "description": "Reference to a review fragment to prepend to this assignment. Stored as a reference (not inline content) so the repo stays the single source of truth — the hub resolves it to markdown at import time.",
+            "properties": {
+              "module": { "type": "string", "description": "Topic folder containing the review" },
+              "path": { "type": "string", "description": "Lesson folder containing the review/ subfolder" },
+              "file": { "type": "string", "pattern": "\\.md$", "description": "Filename inside the review/ folder" }
+            }
+          }
+        }
+      }
+    },
+    "updated": {
+      "type": "string",
+      "description": "ISO date (YYYY-MM-DD) of the last edit"
+    }
+  }
+}

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Purpose
 
-This is the public student-facing curriculum repository for the **Honors Topics** computer science course at Harvard-Westlake. It contains no runnable code — only Markdown content rendered on GitHub.
+This is the public student-facing curriculum repository for the **Honors Topics** computer science course at Harvard-Westlake. Student-facing content is Markdown-only, rendered on GitHub. Course-planning tooling (planner UI, verifier) lives in underscore-prefixed folders and is never student-facing. No credentials are ever stored in this repo — the Canvas access key lives in the private sibling `../Admin` repo.
 
 ## Structure
 
@@ -14,9 +14,16 @@ Topics/
     README.md           — overview and lesson index for the topic
     <subtopic>/
       README.md         — individual lesson
+  _modules/             — curated module JSONs (reusable unit plans) imported by the course hub
+  _admin/               — course administration namespace (tooling, config, docs)
+    _instructions/      — authoring guides for maintaining lessons
+    _coursePlannerUI/   — local web UI that creates/edits _modules/*.json (python3 server.py)
+    _configuration/     — module.schema.json defining the curated module format
+    _lessonplans/       — GENERATED readable summaries of _modules — never edit by hand
+    _verification/      — verify.py link/reference checker (also runs in CI on push)
 ```
 
-Current topics: `ComputerSetup/` (InitialInstall), `Terminal/` (Basics), `GitUsage/` (RepositoriesAndCommits, BranchingAndMerging, ForksAndCollaboration), `GitProject/` (ProjectSetup, InitAndBlobs, Trees, Commits, Branches)
+Current topics: `ComputerSetup/` (InitialInstall), `Terminal/` (Basics), `GitUsage/` (RepositoriesAndCommits, BranchingAndMerging, ForksAndCollaboration), `GitProject/` (ProjectSetup, InitAndBlobs, Trees, Commits, Branches), `MiniGPT/` (Tokenizer, MarkovBaseline, FixedAttention, TrainableBigram, ObjectNetwork, ScalarAutograd, DenseEngine, SingleHeadAttention, TransformerBlock, TrainingAndGeneration, Capstone)
 
 ## Root README
 
@@ -73,7 +80,26 @@ Numbers reflect the recommended consumption order. Update the table whenever sub
 
 ## _ prefix convention
 
-Folders whose names begin with `_` (e.g. `_instructions/`) are **ignored by the module importer** and excluded from all student-facing behaviors: do not add them to the root `README.md` TOC, do not add them to any `LESSONS.md`, do not apply lesson type labels or standard title formatting inside them. They exist for admin, documentation, or tooling only.
+Folders whose names begin with `_` (e.g. `_admin/`, `_modules/`) are **ignored by the module importer** and excluded from all student-facing behaviors: do not add them to the root `README.md` TOC, do not add them to any `LESSONS.md`, do not apply lesson type labels or standard title formatting inside them. They exist for admin, documentation, or tooling only. Non-lesson admin content belongs under `_admin/` (e.g. authoring guides live at `_admin/_instructions/`); the only other top-level underscore folder is `_modules/`, kept at the top level so curated modules are easy to find and update.
+
+## Curated modules and course planning
+
+`_modules/<slug>.json` files are saved unit plans: an ordered selection of lessons (possibly spanning topics) with optional review fragments attached, plus unit number, base points, and scale factor. Format: `_admin/_configuration/module.schema.json`. Review fragments are stored as **references** (`{module, path, file}`), never inline content — the repo's markdown stays the single source of truth and the hub resolves content at import time.
+
+- **Edit** with the planner UI: `python3 _admin/_coursePlannerUI/server.py` → http://127.0.0.1:8901. Saving also regenerates `_admin/_lessonplans/<slug>.md`. Clicking a lesson title opens a file editor with a Canvas-fidelity preview (`mdrender.py` ports the hub's `md_to_html`; exact rendering needs `pip3 install markdown`, otherwise a built-in fallback is used).
+- **Import** happens from the course hub (`../Admin` Flask app) via its "Load saved module" dropdown; the hub owns the Canvas access key.
+- `_admin/_lessonplans/*.md` are generated — regenerate with `verify.py --fix`, never hand-edit.
+
+## Verification
+
+After ANY content, structure, or module change, run:
+
+```bash
+python3 _admin/_verification/verify.py        # exit 1 on errors
+python3 _admin/_verification/verify.py --fix  # also regenerate _admin/_lessonplans/
+```
+
+It checks every relative link in every `.md`, topic/lesson structure (LESSONS.md ↔ folders, Skill Building sections, ASSIGNMENT.md links), root README coverage, and `_modules/*.json` referential integrity (lessons, review files, title drift, lesson-plan sync). CI runs it on every push via `.github/workflows/verify.yml` — do not leave the repo in a state where it fails.
 
 ## Module and day-lesson structure
 
@@ -387,7 +413,7 @@ Rules for `Docs/` folders:
 
 ## Common Operations
 
-These checklists are the authoritative source for keeping the repo consistent. Every item is required unless marked optional.
+These checklists are the authoritative source for keeping the repo consistent. Every item is required unless marked optional. **Finish every operation by running `python3 _admin/_verification/verify.py`** — it catches broken links, missing index rows, and stale module references.
 
 ### Add a new module
 

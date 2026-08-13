@@ -1,0 +1,52 @@
+{
+  "name": "U1 - Computer Setup and Git Usage",
+  "slug": "unit-1-computer-setup-and-git-usage",
+  "description": "Environment setup followed by core Git workflows: install the toolchain, then learn repositories, commits, branching, merging, and fork-based collaboration.",
+  "unit_number": 1,
+  "points_per_assignment": 10,
+  "scale_factor": 1.15,
+  "start_date": null,
+  "topic_names": [
+    "ComputerSetup",
+    "GitUsage"
+  ],
+  "assignments": [
+    {
+      "day": 1,
+      "duration": 1,
+      "title": "Initial Install",
+      "path": "InitialInstall",
+      "_module": "ComputerSetup",
+      "review": null
+    },
+    {
+      "day": 1,
+      "duration": 1,
+      "title": "Repositories and Commits",
+      "path": "RepositoriesAndCommits",
+      "_module": "GitUsage",
+      "review": {
+        "module": "Terminal",
+        "path": "Basics",
+        "file": "review-day-3.md"
+      }
+    },
+    {
+      "day": 2,
+      "duration": 1,
+      "title": "Branching and Merging",
+      "path": "BranchingAndMerging",
+      "_module": "GitUsage",
+      "review": null
+    },
+    {
+      "day": 3,
+      "duration": 1,
+      "title": "Forks and Collaboration",
+      "path": "ForksAndCollaboration",
+      "_module": "GitUsage",
+      "review": null
+    }
+  ],
+  "updated": "2026-08-11"
+}

@@ -66,4 +66,4 @@ This format is required throughout the entire project. A commit history without 
 
 [Assignment](ASSIGNMENT.md)
 
-← Back to [Git Project](../)
+← Back to [Git Project](../) — Next: [Initialization and Blobs](../InitAndBlobs/)
