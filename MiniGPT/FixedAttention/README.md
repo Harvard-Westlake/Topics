@@ -24,18 +24,18 @@ The chapter is two class periods. Each day ends with homework:
 | Day | In class | Homework |
 |---|---|---|
 | 1 | The table of cards · Stage 1: remember everything equally · Stage 2: write the scores by hand · Softmax | [Assignment](ASSIGNMENT.md) Part 1 — TODOs 1–3 plus problem sets A and B on paper |
-| 2 | The bridge: words become stat cards · Stage 3: the dot product · The causal mask · The complete pipeline · From loop to grid | [Assignment](ASSIGNMENT.md) Part 2 — TODOs 4–7 plus the concept questions |
+| 2 | The bridge: words become stat cards · Stage 3: the dot product · The causal mask · The complete pipeline · From loop to grid · the Classmate Matrix activity | [Assignment](ASSIGNMENT.md) Part 2 — TODOs 4–7 plus the concept questions |
 
 ## <font color="#388bfd">The Table of Cards — Read This First</font>
 
 Everything in this chapter happens on one tiny, fixed example. Getting these ground rules straight now prevents every confusion that follows.
 
-Someone has already handed you three archive cards, in this exact order:
+Someone has already handed you three cards from a stack of pizza orders, in this exact order:
 
 ```text
-position 0:   BASALT      (the card carries: DARK)
-position 1:   LIMESTONE   (the card carries: PALE)
-position 2:   BASALT      <- the current position, asking a question
+position 0:   PINEAPPLE   (the card carries: SWEET)
+position 1:   PEPPERONI   (the card carries: SAVORY)
+position 2:   PINEAPPLE   <- the current position, asking a question
 ```
 
 Three ground rules:
@@ -44,7 +44,7 @@ Three ground rules:
 2. **Position means order, nothing more.** Position 0 is simply the first card, position 1 the second, position 2 the third. No probabilities are attached to the order.
 3. **The table is not the library.** The cards on the table are the **context window** — only the tokens of *this* sequence. They are not the training corpus, not the vocabulary, not everything the model has ever seen. In fact, this chapter has no training corpus at all: every number in it is written by hand.
 
-Each card has two distinct things on it: the token written on its face (`BASALT`), and the information it carries (`DARK`). Keep those separate — the face is how a card gets *found*; what it carries is what gets *used*. That split becomes the vocabulary of attention in Stage 2.
+Each card has two distinct things on it: the token written on its face (`PINEAPPLE`), and the information it carries (`SWEET`). Keep those separate — the face is how a card gets *found*; what it carries is what gets *used*. That split becomes the vocabulary of attention in Stage 2.
 
 ## <font color="#388bfd">Vocabulary — Day 1</font>
 
@@ -78,9 +78,9 @@ Apply it to the table, position by position:
 
 | Standing at | Cards mixed | Weight each |
 |---|---|---|
-| position 0 | BASALT | $1$ |
-| position 1 | BASALT, LIMESTONE | $\frac{1}{2}, \frac{1}{2}$ |
-| position 2 | BASALT, LIMESTONE, BASALT | $\frac{1}{3}, \frac{1}{3}, \frac{1}{3}$ |
+| position 0 | PINEAPPLE | $1$ |
+| position 1 | PINEAPPLE, PEPPERONI | $\frac{1}{2}, \frac{1}{2}$ |
+| position 2 | PINEAPPLE, PEPPERONI, PINEAPPLE | $\frac{1}{3}, \frac{1}{3}, \frac{1}{3}$ |
 
 Position 0 has no past, so its mixture is itself. Position 1 mixes two cards at half volume each. Position 2 mixes all three at a third each. No position ever receives information from its future — that restriction is the word **causal**.
 
@@ -94,12 +94,12 @@ Answers are in the [Answer Key](#answer-key) below. Do these on paper before mov
 
 1. A sequence has five positions. Standing at position 3, which positions are mixed, and what weight does each get?
 2. Standing at position 0 of any sequence, what is the mixture?
-3. For the sequence `SHALE, SLATE, SHALE, QUARTZ`: what fraction of the mixture at position 2 comes from cards whose face reads `SHALE`?
+3. For the sequence `OLIVE, ONION, OLIVE, BACON`: what fraction of the mixture at position 2 comes from cards whose face reads `OLIVE`?
 4. The card at position 3 is swapped for a completely different one. Does the mixture at position 1 change? Why or why not?
 
 ### <font color="#79c0ff">Why this stage matters — and how it fails</font>
 
-Stage 1 proves information can flow forward. It also creates the next failure on purpose: treating every previous position as equally important **blurs** useful and irrelevant information together. At position 2, the one card that matters (the earlier `BASALT`, carrying `DARK`) speaks at exactly the same volume as everything else. The fix is not more mixing — it is *unequal* mixing.
+Stage 1 proves information can flow forward. It also creates the next failure on purpose: treating every previous position as equally important **blurs** useful and irrelevant information together. At position 2, the one card that matters (the earlier `PINEAPPLE`, carrying `SWEET`) speaks at exactly the same volume as everything else. The fix is not more mixing — it is *unequal* mixing.
 
 ## <font color="#388bfd">Stage 2: Write the Scores by Hand</font>
 
@@ -110,13 +110,13 @@ Here is the reasoning, in plain words: *standing at position 2, if an earlier ca
 - The asking card itself: 0 points — it is the one asking; it already has its own information.
 - Future cards: masked. They never receive points at all.
 
-The current card's face reads `BASALT`, so that is what it looks for. Applying the rule:
+The current card's face reads `PINEAPPLE`, so that is what it looks for. Applying the rule:
 
 | Position | Card | Score |
 |---|---|---:|
-| 0 | BASALT (carries DARK) | 4 |
-| 1 | LIMESTONE (carries PALE) | 0 |
-| 2 | BASALT — the asker | 0 |
+| 0 | PINEAPPLE (carries SWEET) | 4 |
+| 1 | PEPPERONI (carries SAVORY) | 0 |
+| 2 | PINEAPPLE — the asker | 0 |
 
 Two things to say out loud about those numbers:
 
@@ -127,15 +127,15 @@ Two things to say out loud about those numbers:
 
 You have already been using three ideas without names. Attach the names now, while the example is small:
 
-- When position 2 asks *"who back there matches BASALT?"* — that request is the **query**. The query is produced by the **current position alone**. One card asks; the question comes from nowhere else.
-- Each card's face — `BASALT`, `LIMESTONE` — is how the card announces itself for matching. That is its **key**. Every permitted card holds one up. **One query is compared against many keys.**
-- What each card carries — `DARK`, `PALE` — is what gets pulled into the mix if the card is chosen. That is its **value**.
+- When position 2 asks *"who back there matches PINEAPPLE?"* — that request is the **query**. The query is produced by the **current position alone**. One card asks; the question comes from nowhere else.
+- Each card's face — `PINEAPPLE`, `PEPPERONI` — is how the card announces itself for matching. That is its **key**. Every permitted card holds one up. **One query is compared against many keys.**
+- What each card carries — `SWEET`, `SAVORY` — is what gets pulled into the mix if the card is chosen. That is its **value**.
 
 So the entire Stage 2 rule, restated in the new vocabulary: *compare the query against every permitted key; give matching keys high scores; the scores will decide how much of each value flows into the mixture.*
 
-> **Note:** In diagrams you will sometimes see the current card written as "QUERY BASALT". The word QUERY is a **role label**, like writing "(goalie)" next to a player's name. The token on the card is just `BASALT`; "query" describes the job that card is doing at this moment.
+> **Note:** In diagrams you will sometimes see the current card written as "QUERY PINEAPPLE". The word QUERY is a **role label**, like writing "(goalie)" next to a player's name. The token on the card is just `PINEAPPLE`; "query" describes the job that card is doing at this moment.
 
-Why do keys matter at all — why not just look at the query? Because the same query means different things in different company. If the query is `thunderbolt` and the surrounding keys are `weather`, `storm`, `lightning`, the useful values are meteorology. If the keys are `pikachu`, `attack`, `electric`, the useful values are Pokémon. The keys are what let one word find the right context.
+Why do keys matter at all — why not just look at the query? Because the same query means different things in different company. If the query is `pineapple` and the surrounding keys are `pizza`, `oven`, `mozzarella`, the useful values are about dinner. If the keys are `smoothie`, `beach`, `piña colada`, the useful values are about a vacation drink. The keys are what let one word find the right context.
 
 ## <font color="#388bfd">Softmax: Scores Become Weights</font>
 
@@ -161,7 +161,7 @@ exponentiate:         [ 1.0000,  0.0183,  0.0183]
 divide by sum 1.0366: [ 0.9647,  0.0177,  0.0177]
 ```
 
-The mixture at position 2 is now roughly **96% what the basalt card carries** and about 2% each of the others. Compare Stage 1's blur of a third each. That is the spotlight.
+The mixture at position 2 is now roughly **96% what the pineapple card carries** and about 2% each of the others. Compare Stage 1's blur of a third each. That is the spotlight.
 
 One connection ties the whole day together: run softmax on all-equal scores `[0, 0, 0]`:
 
@@ -171,11 +171,11 @@ subtract max:  [0, 0, 0]  ->  exponentiate: [1, 1, 1]  ->  normalize: [1/3, 1/3,
 
 **Stage 1 is not a different mechanism — it is attention in which every permitted score is equal.** Uniform averaging is the special case; scoring is what got added.
 
-Notice also what softmax refuses to do: no permitted position ever gets weight *exactly* zero — LIMESTONE kept 0.0177, not 0. Softmax can turn volumes far down, never fully off. The only exact zeros in this chapter come from the causal mask, which removes future positions *before* softmax ever sees them.
+Notice also what softmax refuses to do: no permitted position ever gets weight *exactly* zero — PEPPERONI kept 0.0177, not 0. Softmax can turn volumes far down, never fully off. The only exact zeros in this chapter come from the causal mask, which removes future positions *before* softmax ever sees them.
 
 ### <font color="#79c0ff">Check yourself — Set B</font>
 
-1. The sequence is `GRANITE, SHALE, GRANITE, GRANITE` and you are standing at position 3 (the last `GRANITE`, asking). Apply the Stage 2 rule (+4 earlier match, 0 otherwise, self 0). What are the four scores?
+1. The sequence is `MUSHROOM, SAUSAGE, MUSHROOM, MUSHROOM` and you are standing at position 3 (the last `MUSHROOM`, asking). Apply the Stage 2 rule (+4 earlier match, 0 otherwise, self 0). What are the four scores?
 2. Run softmax on your scores from problem 1, showing the three steps.
 3. Softmax of `[0, 0, 0, 0]`? Which stage does that reproduce?
 4. Without computing: softmax of `[5, 1, 1]` versus softmax of `[9, 5, 5]` — same or different? Why?
@@ -197,21 +197,23 @@ Notice also what softmax refuses to do: no permitted position ever gets weight *
 
 ## <font color="#388bfd">Day 2 — How a Machine Computes the Spotlight</font>
 
+> **Demo:** Keep [The Spotlight Bench](https://harvard-westlake.github.io/Topics/MiniGPT/FixedAttention/demos/spotlight-bench.html) ([source](demos/spotlight-bench.html)) projected through this day — every table below is computed live in it, and any card can be swapped mid-discussion. The button in the top corner switches to a Pop-vs-Rap card set with messier, blended feature values — a second pass for students who want the training wheels off.
+
 ## <font color="#388bfd">The Bridge: Computers Cannot Compare Words</font>
 
-Stage 2's rule was *"does this card's face match the word BASALT?"* — a string comparison a human performs instantly. The machine needs the score to come out of **arithmetic**, because arithmetic is what Chapter 6 will eventually learn to adjust. So before any formula: what must happen to the words `BASALT` and `LIMESTONE` so a numeric loop can process them?
+Stage 2's rule was *"does this card's face match the word PINEAPPLE?"* — a string comparison a human performs instantly. The machine needs the score to come out of **arithmetic**, because arithmetic is what Chapter 6 will eventually learn to adjust. So before any formula: what must happen to the words `PINEAPPLE` and `PEPPERONI` so a numeric loop can process them?
 
-**First idea: use the token identifiers from Chapter 1.** `BASALT` might be token 301, `LIMESTONE` token 17. Multiply them? $301 \times 17$ says nothing about rocks. Chapter 1's misconception checkpoint already warned you: **identifiers are labels.** Token 301 is not "more" than token 17, and no arithmetic on labels produces meaning. One number per word cannot hold what a word means.
+**First idea: use the token identifiers from Chapter 1.** `PINEAPPLE` might be token 301, `PEPPERONI` token 17. Multiply them? $301 \times 17$ says nothing about pizza. Chapter 1's misconception checkpoint already warned you: **identifiers are labels.** Token 301 is not "more" than token 17, and no arithmetic on labels produces meaning. One number per word cannot hold what a word means.
 
-**The fix: give every token a list of numbers instead of one number.** Think of it as a **stat card** from a game. Each slot on the card is a **feature** — one measurable property. The whole list is a **feature vector**, and the number of slots is its **dimension**. With four features `[rock, dark, pale, animal]`:
+**The fix: give every token a list of numbers instead of one number.** Think of it as a **stat card** from a game. Each slot on the card is a **feature** — one measurable property. The whole list is a **feature vector**, and the number of slots is its **dimension**. With four features `[topping, sweet, savory, laundry]`:
 
-| Card | rock | dark | pale | animal |
+| Card | topping | sweet | savory | laundry |
 |---|---:|---:|---:|---:|
-| BASALT | 1.0 | 1.0 | 0.0 | 0.0 |
-| LIMESTONE | 1.0 | 0.0 | 1.0 | 0.0 |
-| PIKACHU | 0.0 | 0.0 | 0.0 | 1.0 |
+| PINEAPPLE | 1.0 | 1.0 | 0.0 | 0.0 |
+| PEPPERONI | 1.0 | 0.0 | 1.0 | 0.0 |
+| GYM SOCK | 0.0 | 0.0 | 0.0 | 1.0 |
 
-Now `BASALT` and `LIMESTONE` genuinely share something a machine can find — both have 1.0 in the `rock` slot — while `PIKACHU` shares nothing with either.
+Now `PINEAPPLE` and `PEPPERONI` genuinely share something a machine can find — both have 1.0 in the `topping` slot — while `GYM SOCK` shares nothing with either.
 
 > **Note:** Where do these numbers come from? This week, you write them by hand — they live in the provided fixtures. In Chapter 5 the model begins *learning* its own feature vectors, and by Chapter 8 it learns separate query, key, and value versions of them. Nothing about today's math changes when that happens; only the origin of the numbers does.
 
@@ -233,34 +235,34 @@ for (int feature = 0; feature < left.length; feature++) {
 
 A feature only scores when **both** sides have it. Watch it run on all three scenarios, every number visible:
 
-**Scenario 1 — perfect match.** Query BASALT `[1, 1, 0, 0]` against key BASALT `[1, 1, 0, 0]`:
+**Scenario 1 — perfect match.** Query PINEAPPLE `[1, 1, 0, 0]` against key PINEAPPLE `[1, 1, 0, 0]`:
 
 | Feature | left (query) | right (key) | product |
 |---|---:|---:|---:|
-| rock | 1.0 | 1.0 | 1.0 |
-| dark | 1.0 | 1.0 | 1.0 |
-| pale | 0.0 | 0.0 | 0.0 |
-| animal | 0.0 | 0.0 | 0.0 |
+| topping | 1.0 | 1.0 | 1.0 |
+| sweet | 1.0 | 1.0 | 1.0 |
+| savory | 0.0 | 0.0 | 0.0 |
+| laundry | 0.0 | 0.0 | 0.0 |
 | **total** | | | **2.0** |
 
-**Scenario 2 — partial match.** Query BASALT against key LIMESTONE `[1, 0, 1, 0]`:
+**Scenario 2 — partial match.** Query PINEAPPLE against key PEPPERONI `[1, 0, 1, 0]`:
 
 | Feature | left (query) | right (key) | product |
 |---|---:|---:|---:|
-| rock | 1.0 | 1.0 | 1.0 |
-| dark | 1.0 | 0.0 | 0.0 |
-| pale | 0.0 | 1.0 | 0.0 |
-| animal | 0.0 | 0.0 | 0.0 |
+| topping | 1.0 | 1.0 | 1.0 |
+| sweet | 1.0 | 0.0 | 0.0 |
+| savory | 0.0 | 1.0 | 0.0 |
+| laundry | 0.0 | 0.0 | 0.0 |
 | **total** | | | **1.0** |
 
-**Scenario 3 — complete mismatch.** Query BASALT against key PIKACHU `[0, 0, 0, 1]`:
+**Scenario 3 — complete mismatch.** Query PINEAPPLE against key GYM SOCK `[0, 0, 0, 1]`:
 
 | Feature | left (query) | right (key) | product |
 |---|---:|---:|---:|
-| rock | 1.0 | 0.0 | 0.0 |
-| dark | 1.0 | 0.0 | 0.0 |
-| pale | 0.0 | 0.0 | 0.0 |
-| animal | 0.0 | 1.0 | 0.0 |
+| topping | 1.0 | 0.0 | 0.0 |
+| sweet | 1.0 | 0.0 | 0.0 |
+| savory | 0.0 | 0.0 | 0.0 |
+| laundry | 0.0 | 1.0 | 0.0 |
 | **total** | | | **0.0** |
 
 The scores 2.0 / 1.0 / 0.0 rank the cards exactly the way Stage 2's hand rule did — except no rule about words exists anywhere. The ranking **emerged from the numbers**. That is the jump from Stage 2 to Stage 3, and it is the whole trick.
@@ -271,7 +273,7 @@ $$a \cdot b = \sum_{k=0}^{d-1} a_k b_k$$
 
 ### <font color="#79c0ff">Check yourself — Set C</font>
 
-Feature slots are `[rock, dark, pale, animal]` throughout.
+Feature slots are `[topping, sweet, savory, laundry]` throughout.
 
 1. `[1, 1, 0, 0] · [1, 0, 1, 0]` = ?
 2. `[1, 1, 0, 0] · [0, 0, 0, 1]` = ?
@@ -289,7 +291,7 @@ $$s_{ij} = \frac{q_i \cdot k_j}{\sqrt{d}}$$
 
 ## <font color="#388bfd">The Causal Mask</font>
 
-Standing at position $i$, only positions $0$ through $i$ may be scored. Future positions are not "scored low" — they are **removed before softmax runs**, and their weights are recorded as exactly `0.0`. That is why a future weight is the only exact zero in an attention row, and it makes a testable promise: **changing a future token cannot change any earlier output.** Your Tester proves it by swapping the last card for `PIKACHU` and confirming positions 0 and 1 produce identical outputs, bit for bit.
+Standing at position $i$, only positions $0$ through $i$ may be scored. Future positions are not "scored low" — they are **removed before softmax runs**, and their weights are recorded as exactly `0.0`. That is why a future weight is the only exact zero in an attention row, and it makes a testable promise: **changing a future token cannot change any earlier output.** Your Tester proves it by swapping the last card for `GYM SOCK` and confirming positions 0 and 1 produce identical outputs, bit for bit.
 
 ## <font color="#388bfd">The Complete Pipeline at One Position</font>
 
@@ -298,8 +300,8 @@ Every piece is built. Run the whole machine at position 2 of the table — query
 **Step 1 — score.** The query is position 2's own card, `[1, 1, 0, 0]`:
 
 ```text
-s(2,0) = ([1,1,0,0] . [1,1,0,0]) / 2 = 2.0 / 2 = 1.0     (BASALT)
-s(2,1) = ([1,1,0,0] . [1,0,1,0]) / 2 = 1.0 / 2 = 0.5     (LIMESTONE)
+s(2,0) = ([1,1,0,0] . [1,1,0,0]) / 2 = 2.0 / 2 = 1.0     (PINEAPPLE)
+s(2,1) = ([1,1,0,0] . [1,0,1,0]) / 2 = 1.0 / 2 = 0.5     (PEPPERONI)
 s(2,2) = ([1,1,0,0] . [1,1,0,0]) / 2 = 2.0 / 2 = 1.0     (itself)
 ```
 
@@ -324,22 +326,22 @@ y2 = 0.3837*[1,1,0,0] + 0.2327*[1,0,1,0] + 0.3837*[1,1,0,0]
 
 Put that next to Stage 1's equal mixture at the same position:
 
-| Mixture at position 2 | rock | dark | pale | animal |
+| Mixture at position 2 | topping | sweet | savory | laundry |
 |---|---:|---:|---:|---:|
 | Stage 1 — uniform | 1.000 | 0.667 | 0.333 | 0.000 |
 | Stage 3 — dot product | 1.000 | **0.767** | **0.233** | 0.000 |
 
-The `dark` feature rose and `pale` fell, because the query found the basalt cards — and **no line of code anywhere mentions the word "basalt."** The selectivity came entirely from multiply-and-add over feature slots.
+The `sweet` feature rose and `savory` fell, because the query found the pineapple cards — and **no line of code anywhere mentions the word "pineapple."** The selectivity came entirely from multiply-and-add over feature slots.
 
 ## <font color="#388bfd">From Loop to Grid</font>
 
 You have been comparing one query against one key per loop call. A real context window has dozens of positions, so stack every key vector as one **row** of a grid:
 
 ```text
-                rock   dark   pale   animal
-row 0  BASALT    1.0    1.0    0.0    0.0
-row 1  LIMESTONE 1.0    0.0    1.0    0.0
-row 2  BASALT    1.0    1.0    0.0    0.0
+                 topping  sweet  savory  laundry
+row 0  PINEAPPLE   1.0     1.0    0.0     0.0
+row 1  PEPPERONI   1.0     0.0    1.0     0.0
+row 2  PINEAPPLE   1.0     1.0    0.0     0.0
 ```
 
 A stack of vectors is all a **matrix** is. Running your dot-product loop once per row — one query against the whole stack — produces one score per row in a single sweep; mathematicians call that sweep a matrix multiplication. **Compact matrix notation is bookkeeping for the loop you already wrote, not new math.** This course keeps the loops; Chapter 7 makes them fast.
@@ -380,9 +382,23 @@ One workflow question students always ask: *is this part of training, or evaluat
 ### <font color="#79c0ff">Check yourself — Set D</font>
 
 1. At position 1 of the table of cards, compute the scaled scores, the softmax weights, and the blended output $y_1$.
-2. The card at position 2 is replaced with PIKACHU. Which of $y_0, y_1, y_2$ change?
+2. The card at position 2 is replaced with GYM SOCK. Which of $y_0, y_1, y_2$ change?
 3. In the 4-position example matrix above, why is the entry at row 1, column pos3 exactly 0.000 rather than merely small?
 4. What must each row of any attention matrix sum to, and which required test checks it?
+
+## <font color="#388bfd">In-Class Activity: The Classmate Matrix</font>
+
+Feature vectors feel abstract until the vector is *you*. In this activity the class builds a real attention matrix over itself, using [The Classmate Matrix](https://harvard-westlake.github.io/Topics/MiniGPT/FixedAttention/demos/classmate-matrix.html) ([source](demos/classmate-matrix.html)). Nothing typed into the page leaves the browser.
+
+1. **Choose the feature slots together.** As a class, pick six to nine qualities — for example: stressed, happy, overworked, friendly, skilled at cooking, athletic, funny, charismatic, frugal.
+2. **Fill in your stat card.** Rank yourself 0–10 on every quality. A nickname or an invented persona works exactly as well as your real name — the math cannot tell the difference, which is itself a lesson in what a feature vector does and does not know.
+3. **One dot product by hand first.** Pair up. Pick three of the qualities ($d = 3$), divide each ranking by 10 so the features live between 0 and 1, and compute your score against your partner's card: multiply slot by slot, add, divide by $\sqrt{3}$. This is exactly TODO 4 with people instead of rocks.
+4. **Enter the roster.** Type or paste everyone's rankings into the page. It normalizes the features, scores every pair, and softmaxes each row into the class attention matrix.
+5. **Read the matrix.** Row $i$ is student $i$'s attention. Whose row concentrates on one or two classmates? Whose spreads out almost evenly — and what would that row have looked like in Stage 1?
+6. **Run a retrieval query.** Switch the spotlight to a custom request — "looking for a study partner: happy 9, funny 7, overworked 2" — and see whom the weights land on. A query does not have to be one of the keys.
+7. **Turn on the causal mask.** Mask by roster order: student 0 may attend only to themselves, and the last student may attend to everyone. Same cards, same math — only the permission rule changed.
+
+> **Warning:** Say this out loud before showing the matrix: a dark cell between two students is a statement about a handful of self-reported numbers — not about friendship, compatibility, or worth. It is the same reason a large attention weight is never a complete explanation of a model's decision.
 
 **Day 2 homework:** [Assignment](ASSIGNMENT.md) Part 2 — implement the dot product, rule-based attention, fixed dot-product attention, and the visualization (TODOs 4–7), then answer the concept questions.
 
@@ -395,7 +411,7 @@ The starter code is in [starter/](starter/) — four files. One contains all the
 | File | Status | Role |
 |---|---|---|
 | [FixedAttention.java](starter/FixedAttention.java) | **TODO 1–7** | Every attention calculation in the chapter, plus provided validators |
-| [AttentionFixtures.java](starter/AttentionFixtures.java) | Complete | The hand-written stat cards: the three-card table, PIKACHU, the Sample A retrieval sequence, and two example scoring rules |
+| [AttentionFixtures.java](starter/AttentionFixtures.java) | Complete | The hand-written stat cards: the three-card table, GYM SOCK, the Order A retrieval sequence, and two example scoring rules |
 | [ScoreRule.java](starter/ScoreRule.java) | Complete | The one-method interface a hand-written scoring rule implements |
 | [Tester.java](starter/Tester.java) | Complete | Reproduces every worked trace on this page and runs the required tests |
 
@@ -414,9 +430,9 @@ Implement the TODOs in order, rerunning `Tester` after each — it reports each 
 Four observations your finished code must produce:
 
 1. **Three matrices, one fixture.** Print uniform, rule-based, and dot-product attention matrices for the three-card table. Every row sums to approximately 1; every future entry is exactly 0.000.
-2. **The spotlight beats the blur.** At position 2, the `dark` feature is 0.667 under uniform mixing and 0.767 under dot-product attention. Print both.
-3. **Retrieval works.** On the provided Sample A retrieval sequence, your rule-based attention concentrates the earlier-position weight on the `Sample A` / `basalt` cards, not the `Sample B` / `limestone` cards.
-4. **The future is powerless.** Replacing the last card with PIKACHU leaves the outputs at positions 0 and 1 identical.
+2. **The spotlight beats the blur.** At position 2, the `sweet` feature is 0.667 under uniform mixing and 0.767 under dot-product attention. Print both.
+3. **Retrieval works.** On the provided Order A retrieval sequence, your rule-based attention concentrates the earlier-position weight on the `Order A` / `pineapple` cards, not the `Order B` / `pepperoni` cards.
+4. **The future is powerless.** Replacing the last card with GYM SOCK leaves the outputs at positions 0 and 1 identical.
 
 ## <font color="#388bfd">Required Tests</font>
 
@@ -431,11 +447,11 @@ Four observations your finished code must produce:
 
 ## <font color="#388bfd">Answer Key</font>
 
-**Set A.** 1: positions 0–3, each weighted $\frac{1}{4}$. 2: the position's own vector, weight 1. 3: each of the three cards gets $\frac{1}{3}$; two read `SHALE`, so $\frac{2}{3}$. 4: no — position 3 is in position 1's future, and the mask removes it before anything is computed.
+**Set A.** 1: positions 0–3, each weighted $\frac{1}{4}$. 2: the position's own vector, weight 1. 3: each of the three cards gets $\frac{1}{3}$; two read `OLIVE`, so $\frac{2}{3}$. 4: no — position 3 is in position 1's future, and the mask removes it before anything is computed.
 
 **Set B.** 1: `[4, 0, 4, 0]` (positions 0 and 2 match; position 1 differs; self is 0). 2: subtract 4 → `[0, −4, 0, −4]`; exponentiate → `[1, 0.0183, 1, 0.0183]`; normalize by 2.0366 → `[0.491, 0.009, 0.491, 0.009]`. 3: `[1/4, 1/4, 1/4, 1/4]` — Stage 1. 4: identical — the second list is the first plus 4, and softmax subtracts the max away. 5: a score can be any real number, so yes; a weight cannot — weights are nonnegative and sum to 1.
 
-**Set C.** 1: 1.0 (only `rock` is shared). 2: 0.0. 3: 3.0. 4: 0.0 — the shared `dark` slot contributed $1 \times (−1) = −1$, cancelling the `rock` slot; features can subtract as well as add. 5: $3.0 / \sqrt{4} = 1.5$.
+**Set C.** 1: 1.0 (only `topping` is shared). 2: 0.0. 3: 3.0. 4: 0.0 — the shared `sweet` slot contributed $1 \times (−1) = −1$, cancelling the `topping` slot; features can subtract as well as add. 5: $3.0 / \sqrt{4} = 1.5$.
 
 **Set D.** 1: scaled scores `[0.5, 1.0]`; softmax → `[0.3775, 0.6225]`; $y_1 = [1.0, 0.3775, 0.6225, 0.0]$. 2: only $y_2$ — positions 0 and 1 never see position 2. 3: position 3 is position 1's future; the mask removed it before softmax, so it was never a small score — it was no score at all. 4: exactly 1 (approximately, in floating point); the row-sum required test.
 
@@ -454,12 +470,12 @@ More traps worth defusing now — each one caught a real learner:
 | "The query is built from the whole sentence." | The query comes from the current position alone; it is *compared against* every permitted key. |
 | "A score of 4 means a probability of 4." | Scores are arbitrary real numbers. Only after softmax do they become weights summing to 1. |
 | "Just dot the token identifiers from Chapter 1." | Identifiers are labels. Only feature vectors carry comparable meaning. |
-| "Softmax gave LIMESTONE weight zero." | Softmax never outputs an exact zero for a permitted position. Exact zeros come only from the mask. |
+| "Softmax gave PEPPERONI weight zero." | Softmax never outputs an exact zero for a permitted position. Exact zeros come only from the mask. |
 | "Matrices are new math I haven't learned." | A matrix here is stacked stat cards; matrix multiplication is your dot-product loop run once per row. |
 
 ## <font color="#388bfd">Stretch Goals</font>
 
-1. Interactive HTML attention heat map — color each attention-matrix cell by its weight.
+1. Interactive HTML attention heat map — color each attention-matrix cell by its weight. (The [Classmate Matrix](demos/classmate-matrix.html) source is a worked example; build yours from your own attention code.)
 2. Distance-based attention penalty added to a `ScoreRule`.
 3. Local attention that considers only the most recent `k` positions.
 4. Attention temperature — a divisor that makes weight rows flatter or sharper.
@@ -469,7 +485,7 @@ More traps worth defusing now — each one caught a real learner:
 
 ---
 
-You have built a useful spotlight, but every rule was written manually — you chose the +4, you chose the feature slots, you decided rocks matter. Modern models receive none of that. The next question is how numbers like these can adjust *themselves*, and it begins with a table that learns.
+You have built a useful spotlight, but every rule was written manually — you chose the +4, you chose the feature slots, you decided toppings matter. Modern models receive none of that. The next question is how numbers like these can adjust *themselves*, and it begins with a table that learns.
 
 ## <font color="#388bfd">Skill Building</font>
 
@@ -487,7 +503,7 @@ You have built a useful spotlight, but every rule was written manually — you c
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you trace the complete pipeline at position 2 of the three-card table — scaled scores, softmax, weighted blend — and show the `dark` feature rising from 0.667 to 0.767 relative to uniform mixing?
+- [ ] Can you trace the complete pipeline at position 2 of the three-card table — scaled scores, softmax, weighted blend — and show the `sweet` feature rising from 0.667 to 0.767 relative to uniform mixing?
 - [ ] Can you prove that adding a constant to all permitted scores leaves softmax unchanged, and explain why all-equal scores reproduce Stage 1 exactly?
 - [ ] Can you explain why raw dot products grow with vector dimension and how dividing by $\sqrt{d}$ repairs the problem before softmax?
 

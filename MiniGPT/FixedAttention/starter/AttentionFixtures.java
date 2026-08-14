@@ -5,52 +5,52 @@ import java.util.Arrays;
 public class AttentionFixtures {
 
     // Feature slots for the three-card table, in order:
-    //   [0] rock   [1] dark   [2] pale   [3] animal
-    public static final String[] CARD_FEATURES = {"rock", "dark", "pale", "animal"};
+    //   [0] topping   [1] sweet   [2] savory   [3] laundry
+    public static final String[] CARD_FEATURES = {"topping", "sweet", "savory", "laundry"};
 
     // The three-card table from the lesson:
-    //   position 0: BASALT      (carries DARK)
-    //   position 1: LIMESTONE   (carries PALE)
-    //   position 2: BASALT      (the current position, asking)
+    //   position 0: PINEAPPLE   (carries SWEET)
+    //   position 1: PEPPERONI   (carries SAVORY)
+    //   position 2: PINEAPPLE   (the current position, asking)
     public static double[][] threeCards() {
         return new double[][] {
-            {1.0, 1.0, 0.0, 0.0},   // BASALT
-            {1.0, 0.0, 1.0, 0.0},   // LIMESTONE
-            {1.0, 1.0, 0.0, 0.0},   // BASALT
+            {1.0, 1.0, 0.0, 0.0},   // PINEAPPLE
+            {1.0, 0.0, 1.0, 0.0},   // PEPPERONI
+            {1.0, 1.0, 0.0, 0.0},   // PINEAPPLE
         };
     }
 
-    // A card that shares no features with any rock — the complete mismatch.
-    public static double[] pikachu() {
+    // A card that shares no features with any topping — the complete mismatch.
+    public static double[] gymSock() {
         return new double[] {0.0, 0.0, 0.0, 1.0};
     }
 
     // ---------------------------------------------------------------
-    // The retrieval fixture — the "Sample A" diagnostic as stat cards.
+    // The retrieval fixture — the pizza-order diagnostic as stat cards.
     //
-    //   Sample A was collected beside the basalt flow.
-    //   Sample B was collected from a pale limestone layer.
-    //   The rock associated with Sample A was ______.
+    //   Order A was topped with pineapple.
+    //   Order B was topped with pepperoni.
+    //   The topping on Order A was ______.
     //
     // Feature slots:
-    //   [0] category  (1 = sample name, 2 = rock type, 3 = filler)
-    //   [1] sample identifier (1 = Sample A, 2 = Sample B, 0 = none)
+    //   [0] category  (1 = order name, 2 = topping, 3 = filler)
+    //   [1] order identifier (1 = Order A, 2 = Order B, 0 = none)
     //   [2] position, stored as a number
     // ---------------------------------------------------------------
-    public static final String[] RETRIEVAL_FEATURES = {"category", "sampleId", "position"};
+    public static final String[] RETRIEVAL_FEATURES = {"category", "orderId", "position"};
 
     public static final String[] RETRIEVAL_LABELS = {
-        "SampleA", "basalt", "SampleB", "limestone", "filler", "SampleA"
+        "OrderA", "pineapple", "OrderB", "pepperoni", "filler", "OrderA"
     };
 
     public static double[][] retrievalSequence() {
         return new double[][] {
-            {1.0, 1.0, 0.0},   // position 0: Sample A  (the name)
-            {2.0, 1.0, 1.0},   // position 1: basalt    (the rock tied to Sample A)
-            {1.0, 2.0, 2.0},   // position 2: Sample B
-            {2.0, 2.0, 3.0},   // position 3: limestone (the rock tied to Sample B)
+            {1.0, 1.0, 0.0},   // position 0: Order A    (the name)
+            {2.0, 1.0, 1.0},   // position 1: pineapple  (the topping on Order A)
+            {1.0, 2.0, 2.0},   // position 2: Order B
+            {2.0, 2.0, 3.0},   // position 3: pepperoni  (the topping on Order B)
             {3.0, 0.0, 4.0},   // position 4: filler
-            {1.0, 1.0, 5.0},   // position 5: Sample A again — the question
+            {1.0, 1.0, 5.0},   // position 5: Order A again — the question
         };
     }
 
@@ -68,12 +68,12 @@ public class AttentionFixtures {
         return Arrays.equals(query, key) ? 4.0 : 0.0;
     };
 
-    // The lesson's retrieval rule: identifiers speak loudest, categories help
-    // a little, and distance costs a little. Note that scores can go negative.
-    public static final ScoreRule SAMPLE_RULE = (query, key, queryPos, keyPos) -> {
+    // The lesson's retrieval rule: order identifiers speak loudest, categories
+    // help a little, and distance costs a little. Note that scores can go negative.
+    public static final ScoreRule ORDER_RULE = (query, key, queryPos, keyPos) -> {
         double score = 0.0;
         if (query[1] != 0.0 && query[1] == key[1]) {
-            score += 3.0;   // same sample identifier
+            score += 3.0;   // same order identifier
         }
         if (query[0] == key[0]) {
             score += 1.0;   // same category

@@ -82,12 +82,12 @@ public class Tester {
     private static void testDotProduct() {
         try {
             double[][] cards = AttentionFixtures.threeCards();
-            check("dot: BASALT . BASALT = 2.0 (perfect match)",
+            check("dot: PINEAPPLE . PINEAPPLE = 2.0 (perfect match)",
                     approx(FixedAttention.dotProduct(cards[0], cards[2]), 2.0));
-            check("dot: BASALT . LIMESTONE = 1.0 (partial match)",
+            check("dot: PINEAPPLE . PEPPERONI = 1.0 (partial match)",
                     approx(FixedAttention.dotProduct(cards[0], cards[1]), 1.0));
-            check("dot: BASALT . PIKACHU = 0.0 (complete mismatch)",
-                    approx(FixedAttention.dotProduct(cards[0], AttentionFixtures.pikachu()), 0.0));
+            check("dot: PINEAPPLE . GYM SOCK = 0.0 (complete mismatch)",
+                    approx(FixedAttention.dotProduct(cards[0], AttentionFixtures.gymSock()), 0.0));
             check("dot: [2,1,0,0] . [1,1,0,0] = 3.0 (known vectors)",
                     approx(FixedAttention.dotProduct(
                             new double[] {2.0, 1.0, 0.0, 0.0}, new double[] {1.0, 1.0, 0.0, 0.0}), 3.0));
@@ -126,7 +126,7 @@ public class Tester {
             double[][] uniformY = FixedAttention.applyWeights(
                     FixedAttention.uniformCausalWeights(3), cards);
             System.out.printf(
-                    "  INFO  dark feature at position 2 — uniform: %.3f   dot product: %.3f%n",
+                    "  INFO  sweet feature at position 2 — uniform: %.3f   dot product: %.3f%n",
                     uniformY[2][1], y[2][1]);
             check("pipeline: the spotlight beats the blur (0.767 > 0.667)",
                     y[2][1] > uniformY[2][1]);
@@ -143,7 +143,7 @@ public class Tester {
 
             // Replace the FUTURE (the last card) and recompute everything.
             double[][] tampered = AttentionFixtures.threeCards();
-            tampered[2] = AttentionFixtures.pikachu();
+            tampered[2] = AttentionFixtures.gymSock();
             double[][] tamperedOutputs = FixedAttention.applyWeights(
                     FixedAttention.dotProductCausalWeights(tampered), tampered);
 
@@ -163,15 +163,15 @@ public class Tester {
     private static void testRetrieval() {
         try {
             double[][] w = FixedAttention.ruleBasedCausalWeights(
-                    AttentionFixtures.retrievalSequence(), AttentionFixtures.SAMPLE_RULE);
+                    AttentionFixtures.retrievalSequence(), AttentionFixtures.ORDER_RULE);
             int last = w.length - 1;
-            double sampleACards = w[last][0] + w[last][1];   // "SampleA" and "basalt"
-            double sampleBCards = w[last][2] + w[last][3] + w[last][4];
-            check("retrieval: the spotlight found Sample A's basalt, not Sample B's limestone",
-                    sampleACards > 10 * sampleBCards);
+            double orderACards = w[last][0] + w[last][1];   // "OrderA" and "pineapple"
+            double orderBCards = w[last][2] + w[last][3] + w[last][4];
+            check("retrieval: the spotlight found Order A's pineapple, not Order B's pepperoni",
+                    orderACards > 10 * orderBCards);
             System.out.printf(
-                    "  INFO  final-row weight on the Sample A cards: %.3f   on everything else earlier: %.3f%n",
-                    sampleACards, sampleBCards);
+                    "  INFO  final-row weight on the Order A cards: %.3f   on everything else earlier: %.3f%n",
+                    orderACards, orderBCards);
         } catch (UnsupportedOperationException e) {
             todo(e);
         }
@@ -188,9 +188,9 @@ public class Tester {
             System.out.println("--- Fixed dot-product attention ---");
             System.out.println(FixedAttention.formatMatrix(
                     FixedAttention.dotProductCausalWeights(cards)));
-            System.out.println("--- Rule-based attention, SAMPLE_RULE on the retrieval fixture ---");
+            System.out.println("--- Rule-based attention, ORDER_RULE on the retrieval fixture ---");
             System.out.println(FixedAttention.formatMatrix(FixedAttention.ruleBasedCausalWeights(
-                    AttentionFixtures.retrievalSequence(), AttentionFixtures.SAMPLE_RULE)));
+                    AttentionFixtures.retrievalSequence(), AttentionFixtures.ORDER_RULE)));
         } catch (UnsupportedOperationException e) {
             todo(e);
         }

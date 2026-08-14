@@ -32,7 +32,7 @@ from verify import (generate_lessonplan, parse_lessons_md, LESSONPLANS_DIR,  # n
 from mdrender import md_to_html, review_block, ENGINE  # noqa: E402
 
 SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
-FILE_RE = re.compile(r"^(review/)?[A-Za-z0-9._-]+\.md$")
+FILE_RE = re.compile(r"^(review/)?[A-Za-z0-9._-]+\.md$|^demos/[A-Za-z0-9._-]+\.html$")
 
 
 # ── Repo readers (mirror the hub's /api/github/* routes) ──────────────────────
@@ -70,6 +70,14 @@ def review_files(module, path):
                   if f.is_file() and f.suffix == ".md")
 
 
+def demo_files(module, path):
+    demos_dir = ROOT / module / path / "demos"
+    if not demos_dir.exists():
+        return []
+    return sorted(f.name for f in demos_dir.iterdir()
+                  if f.is_file() and f.suffix == ".html")
+
+
 # ── Lesson file viewing/editing ────────────────────────────────────────────────
 
 def resolve_lesson_file(module, path, file):
@@ -94,6 +102,7 @@ def lesson_file_listing(module, path):
     return {
         "files": files,
         "review": [f"review/{f}" for f in review_files(module, path)],
+        "demos": [f"demos/{f}" for f in demo_files(module, path)],
         "can_create": [] if "ASSIGNMENT.md" in files else ["ASSIGNMENT.md"],
     }
 
@@ -255,8 +264,10 @@ class Handler(BaseHTTPRequestHandler):
             if content and not content.endswith("\n"):
                 content += "\n"
             target.write_text(content)
+            # Link scanning is a markdown check; demo .html saves skip it
+            broken = scan_file_links(target) if target.suffix == ".md" else []
             return self._json({"saved": f"{module}/{path + '/' if path else ''}{file}",
-                               "broken_links": scan_file_links(target)})
+                               "broken_links": broken})
         if len(parts) == 3 and parts[0] == "api" and parts[1] == "saved":
             slug = parts[2]
             if not SLUG_RE.match(slug):

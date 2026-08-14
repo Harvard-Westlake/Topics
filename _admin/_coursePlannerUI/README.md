@@ -21,9 +21,10 @@ Then open <http://127.0.0.1:8901>. Python 3 standard library only — no depende
 
 Click any lesson title in the table to open the lesson editor:
 
-- **Tabs** for every `.md` in the lesson folder (`README.md`, `ASSIGNMENT.md`, platform variants, `review/*.md`), plus a `+ ASSIGNMENT.md` tab to create one where missing
+- **Tabs** for every `.md` in the lesson folder (`README.md`, `ASSIGNMENT.md`, platform variants, `review/*.md`) and every standalone demo page (`demos/*.html`), plus a `+ ASSIGNMENT.md` tab to create one where missing
 - **Edit** mode is a plain markdown editor; saving writes straight to the repo file and reports any broken relative links you just introduced
 - **Canvas Preview** renders the file exactly as the hub uploads it — same markdown pipeline, relative images/links rewritten to GitHub URLs, and for `ASSIGNMENT.md` the attached review fragment is prepended in the hub's purple review block, on a white Canvas-style page
+- **Live Preview** (demo tabs) renders the standalone HTML page itself in an embedded frame — demo tabs open straight into it, and it previews the current buffer, so edits show without saving. Saving writes the file back like any other tab
 
 Preview fidelity: if the `markdown` package is installed (`pip3 install markdown`), rendering is identical to the hub's; otherwise a built-in fallback covers this repo's conventions and the UI notes that the preview is approximate.
 

@@ -411,6 +411,27 @@ Rules for `Docs/` folders:
 
 ---
 
+## demos/ folders (standalone HTML pages)
+
+A lesson folder may contain a `demos/` subfolder holding standalone interactive HTML pages used for in-class demonstration — visualizers, calculators, activity tools. **The committed file in this repo is the source of truth**; never maintain a copy elsewhere that can drift.
+
+Rules for `demos/` folders:
+
+- **One self-contained file per demo.** A complete HTML document (`<!doctype html>` through `</html>`) with all CSS and JavaScript inline. No external requests of any kind: no CDNs, no webfonts, no analytics, and no data leaving the page (classroom inputs stay in the browser).
+- **Naming:** lowercase kebab-case, e.g. `demos/spotlight-bench.html`.
+- **Viewing:** GitHub shows `.html` files as source only. The rendered page is served by **GitHub Pages** at `https://harvard-westlake.github.io/Topics/<Module>/<Lesson>/demos/<name>.html`. One-time setup (repo admin): Settings → Pages → Deploy from a branch → `main`, `/ (root)`. Pages serves whatever is on `main`, so a demo goes live on push.
+- **Linking from the lesson README** — always link both the live page and the source, in this format:
+
+  ```markdown
+  [The Spotlight Bench](https://harvard-westlake.github.io/Topics/MiniGPT/FixedAttention/demos/spotlight-bench.html) ([source](demos/spotlight-bench.html))
+  ```
+
+- `demos/` is never added to `LESSONS.md`, the root `README.md`, or module JSONs — demos are lesson support material, like `review/`.
+- Demos must be usable by keyboard and render correctly in both light and dark system themes.
+- The planner UI lists `demos/*.html` as tabs in the lesson file editor and renders them live (demo tabs open directly into Live Preview, an embedded frame showing the current buffer), so demos are viewable and editable inside the UI alongside the lesson's markdown.
+
+---
+
 ## Common Operations
 
 These checklists are the authoritative source for keeping the repo consistent. Every item is required unless marked optional. **Finish every operation by running `python3 _admin/_verification/verify.py`** — it catches broken links, missing index rows, and stale module references.

@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Classmate Matrix</title>
+<style>
+  :root {
+    --paper: #f4f3ef;
+    --card: #ffffff;
+    --ink: #24292f;
+    --muted: #67707b;
+    --line: #d8d5cd;
+    --accent: #1f6feb;
+    --accent-tint: #dbe9ff;
+    --match: #b64a00;
+    --match-tint: #ffe9d6;
+    --mask: #eceae4;
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #0d1117;
+      --card: #161b22;
+      --ink: #e6edf3;
+      --muted: #9aa4b2;
+      --line: #30363d;
+      --accent: #58a6ff;
+      --accent-tint: #132a4d;
+      --match: #f0883e;
+      --match-tint: #3a2413;
+      --mask: #10151c;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #0d1117;
+    --card: #161b22;
+    --ink: #e6edf3;
+    --muted: #9aa4b2;
+    --line: #30363d;
+    --accent: #58a6ff;
+    --accent-tint: #132a4d;
+    --match: #f0883e;
+    --match-tint: #3a2413;
+    --mask: #10151c;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    margin: 0;
+    padding: 24px 20px 64px;
+    line-height: 1.5;
+  }
+  main { max-width: 1040px; margin: 0 auto; }
+
+  h1 {
+    font-family: var(--mono);
+    font-size: 1.35rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 0 0 2px;
+    text-wrap: balance;
+  }
+  .subtitle { color: var(--muted); margin: 0 0 6px; font-size: 0.95rem; max-width: 70ch; }
+  .privacy { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); margin: 0 0 20px; }
+
+  .step {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin-top: 16px;
+  }
+  .step h2 {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0;
+  }
+  .step h2 .step-no { color: var(--accent); margin-right: 8px; }
+  .step p.explain { color: var(--muted); font-size: 0.9rem; margin: 8px 0 12px; max-width: 80ch; }
+  .step p.explain code, .privacy code { font-family: var(--mono); }
+
+  .controls { display: flex; flex-wrap: wrap; gap: 14px 22px; align-items: center; margin: 10px 0 14px; font-size: 0.88rem; }
+  .controls label { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
+  .small-btn {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    padding: 4px 10px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--card);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .small-btn:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .scroll { overflow-x: auto; }
+  table.roster { border-collapse: collapse; font-size: 0.85rem; }
+  table.roster th, table.roster td { padding: 3px 4px; }
+  table.roster thead input {
+    font-family: var(--mono); font-size: 0.75rem; width: 8em;
+    border: 1px solid transparent; border-bottom: 1px solid var(--line);
+    background: transparent; color: var(--ink); text-align: center;
+  }
+  table.roster thead input:hover, table.roster thead input:focus { border-color: var(--line); }
+  table.roster .pos { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
+  table.roster input.name {
+    font-family: var(--mono); font-size: 0.82rem; width: 9em;
+    border: 1px solid var(--line); border-radius: 5px; padding: 3px 6px;
+    background: var(--card); color: var(--ink);
+  }
+  table.roster input.val {
+    font-family: var(--mono); font-size: 0.82rem; width: 3.4em; text-align: center;
+    border: 1px solid var(--line); border-radius: 5px; padding: 3px 2px;
+    background: var(--card); color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .del {
+    border: none; background: none; color: var(--muted); cursor: pointer;
+    font-size: 0.85rem; padding: 2px 5px; border-radius: 4px;
+  }
+  .del:hover { color: var(--match); }
+
+  details.paste { margin-top: 12px; font-size: 0.85rem; }
+  details.paste summary { cursor: pointer; color: var(--muted); font-family: var(--mono); font-size: 0.8rem; }
+  details.paste textarea {
+    width: 100%; min-height: 110px; margin: 8px 0;
+    font-family: var(--mono); font-size: 0.78rem;
+    background: var(--card); color: var(--ink);
+    border: 1px solid var(--line); border-radius: 6px; padding: 8px;
+  }
+
+  table.heat { border-collapse: collapse; font-family: var(--mono); font-size: 0.75rem; font-variant-numeric: tabular-nums; }
+  table.heat th { color: var(--muted); font-weight: 400; padding: 4px 6px; }
+  table.heat th.col {
+    writing-mode: vertical-rl; transform: rotate(180deg);
+    text-align: left; vertical-align: bottom; max-height: 110px; padding: 6px 2px;
+  }
+  table.heat th.row { text-align: right; padding-right: 10px; white-space: nowrap; }
+  table.heat td {
+    text-align: center; min-width: 52px; padding: 6px 4px;
+    border: 1px solid var(--paper);
+  }
+  table.heat td.hi { color: #ffffff; }
+  table.heat td.masked { background: var(--mask); color: var(--muted); }
+
+  .mode-row { display: flex; flex-wrap: wrap; gap: 14px 22px; align-items: center; margin-bottom: 10px; font-size: 0.88rem; }
+  .mode-row select {
+    font-family: var(--mono); font-size: 0.82rem; padding: 4px 6px;
+    border: 1px solid var(--line); border-radius: 6px;
+    background: var(--card); color: var(--ink);
+  }
+  .query-grid { display: flex; flex-wrap: wrap; gap: 10px 16px; margin: 8px 0 12px; }
+  .query-grid label { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); display: flex; flex-direction: column; gap: 2px; }
+  .query-grid input {
+    font-family: var(--mono); font-size: 0.82rem; width: 4em; text-align: center;
+    border: 1px solid var(--line); border-radius: 5px; padding: 3px 2px;
+    background: var(--card); color: var(--ink);
+  }
+
+  .bar-row { display: grid; grid-template-columns: 160px 1fr 130px; gap: 10px; align-items: center; margin: 6px 0; }
+  .bar-label { font-family: var(--mono); font-size: 0.8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bar-track { background: var(--mask); border: 1px solid var(--line); border-radius: 4px; height: 16px; }
+  .bar-fill { background: var(--accent); border-radius: 3px 0 0 3px; height: 100%; }
+  .bar-val { font-family: var(--mono); font-size: 0.78rem; text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
+  .bar-val b { color: var(--ink); }
+
+  .footnote { color: var(--muted); font-size: 0.85rem; margin-top: 20px; max-width: 80ch; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .bar-fill { transition: width 220ms ease; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>The Classmate Matrix</h1>
+  <p class="subtitle">Your self-rankings are a feature vector. The class roster is a stack of keys.
+  One dot product per pair, softmax per row — and the class becomes an attention matrix.</p>
+  <p class="privacy">Everything typed here stays in this browser tab — nothing is uploaded or saved.
+  A nickname or invented persona works exactly as well as a real one.</p>
+
+  <section class="step">
+    <h2><span class="step-no">Step 1</span>The roster — one stat card per student</h2>
+    <p class="explain">Rank each quality 0&ndash;10. Before scoring, every ranking is divided by 10 so
+    features live between 0 and 1 — that keeps the dot products in a range softmax can spread
+    sensibly, whatever <code>d</code> is.</p>
+    <div class="controls">
+      <button type="button" class="small-btn" id="addStudent">+ student</button>
+      <button type="button" class="small-btn" id="addQuality">+ quality</button>
+    </div>
+    <div class="scroll" id="rosterWrap"></div>
+    <details class="paste">
+      <summary>paste a roster (CSV or tab-separated)</summary>
+      <p class="explain">First line may be a header starting with <code>name</code> followed by the
+      quality names. Every other line: <code>name, 4, 7, 2, &hellip;</code></p>
+      <textarea id="pasteBox" spellcheck="false" aria-label="Roster CSV"></textarea>
+      <button type="button" class="small-btn" id="importBtn">Import</button>
+      <button type="button" class="small-btn" id="exportBtn">Fill with current roster (to copy out)</button>
+    </details>
+  </section>
+
+  <section class="step">
+    <h2><span class="step-no">Step 2</span>The class attention matrix</h2>
+    <p class="explain">Cell (row <em>i</em>, column <em>j</em>) is how much of student <em>i</em>'s
+    attention lands on student <em>j</em>: <code>score = (q &middot; k) / &radic;d</code> over the
+    normalized features, then softmax across each row. Darker cell, louder volume. Every row sums
+    to 1. Cell shade is scaled within each row so the loudest classmate stands out — the printed
+    number is the true weight. Hover a cell for the raw score.</p>
+    <div class="controls">
+      <label><input type="checkbox" id="causalBox"> causal mask (roster order — a student may only attend to themselves and earlier rows)</label>
+      <label><input type="checkbox" id="selfBox"> hide self-matches (everyone matches themselves perfectly; hide it to see who else the math finds)</label>
+    </div>
+    <div class="scroll" id="heatWrap"></div>
+  </section>
+
+  <section class="step">
+    <h2><span class="step-no">Step 3</span>Spotlight one query</h2>
+    <div class="mode-row">
+      <label><input type="radio" name="qmode" value="student" checked> the query is a student</label>
+      <label><input type="radio" name="qmode" value="custom"> the query is a custom request</label>
+      <select id="studentPick" aria-label="Query student"></select>
+    </div>
+    <p class="explain" id="spotExplain"></p>
+    <div class="query-grid" id="queryGrid" hidden></div>
+    <div id="spotBars"></div>
+  </section>
+
+  <p class="footnote">A dark cell between two students is a statement about a handful of
+  self-reported numbers — not about friendship, compatibility, or worth. That is the same reason a
+  large attention weight is never a complete explanation of a model's decision.</p>
+</main>
+
+<script>
+  let qualities = ["stressed", "happy", "overworked", "friendly", "cooking",
+                   "athletic", "funny", "charismatic", "frugal"];
+  let students = [
+    { name: "Avery",   vals: [8, 5, 9, 6, 2, 4, 6, 5, 7] },
+    { name: "Blake",   vals: [3, 8, 2, 9, 7, 3, 8, 7, 4] },
+    { name: "Casey",   vals: [7, 6, 8, 6, 3, 5, 5, 4, 8] },
+    { name: "Devon",   vals: [2, 9, 3, 8, 8, 2, 7, 8, 3] },
+    { name: "Emerson", vals: [5, 7, 4, 7, 1, 9, 4, 6, 5] },
+    { name: "Frankie", vals: [4, 6, 5, 5, 9, 1, 9, 5, 2] },
+  ];
+  let opts = { causal: false, hideSelf: false };
+  let spot = { mode: "student", index: 0, custom: null };
+
+  const fmt = (x) => x.toFixed(3);
+  const clamp = (x) => Math.max(0, Math.min(10, x));
+  const feat = (vals) => vals.map((v) => v / 10);
+  const dot = (a, b) => a.reduce((s, v, i) => s + v * b[i], 0);
+  const score = (a, b) => dot(feat(a), feat(b)) / Math.sqrt(qualities.length);
+
+  function softmax(s) {
+    const m = Math.max(...s);
+    const e = s.map((x) => Math.exp(x - m));
+    const sum = e.reduce((a, b) => a + b, 0);
+    return e.map((x) => x / sum);
+  }
+
+  // Row i of the matrix: {weights, scores} over permitted js (null where masked).
+  function attentionRow(i) {
+    const permitted = [];
+    students.forEach((st, j) => {
+      const allowed = (!opts.causal || j <= i) && (!opts.hideSelf || j !== i);
+      if (allowed) permitted.push(j);
+    });
+    const weights = new Array(students.length).fill(null);
+    const scores = new Array(students.length).fill(null);
+    if (permitted.length === 0) return { weights, scores };
+    const s = permitted.map((j) => score(students[i].vals, students[j].vals));
+    const w = softmax(s);
+    permitted.forEach((j, k) => { weights[j] = w[k]; scores[j] = s[k]; });
+    return { weights, scores };
+  }
+
+  function renderRoster() {
+    const qHead = qualities.map((q, k) =>
+      `<th><input value="${q}" data-q="${k}" aria-label="Quality ${k}">
+       <button type="button" class="del" data-delq="${k}" title="remove quality" aria-label="Remove ${q}">&times;</button></th>`).join("");
+    const rows = students.map((st, i) => {
+      const cells = st.vals.map((v, k) =>
+        `<td><input class="val" type="number" min="0" max="10" step="1" value="${v}" data-s="${i}" data-q="${k}" aria-label="${st.name}, quality ${k}"></td>`).join("");
+      return `<tr>
+        <td class="pos">${i}</td>
+        <td><input class="name" value="${st.name}" data-name="${i}" aria-label="Student ${i} name"></td>
+        ${cells}
+        <td><button type="button" class="del" data-dels="${i}" title="remove student" aria-label="Remove ${st.name}">&times;</button></td>
+      </tr>`;
+    }).join("");
+    document.getElementById("rosterWrap").innerHTML = `<table class="roster">
+      <thead><tr><th class="pos">pos</th><th></th>${qHead}<th></th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+  }
+
+  function renderHeat() {
+    const cols = students.map((st) => `<th class="col">${st.name}</th>`).join("");
+    const body = students.map((st, i) => {
+      const { weights, scores } = attentionRow(i);
+      const present = weights.filter((w) => w !== null);
+      const rowMax = Math.max(...present);
+      const rowMin = Math.min(...present);
+      const cells = students.map((other, j) => {
+        const w = weights[j];
+        if (w === null) {
+          return `<td class="masked" title="${st.name} &larr; ${other.name}: masked">&mdash;</td>`;
+        }
+        const rel = rowMax === rowMin ? 0.5 : (w - rowMin) / (rowMax - rowMin);
+        const pct = Math.round(10 + rel * 90);
+        const cls = pct > 62 ? "hi" : "";
+        return `<td class="${cls}"
+          style="background:color-mix(in srgb, var(--accent) ${pct}%, var(--card))"
+          title="${st.name} &larr; ${other.name}: score ${fmt(scores[j])}, weight ${fmt(w)}">${fmt(w)}</td>`;
+      }).join("");
+      return `<tr><th class="row">${i} ${st.name}</th>${cells}</tr>`;
+    }).join("");
+    document.getElementById("heatWrap").innerHTML = `<table class="heat">
+      <thead><tr><th></th>${cols}</tr></thead><tbody>${body}</tbody></table>`;
+  }
+
+  function renderSpotlight() {
+    const pick = document.getElementById("studentPick");
+    pick.innerHTML = students.map((st, i) =>
+      `<option value="${i}" ${i === spot.index ? "selected" : ""}>${st.name} (pos ${i})</option>`).join("");
+    pick.hidden = spot.mode !== "student";
+    document.getElementById("queryGrid").hidden = spot.mode !== "custom";
+
+    let weights, scores, explain;
+    if (spot.mode === "student") {
+      const i = Math.min(spot.index, students.length - 1);
+      ({ weights, scores } = attentionRow(i));
+      explain = `${students[i].name}'s own stat card is the query — this is row ${i} of the matrix above, one bar per classmate.`;
+    } else {
+      if (!spot.custom || spot.custom.length !== qualities.length) {
+        spot.custom = qualities.map(() => 5);
+      }
+      document.getElementById("queryGrid").innerHTML = qualities.map((q, k) =>
+        `<label>${q}<input type="number" min="0" max="10" step="1" value="${spot.custom[k]}" data-cq="${k}"></label>`).join("");
+      scores = students.map((st) => score(spot.custom, st.vals));
+      weights = softmax(scores);
+      explain = "The query is not anyone's card — it is a request you wrote. The keys are still the roster. This is retrieval: describe what you are looking for and see whom the spotlight lands on.";
+    }
+    document.getElementById("spotExplain").textContent = explain;
+
+    const best = Math.max(...weights.filter((w) => w !== null));
+    document.getElementById("spotBars").innerHTML = students.map((st, j) => {
+      const w = weights[j];
+      if (w === null) {
+        return `<div class="bar-row"><span class="bar-label">${st.name}</span>
+          <div class="bar-track"></div><span class="bar-val">masked</span></div>`;
+      }
+      const val = w === best ? `<b>${fmt(w)}</b>` : fmt(w);
+      return `<div class="bar-row">
+        <span class="bar-label">${st.name}</span>
+        <div class="bar-track"><div class="bar-fill" style="width:${(w * 100).toFixed(1)}%"></div></div>
+        <span class="bar-val">score ${scores[j] === null ? "&mdash;" : fmt(scores[j])} &rarr; ${val}</span>
+      </div>`;
+    }).join("");
+  }
+
+  function renderResults() { renderHeat(); renderSpotlight(); }
+  function renderAll() { renderRoster(); renderResults(); }
+
+  document.addEventListener("input", (e) => {
+    const t = e.target;
+    if (t.dataset.name !== undefined) { students[+t.dataset.name].name = t.value || "?"; renderResults(); return; }
+    if (t.dataset.s !== undefined && t.dataset.q !== undefined) {
+      students[+t.dataset.s].vals[+t.dataset.q] = clamp(Number(t.value) || 0); renderResults(); return;
+    }
+    if (t.dataset.q !== undefined && t.closest("thead")) { qualities[+t.dataset.q] = t.value || "?"; renderResults(); return; }
+    if (t.dataset.cq !== undefined) { spot.custom[+t.dataset.cq] = clamp(Number(t.value) || 0); renderResults(); return; }
+  });
+
+  document.addEventListener("change", (e) => {
+    if (e.target.id === "causalBox") { opts.causal = e.target.checked; renderResults(); }
+    if (e.target.id === "selfBox") { opts.hideSelf = e.target.checked; renderResults(); }
+    if (e.target.name === "qmode") { spot.mode = e.target.value; renderResults(); }
+    if (e.target.id === "studentPick") { spot.index = Number(e.target.value); renderResults(); }
+  });
+
+  document.addEventListener("click", (e) => {
+    const t = e.target;
+    if (t.id === "addStudent") {
+      students.push({ name: "Student " + students.length, vals: qualities.map(() => 5) });
+      renderAll(); return;
+    }
+    if (t.id === "addQuality") {
+      qualities.push("quality " + qualities.length);
+      students.forEach((st) => st.vals.push(5));
+      if (spot.custom) spot.custom.push(5);
+      renderAll(); return;
+    }
+    if (t.dataset.dels !== undefined && students.length > 2) {
+      students.splice(+t.dataset.dels, 1);
+      spot.index = Math.min(spot.index, students.length - 1);
+      renderAll(); return;
+    }
+    if (t.dataset.delq !== undefined && qualities.length > 2) {
+      const k = +t.dataset.delq;
+      qualities.splice(k, 1);
+      students.forEach((st) => st.vals.splice(k, 1));
+      if (spot.custom) spot.custom.splice(k, 1);
+      renderAll(); return;
+    }
+    if (t.id === "importBtn") { importRoster(); return; }
+    if (t.id === "exportBtn") {
+      document.getElementById("pasteBox").value =
+        "name," + qualities.join(",") + "\n" +
+        students.map((st) => st.name + "," + st.vals.join(",")).join("\n");
+    }
+  });
+
+  function importRoster() {
+    const text = document.getElementById("pasteBox").value.trim();
+    if (!text) return;
+    const delim = text.includes("\t") ? "\t" : ",";
+    const lines = text.split(/\r?\n/).map((l) => l.split(delim).map((c) => c.trim())).filter((l) => l.length > 1);
+    if (lines.length === 0) return;
+    let start = 0;
+    if (lines[0][0].toLowerCase() === "name") {
+      qualities = lines[0].slice(1).map((q) => q || "?");
+      start = 1;
+    }
+    const parsed = [];
+    for (let r = start; r < lines.length; r++) {
+      const vals = lines[r].slice(1, 1 + qualities.length).map((c) => clamp(Number(c) || 0));
+      while (vals.length < qualities.length) vals.push(0);
+      parsed.push({ name: lines[r][0] || "?", vals });
+    }
+    if (parsed.length >= 2) {
+      students = parsed;
+      spot.index = 0;
+      spot.custom = null;
+      renderAll();
+    }
+  }
+
+  renderAll();
+</script>
+</body>
+</html>

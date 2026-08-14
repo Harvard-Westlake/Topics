@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Spotlight Bench</title>
+<style>
+  :root {
+    --paper: #f4f3ef;
+    --card: #ffffff;
+    --ink: #24292f;
+    --muted: #67707b;
+    --line: #d8d5cd;
+    --accent: #1f6feb;
+    --accent-tint: #dbe9ff;
+    --match: #b64a00;
+    --match-tint: #ffe9d6;
+    --mask: #eceae4;
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #0d1117;
+      --card: #161b22;
+      --ink: #e6edf3;
+      --muted: #9aa4b2;
+      --line: #30363d;
+      --accent: #58a6ff;
+      --accent-tint: #132a4d;
+      --match: #f0883e;
+      --match-tint: #3a2413;
+      --mask: #10151c;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #0d1117;
+    --card: #161b22;
+    --ink: #e6edf3;
+    --muted: #9aa4b2;
+    --line: #30363d;
+    --accent: #58a6ff;
+    --accent-tint: #132a4d;
+    --match: #f0883e;
+    --match-tint: #3a2413;
+    --mask: #10151c;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    margin: 0;
+    padding: 24px 20px 64px;
+    line-height: 1.5;
+  }
+  main { max-width: 980px; margin: 0 auto; }
+
+  h1 {
+    font-family: var(--mono);
+    font-size: 1.35rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 0 0 2px;
+    text-wrap: balance;
+  }
+  .page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .theme-btn {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    padding: 7px 12px;
+    border: 1px solid var(--match);
+    border-radius: 6px;
+    background: var(--card);
+    color: var(--match);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .theme-btn:hover { background: var(--match-tint); }
+  .theme-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .subtitle { color: var(--muted); margin: 0 0 20px; font-size: 0.95rem; max-width: 65ch; }
+
+  .stage-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+  .stage-btn {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    padding: 8px 14px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--card);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .stage-btn[aria-pressed="true"] {
+    border-color: var(--accent);
+    background: var(--accent-tint);
+    font-weight: 700;
+  }
+  .stage-btn:focus-visible, .card-btn:focus-visible, .small-btn:focus-visible, select:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .stage-note { color: var(--muted); font-size: 0.9rem; margin: 0 0 20px; max-width: 72ch; }
+
+  .table-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px; }
+  .table-head h2, .step h2 {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0;
+  }
+  .small-btn {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    padding: 3px 10px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--card);
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  .cards { display: flex; gap: 12px; overflow-x: auto; padding: 4px 2px 12px; }
+  .position-card { min-width: 172px; }
+  .card-btn {
+    width: 100%;
+    text-align: left;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--card);
+    color: var(--ink);
+    padding: 10px 12px;
+    cursor: pointer;
+    display: block;
+  }
+  .card-btn.current { border: 2px solid var(--match); background: var(--match-tint); }
+  .card-btn.masked { background: var(--mask); color: var(--muted); border-style: dashed; }
+  .pos-label { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase; }
+  .face { font-family: var(--mono); font-weight: 700; font-size: 1.02rem; margin: 2px 0 6px; }
+  .role-tag {
+    font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em;
+    color: var(--match); text-transform: uppercase; font-weight: 700;
+  }
+  .role-tag.masked-tag { color: var(--muted); font-weight: 400; }
+  .slots { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); }
+  .slots b { color: var(--ink); font-weight: 600; }
+  .position-card select {
+    margin-top: 6px; width: 100%;
+    font-family: var(--mono); font-size: 0.8rem;
+    padding: 4px 6px; border: 1px solid var(--line); border-radius: 6px;
+    background: var(--card); color: var(--ink);
+  }
+
+  .step {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin-top: 16px;
+  }
+  .step h2 .step-no { color: var(--accent); margin-right: 8px; }
+  .step p.explain { color: var(--muted); font-size: 0.9rem; margin: 8px 0 12px; max-width: 78ch; }
+
+  .score-grid { display: flex; flex-wrap: wrap; gap: 14px; }
+  .score-card {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 10px 12px;
+    min-width: 216px;
+    flex: 0 1 auto;
+  }
+  .score-card.masked-card { background: var(--mask); color: var(--muted); border-style: dashed; }
+  .score-card h3 { font-family: var(--mono); font-size: 0.78rem; margin: 0 0 6px; font-weight: 700; }
+  table.dot {
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    font-variant-numeric: tabular-nums;
+    width: 100%;
+  }
+  table.dot th {
+    text-align: right; font-weight: 400; color: var(--muted);
+    border-bottom: 1px solid var(--line); padding: 2px 6px;
+  }
+  table.dot th:first-child, table.dot td:first-child { text-align: left; }
+  table.dot td { text-align: right; padding: 2px 6px; }
+  table.dot tr.hit td { background: var(--match-tint); }
+  table.dot tr.hit td:last-child { color: var(--match); font-weight: 700; }
+  table.dot tr.zero td:last-child { color: var(--muted); }
+  table.dot tr.total td { border-top: 1px solid var(--line); font-weight: 700; }
+  .scaled { font-family: var(--mono); font-size: 0.8rem; margin-top: 6px; }
+  .scaled b { color: var(--accent); }
+  .rule-verdict { font-family: var(--mono); font-size: 0.85rem; margin-top: 4px; }
+  .rule-verdict b { color: var(--match); }
+
+  .softmax-wrap { overflow-x: auto; }
+  table.softmax {
+    border-collapse: collapse;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    font-variant-numeric: tabular-nums;
+    min-width: 420px;
+  }
+  table.softmax th, table.softmax td { padding: 4px 12px; text-align: right; }
+  table.softmax th:first-child, table.softmax td:first-child {
+    text-align: left; color: var(--muted); font-weight: 400;
+  }
+  table.softmax thead th { color: var(--muted); font-weight: 400; border-bottom: 1px solid var(--line); }
+  table.softmax tr.weights td { border-top: 1px solid var(--line); font-weight: 700; color: var(--accent); }
+  table.softmax tr.weights td:first-child { color: var(--muted); font-weight: 400; }
+
+  .bar-row { display: grid; grid-template-columns: 150px 1fr 74px; gap: 10px; align-items: center; margin: 6px 0; }
+  .bar-label { font-family: var(--mono); font-size: 0.8rem; }
+  .bar-track { background: var(--mask); border: 1px solid var(--line); border-radius: 4px; height: 16px; position: relative; }
+  .bar-fill { background: var(--accent); border-radius: 3px 0 0 3px; height: 100%; }
+  .bar-fill.baseline { background: var(--muted); }
+  .bar-val { font-family: var(--mono); font-size: 0.8rem; text-align: right; font-variant-numeric: tabular-nums; }
+  .bar-val.masked-val { color: var(--muted); }
+  .masked-note { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); letter-spacing: 0.04em; }
+
+  .legend { display: flex; gap: 18px; margin: 4px 0 10px; font-size: 0.8rem; color: var(--muted); flex-wrap: wrap; }
+  .legend .chip { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+
+  .footnote { color: var(--muted); font-size: 0.85rem; margin-top: 20px; max-width: 78ch; }
+  .footnote code { font-family: var(--mono); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .bar-fill { transition: width 220ms ease; }
+  }
+</style>
+
+</head>
+<body>
+<main>
+  <div class="page-head">
+    <h1>The Spotlight Bench</h1>
+    <button type="button" class="theme-btn" id="themeBtn"></button>
+  </div>
+  <p class="subtitle">One position asks; every permitted card answers. Pick a stage, click a card to
+  stand at it, swap the tokens — and watch scores become weights become a blend.</p>
+
+  <div class="stage-row" id="stageRow" role="group" aria-label="Attention stage"></div>
+  <p class="stage-note" id="stageNote"></p>
+
+  <div class="table-head">
+    <h2>The table of cards</h2>
+    <button class="small-btn" id="addCard" type="button">+ card</button>
+    <button class="small-btn" id="removeCard" type="button">&minus; card</button>
+  </div>
+  <div class="cards" id="cards"></div>
+
+  <section class="step">
+    <h2><span class="step-no">Step 1</span>Score every permitted position</h2>
+    <p class="explain" id="scoreExplain"></p>
+    <div class="score-grid" id="scoreGrid"></div>
+  </section>
+
+  <section class="step">
+    <h2><span class="step-no">Step 2</span>Softmax turns scores into weights</h2>
+    <p class="explain">Subtract the maximum, exponentiate, divide by the sum. Scores can be any real
+    number; weights are positive and sum to exactly 1.</p>
+    <div class="softmax-wrap" id="softmaxWrap"></div>
+  </section>
+
+  <section class="step">
+    <h2><span class="step-no">Step 3</span>The attention row — one volume dial per card</h2>
+    <p class="explain" id="weightExplain"></p>
+    <div id="weightBars"></div>
+  </section>
+
+  <section class="step">
+    <h2><span class="step-no">Step 4</span>Blend the values</h2>
+    <p class="explain">Each card's stat card is multiplied by its weight and added up, slot by slot.
+    The grey bar is Stage 1's equal mixing at this same position — the blur the spotlight must beat.</p>
+    <div class="legend" id="blendLegend"></div>
+    <div id="blendBars"></div>
+  </section>
+
+  <p class="footnote">Cards after the current position are <em>masked</em>: they are never scored, and
+  their weight is recorded as exactly <code>0.000</code> — the only exact zero on this page. Swap a
+  masked card for the odd one out (GYM SOCK, LEAF BLOWER) and confirm that nothing above changes.</p>
+</main>
+
+<script>
+  // Two card sets. Pizza is the lesson's worked example (clean 0 / 0.5 / 1
+  // values). Pop vs Rap is the second-pass set: blended feature values, so
+  // scores stop being tidy round numbers.
+  const THEMES = {
+    pizza: {
+      next: "music",
+      buttonLabel: "Extra demo: Pop vs Rap",
+      features: ["topping", "sweet", "savory", "laundry"],
+      tokens: {
+        "PINEAPPLE":   [1.0, 1.0, 0.0, 0.0],
+        "PEPPERONI":   [1.0, 0.0, 1.0, 0.0],
+        "BBQ CHICKEN": [1.0, 0.5, 0.5, 0.0],
+        "GYM SOCK":    [0.0, 0.0, 0.0, 1.0],
+      },
+      defaultCards: ["PINEAPPLE", "PEPPERONI", "PINEAPPLE"],
+      mismatch: "GYM SOCK",
+    },
+    music: {
+      next: "pizza",
+      buttonLabel: "Back to: Pizza Wars",
+      features: ["artist", "pop", "rap", "yardwork"],
+      tokens: {
+        "TAYLOR SWIFT": [1.0, 0.9, 0.1, 0.0],
+        "KENDRICK":     [1.0, 0.2, 1.0, 0.0],
+        "DOJA CAT":     [1.0, 0.7, 0.6, 0.0],
+        "LEAF BLOWER":  [0.0, 0.0, 0.0, 1.0],
+      },
+      defaultCards: ["TAYLOR SWIFT", "KENDRICK", "TAYLOR SWIFT"],
+      mismatch: "LEAF BLOWER",
+    },
+  };
+  const STAGES = [
+    { id: "uniform", label: "Stage 1 — Equal mixing",
+      note: "Every permitted card gets the same score, so softmax hands out equal weights. Information flows, but everything blurs together." },
+    { id: "rule", label: "Stage 2 — Hand rule",
+      note: "A programmer-written rule: an earlier card whose face matches the asker's face earns +4 points; everything else earns 0. The 4 is arbitrary — the ranking is the point." },
+    { id: "dot", label: "Stage 3 — Dot product",
+      note: "No rule about words anywhere. Each score is the query's stat card against a key's stat card: multiply matching slots, add up, divide by √d. The ranking emerges from the numbers." },
+  ];
+
+  const START = "pizza";
+  let state = {
+    theme: START,
+    cards: THEMES[START].defaultCards.slice(),
+    current: 2,
+    stage: "dot",
+  };
+  let FEATURES = THEMES[START].features;
+  let TOKENS = THEMES[START].tokens;
+
+  const fmt = (x) => x.toFixed(3);
+  const dot = (a, b) => a.reduce((s, v, i) => s + v * b[i], 0);
+  const vecEq = (a, b) => a.every((v, i) => v === b[i]);
+
+  function scores() {
+    const q = TOKENS[state.cards[state.current]];
+    const out = [];
+    for (let j = 0; j <= state.current; j++) {
+      const k = TOKENS[state.cards[j]];
+      if (state.stage === "uniform") out.push(0);
+      else if (state.stage === "rule") out.push(j !== state.current && vecEq(q, k) ? 4 : 0);
+      else out.push(dot(q, k) / Math.sqrt(FEATURES.length));
+    }
+    return out;
+  }
+
+  function softmax(s) {
+    const m = Math.max(...s);
+    const e = s.map((x) => Math.exp(x - m));
+    const sum = e.reduce((a, b) => a + b, 0);
+    return { max: m, exp: e, sum, weights: e.map((x) => x / sum) };
+  }
+
+  function blend(weights) {
+    const out = [0, 0, 0, 0];
+    weights.forEach((w, j) => {
+      TOKENS[state.cards[j]].forEach((v, f) => { out[f] += w * v; });
+    });
+    return out;
+  }
+
+  function render() {
+    document.getElementById("themeBtn").textContent = THEMES[state.theme].buttonLabel;
+
+    // Stage toggle
+    document.getElementById("stageRow").innerHTML = STAGES.map((s) =>
+      `<button type="button" class="stage-btn" data-stage="${s.id}"
+        aria-pressed="${state.stage === s.id}">${s.label}</button>`).join("");
+    document.getElementById("stageNote").textContent =
+      STAGES.find((s) => s.id === state.stage).note;
+
+    // Cards
+    document.getElementById("cards").innerHTML = state.cards.map((name, i) => {
+      const v = TOKENS[name];
+      const isCur = i === state.current;
+      const isMasked = i > state.current;
+      const tag = isCur
+        ? '<span class="role-tag">&larr; current position (the query)</span>'
+        : isMasked
+          ? '<span class="role-tag masked-tag">masked — the future</span>'
+          : '<span class="role-tag masked-tag" style="visibility:hidden">.</span>';
+      const slots = FEATURES.map((f, k) => `${f}&nbsp;<b>${v[k].toFixed(1)}</b>`).join("&ensp;");
+      const options = Object.keys(TOKENS).map((t) =>
+        `<option value="${t}" ${t === name ? "selected" : ""}>${t}</option>`).join("");
+      return `<div class="position-card">
+        <button type="button" class="card-btn ${isCur ? "current" : ""} ${isMasked ? "masked" : ""}"
+          data-pos="${i}" aria-pressed="${isCur}">
+          <span class="pos-label">position ${i}</span>
+          <div class="face">${name}</div>
+          <div class="slots">${slots}</div>
+          <div>${tag}</div>
+        </button>
+        <select data-pos="${i}" aria-label="Token at position ${i}">${options}</select>
+      </div>`;
+    }).join("");
+
+    // Step 1 — scores
+    const s = scores();
+    const q = TOKENS[state.cards[state.current]];
+    const d = FEATURES.length;
+    const explain = {
+      uniform: "Stage 1 has no scoring rule at all — every permitted card is handed the same score, 0.",
+      rule: `The asker's face reads ${state.cards[state.current]}. Earlier matching faces: +4. Everything else, including the asker itself: 0.`,
+      dot: `The query is position ${state.current}'s own stat card, [${q.map((x) => x.toFixed(1)).join(", ")}]. A slot contributes only when BOTH cards have something in it.`,
+    };
+    document.getElementById("scoreExplain").textContent = explain[state.stage];
+
+    const cells = state.cards.map((name, j) => {
+      if (j > state.current) {
+        return `<div class="score-card masked-card"><h3>position ${j} — ${name}</h3>
+          <div class="rule-verdict">masked. Never scored — removed before softmax runs.</div></div>`;
+      }
+      const k = TOKENS[name];
+      if (state.stage === "uniform") {
+        return `<div class="score-card"><h3>position ${j} — ${name}</h3>
+          <div class="rule-verdict">score <b>0.0</b> (everyone equal)</div></div>`;
+      }
+      if (state.stage === "rule") {
+        const verdict = j === state.current
+          ? "the asker itself &rarr; <b>0</b>"
+          : vecEq(q, k)
+            ? `face ${state.cards[state.current]} = face ${name} &rarr; <b>+4</b>`
+            : `face ${state.cards[state.current]} &ne; face ${name} &rarr; <b>0</b>`;
+        return `<div class="score-card"><h3>position ${j} — ${name}</h3>
+          <div class="rule-verdict">${verdict}</div></div>`;
+      }
+      const rows = FEATURES.map((f, i) => {
+        const p = q[i] * k[i];
+        const cls = p !== 0 ? "hit" : "zero";
+        return `<tr class="${cls}"><td>${f}</td><td>${q[i].toFixed(1)}</td><td>${k[i].toFixed(1)}</td><td>${p.toFixed(2)}</td></tr>`;
+      }).join("");
+      const raw = dot(q, k);
+      return `<div class="score-card"><h3>position ${j} — ${name}${j === state.current ? " (itself)" : ""}</h3>
+        <table class="dot">
+          <tr><th>slot</th><th>query</th><th>key</th><th>&times;</th></tr>
+          ${rows}
+          <tr class="total"><td>total</td><td></td><td></td><td>${raw.toFixed(2)}</td></tr>
+        </table>
+        <div class="scaled">/ &radic;${d} &rarr; score <b>${fmt(raw / Math.sqrt(d))}</b></div>
+      </div>`;
+    }).join("");
+    document.getElementById("scoreGrid").innerHTML = cells;
+
+    // Step 2 — softmax table
+    const sm = softmax(s);
+    const heads = s.map((_, j) => `<th>pos ${j}</th>`).join("");
+    const row = (label, vals, cls = "") =>
+      `<tr class="${cls}"><td>${label}</td>${vals.map((v) => `<td>${fmt(v)}</td>`).join("")}</tr>`;
+    document.getElementById("softmaxWrap").innerHTML = `<table class="softmax">
+      <thead><tr><th></th>${heads}</tr></thead>
+      <tbody>
+        ${row("score", s)}
+        ${row(`&minus; max (${fmt(sm.max)})`, s.map((x) => x - sm.max))}
+        ${row("e&#739;", sm.exp)}
+        ${row(`/ sum (${fmt(sm.sum)})`, sm.weights, "weights")}
+      </tbody>
+    </table>`;
+
+    // Step 3 — weight bars
+    document.getElementById("weightExplain").textContent =
+      "Softmax never hands a permitted card exactly zero — it can turn a volume far down, never fully off. " +
+      "Only the mask produces an exact 0.000.";
+    document.getElementById("weightBars").innerHTML = state.cards.map((name, j) => {
+      const masked = j > state.current;
+      const w = masked ? 0 : sm.weights[j];
+      const val = masked
+        ? `<span class="bar-val masked-val">0.000</span>`
+        : `<span class="bar-val">${fmt(w)}</span>`;
+      const note = masked ? ` <span class="masked-note">masked</span>` : "";
+      return `<div class="bar-row">
+        <span class="bar-label">pos ${j} ${name}${note}</span>
+        <div class="bar-track"><div class="bar-fill" style="width:${(w * 100).toFixed(1)}%"></div></div>
+        ${val}
+      </div>`;
+    }).join("");
+
+    // Step 4 — blend vs uniform baseline
+    const w = sm.weights;
+    const mixed = blend(w);
+    const uni = blend(s.map(() => 1 / s.length));
+    const showBaseline = state.stage !== "uniform";
+    document.getElementById("blendLegend").innerHTML = showBaseline
+      ? `<span><span class="chip" style="background:var(--accent)"></span>${STAGES.find((x) => x.id === state.stage).label.replace(/Stage \d — /, "")} blend</span>
+         <span><span class="chip" style="background:var(--muted)"></span>Stage 1 equal-mix baseline</span>`
+      : `<span><span class="chip" style="background:var(--accent)"></span>Equal-mix blend at position ${state.current}</span>`;
+    document.getElementById("blendBars").innerHTML = FEATURES.map((f, i) => {
+      const base = showBaseline
+        ? `<div class="bar-row">
+             <span class="bar-label" style="color:var(--muted)">&nbsp;&nbsp;baseline</span>
+             <div class="bar-track"><div class="bar-fill baseline" style="width:${(uni[i] * 100).toFixed(1)}%"></div></div>
+             <span class="bar-val masked-val">${fmt(uni[i])}</span>
+           </div>`
+        : "";
+      return `<div class="bar-row">
+          <span class="bar-label">${f}</span>
+          <div class="bar-track"><div class="bar-fill" style="width:${(mixed[i] * 100).toFixed(1)}%"></div></div>
+          <span class="bar-val">${fmt(mixed[i])}</span>
+        </div>${base}`;
+    }).join("");
+  }
+
+  document.addEventListener("click", (e) => {
+    if (e.target.id === "themeBtn") {
+      state.theme = THEMES[state.theme].next;
+      FEATURES = THEMES[state.theme].features;
+      TOKENS = THEMES[state.theme].tokens;
+      state.cards = THEMES[state.theme].defaultCards.slice();
+      state.current = state.cards.length - 1;
+      render();
+      return;
+    }
+    const stageBtn = e.target.closest(".stage-btn");
+    if (stageBtn) { state.stage = stageBtn.dataset.stage; render(); return; }
+    const cardBtn = e.target.closest(".card-btn");
+    if (cardBtn) { state.current = Number(cardBtn.dataset.pos); render(); return; }
+    if (e.target.id === "addCard" && state.cards.length < 5) {
+      state.cards.push(THEMES[state.theme].mismatch); render(); return;
+    }
+    if (e.target.id === "removeCard" && state.cards.length > 2) {
+      state.cards.pop();
+      state.current = Math.min(state.current, state.cards.length - 1);
+      render();
+    }
+  });
+  document.addEventListener("change", (e) => {
+    if (e.target.matches("select[data-pos]")) {
+      state.cards[Number(e.target.dataset.pos)] = e.target.value;
+      render();
+    }
+  });
+
+  render();
+</script>
+</body>
+</html>
