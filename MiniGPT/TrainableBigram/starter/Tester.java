@@ -32,6 +32,10 @@ public class Tester {
             check("softmax: input array was not mutated",
                     Arrays.equals(chapterThree, new double[] {2.0, 1.0, 0.0}));
 
+            double[] newborn = TrainableBigramModel.stableSoftmax(new double[] {0.017, -0.023, 0.008});
+            check("softmax: newborn row [0.017, -0.023, 0.008] -> [0.3388, 0.3255, 0.3357] — a shrug",
+                    approxRow(newborn, 0.3388, 0.3255, 0.3357));
+
             double[] worked = TrainableBigramModel.stableSoftmax(new double[] {1.2, 0.1, -0.4});
             check("softmax: worked row [1.2, 0.1, -0.4] -> [0.6516, 0.2169, 0.1315]",
                     approxRow(worked, 0.6516, 0.2169, 0.1315));
@@ -58,15 +62,15 @@ public class Tester {
         try {
             TrainableBigramModel model = new TrainableBigramModel(3, 7);
             boolean nearUniform = true;
-            for (int i = 0; i < 3; i++) {
-                double[] p = model.probabilities(i);
-                check("probabilities: fresh row " + i + " sums to one",
+            for (int currentToken = 0; currentToken < 3; currentToken++) {
+                double[] p = model.probabilities(currentToken);
+                check("probabilities: nearly empty row " + currentToken + " sums to one",
                         approx(p[0] + p[1] + p[2], 1.0));
                 for (double entry : p) {
                     nearUniform &= Math.abs(entry - 1.0 / 3) < 0.03;
                 }
             }
-            check("probabilities: a fresh table is nearly uniform (every entry within 0.03 of 1/3)",
+            check("probabilities: a nearly empty table is nearly uniform (every entry within 0.03 of 1/3)",
                     nearUniform);
 
             model.setRow(0, 1.2, 0.1, -0.4);
@@ -134,20 +138,20 @@ public class Tester {
 
             double h = 1e-4;
             double worstGap = 0.0;
-            for (int i = 0; i < 3; i++) {
+            for (int nextToken = 0; nextToken < 3; nextToken++) {
                 double[] up = base.clone();
-                up[i] += h;
+                up[nextToken] += h;
                 model.setRow(0, up);
                 double lossUp = model.loss(0, 1);
 
                 double[] down = base.clone();
-                down[i] -= h;
+                down[nextToken] -= h;
                 model.setRow(0, down);
                 double lossDown = model.loss(0, 1);
 
                 model.setRow(0, base.clone());
                 double numerical = (lossUp - lossDown) / (2 * h);
-                worstGap = Math.max(worstGap, Math.abs(numerical - analytical[i]));
+                worstGap = Math.max(worstGap, Math.abs(numerical - analytical[nextToken]));
             }
             System.out.printf(
                     "  INFO  gradient check — largest analytical-vs-wiggle gap: %.2e%n", worstGap);
@@ -215,10 +219,11 @@ public class Tester {
             TrainableBigramModel second = new TrainableBigramModel(3, 7);
             TrainableBigramModel different = new TrainableBigramModel(3, 8);
             boolean same = true;
-            for (int i = 0; i < 3; i++) {
-                same &= Arrays.equals(first.probabilities(i), second.probabilities(i));
+            for (int currentToken = 0; currentToken < 3; currentToken++) {
+                same &= Arrays.equals(first.probabilities(currentToken),
+                        second.probabilities(currentToken));
             }
-            check("seed: the same seed reproduces the same fresh table exactly", same);
+            check("seed: the same seed reproduces the same starting table exactly", same);
             check("seed: a different seed produces a different table",
                     !Arrays.equals(first.probabilities(0), different.probabilities(0)));
         } catch (UnsupportedOperationException e) {
@@ -230,14 +235,14 @@ public class Tester {
         try {
             TrainableBigramModel model = new TrainableBigramModel(3, 7);
             double byHand = (model.loss(1, 0) + model.loss(0, 1)) / 2.0;
-            check("averageLoss: a three-token log averages its two transitions",
+            check("averageLoss: a three-token history averages its two transitions",
                     Math.abs(model.averageLoss(new int[] {1, 0, 1}) - byHand) < 1e-9);
 
             double fresh = model.averageLoss(TrainingData.trainingTokens());
             System.out.printf(
-                    "  INFO  fresh table, average training loss: %.4f   (ln 3 = %.4f)%n",
+                    "  INFO  nearly empty table, average training loss: %.4f   (ln 3 = %.4f)%n",
                     fresh, Math.log(3));
-            check("averageLoss: a fresh random table scores at Chapter 2's uniform anchor",
+            check("averageLoss: a nearly empty table scores at Chapter 2's uniform anchor",
                     Math.abs(fresh - Math.log(3)) < 0.02);
         } catch (UnsupportedOperationException e) {
             todo(e);
@@ -256,7 +261,7 @@ public class Tester {
 
             double finalTrain = model.averageLoss(train);
             double finalValidation = model.averageLoss(validation);
-            check("training: loss fell — final training loss below the fresh table's",
+            check("training: loss fell — final training loss below the starting loss",
                     finalTrain < initial);
             check("training: final training loss reproduces 0.3300",
                     Math.abs(finalTrain - 0.3300) < 0.01);
@@ -266,7 +271,7 @@ public class Tester {
             double[] pizzaRow = model.probabilities(0);
             check("training: learned P(pineapple | pizza) matches the counted 40/60 within 0.05",
                     Math.abs(pizzaRow[1] - 40.0 / 60.0) < 0.05);
-            check("training: learned P(pizza | pizza) is tiny — the log never shows it",
+            check("training: learned P(pizza | pizza) is tiny — the history never shows it",
                     pizzaRow[0] < 0.05);
             check("training: ...but never exactly zero — softmax cannot say never",
                     pizzaRow[0] > 0.0);
@@ -301,8 +306,8 @@ public class Tester {
         if (actual.length != expected.length) {
             return false;
         }
-        for (int i = 0; i < expected.length; i++) {
-            if (!approx(actual[i], expected[i])) {
+        for (int entry = 0; entry < expected.length; entry++) {
+            if (!approx(actual[entry], expected[entry])) {
                 return false;
             }
         }

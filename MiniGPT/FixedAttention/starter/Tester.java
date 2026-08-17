@@ -206,8 +206,8 @@ public class Tester {
         if (actual.length != expected.length) {
             return false;
         }
-        for (int i = 0; i < expected.length; i++) {
-            if (!approx(actual[i], expected[i])) {
+        for (int entry = 0; entry < expected.length; entry++) {
+            if (!approx(actual[entry], expected[entry])) {
                 return false;
             }
         }

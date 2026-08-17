@@ -11,7 +11,7 @@ By the end of this assignment you should be able to:
 
 - **Keep the ground rules straight.** State what a position is, what the context window contains, and why nothing in this chapter samples tokens or touches a training corpus.
 - **Convert scores to weights.** Implement a numerically stable softmax and explain what it guarantees (positive weights, rows summing to one) and what it never does (assign a permitted position exactly zero).
-- **Build three spotlights.** Implement uniform causal averaging, rule-based causal attention, and fixed scaled dot-product causal self-attention over `double[][]` sequences.
+- **Fill one matrix three ways.** Implement the three fillings of the same causal attention matrix — equal scores (uniform averaging), hand-rule scores (a `ScoreRule`), and dot-product scores — and be able to say what each filling adds that the previous one lacked, and which parts of the pipeline never change at all.
 - **Explain the three roles.** Describe query, key, and value with the archive metaphor, and identify which position produces the query.
 - **Cross the words-to-numbers bridge.** Explain why token identifiers cannot be dotted, and how feature vectors make match scores emerge from multiply-and-add.
 - **Respect causality.** Produce exact-zero future weights and demonstrate that changing a future token cannot alter any earlier output.
@@ -44,9 +44,9 @@ Do not modify the provided files or the validators. `Tester` reproduces every wo
 
 | # | Method | The idea it isolates |
 |---|---|---|
-| 1 | `uniformCausalWeights` | Row $i$ holds $\frac{1}{i+1}$ at columns $0..i$ and exactly `0.0` afterward |
-| 2 | `stableSoftmax` | Subtract the max, exponentiate, normalize — without mutating the input |
-| 3 | `applyWeights` | The weighted blend: `outputs[i][f]` sums `weights[i][j] * values[j][f]` over `j` |
+| 1 | `uniformCausalWeights` | **Filling 1 — equal scores:** each permitted column of a row gets an equal share; every later column stays exactly `0.0` |
+| 2 | `stableSoftmax` | Shared machinery, used by all three fillings: subtract the max, exponentiate, normalize — without mutating the input |
+| 3 | `applyWeights` | Shared machinery — the blend: `outputs[query][slot]` sums `weights[query][key] * values[key][slot]` over every permitted `key` |
 
 After Part 1, `Tester` must confirm: uniform rows sum to one with exact-zero futures, softmax reproduces `[2,1,0] -> [0.6652, 0.2447, 0.0900]` and `[4,0,0] -> [0.9647, 0.0177, 0.0177]`, equal scores produce equal weights, and blending the three-card fixture uniformly yields `y2 = [1.0, 0.6667, 0.3333, 0.0]`.
 
@@ -56,10 +56,10 @@ Implement the remaining TODOs, in order:
 
 | # | Method | The idea it isolates |
 |---|---|---|
-| 4 | `dotProduct` | The matching loop: multiply corresponding slots, add up the products |
-| 5 | `ruleBasedCausalWeights` | Score each permitted position with a `ScoreRule`, then softmax each row's permitted prefix |
-| 6 | `dotProductCausalWeights` | `query = key = input`; scores are `dotProduct / sqrt(d)`; mask, then softmax |
-| 7 | `formatMatrix` | The labeled ASCII attention matrix in the lesson's exact format |
+| 4 | `dotProduct` | Filling 3's scorer, met on its own first: multiply matching slots of `queryCard` and `keyCard`, add up the products |
+| 5 | `ruleBasedCausalWeights` | **Filling 2 — hand-rule scores:** score each permitted position with a `ScoreRule`, then softmax only that permitted prefix |
+| 6 | `dotProductCausalWeights` | **Filling 3 — dot-product scores:** TODO 5's skeleton with one line changed — scores are `dotProduct(queryCard, keyCard) / sqrt(slotsPerCard)` |
+| 7 | `formatMatrix` | Shared machinery: the labeled ASCII attention matrix in the lesson's exact format |
 
 Then two experiments:
 

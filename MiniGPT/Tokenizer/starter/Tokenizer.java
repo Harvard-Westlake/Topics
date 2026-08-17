@@ -90,8 +90,8 @@ public class Tokenizer {
             byte[] bytes = Files.readAllBytes(file);
             List<Integer> tokens = new ArrayList<>(bytes.length);
 
-            for (byte b : bytes) {
-                tokens.add(Byte.toUnsignedInt(b));
+            for (byte rawByte : bytes) {
+                tokens.add(Byte.toUnsignedInt(rawByte));
             }
 
             documents.add(tokens);
@@ -161,7 +161,7 @@ public class Tokenizer {
      * fewer on a small corpus.
      */
     public void train(int merges) {
-        for (int i = 0; i < merges; i++) {
+        for (int mergeNumber = 0; mergeNumber < merges; mergeNumber++) {
             if (!mergeMostFrequentPair()) {
                 break;
             }

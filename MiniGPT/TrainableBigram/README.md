@@ -31,25 +31,25 @@ The chapter is two class periods. Each day ends with homework:
 
 | Day | In class | Homework |
 |---|---|---|
-| 1 | The random table · one row as a forecast · grading one guess (cross-entropy) · the wiggle experiment · the shortcut gradient · one step downhill | [Assignment](ASSIGNMENT.md) Part 1 — TODOs 1–4 plus problem sets A and B on paper |
-| 2 | The order log as flashcards · the training loop: reset, accumulate, average, step · watching the loss fall · learning-rate experiments · the gradient check · reading the learned table | [Assignment](ASSIGNMENT.md) Part 2 — TODOs 5–7, the experiments, and the concept questions |
+| 1 | The random table · one row as a forecast · grading one guess (loss and cross-entropy) · the wiggle experiment · the shortcut gradient · one step downhill | [Assignment](ASSIGNMENT.md) Part 1 — TODOs 1–4 plus problem sets A and B on paper |
+| 2 | The order history as flashcards · the training loop: reset, accumulate, average, step · watching the loss fall · learning-rate experiments · the gradient check · reading the learned table | [Assignment](ASSIGNMENT.md) Part 2 — TODOs 5–7, the experiments, and the concept questions |
 
-## <font color="#388bfd">The Order Log — Read This First</font>
+## <font color="#388bfd">The Order History — Read This First</font>
 
-Everything in this chapter happens on one tiny, fixed world: the pizzeria's order log, already tokenized with a three-word vocabulary.
+Everything in this chapter happens on one tiny, fixed world: the pizzeria's order history — the running record of what customers ordered, in order — already tokenized with a three-word vocabulary.
 
 ```text
 token 0 = pizza      token 1 = pineapple      token 2 = pepperoni
 
-the log reads:  pineapple pizza pineapple pizza pepperoni pizza ...
-as tokens:      1, 0, 1, 0, 2, 0, ...
+the history reads:  pineapple pizza pineapple pizza pepperoni pizza ...
+as tokens:          1, 0, 1, 0, 2, 0, ...
 ```
 
 Three ground rules, mirroring Chapter 3's:
 
-1. **The corpus is back.** Chapter 3 deliberately had no training data — you wrote every number by hand. This week training data returns: a **training log** (122 tokens) and a **validation log** (42 tokens), provided in the starter fixtures. Chapter 2's boundary rule is still law: validation data is scored, never trained on.
+1. **The corpus is back.** Chapter 3 deliberately had no training data — you wrote every number by hand. This week training data returns: a **training history** (122 tokens) and a **validation history** (42 tokens), provided in the starter fixtures. Chapter 2's boundary rule is still law: validation data is scored, never trained on.
 2. **Nothing is written by hand this week.** The table starts as small random numbers — junk — and from that moment on, only the training loop touches it. Your job is to build the loop, not the numbers.
-3. **This is training, not generation.** The sampler stays off. Training reads a transition that *already happened* in the log, measures how surprised the model was, and nudges. Nothing is being predicted into existence. (After training, the finished table could be handed straight to Chapter 2's sampler — but that is a different activity, on a different day.)
+3. **This is training, not generation.** The sampler stays off. Training reads a transition that *already happened* in the history, measures how surprised the model was, and nudges. Nothing is being predicted into existence. (After training, the finished table could be handed straight to Chapter 2's sampler — but that is a different activity, on a different day.)
 
 Why a three-word toy? Because $3 \times 3 = 9$: the entire model is nine numbers, and every claim this page makes can be checked by eye. The archive corpus returns when the machinery is trusted.
 
@@ -65,6 +65,7 @@ Why a three-word toy? Because $3 \times 3 = 9$: the entire model is nine numbers
 | One-hot vector | A vector with a single `1` and otherwise `0`, identifying one category. | An answer sheet with one box filled in |
 | Loss | A number measuring how poor one prediction was. | The golf score for one guess |
 | Cross-entropy loss | Negative logarithm of the probability assigned to the correct category. | Chapter 2's surprise penalty, charged to a single guess |
+| Negative log-likelihood (NLL) | The sum of $-\ln(p_{\text{target}})$ penalties over every prediction in a text. | Cross-entropy losses, totaled over a whole history |
 | Objective function | The quantity training attempts to minimize. | The number the whole machine exists to shrink |
 | Derivative | A local rate of change of one quantity with respect to another. | Wiggle this number, watch that one respond |
 | Partial derivative | A rate of change with respect to one input while the others are held fixed. | One knob turned, every other knob taped down |
@@ -77,7 +78,7 @@ Why a three-word toy? Because $3 \times 3 = 9$: the entire model is nine numbers
 
 ## <font color="#388bfd">The Same Table, a Different Filling</font>
 
-Run Chapter 2's counting over the training log and you get a familiar table — and this chapter's fixtures do exactly that, for comparison later:
+Run Chapter 2's counting over the training history and you get a familiar table — and this chapter's fixtures do exactly that, for comparison later:
 
 ```text
 Chapter 2's table (counts)              Chapter 4's table (logits, at birth)
@@ -96,7 +97,18 @@ Why not just store probabilities and nudge those? Because a probability wears ha
 
 ## <font color="#388bfd">One Row Is a Forecast</font>
 
-Standing at the token `pizza`, the model reads *one row* — its row — and softmaxes it. To keep the arithmetic honest, the whole day follows one specific row. Suppose the row for `pizza` currently holds `[1.2, 0.1, -0.4]`:
+Standing at the token `pizza`, the model reads exactly *one* row of the table — the row labeled `pizza`, the row that token owns — and softmaxes it. Do that to pizza's newborn row from the table above:
+
+```text
+row for pizza (logits):   [ 0.017,  -0.023,   0.008 ]
+subtract max (0.017):     [ 0.000,  -0.040,  -0.009 ]
+exponentiate:             [ 1.0000,  0.9608,  0.9910 ]
+divide by sum 2.9518:     [ 0.3388,  0.3255,  0.3357 ]
+```
+
+Read as a forecast: after `pizza`, the model says 34% `pizza`, 33% `pineapple`, 34% `pepperoni` — a shrug. This is the **prediction distribution**, and exactly like Chapter 2's smoothed rows, it is positive everywhere and sums to one. A nearly empty table like this one can only shrug: logits that are random but nearly zero softmax to nearly $\frac{1}{3}$ each, whichever row you read. Hold that thought — it becomes a free correctness test on Day 2.
+
+A shrug is honest, but it gives a grader almost nothing to push against. To watch grading and nudging do something visible, the rest of the day follows one deliberately opinionated row. Suppose the row for `pizza` instead held `[1.2, 0.1, -0.4]`:
 
 ```text
 row for pizza (logits):   [ 1.2,     0.1,    -0.4  ]
@@ -105,24 +117,24 @@ exponentiate:             [ 1.0000,  0.3329,  0.2019]
 divide by sum 1.5348:     [ 0.6516,  0.2169,  0.1315]
 ```
 
-Read as a forecast: after `pizza`, the model says 65% `pizza`, 22% `pineapple`, 13% `pepperoni`. That forecast is nonsense — the log never once shows `pizza pizza` — but the table has no way to know that yet. This is the **prediction distribution**, and exactly like Chapter 2's smoothed rows, it is positive everywhere and sums to one.
+Now the forecast has an opinion: 65% `pizza`, 22% `pineapple`, 13% `pepperoni`. That forecast is nonsense — the history never once shows `pizza pizza` — but the table has no way to know that yet. This **worked row** is the row every calculation below follows, and your Tester reproduces each of its numbers.
 
-(A genuinely fresh table is even humbler: its near-zero random logits softmax to nearly $\frac{1}{3}$ each. Hold that thought — it becomes a free correctness test on Day 2.)
+## <font color="#388bfd">Grading One Guess: the Loss</font>
 
-## <font color="#388bfd">Grading One Guess: Cross-Entropy</font>
-
-The log knows what actually came next. At this point in the log, the next token is `pineapple` — index 1. The true next token is called the **target**, and it is often written as a **one-hot vector** — an answer sheet with one box filled in:
+The order history knows what actually came next. At this point in the history, the next token is `pineapple` — index 1. The true next token is called the **target**, and it is often written as a **one-hot vector** — an answer sheet with one box filled in:
 
 ```text
 forecast p:        [ 0.6516,  0.2169,  0.1315 ]
 target (one-hot):  [ 0,       1,       0      ]
 ```
 
-The grade looks at exactly one number: the probability the model gave the truth. The model said 0.2169. The penalty is Chapter 2's:
+The grade looks at exactly one number: the probability the model gave the truth. The model said 0.2169, and the penalty is Chapter 2's — the negative natural log of that one probability:
 
 $$L = -\ln(p_{\text{target}}) = -\ln(0.2169) = 1.5284$$
 
-This is **cross-entropy loss** — the name Chapter 2 promised you would meet again. It is one single term of the NLL sum you built there. Chapter 2 charged this penalty to finished models as a report card; this chapter charges it mid-training, because the loss is about to become a *steering signal*, not just a grade. A quantity that training exists to minimize is called the **objective function**.
+That number is the **loss**: the grade for a single guess, near zero when the model was confident in the truth, huge when it called the truth nearly impossible. The objective of training is to minimize the loss — to steer the logits toward forecasts that make the observed answer less surprising. Because the loss is the quantity the whole process works to minimize, it is also called the **objective function**.
+
+This particular recipe for the loss has a formal name — the one Chapter 2 promised you would meet again: **cross-entropy loss**. *Entropy* is the mathematician's word for surprise, and the *cross* records that two distributions are being compared: the model's forecast against the one-hot answer sheet. It is one single term of the **negative log-likelihood (NLL)** you built in Chapter 2 — the sum of $-\ln(p_{\text{target}})$ penalties over every prediction in a whole text. Chapter 2 charged that total to finished models as a report card; this chapter charges one term of it mid-training, because the loss is about to become a *steering signal*, not just a grade.
 
 The dial, for intuition:
 
@@ -148,9 +160,20 @@ Answers are in the [Answer Key](#answer-key) below. Do these on paper before mov
 
 ## <font color="#388bfd">The Wiggle Experiment</font>
 
-The loss is 1.5284, and three numbers are responsible. Which direction should each move to shrink it? Do not philosophize — **measure**.
+The loss is 1.5284, and the worked row's three logits `[1.2, 0.1, -0.4]` are the numbers responsible. Which direction should each move to shrink it? Do not philosophize — **measure**.
 
-Take $z_1$, the logit of the truth (currently $0.1$). Nudge it up by $0.01$ and recompute the entire pipeline — softmax, then loss. Nudge it down instead and recompute again:
+First, give the three logits names: write them $z_0, z_1, z_2$, one per column of the row —
+
+```text
+z0 = 1.2   pizza's logit
+z1 = 0.1   pineapple's logit
+z2 = -0.4  pepperoni's logit
+```
+
+The target was `pineapple`, so $z_1$ is the logit of the truth — and the experiment asks one question about it: *if $z_1$ were a touch bigger or a touch smaller, would the loss shrink?* You cannot answer that by staring. The number passes through softmax before it reaches the loss, and softmax stirs all three logits together. The only way to know is to try it, under two rules that keep the measurement honest:
+
+- **Move one number at a time; freeze the rest.** $z_0$ and $z_2$ stay exactly where they are. If all three logits moved at once and the loss changed, you could not tell which mover deserved the credit or the blame. Freezing the others isolates $z_1$'s private effect on the loss — and each logit will get its own turn.
+- **Nudge tiny, in both directions.** Raise $z_1$ by $0.01$ and recompute the entire pipeline — softmax, then loss. Put it back, lower it by $0.01$, and recompute again. Comparing the two runs gives both the direction and the rate of the response, and keeping the nudge tiny keeps the answer about *this* spot — the response can be different somewhere else.
 
 ```text
 z1 = 0.11  ->  softmax  ->  loss = 1.52056     (raising z1 helped)
@@ -159,7 +182,7 @@ z1 = 0.09  ->  softmax  ->  loss = 1.53622     (lowering z1 hurt)
 slope at z1  =  (1.52056 - 1.53622) / 0.02  =  -0.783
 ```
 
-The loss falls about $0.783$ per unit of raise, *at this location*. Now wiggle $z_0$ (the `pizza` logit) the same way: its slope comes out to $+0.6516$ — raising it makes things worse. Every number now has a measured direction.
+The loss falls about $0.783$ per unit of raise, *at this location*. Now give $z_0$ (the `pizza` logit) its turn — $z_1$ and $z_2$ frozen this time: its slope comes out to $+0.6516$ — raising it makes things worse. Every number now has a measured direction.
 
 Names, now that you have done the thing:
 
@@ -243,6 +266,7 @@ The learning rate is a number *you* choose — Chapter 2 gave you the word for t
 | Training step | One parameter-update operation. | One turn of the crank |
 | Batch | The set of examples contributing to one update. | A handful of flashcards graded together |
 | Gradient accumulation | Adding each example's gradient into a running total before updating. | Slopes poured into one bucket, then averaged |
+| Backward pass | Computing the gradient by walking from the loss back to the parameters. | The forward pipeline, traveled in reverse to assign blame |
 | Epoch | One conceptual pass through all training examples. | Once through the whole deck |
 | Stochastic Gradient Descent (SGD) | Gradient descent using a random example or small batch per update. | Descent steered by random handfuls |
 | Gradient check | Comparing an implemented gradient against a finite-difference estimate. | The wiggle experiment, hired as referee |
@@ -252,7 +276,7 @@ The learning rate is a number *you* choose — Chapter 2 gave you the word for t
 
 ## <font color="#388bfd">Every Adjacent Pair Is a Flashcard</font>
 
-Day 1 processed one example. The training log contains 122 tokens, and **every adjacent pair is one training example**: the current token is the front of a flashcard, the target is the back. That is 121 flashcards — and the validation log holds 41 more that the table is never allowed to learn from.
+Day 1 processed one example. The training history contains 122 tokens, and **every adjacent pair is one training example**: the current token is the front of a flashcard, the target is the back. That is 121 flashcards — and the validation history holds 41 more that the table is never allowed to learn from.
 
 The deck is not balanced, and that matters later:
 
@@ -270,12 +294,16 @@ One **training step** in the provided `Trainer` has a five-beat rhythm, built en
 
 ```text
 repeat 300 times:
-    zeroGradients()                      reset   - wipe the bucket
-    24 times:
-        draw a random flashcard
-        backward(current, target)        accumulate - pour its gradient in
-    step(learningRate)                   average, then stride downhill
+    zeroGradients()                    reset      - wipe the gradient bucket
+    24 times:                          batch      - 24 flashcards graded together
+        draw a random flashcard                     (a current token and its target)
+        backward(current, target)      accumulate - add this card's gradient,
+                                                    p minus one-hot, to the bucket
+    step(learningRate)                 average    - divide the bucket by 24, then
+                                       step       - stride downhill against the slope
 ```
+
+One function name in there deserves a gloss, because it is the standard name and it is not descriptive: `backward` computes Day 1's shortcut gradient — `p` minus one-hot — for a single flashcard and adds it to the bucket. The name records a direction. Computing the loss runs the pipeline *forward*: row → softmax → probability of the target → loss. Computing the gradient walks the same road in reverse — from the loss back to the logits that caused it — so every training library calls this the **backward pass**. Forward makes the prediction; backward finds out what to blame.
 
 The 24 flashcards graded together are a **batch**, and pouring their gradients into one running total is **gradient accumulation**. Because the flashcards are drawn *at random*, this is **Stochastic Gradient Descent** — stochastic is a formal word for random. With 121 flashcards and 24 per step, about five steps consume one deck's worth — one **epoch**, though with random draws the term is a unit of accounting rather than a strict pass.
 
@@ -286,7 +314,7 @@ Two design choices in the loop deserve a *why*:
 
 ### <font color="#79c0ff">Check yourself — Set C</font>
 
-One full training step by hand, on a one-card batch. A fresh row for `pizza` reads `[0, 0, 0]`; the flashcard says `pizza -> pepperoni` (index 2); the learning rate is $0.3$.
+One full training step by hand, on a one-card batch. An empty row for `pizza` reads `[0, 0, 0]`; the flashcard says `pizza -> pepperoni` (index 2); the learning rate is $0.3$.
 
 1. What is the forecast, and what loss does the card charge?
 2. Write the gradient.
@@ -295,7 +323,11 @@ One full training step by hand, on a one-card batch. A fresh row for `pizza` rea
 
 ## <font color="#388bfd">Watching It Learn</font>
 
-The `Trainer` prints a loss trace as it works — the training and validation loss every 30 steps, in CSV form (Comma-Separated Values: a plain-text table with commas between the columns; paste it into any spreadsheet, no plotting library required). Everything is seeded, so this is not *an example* of the output — it is *the* output. Your run must reproduce it digit for digit:
+The `Trainer` prints a loss trace as it works — two loss columns every 30 steps, in CSV form (Comma-Separated Values: a plain-text table with commas between the columns; paste it into any spreadsheet, no plotting library required).
+
+The two columns are the same measurement pointed at two different decks — a Chapter 2 distinction worth restating before the numbers. Your `averageLoss` (TODO 7) grades every adjacent pair in a history and averages the charges. Aimed at the training history — the 121 flashcards the loop practices on — it produces the **training loss**. Aimed at the validation history — the 41 flashcards the table is never allowed to learn from — it produces the **validation loss**. Training loss answers *how well does the table fit the cards it practices on?* Validation loss answers the question that actually matters: *does that learning hold on orders it has never seen?* Practice test, then real exam — and Chapter 2's boundary rule is what keeps the exam honest: validation data is scored, never trained on.
+
+Everything is seeded, so this is not *an example* of the output — it is *the* output. Your run must reproduce it digit for digit:
 
 ```text
 step,training loss,validation loss
@@ -314,21 +346,21 @@ step,training loss,validation loss
 
 Three observations, each load-bearing:
 
-1. **Step 0 is $\ln 3$.** Before any training, the loss is $1.0987 \approx \ln 3 = 1.0986$. A fresh table's near-zero random logits softmax to nearly uniform rows — **a fresh random table is the uniform model in disguise**, and Chapter 2 told you exactly what the uniform model scores: $\ln V$, perplexity $V$. This is a free correctness test. If your step-0 line prints anything else, the bug is in your code, not in the randomness.
-2. **The loss falls fast, then flattens near 0.33 — not near 0.** The floor is real: `pizza`'s flashcards genuinely disagree (40 vs 20), so the best possible average loss on this log is about $0.3156$. The remaining loss is the deck's own uncertainty, and no model, however trained, can go below it. Zero loss is not the goal — the floor is. (The same is true of every real language model: English itself has a floor.)
-3. **The validation column hugs the training column.** Both logs come from the same tiny process, so a table that learns one fits the other. Keep this pair of columns in mind: in Chapter 11, watching them *separate* becomes the most important diagnostic in the course — the sign that a model has begun memorizing its training data instead of learning the process behind it.
+1. **Step 0 is $\ln 3$.** Before any training, the loss is $1.0987 \approx \ln 3 = 1.0986$. A nearly empty table's near-zero random logits softmax to nearly uniform rows — **a nearly empty table is the uniform model in disguise**, and Chapter 2 told you exactly what the uniform model scores: $\ln V$, perplexity $V$. This is a free correctness test. If your step-0 line prints anything else, the bug is in your code, not in the randomness.
+2. **The loss falls fast, then flattens near 0.33 — not near 0.** The floor is real: `pizza`'s flashcards genuinely disagree (40 vs 20), so the best possible average loss on this history is about $0.3156$. The remaining loss is the deck's own uncertainty, and no model, however trained, can go below it. Zero loss is not the goal — the floor is. (The same is true of every real language model: English itself has a floor.)
+3. **The validation column hugs the training column.** Both histories come from the same tiny process, so a table that learns one fits the other. Keep this pair of columns in mind: in Chapter 11, watching them *separate* becomes the most important diagnostic in the course — the sign that a model has begun memorizing its training data instead of learning the process behind it.
 
-## <font color="#388bfd">Too Cold, Too Hot</font>
+## <font color="#388bfd">Learning-Rate Sensitivity</font>
 
-The learning rate is a dial, and the provided `Trainer` bench reruns the same 300 steps at three settings. Same table, same flashcards, same seeds — only the stride changes:
+Every run above used learning rate $0.5$. How much did that choice matter? This section's point: **with the model, the data, and the code all held fixed, the learning rate alone decides whether training crawls, converges, or thrashes.** The provided `Trainer` bench demonstrates it by rerunning the same 300 steps at three settings — same table, same flashcards, same seeds; only the stride changes:
 
 | Learning rate | Final training loss | What the trace looks like |
 |---:|---:|---|
-| 0.01 | 0.7855 | A smooth crawl — after 300 steps, still miles above the floor |
+| 0.01 | 0.7855 | Too cold: a smooth crawl — after 300 steps, still miles above the floor |
 | 0.5 | 0.3300 | Settles onto the floor |
-| 20 | 0.4992 | Chaos: 0.67 → 0.81 → 1.18 → 0.37 → … → 1.82 → 0.50 — never settles |
+| 20 | 0.4992 | Too hot: chaos — 0.67 → 0.81 → 1.18 → 0.37 → … → 1.82 → 0.50 — never settles |
 
-Too cold and nothing goes wrong except your afternoon: the steps are correct, just tiny. Too hot is more interesting than "slow in reverse" — the loss *bounces*, sometimes landing worse than the untrained table. Here is the failure in miniature, computable by hand. Fresh row `[0, 0, 0]`, one flashcard `pizza -> pineapple`, learning rate 20:
+Too cold costs nothing but your afternoon: every step is correct, just tiny. Too hot is the failure worth understanding — the loss *bounces*, sometimes landing worse than the untrained table. Here is the failure in miniature, computable by hand. An empty row `[0, 0, 0]`, one flashcard `pizza -> pineapple`, learning rate 20:
 
 ```text
 gradient:            [ 1/3,  -2/3,   1/3 ]
@@ -355,7 +387,7 @@ Formula and experiment must agree to within $10^{-6}$; a correct implementation 
 After 300 steps, the Tester prints the learned table beside Chapter 2's counting, and this is the punchline of the week:
 
 ```text
-row           learned from gradients        counted from the log
+row           learned from gradients        counted from the history
 pizza         [0.009, 0.676, 0.315]         [0.000, 0.667, 0.333]
 pineapple     [0.986, 0.007, 0.007]         [1.000, 0.000, 0.000]
 pepperoni     [0.970, 0.015, 0.015]         [1.000, 0.000, 0.000]
@@ -386,7 +418,7 @@ Now scale the flaw. A real vocabulary has 50,000 tokens, so this table would nee
 1. A batch contains three flashcards: `pizza -> pineapple`, `pineapple -> pizza`, `pizza -> pepperoni`. Which rows of the gradient table are nonzero when `step` runs, and why is `pepperoni`'s row *not* one of them?
 2. A row is trained forever on a deck where two thirds of its flashcards say `pineapple` and one third say `pepperoni`. Where do its probabilities settle, and why can its loss never reach zero?
 3. With 121 flashcards and a batch of 24, roughly how many steps make one epoch — and why is "epoch" only approximate in our loop?
-4. A classmate reports final training loss $0.0001$ on this order log. Without reading a line of their code, what do you know, and what is the likeliest kind of bug?
+4. A classmate reports final training loss $0.0001$ on this order history. Without reading a line of their code, what do you know, and what is the likeliest kind of bug?
 
 **Day 2 homework:** [Assignment](ASSIGNMENT.md) Part 2 — implement the update, the reset, and the evaluation (TODOs 5–7), run the training and learning-rate experiments, and answer the concept questions.
 
@@ -399,7 +431,7 @@ The starter code is in [starter/](starter/) — four files. One contains all the
 | File | Status | Role |
 |---|---|---|
 | [TrainableBigramModel.java](starter/TrainableBigramModel.java) | **TODO 1–7** | The table: its forecasts, its loss, its gradient, its update |
-| [TrainingData.java](starter/TrainingData.java) | Complete | The training and validation logs, plus Chapter 2's counting for the comparison |
+| [TrainingData.java](starter/TrainingData.java) | Complete | The training and validation histories, plus Chapter 2's counting for the comparison |
 | [Trainer.java](starter/Trainer.java) | Complete | The training loop and the experiment bench — run `java Trainer` once the Tester passes |
 | [Tester.java](starter/Tester.java) | Complete | Reproduces every worked trace on this page and runs the required tests |
 
@@ -411,14 +443,14 @@ Implement the TODOs in order, rerunning `Tester` after each — unimplemented st
 4. `backward` — accumulate `p` minus one-hot into the used row (Day 1)
 5. `step` — average the accumulated gradients, stride downhill (Day 2)
 6. `zeroGradients` — wipe the bucket between updates (Day 2)
-7. `averageLoss` — Chapter 2's evaluation over a whole log (Day 2)
+7. `averageLoss` — Chapter 2's evaluation over a whole history (Day 2)
 
 ## <font color="#388bfd">Evidence Checkpoint</font>
 
 Five observations your finished code must produce:
 
 1. **The worked row reproduces.** Softmax `[0.6516, 0.2169, 0.1315]`, loss `1.5284`, gradient `[0.6516, -0.7831, 0.1315]`, and one step at learning rate 0.5 landing on loss `1.0474`.
-2. **The anchor holds.** A fresh table (seed 7) scores average training loss `1.0987` — $\ln 3$ to three decimals — before any training.
+2. **The anchor holds.** A nearly empty table (seed 7) scores average training loss `1.0987` — $\ln 3$ to three decimals — before any training.
 3. **The trace reproduces.** Your CSV matches the lesson's digit for digit, both columns falling from `1.0987 / 1.0990` to `0.3300 / 0.3311`.
 4. **The tables converge.** Learned probabilities land within a few hundredths of the counted frequencies — with no exact zeros anywhere.
 5. **The referee is satisfied.** The gradient check's worst analytical-versus-wiggle gap prints below $10^{-6}$.
@@ -439,13 +471,34 @@ Five observations your finished code must produce:
 
 ## <font color="#388bfd">Answer Key</font>
 
-**Set A.** 1: the uniform forecast $[\frac{1}{3}, \frac{1}{3}, \frac{1}{3}]$; loss $\ln 3 = 1.0986$ for any target. 2: a logit can be any real number, so yes; a probability cannot leave $[0, 1]$; a loss is $-\ln p$ with $p \le 1$, so it can never be negative — it runs from 0 upward. 3: $-\ln(0.0900) = 2.41$. 4: $-\ln(0.5) = 0.693$ and $-\ln(0.25) = 1.386$ — halving the truth's probability *adds* a constant $0.693$ to the loss; logarithms turn ratios into sums. 
+**Set A**
 
-**Set B.** 1: $[0.6516, -0.7831, 0.1315]$ — the forecast with 1 subtracted at the target. 2: it is the only entry where the answer sheet holds a 1, and $p - 1 < 0$; subtracting a negative slope *raises* that logit. 3: zero, always — the $p_i$ sum to 1 and exactly one 1 is subtracted. 4: $0.98 - 1 = -0.02$; the update will barely move it — a nearly satisfied prediction generates almost no pressure. 5: $(1.52970 - 1.52707) / 0.02 = 0.1315$ — the third entry, confirming that a wrong answer's slope equals its probability.
+1. The uniform forecast $[\frac{1}{3}, \frac{1}{3}, \frac{1}{3}]$; loss $\ln 3 = 1.0986$ no matter which target the history shows.
+2. A logit can be any real number, so yes. A probability cannot leave $[0, 1]$. A loss is $-\ln p$ with $p \le 1$, so it can never be negative — it runs from 0 upward.
+3. $-\ln(0.0900) = 2.41$.
+4. $-\ln(0.5) = 0.693$ and $-\ln(0.25) = 1.386$ — halving the truth's probability *adds* a constant $0.693$ to the loss; logarithms turn ratios into sums.
 
-**Set C.** 1: forecast $[\frac{1}{3}, \frac{1}{3}, \frac{1}{3}]$; loss $\ln 3 = 1.0986$. 2: $[\frac{1}{3}, \frac{1}{3}, -\frac{2}{3}]$. 3: $[-0.1, -0.1, 0.2]$. 4: new forecast $[0.2985, 0.2985, 0.4030]$; new loss $-\ln(0.4030) = 0.9089 < 1.0986$ — the step helped.
+**Set B**
 
-**Set D.** 1: rows `pizza` and `pineapple` — they appeared as flashcard *fronts*. `pepperoni` appeared only as a back (a target), and targets receive no row update; the gradient lands in the row that made the prediction. 2: at the mixture $[\,0, \frac{2}{3}, \frac{1}{3}]$ (approached, never exactly reached); the loss floor is the deck's own disagreement — no single forecast can satisfy conflicting cards. 3: about 5 steps ($121 / 24$); the loop draws cards at random, so some cards repeat and others are skipped in any given "pass". 4: the number is impossible — the deck's disagreement sets a floor near $0.3156$, so a loss of $0.0001$ means the *measurement* is broken (evaluating the wrong thing, scoring the current token instead of the next, or training on the data being scored), not that the model is brilliant.
+1. $[0.6516, -0.7831, 0.1315]$ — the forecast with 1 subtracted at the target.
+2. It is the only entry where the answer sheet holds a 1, and $p - 1 < 0$; subtracting a negative slope *raises* that logit.
+3. Zero, always — the $p_i$ sum to 1 and exactly one 1 is subtracted.
+4. $0.98 - 1 = -0.02$; the update will barely move it — a nearly satisfied prediction generates almost no pressure.
+5. $(1.52970 - 1.52707) / 0.02 = 0.1315$ — the third entry, confirming that a wrong answer's slope equals its probability.
+
+**Set C**
+
+1. Forecast $[\frac{1}{3}, \frac{1}{3}, \frac{1}{3}]$; loss $\ln 3 = 1.0986$.
+2. $[\frac{1}{3}, \frac{1}{3}, -\frac{2}{3}]$.
+3. $[-0.1, -0.1, 0.2]$.
+4. New forecast $[0.2985, 0.2985, 0.4030]$; new loss $-\ln(0.4030) = 0.9089 < 1.0986$ — the step helped.
+
+**Set D**
+
+1. Rows `pizza` and `pineapple` — they appeared as flashcard *fronts*. `pepperoni` appeared only as a back (a target), and targets receive no row update; the gradient lands in the row that made the prediction.
+2. At the mixture $[\,0, \frac{2}{3}, \frac{1}{3}]$ (approached, never exactly reached); the loss floor is the deck's own disagreement — no single forecast can satisfy conflicting cards.
+3. About 5 steps ($121 / 24$); the loop draws cards at random, so some cards repeat and others are skipped in any given "pass".
+4. The number is impossible — the deck's disagreement sets a floor near $0.3156$, so a loss of $0.0001$ means the *measurement* is broken (evaluating the wrong thing, scoring the current token instead of the next, or training on the data being scored), not that the model is brilliant.
 
 ## <font color="#388bfd">Misconception Checkpoint</font>
 
@@ -474,7 +527,7 @@ More traps worth defusing now:
 6. **Convergence race** — how many training steps until every learned probability is within 0.01 of the counted one?
 7. **A training debugger** — halt the instant any logit, gradient, or loss becomes `NaN` or infinite, and report where.
 8. **Derive the shortcut** — push the chain rule through $-\ln(\text{softmax})$ and prove $p_i - \mathbf{1}[i=y]$.
-9. **Close the loop** — hand your trained table to Chapter 2's sampler and generate a fresh order log with a fixed seed.
+9. **Close the loop** — hand your trained table to Chapter 2's sampler and generate a fresh order history with a fixed seed.
 
 ---
 

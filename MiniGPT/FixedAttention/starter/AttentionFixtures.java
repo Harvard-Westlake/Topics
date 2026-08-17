@@ -61,24 +61,24 @@ public class AttentionFixtures {
 
     // The Day 1 rule, translated to stat cards: an earlier card whose entire
     // card matches the asker's card earns +4; everything else earns 0.
-    public static final ScoreRule MATCH_RULE = (query, key, queryPos, keyPos) -> {
-        if (keyPos == queryPos) {
+    public static final ScoreRule MATCH_RULE = (queryCard, keyCard, queryPosition, keyPosition) -> {
+        if (keyPosition == queryPosition) {
             return 0.0;   // the asker itself
         }
-        return Arrays.equals(query, key) ? 4.0 : 0.0;
+        return Arrays.equals(queryCard, keyCard) ? 4.0 : 0.0;
     };
 
     // The lesson's retrieval rule: order identifiers speak loudest, categories
     // help a little, and distance costs a little. Note that scores can go negative.
-    public static final ScoreRule ORDER_RULE = (query, key, queryPos, keyPos) -> {
+    public static final ScoreRule ORDER_RULE = (queryCard, keyCard, queryPosition, keyPosition) -> {
         double score = 0.0;
-        if (query[1] != 0.0 && query[1] == key[1]) {
+        if (queryCard[1] != 0.0 && queryCard[1] == keyCard[1]) {
             score += 3.0;   // same order identifier
         }
-        if (query[0] == key[0]) {
+        if (queryCard[0] == keyCard[0]) {
             score += 1.0;   // same category
         }
-        score -= 0.1 * (queryPos - keyPos);   // distance penalty
+        score -= 0.1 * (queryPosition - keyPosition);   // distance penalty
         return score;
     };
 }

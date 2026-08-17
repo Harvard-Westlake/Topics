@@ -23,7 +23,7 @@ Topics/
     _verification/      — verify.py link/reference checker (also runs in CI on push)
 ```
 
-Current topics: `ComputerSetup/` (InitialInstall), `Terminal/` (Basics), `GitUsage/` (RepositoriesAndCommits, BranchingAndMerging, ForksAndCollaboration), `GitProject/` (ProjectSetup, InitAndBlobs, Trees, Commits, Branches), `MiniGPT/` (Tokenizer, MarkovBaseline, FixedAttention, TrainableBigram, ObjectNetwork, ScalarAutograd, DenseEngine, SingleHeadAttention, TransformerBlock, TrainingAndGeneration, Capstone)
+Current topics: `ComputerSetup/` (InitialInstall), `Terminal/` (Basics), `GitUsage/` (RepositoriesAndCommits, BranchingAndMerging, ForksAndCollaboration), `GitProject/` (ProjectSetup, InitAndBlobs, Trees, Commits, Branches), `MiniGPT/` (Tokenizer, MarkovBaseline, FixedAttention, TrainableBigram, ObjectNetwork, ScalarAutograd, DenseEngine, SingleHeadAttention, TransformerBlock, TrainingAndGeneration, Capstone), `WebProgramming/` (InterfacingWithAI, WebsiteHosting, JavaScriptAndCursor, DebuggingJavaScript, LearningWidget, PersistenceAndIntermediateWeb, DatabasesAndCollections, UXAndBehaviorTracking, WidgetIteration, PeerReview), `AppDesign/` (LearningToDesign, CommunicatingDesign, DesignChallenge, DesignReview, IterativeDesign, TeamDesignAndPitch, GroupDesignReview, DesignRefinement, MergeDesigns, UXAndArtDirection, AmbiguityAndArchitecture, TechnicalSpecification, CombineTechSpecs, MVPPlanning, ScrumAndStandup), `GroupProgramming/` (DeliverablesAndIssueTracking, SprintWork, MVPAndMergeDiscipline, CodeReviewAndPresentation, IssuesAsWorkRequests, RefactorAndReadme, HelpAClassmate, FinalWrapUp), `HashingCryptoP2P/` (HexadecimalAndHashing, DigitalSignatures, PeerToPeerNetworks), `Blockchains/` (TransactionsAndLedgers, BitcoinAndWallets, MempoolAndWalletProgramming, KeysAndLayerTwo, SmartChainsAndWrappedBitcoin, TokensInJava, ProofOfStake, WritingCodeOnEthereum, VyperCustomBehavior, ERC20Deployment, CryptoResearchProject), `AdvancedEVM/` (WrappedTokensAndLayerTwo, DecentralizedFinance, IPFSAndNFTs, Web2Web3App)
 
 ## Root README
 
@@ -283,6 +283,16 @@ When converting old-format assignments (pasted from Notion or elsewhere), always
 - Each subtopic README ends with `← prev — Next: next` navigation links using relative paths.
 - No emojis. No frontmatter. No HTML unless Markdown genuinely can't express it.
 - Audience: high school students new to CS. Be precise, not condescending.
+
+## Starter-code conventions
+
+Applies to every file under a lesson's `starter/` folder, in any language — students read this code as teaching material, so every name carries meaning:
+
+- **No single-letter identifiers.** Never `i`/`j`/`k`/`d`/`t`/`p` — name every loop index and local for the thing it enumerates or holds: `queryPosition`, `keyPosition`, `slot`, `slotsPerCard`, `currentToken`, `nextToken`, `position`, `mergeNumber`, `flashcardStart`, `entry`. Meaning-free math locals in provided helpers still get full words (`sum`, `max`, `total`).
+- **Parameters say what they hold, not just their shape.** `double[][] statCards`, never `double[][] sequence`; `queryCard, keyCard`, never `left, right`; `attentionWeights`, never `weights`. If a student would ask "a sequence of *what*?", the name is wrong.
+- **Use the lesson's own vocabulary in names** (query/key/value, stat card, slot, flashcard, logit) so the code and the prose teach the same words. Validator error messages speak the same language.
+- **Every TODO comment opens with a motivator**: a plain-language "The question: …" / "The answer: …" pair (no jargon), then a `Dimensions:` block naming each input and output, the per-element rule, and a worked example using the lesson's exact machine-verified numbers.
+- **When one artifact is built several ways across a lesson** (e.g. the attention matrix's three fillings), tag each TODO with its place in that progression and mark shared machinery as shared — the segmentation in code must mirror the lesson page.
 
 ## Multi-day assignments
 

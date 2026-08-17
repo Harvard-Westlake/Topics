@@ -12,13 +12,8 @@ Confirm each of the following before submitting:
 - [ ] **Open a terminal and type `git`** — you should see a list of git commands, not the error `git: command not found`
   - If you just installed Git, restart your terminal or WSL window first
 - [ ] **GitKraken is installed and registered** — your account should show your name or email, not a FREE badge
-  - Bad — not yet registered with the Student Developer Pack:
-
-    ![Bad GitKraken registration](bad.png)
-
-  - Correct — registered and activated:
-
-    ![Correct GitKraken registration](good.png)
+  - Bad — not yet registered: the profile area in the top-right corner shows a **FREE** badge next to the account icon
+  - Correct — registered and activated with the Student Developer Pack: the profile area shows your name or email with a **Pro** badge and no FREE label
 
 - [ ] **GitHub profile URL submitted** — your public profile at `https://github.com/your-username` is accessible in an incognito window
 

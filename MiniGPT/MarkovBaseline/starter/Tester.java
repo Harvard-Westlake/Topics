@@ -6,28 +6,28 @@ public class Tester {
     public static void main(String[] args) {
 
         // ----- Chapter 1: tokenize the archive -----
-        Tokenizer t = new Tokenizer();
-        Path p = Path.of("./textfile.txt");
-        Path p2 = Path.of("./textfile2.txt");
+        Tokenizer tokenizer = new Tokenizer();
+        Path firstFile = Path.of("./textfile.txt");
+        Path secondFile = Path.of("./textfile2.txt");
 
         try {
-            t.addFiles(p, p2);
-        } catch (Exception e) {
+            tokenizer.addFiles(firstFile, secondFile);
+        } catch (Exception exception) {
             System.out.println("Error adding files to tokenizer");
             return;
         }
 
         // Use train(256) for a BPE run (V = 512), or train(0) to stay
         // with raw bytes (V = 256) — readable generation, no merge rules.
-        t.train(256);
-        // t.printTokenCounts(); // You might want to comment this out so it doesn't flood your console
+        tokenizer.train(256);
+        // tokenizer.printTokenCounts(); // You might want to comment this out so it doesn't flood your console
 
         System.out.println("\n--- Testing Uniform Model ---");
 
         // 1. Ask the tokenizer for its ACTUAL vocabulary size.
         //    train(256) does not guarantee 512 tokens — merging stops early when
         //    no pair occurs at least twice — so hard-coding 512 would be wrong.
-        int finalVocabularySize = t.vocabularySize();
+        int finalVocabularySize = tokenizer.vocabularySize();
 
         // 2. Instantiate the Uniform Model
         UniformModel uniformModel = new UniformModel(finalVocabularySize);

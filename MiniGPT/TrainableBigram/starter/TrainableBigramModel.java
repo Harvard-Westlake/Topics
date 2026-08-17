@@ -16,7 +16,7 @@ public class TrainableBigramModel {
 
     // PROVIDED — every logit starts as a small random number near zero.
     // Small matters: near-equal logits make each row's softmax nearly
-    // uniform, so a fresh table's average loss sits right at ln(V) —
+    // uniform, so a nearly empty table's average loss sits right at ln(V) —
     // Chapter 2's uniform anchor, and the Tester's first training check.
     public TrainableBigramModel(int vocabularySize, long seed) {
         if (vocabularySize <= 0) {
@@ -26,9 +26,9 @@ public class TrainableBigramModel {
         this.logits = new double[vocabularySize][vocabularySize];
         this.gradients = new double[vocabularySize][vocabularySize];
         Random random = new Random(seed);
-        for (int i = 0; i < vocabularySize; i++) {
-            for (int j = 0; j < vocabularySize; j++) {
-                logits[i][j] = 0.02 * random.nextGaussian();
+        for (int currentToken = 0; currentToken < vocabularySize; currentToken++) {
+            for (int nextToken = 0; nextToken < vocabularySize; nextToken++) {
+                logits[currentToken][nextToken] = 0.02 * random.nextGaussian();
             }
         }
     }
@@ -39,6 +39,14 @@ public class TrainableBigramModel {
 
     // TODO 1: stable softmax — the same three steps you built in Chapter 3,
     // rebuilt here so this class stands alone.
+    //
+    // The question: the table's numbers are free to be anything. How do you
+    // turn one row of free numbers into an honest forecast that adds up to
+    // 100% — every time, no matter how wild the numbers get?
+    // The answer: exponentiate every entry — now everything is positive,
+    // and bigger entries earn disproportionately bigger shares — then
+    // divide each by the total, so the shares sum to 1. Subtracting the
+    // max first changes no share, but stops Math.exp from overflowing.
     //
     // Dimensions:
     // - row:     length-n vector of logits; any real numbers.
@@ -61,6 +69,13 @@ public class TrainableBigramModel {
 
     // TODO 2: one row of the table, read as a prediction distribution.
     //
+    // The question: when you ask the table "what comes next?", which
+    // numbers answer — and why must the asking never change them?
+    // The answer: one row answers — the row belonging to the current
+    // token, softmaxed into a forecast. And reading must never write:
+    // training will read this forecast thousands of times mid-flight, and
+    // a table that shifts whenever it is looked at can never be measured.
+    //
     // Dimensions:
     // - currentToken: an int in [0, vocabularySize) — which row to read.
     // - returns:      NEW length-V vector of next-token probabilities.
@@ -81,9 +96,17 @@ public class TrainableBigramModel {
     // TODO 3: cross-entropy loss for one example — Chapter 2's penalty,
     // charged to a single prediction.
     //
+    // The question: the order history knows what actually came next. How do you grade
+    // one guess with one fair number — gentle on a near-miss, brutal on
+    // confident nonsense?
+    // The answer: look only at the probability the model gave the truth,
+    // and charge -ln of it. Truth at 90% costs 0.105; truth at 1% costs
+    // 4.6. The logarithm is what makes the grading fair: every halving of
+    // the truth's probability adds the same fixed penalty.
+    //
     // Dimensions:
     // - currentToken: the flashcard's front — which row made the forecast.
-    // - targetToken:  the flashcard's back — what the log actually showed.
+    // - targetToken:  the flashcard's back — what the history actually showed.
     // - returns:      one double, 0 for certainty in the truth and growing
     //                 as the model is more surprised.
     //
@@ -99,6 +122,16 @@ public class TrainableBigramModel {
     }
 
     // TODO 4: the shortcut gradient, accumulated.
+    //
+    // The question: the grade says how wrong you were. How do you learn
+    // which direction each number should move — without ever being handed
+    // the right answer?
+    // The answer: subtract the answer sheet from the forecast — p minus
+    // one-hot. The truth's entry comes out negative (that logit gets
+    // pushed up), every other entry comes out positive, sized by its own
+    // confidence (pushed down that hard). It is a direction, not an
+    // answer: the right answer only ever entered through the grade.
+    //
     // Computes "prediction minus one-hot" for one flashcard and pours it
     // into the gradient bucket. Backward measures; step moves.
     //
@@ -107,8 +140,10 @@ public class TrainableBigramModel {
     //   touches ONE row of it: gradients[currentToken]. No other row of
     //   the loss depends on this flashcard, and no logit changes here.
     //
-    // With p = probabilities(currentToken), for every column j:
-    //   gradients[currentToken][j] += p[j] - (j == targetToken ? 1.0 : 0.0)
+    // With p = probabilities(currentToken), for every possible next token
+    // (every column of that one row):
+    //   gradients[currentToken][nextToken] +=
+    //       p[nextToken] - (nextToken == targetToken ? 1.0 : 0.0)
     // then increment examplesSinceReset. The += is the accumulation: a
     // batch calls backward many times before one step.
     //
@@ -123,11 +158,23 @@ public class TrainableBigramModel {
     }
 
     // TODO 5: the update — one stride of gradient descent.
+    //
+    // The question: every number has a direction now. How far do you dare
+    // move — and why should grading a bigger handful of examples NOT mean
+    // taking a bigger leap?
+    // The answer: move each logit a small stride against its slope — the
+    // learning rate sets the stride. And divide the accumulated slopes by
+    // how many examples poured in: a batch is a vote, an averaged opinion,
+    // and 24 voters should not shove 24 times harder than one.
+    //
     // Averages the accumulated gradients and moves every logit against
     // its slope.
     //
-    // For every entry of the table:
-    //   logits[i][j] -= learningRate * gradients[i][j] / examplesSinceReset
+    // For every entry of the table — every currentToken row, every
+    // nextToken column:
+    //   logits[currentToken][nextToken] -=
+    //       learningRate * gradients[currentToken][nextToken]
+    //           / examplesSinceReset
     //
     // The division averages the batch: 24 accumulated flashcards summed
     // would be one gradient ~24 times louder, and batch size would secretly
@@ -146,30 +193,43 @@ public class TrainableBigramModel {
     }
 
     // TODO 6: reset — wipe the bucket between updates.
-    // Set every entry of gradients to 0.0 and examplesSinceReset to 0.
     //
-    // Why this exists: a gradient is a snapshot of the table AS IT WAS
-    // when backward ran. The moment step moves the logits, every
-    // accumulated slope is stale. Forgetting this reset is the classic
-    // silent training bug — old slopes contaminate every later step.
+    // The question: yesterday's directions were measured on a table that
+    // no longer exists. Why must the slate be wiped before the next
+    // handful?
+    // The answer: a slope is a snapshot — it says which way was downhill
+    // from where the table STOOD. The moment step moves the table, those
+    // readings describe a place it already left. Wipe them, or every
+    // future step is steered partly by ghosts. Forgetting this reset is
+    // the classic silent training bug.
+    //
+    // Set every entry of gradients to 0.0 and examplesSinceReset to 0.
     public void zeroGradients() {
         throw new UnsupportedOperationException("TODO 6: zero gradients");
     }
 
     // TODO 7: Chapter 2's evaluation, one method.
     //
+    // The question: one guess earned one grade. What is the report card
+    // for the whole history — and what score must a table that knows nothing
+    // always receive?
+    // The answer: grade every adjacent pair and average the charges. A
+    // know-nothing table forecasts a third for everything and pays
+    // -ln(1/3) = 1.0986 on every single card — so a step-0 loss of 1.0987
+    // is proof the pipeline works, not a disappointment.
+    //
     // Dimensions:
-    // - tokens:  a log of n tokens — which contains n - 1 flashcards,
+    // - tokens:  a history of n tokens — which contains n - 1 flashcards,
     //            one per adjacent pair.
-    // - returns: the mean of loss(tokens[t], tokens[t + 1]) over
-    //            t = 0 .. tokens.length - 2.
+    // - returns: the mean of loss(tokens[position], tokens[position + 1])
+    //            over position = 0 .. tokens.length - 2.
     //
     // Examples from the lesson:
     //   {1, 0, 1} averages exactly two losses: loss(1,0) and loss(0,1).
-    //   A fresh table (seed 7) on the full training log scores 1.0987 —
+    //   A nearly empty table (seed 7) on the full training history scores 1.0987 —
     //   ln(3) to three decimals, Chapter 2's uniform anchor.
     //
-    // Call requireLog(tokens) first.
+    // Call requireHistory(tokens) first.
     public double averageLoss(int[] tokens) {
         throw new UnsupportedOperationException("TODO 7: average loss");
     }
@@ -216,10 +276,10 @@ public class TrainableBigramModel {
         }
     }
 
-    public static void requireLog(int[] tokens) {
+    public static void requireHistory(int[] tokens) {
         if (tokens == null || tokens.length < 2) {
             throw new IllegalArgumentException(
-                "A token log needs at least two tokens to form one transition.");
+                "A token history needs at least two tokens to form one transition.");
         }
     }
 }

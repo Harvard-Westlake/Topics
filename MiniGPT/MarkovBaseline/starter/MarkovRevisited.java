@@ -11,13 +11,13 @@ public class MarkovRevisited {
         List<List<Integer>> test = new ArrayList<>();
 
         for (List<Integer> document : documents) {
-            int n = document.size();
-            int trainEnd = (int) Math.floor(n * 0.80);
-            int validationEnd = (int) Math.floor(n * 0.90);
+            int documentLength = document.size();
+            int trainEnd = (int) Math.floor(documentLength * 0.80);
+            int validationEnd = (int) Math.floor(documentLength * 0.90);
 
             training.add(copyRange(document, 0, trainEnd));
             validation.add(copyRange(document, trainEnd, validationEnd));
-            test.add(copyRange(document, validationEnd, n));
+            test.add(copyRange(document, validationEnd, documentLength));
         }
 
         return new CorpusSplit(training, validation, test);
@@ -58,10 +58,10 @@ public class MarkovRevisited {
         List<Integer> output = new ArrayList<>(prompt);
         Random random = new Random(seed);
 
-        for (int i = 0; i < newTokens; i++) {
-            int current = output.get(output.size() - 1);
-            int next = sampleNext(model, current, random);
-            output.add(next);
+        for (int generated = 0; generated < newTokens; generated++) {
+            int currentToken = output.get(output.size() - 1);
+            int nextToken = sampleNext(model, currentToken, random);
+            output.add(nextToken);
         }
 
         return output;

@@ -1,6 +1,6 @@
-// PROVIDED — the tokenized order log used throughout the chapter.
+// PROVIDED — the tokenized order history used throughout the chapter.
 //
-// Nothing here is random at run time. Both logs are fixed arrays, so every
+// Nothing here is random at run time. Both histories are fixed arrays, so every
 // count quoted on the lesson page can be checked by eye. The vocabulary is
 // deliberately tiny: with three tokens the entire model is nine numbers,
 // and you can watch every one of them learn.
@@ -10,7 +10,7 @@ public class TrainingData {
     //   0 = pizza   1 = pineapple   2 = pepperoni
     public static final String[] VOCABULARY = {"pizza", "pineapple", "pepperoni"};
 
-    // The TRAINING log: 122 tokens, 121 transitions. It reads as
+    // The TRAINING history: 122 tokens, 121 transitions. It reads as
     // "pineapple pizza pineapple pizza pepperoni pizza ..." — a topping,
     // the word pizza, another topping, and so on.
     //
@@ -29,8 +29,8 @@ public class TrainingData {
         };
     }
 
-    // The VALIDATION log: 42 tokens, 41 transitions — a later stretch of the
-    // same order log. Chapter 2's boundary rule applies unchanged: this data
+    // The VALIDATION history: 42 tokens, 41 transitions — a later stretch of the
+    // same order history. Chapter 2's boundary rule applies unchanged: this data
     // is scored, never trained on. Of its 20 transitions leaving `pizza`,
     // 13 go to pineapple and 7 to pepperoni.
     public static int[] validationTokens() {
@@ -41,11 +41,11 @@ public class TrainingData {
         };
     }
 
-    // Chapter 2 review: count current -> next transitions in a token log.
+    // Chapter 2 review: count current -> next transitions in a token history.
     public static long[][] transitionCounts(int[] tokens, int vocabularySize) {
         long[][] counts = new long[vocabularySize][vocabularySize];
-        for (int t = 0; t + 1 < tokens.length; t++) {
-            counts[tokens[t]][tokens[t + 1]]++;
+        for (int position = 0; position + 1 < tokens.length; position++) {
+            counts[tokens[position]][tokens[position + 1]]++;
         }
         return counts;
     }
@@ -65,8 +65,8 @@ public class TrainingData {
                 "Row " + currentToken + " has no counts and no smoothing.");
         }
         double[] probabilities = new double[vocabularySize];
-        for (int j = 0; j < vocabularySize; j++) {
-            probabilities[j] = (counts[currentToken][j] + alpha) / denominator;
+        for (int nextToken = 0; nextToken < vocabularySize; nextToken++) {
+            probabilities[nextToken] = (counts[currentToken][nextToken] + alpha) / denominator;
         }
         return probabilities;
     }

@@ -10,14 +10,14 @@ import java.util.Random;
 public class Trainer {
 
     // One training step = one parameter update built from `batchSize`
-    // examples drawn at random from the log — the "stochastic" in
+    // examples drawn at random from the history — the "stochastic" in
     // Stochastic Gradient Descent.
     public static void sgdStep(TrainableBigramModel model, int[] tokens,
                                int batchSize, double learningRate, Random random) {
         model.zeroGradients();
-        for (int b = 0; b < batchSize; b++) {
-            int t = random.nextInt(tokens.length - 1);
-            model.backward(tokens[t], tokens[t + 1]);
+        for (int example = 0; example < batchSize; example++) {
+            int flashcardStart = random.nextInt(tokens.length - 1);
+            model.backward(tokens[flashcardStart], tokens[flashcardStart + 1]);
         }
         model.step(learningRate);
     }
@@ -56,21 +56,21 @@ public class Trainer {
         long[][] counts = TrainingData.transitionCounts(trainTokens, model.vocabularySize());
         System.out.println();
         System.out.printf("  %-12s  %-28s  %s%n",
-                "row", "learned from gradients", "counted from the log");
-        for (int i = 0; i < model.vocabularySize(); i++) {
+                "row", "learned from gradients", "counted from the history");
+        for (int currentToken = 0; currentToken < model.vocabularySize(); currentToken++) {
             System.out.printf("  %-12s  %-28s  %s%n",
-                    TrainingData.VOCABULARY[i],
-                    formatRow(model.probabilities(i)),
-                    formatRow(TrainingData.countProbabilities(counts, i, 0.0)));
+                    TrainingData.VOCABULARY[currentToken],
+                    formatRow(model.probabilities(currentToken)),
+                    formatRow(TrainingData.countProbabilities(counts, currentToken, 0.0)));
         }
         System.out.println();
     }
 
     private static String formatRow(double[] row) {
         StringBuilder builder = new StringBuilder("[");
-        for (int j = 0; j < row.length; j++) {
-            builder.append(String.format("%.3f", row[j]));
-            if (j < row.length - 1) {
+        for (int nextToken = 0; nextToken < row.length; nextToken++) {
+            builder.append(String.format("%.3f", row[nextToken]));
+            if (nextToken < row.length - 1) {
                 builder.append(", ");
             }
         }

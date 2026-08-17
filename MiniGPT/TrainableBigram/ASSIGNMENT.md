@@ -14,7 +14,7 @@ By the end of this assignment you should be able to:
 - **Compute the exact gradient.** Implement `p` minus one-hot for the used row, explain each entry's sign and magnitude, and verify it against a finite-difference wiggle.
 - **Run the training loop.** Reset, accumulate a batch, average, and step — and explain *why* the loop averages and *why* it resets.
 - **Read a loss trace.** Anchor step 0 at $\ln V$, recognize the loss floor set by the data's own disagreement, and diagnose too-cold and too-hot learning rates from the shape of the curve.
-- **Compare learning with counting.** Show that gradient descent converges to Chapter 2's count frequencies on the same log — with no exact zeros, because softmax cannot say never.
+- **Compare learning with counting.** Show that gradient descent converges to Chapter 2's count frequencies on the same order history — with no exact zeros, because softmax cannot say never.
 
 Everything is seeded and deterministic: every number this assignment asks for must reproduce exactly, on any machine.
 
@@ -46,7 +46,7 @@ Do not modify the provided files, the provided constructor, or the helpers. `Tes
 | 1 | `stableSoftmax` | Chapter 3's three steps — subtract the max, exponentiate, normalize — without mutating the input |
 | 2 | `probabilities` | One row of the table, read as a prediction distribution |
 | 3 | `loss` | Cross-entropy for one flashcard: `-Math.log` of the probability given to the target |
-| 4 | `backward` | The shortcut gradient `p[j] - (j == target ? 1 : 0)`, *accumulated* into the used row only |
+| 4 | `backward` | The shortcut gradient `p[nextToken] - (nextToken == target ? 1 : 0)`, *accumulated* into the used row only |
 
 After Part 1, `Tester` must confirm: softmax reproduces `[2,1,0] -> [0.6652, 0.2447, 0.0900]` and survives `[1000, 999, 998]` without overflow, the worked row `[1.2, 0.1, -0.4]` forecasts `[0.6516, 0.2169, 0.1315]` and charges loss `1.5284` for target `pineapple`, the gradient comes out `[0.6516, -0.7831, 0.1315]` and sums to zero, and the gradient check's analytical-versus-wiggle gap prints below $10^{-6}$.
 
@@ -58,7 +58,7 @@ Implement the remaining TODOs, in order:
 |---|---|---|
 | 5 | `step` | Average the accumulated gradients (divide by the example count), stride against the slope |
 | 6 | `zeroGradients` | Wipe every gradient and the example count — a stale slope describes a table that no longer exists |
-| 7 | `averageLoss` | Chapter 2's evaluation: mean loss over every adjacent pair of a token log |
+| 7 | `averageLoss` | Chapter 2's evaluation: mean loss over every adjacent pair of a token history |
 
 Then run the two experiments on the bench:
 
@@ -91,7 +91,7 @@ Answer in your own words in the Canvas text box, below the stencil. Two to four 
 1. **The handcuffs question.** The table stores logits and softmaxes on demand, instead of storing probabilities and nudging those directly. What two constraints make stored probabilities miserable to update, and how does the logits-plus-softmax design dodge both?
 2. **The messenger question.** A classmate says "the gradient tells the model the right answer." Correct them precisely: what does $\partial L / \partial z_0 = 0.6516$ actually assert about the `pizza` logit, and where in the pipeline does the right answer actually enter?
 3. **The signs question.** For the worked gradient `[0.6516, -0.7831, 0.1315]`, explain why exactly one entry is negative, what subtracting each entry does to its logit, and why the three entries must sum to zero.
-4. **The anchor question.** Before training, the loss trace starts at `1.0987`. Which Chapter 2 anchor is this, why must a fresh random table land there, and what should you conclude if your step-0 line prints `0.6931` instead?
+4. **The anchor question.** Before training, the loss trace starts at `1.0987`. Which Chapter 2 anchor is this, why must a nearly empty table land there, and what should you conclude if your step-0 line prints `0.6931` instead?
 5. **The averaging question.** `step` divides the accumulated gradients by the number of examples before updating. What silently goes wrong if you sum instead of average — and which dial does a growing batch size then secretly turn?
 6. **The lonely-rows question.** In the batch `pizza -> pineapple`, `pineapple -> pizza`, `pizza -> pepperoni`, which rows receive gradient and why not `pepperoni`'s? What does this row isolation mean for a rare token in a 50,000-word vocabulary?
 7. **The two-tables question.** After 300 steps, the learned table sits within a few hundredths of the counted one — but `P(pizza | pizza)` is `0.009`, not `0.000`. Explain both facts: why gradient descent converges toward the count frequencies, and which Chapter 3 fact about softmax makes an exact zero impossible (and which Chapter 2 repair that resembles).
@@ -118,7 +118,7 @@ Confirm each of the following before submitting:
 - [ ] **All seven TODOs implemented** — no `UnsupportedOperationException` remains reachable.
 - [ ] **The worked trace reproduces by hand** — softmax `[0.6516, 0.2169, 0.1315]`, loss `1.5284`, gradient `[0.6516, -0.7831, 0.1315]`.
 - [ ] **One step lowers the loss** — learning rate 0.5 moves the worked row to `[0.8742, 0.4916, -0.4658]` and the loss to `1.0474`.
-- [ ] **The anchor holds** — a fresh table's average training loss prints `1.0987`, matching $\ln 3$.
+- [ ] **The anchor holds** — a nearly empty table's average training loss prints `1.0987`, matching $\ln 3$.
 - [ ] **The gradient check passes** — worst analytical-versus-wiggle gap below $10^{-6}$.
 - [ ] **The loss trace reproduces digit for digit** — ending at `0.3300` training, `0.3311` validation — and is saved as a `.csv` file.
 - [ ] **The tables converge** — learned probabilities within a few hundredths of the counted frequencies, with no exact zeros.
@@ -142,7 +142,7 @@ Softmax of the worked row [1.2, 0.1, -0.4]:
 Loss for target pineapple:
 Gradient of the worked row:
 Row after one step (lr 0.5) and its new loss:
-Fresh-table average training loss (seed 7):
+Nearly-empty-table average training loss (seed 7):
 Final training / validation loss (300 steps, batch 24, lr 0.5):
 Learned P(pineapple | pizza) vs the counted frequency:
 Largest analytical-vs-wiggle gap from the gradient check:

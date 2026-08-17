@@ -46,6 +46,22 @@ Three ground rules:
 
 Each card has two distinct things on it: the token written on its face (`PINEAPPLE`), and the information it carries (`SWEET`). Keep those separate — the face is how a card gets *found*; what it carries is what gets *used*. That split becomes the vocabulary of attention in Stage 2.
 
+## <font color="#388bfd">One Matrix, Three Fillings</font>
+
+Everything you build this week produces the **same object**: an attention matrix — positions × positions, where row $i$ holds the mixing weights position $i$ uses, every row sums to 1, and everything above the diagonal is exactly 0. You will fill that one matrix **three different ways**, and the *only* thing that changes between them is where the scores come from:
+
+| | The scorer | What it adds | Row 2, three-card table |
+|---|---|---|---|
+| **Filling 1 — equal scores** (Stage 1) | Nobody: every permitted card scores the same | Information flows forward at all; the future is silenced | `0.333  0.333  0.333` |
+| **Filling 2 — hand-rule scores** (Stage 2) | You, with rules on an index card | *Selectivity*: relevant cards speak louder | `0.965  0.018  0.018` |
+| **Filling 3 — dot-product scores** (Stage 3) | Arithmetic on the cards themselves | *No rules about words*: selectivity emerges from numbers | `0.384  0.233  0.384` |
+
+The three are flavors of one another, not different machines. Each keeps everything the previous one had — the mask, the softmax, the blend — and upgrades **only the scorer**. They replace each other; they never stack. Keep the one-sentence version of this chapter within reach all week:
+
+> **The pipeline — score, mask, softmax, blend — never changes. Only the scorer does.**
+
+That sentence is also the course's trajectory: Chapter 8 upgrades the scorer a fourth time, to scores the model *learns for itself*. The mask, softmax, and blend you build this week survive to the final chapter untouched.
+
 ## <font color="#388bfd">Vocabulary — Day 1</font>
 
 | Term | Definition | Picture to hold |
@@ -69,6 +85,8 @@ Each card has two distinct things on it: the token written on its face (`PINEAPP
 ## <font color="#388bfd">Day 1 — What the Spotlight Computes</font>
 
 ## <font color="#388bfd">Stage 1: Remember Everything Equally</font>
+
+*<font color="#8b949e">Filling 1 of 3 — equal scores. Nobody chooses; every permitted card speaks at the same volume.</font>*
 
 Before the spotlight can be *selective*, information has to be able to travel from earlier positions to later ones at all. Stage 1 builds that plumbing with the dumbest possible rule:
 
@@ -102,6 +120,8 @@ Answers are in the [Answer Key](#answer-key) below. Do these on paper before mov
 Stage 1 proves information can flow forward. It also creates the next failure on purpose: treating every previous position as equally important **blurs** useful and irrelevant information together. At position 2, the one card that matters (the earlier `PINEAPPLE`, carrying `SWEET`) speaks at exactly the same volume as everything else. The fix is not more mixing — it is *unequal* mixing.
 
 ## <font color="#388bfd">Stage 2: Write the Scores by Hand</font>
+
+*<font color="#8b949e">Filling 2 of 3 — hand-rule scores. Same matrix, but now a person chooses who speaks louder.</font>*
 
 Here is the reasoning, in plain words: *standing at position 2, if an earlier card looks useful for what happens next, I want to turn its volume up; if it looks irrelevant, I want to turn its volume down.* Stage 2 does exactly that with a rule simple enough to write on an index card:
 
@@ -219,16 +239,18 @@ Now `PINEAPPLE` and `PEPPERONI` genuinely share something a machine can find —
 
 ## <font color="#388bfd">Stage 3: The Dot Product Scores the Match</font>
 
+*<font color="#8b949e">Filling 3 of 3 — dot-product scores. Same matrix, and now nobody chooses: the numbers do.</font>*
+
 Here is the entire matching machine, as a loop — meet it as code before any notation:
 
 ```java
 double total = 0.0;
-for (int feature = 0; feature < left.length; feature++) {
-    total += left[feature] * right[feature];
+for (int slot = 0; slot < queryCard.length; slot++) {
+    total += queryCard[slot] * keyCard[slot];
 }
 ```
 
-`left` is the query's stat card; `right` is one key's stat card. The loop walks the slots in parallel, multiplies each pair, and adds everything up. Why is multiply-then-add a *matching* calculation and not just arithmetic? Because of what multiplication does to each slot:
+`queryCard` is the asking position's stat card; `keyCard` is the stat card of one earlier card being considered. The loop walks the slots in parallel, multiplies each pair, and adds everything up. Why is multiply-then-add a *matching* calculation and not just arithmetic? Because of what multiplication does to each slot:
 
 - Both cards have the feature (`1.0 × 1.0 = 1.0`): the slot **adds to the score**.
 - Either card lacks it (`1.0 × 0.0 = 0.0`): the slot **contributes nothing**.
@@ -237,7 +259,7 @@ A feature only scores when **both** sides have it. Watch it run on all three sce
 
 **Scenario 1 — perfect match.** Query PINEAPPLE `[1, 1, 0, 0]` against key PINEAPPLE `[1, 1, 0, 0]`:
 
-| Feature | left (query) | right (key) | product |
+| Feature | queryCard | keyCard | product |
 |---|---:|---:|---:|
 | topping | 1.0 | 1.0 | 1.0 |
 | sweet | 1.0 | 1.0 | 1.0 |
@@ -247,7 +269,7 @@ A feature only scores when **both** sides have it. Watch it run on all three sce
 
 **Scenario 2 — partial match.** Query PINEAPPLE against key PEPPERONI `[1, 0, 1, 0]`:
 
-| Feature | left (query) | right (key) | product |
+| Feature | queryCard | keyCard | product |
 |---|---:|---:|---:|
 | topping | 1.0 | 1.0 | 1.0 |
 | sweet | 1.0 | 0.0 | 0.0 |
@@ -257,7 +279,7 @@ A feature only scores when **both** sides have it. Watch it run on all three sce
 
 **Scenario 3 — complete mismatch.** Query PINEAPPLE against key GYM SOCK `[0, 0, 0, 1]`:
 
-| Feature | left (query) | right (key) | product |
+| Feature | queryCard | keyCard | product |
 |---|---:|---:|---:|
 | topping | 1.0 | 0.0 | 0.0 |
 | sweet | 1.0 | 0.0 | 0.0 |
@@ -286,6 +308,8 @@ Feature slots are `[topping, sweet, savory, laundry]` throughout.
 **Scaling.** Two shared slots produced a score of 2.0. If stat cards had 400 slots, raw totals would grow large just because the cards got longer — and softmax would then slam almost all weight onto one position. Dividing every score by $\sqrt{d}$ keeps scores comparable across dimensions. For position $i$ querying position $j$:
 
 $$s_{ij} = \frac{q_i \cdot k_j}{\sqrt{d}}$$
+
+In code, give $d$ its real name: `slotsPerCard`. It is the number of slots on a card — a property of how long the cards are — and it never depends on the scores themselves. A divisor that changed with the score would warp the very ranking it is supposed to preserve.
 
 **Who plays which role this week.** Stage 3 uses `query = key = value = input`: the card's one stat card plays all three roles. That has an honest consequence — every card matches *itself* perfectly, so the current position always attends to itself substantially. Expected, not a bug. Chapter 8 gives each role its own learned vector, which is when the roles genuinely separate.
 
@@ -332,6 +356,20 @@ Put that next to Stage 1's equal mixture at the same position:
 | Stage 3 — dot product | 1.000 | **0.767** | **0.233** | 0.000 |
 
 The `sweet` feature rose and `savory` fell, because the query found the pineapple cards — and **no line of code anywhere mentions the word "pineapple."** The selectivity came entirely from multiply-and-add over feature slots.
+
+### <font color="#79c0ff">The pipeline never changed</font>
+
+All three fillings are now on the table. Line them up — plus the one Chapter 8 will add — and watch which column moves:
+
+```text
+              score source                            mask      softmax     blend
+Filling 1:    every permitted card scores equal  ->   same  ->   same  ->   same
+Filling 2:    your hand-written rule             ->   same  ->   same  ->   same
+Filling 3:    queryCard . keyCard / sqrt(slots)  ->   same  ->   same  ->   same
+Chapter 8:    learned query . learned key        ->   same  ->   same  ->   same
+```
+
+One column changes; three survive every upgrade. This also settles a bug students write every year: if an implementation of Filling 3 ever *uses* Filling 1's matrix as an ingredient, something has been misunderstood. The fillings replace each other's scorers — they never stack.
 
 ## <font color="#388bfd">From Loop to Grid</font>
 
@@ -417,13 +455,13 @@ The starter code is in [starter/](starter/) — four files. One contains all the
 
 Implement the TODOs in order, rerunning `Tester` after each — it reports each stage as it comes alive:
 
-1. `uniformCausalWeights` — Stage 1's equal mixing (Day 1)
-2. `stableSoftmax` — subtract max, exponentiate, normalize (Day 1)
-3. `applyWeights` — the weighted blend of values (Day 1)
-4. `dotProduct` — the matching loop (Day 2)
-5. `ruleBasedCausalWeights` — Stage 2 with a `ScoreRule` (Day 2)
-6. `dotProductCausalWeights` — Stage 3: scale, mask, softmax (Day 2)
-7. `formatMatrix` — the labeled ASCII attention matrix (Day 2)
+1. `uniformCausalWeights` — **Filling 1: equal scores** (Day 1)
+2. `stableSoftmax` — shared machinery: every filling's scores pass through it (Day 1)
+3. `applyWeights` — shared machinery: blends values under any filling's matrix (Day 1)
+4. `dotProduct` — Filling 3's scorer, met on its own first (Day 2)
+5. `ruleBasedCausalWeights` — **Filling 2: hand-rule scores** (Day 2)
+6. `dotProductCausalWeights` — **Filling 3: dot-product scores** — TODO 5's skeleton, new scorer (Day 2)
+7. `formatMatrix` — shared machinery: prints any filling's matrix (Day 2)
 
 ## <font color="#388bfd">Evidence Checkpoint</font>
 
@@ -472,6 +510,7 @@ More traps worth defusing now — each one caught a real learner:
 | "Just dot the token identifiers from Chapter 1." | Identifiers are labels. Only feature vectors carry comparable meaning. |
 | "Softmax gave PEPPERONI weight zero." | Softmax never outputs an exact zero for a permitted position. Exact zeros come only from the mask. |
 | "Matrices are new math I haven't learned." | A matrix here is stacked stat cards; matrix multiplication is your dot-product loop run once per row. |
+| "Stage 3 is built on top of Stage 1's matrix." | The three fillings never stack — each replaces the previous scorer. Stage 3 reuses the mask and the softmax, never the uniform weights. |
 
 ## <font color="#388bfd">Stretch Goals</font>
 
