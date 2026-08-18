@@ -10,4 +10,11 @@ _admin/_solutions/
 __pycache__/
 *.pyc
 
+# Per-teacher secrets — every teacher keeps their own Canvas token in .env
+# (copy .env.example). NEVER commit a real token.
+.env
+
+# Course-hub API cache: contains student names and grades — never commit
+.cache/
+
 .DS_Store

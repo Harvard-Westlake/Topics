@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HW Course Hub</title>
+<script>
+/* Same MathJax delimiters Canvas uses: \(...\) inline, $$...$$ display.
+   Single-dollar math is intentionally NOT enabled — Canvas never renders it. */
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] },
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>HW Course Hub</h1>
+    <div class="sub">Topics repo is the source of truth — Canvas LMS: hw.instructure.com</div>
+  </div>
+  <nav class="tabs">
+    <button class="tab-btn" data-tab="courses">Courses</button>
+    <button class="tab-btn" data-tab="schedule">Year Schedule</button>
+    <button class="tab-btn" data-tab="planner">Module Planner</button>
+  </nav>
+</header>
+
+<!-- ══════════════════════════ COURSES ══════════════════════════ -->
+<section class="tab" id="tab-courses">
+
+<div class="toolbar">
+  <input id="search" type="text" placeholder="Search courses…" oninput="Courses.render()">
+  <select id="yearFilter" onchange="Courses.render()">
+    <option value="">All years</option>
+  </select>
+  <div class="toggle-group">
+    <button class="toggle-btn active" id="toggleStarred" onclick="Courses.setView('starred')">&#9733; Starred</button>
+    <button class="toggle-btn"        id="toggleAll"     onclick="Courses.setView('all')">All</button>
+  </div>
+  <div id="statusPill" class="status-pill loading"><div class="dot"></div>Loading…</div>
+  <span class="cache-age" id="cacheAge"></span>
+  <span class="count"     id="count"></span>
+  <button class="btn-icon" id="refreshBtn" onclick="Courses.doRefresh()">
+    <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M13.5 2.5A7 7 0 1 0 15 8" stroke-linecap="round"/>
+      <polyline points="11,0 15,3 11,6" fill="currentColor" stroke="none"/>
+    </svg>
+    Refresh
+  </button>
+</div>
+
+<div id="list" class="list"><div class="page-spinner"></div></div>
+
+<!-- Create Module drawer -->
+<div id="drawerOverlay" onclick="Courses.closeDrawer()"></div>
+<div id="drawer">
+  <div class="drawer-header">
+    <div>
+      <h2>New Module</h2>
+      <div class="sub">Create a Canvas unit with assignments</div>
+    </div>
+    <button onclick="Courses.closeDrawer()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1">&#x2715;</button>
+  </div>
+  <div class="drawer-body">
+
+    <div class="field">
+      <label>Course</label>
+      <select id="dmCourse" onchange="Courses.onCourseChange()">
+        <option value="">Select a course&#8230;</option>
+      </select>
+    </div>
+
+    <div class="row2">
+      <div class="field">
+        <label>Unit number <span id="dmUnitHint" style="color:var(--muted);font-size:11px"></span></label>
+        <input type="number" id="dmUnit" min="0" oninput="Courses.buildPreview()">
+      </div>
+      <div class="field">
+        <label>Start date <span style="color:var(--muted);font-size:11px">(optional)</span></label>
+        <input type="date" id="dmStartDate" oninput="Courses.buildPreview()">
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:130px 120px;gap:12px;align-items:start">
+      <div class="field">
+        <label>Points per assignment</label>
+        <input type="number" id="dmPoints" value="10" min="0" oninput="Courses.buildPreview()">
+      </div>
+      <div class="field">
+        <label>Scale factor / unit</label>
+        <div ondblclick="Courses.unlockScale()" title="Double-click to edit" style="cursor:not-allowed">
+          <input type="number" id="dmScale" value="1.15" min="0.01" step="0.01"
+                 disabled
+                 oninput="Courses.buildPreview()"
+                 class="scale-locked"
+                 style="pointer-events:none;width:100%">
+        </div>
+      </div>
+    </div>
+    <div style="font-size:11px;color:var(--purple);margin-top:-8px">
+      &#x2715;&thinsp;<span id="dmScaleFactor">1.000</span> scale &rarr; <span id="dmScaledPts">10</span>&thinsp;pts applied
+    </div>
+
+    <!-- Curated module saved in _modules/*.json -->
+    <div class="field" id="dmSavedField">
+      <label>Load saved module <span style="color:var(--muted);font-size:11px">(_modules/)</span></label>
+      <select id="dmSavedModule" onchange="Courses.loadSavedModule()">
+        <option value="">&#8212; none &#8212;</option>
+      </select>
+    </div>
+
+    <!-- Topics repo source (only source) -->
+    <div class="field">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
+        <label style="margin-bottom:0">Module from Topics repo</label>
+        <label style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);cursor:pointer;user-select:none">
+          <input type="checkbox" id="dmHideUsed" onchange="Courses.refreshModuleDatalist('')" style="accent-color:var(--purple);cursor:pointer">
+          hide used &nbsp;<span onclick="Courses.clearUsedModules(event)" title="Clear history" style="color:var(--purple);cursor:pointer;font-size:11px">&#10005; clear</span>
+        </label>
+      </div>
+      <div class="chip-input" id="dmModuleChips" onclick="document.getElementById('dmModuleText').focus()">
+        <input type="text" id="dmModuleText" list="dmGithubModuleList"
+               placeholder="Search module…" autocomplete="off"
+               oninput="Courses.onModuleTextInput()"
+               onchange="Courses.onModuleTextChange()"
+               onkeydown="Courses.onModuleTextKey(event)">
+        <datalist id="dmGithubModuleList"></datalist>
+      </div>
+    </div>
+
+    <!-- Lesson table -->
+    <div id="dmLessons" style="display:none">
+      <div class="lesson-table-head">
+        <div></div>
+        <div>Day</div>
+        <div>Title</div>
+        <div style="text-align:right">Contains Review</div>
+      </div>
+      <div id="dmLessonRows"></div>
+    </div>
+
+    <div style="display:flex;gap:10px">
+      <button id="dmCreateBtn" class="btn-create" onclick="Courses.createModule()" disabled>Create Module</button>
+      <button class="btn-icon" onclick="Courses.closeDrawer()">Cancel</button>
+    </div>
+
+    <div id="dmResult" style="display:none"></div>
+
+  </div>
+</div>
+
+</section>
+
+<!-- ══════════════════════════ YEAR SCHEDULE ══════════════════════════ -->
+<section class="tab" id="tab-schedule">
+
+<div class="settings">
+  <label>Schedule</label>
+  <select id="schedPick" onchange="Schedule.pickSchedule(this.value)"></select>
+  <button class="btn-icon" onclick="Schedule.newSchedule()" style="padding:6px 10px">+ New</button>
+  <label>Year</label><input type="text" id="setYear">
+  <label>First day</label><input type="date" id="setStart">
+  <label>Last day</label><input type="date" id="setEnd">
+  <label>Meets</label>
+  <div class="dow-group" id="dowGroup"></div>
+  <button class="btn-icon" id="nsToggle" onclick="Schedule.toggleNoSchool()">No-school days</button>
+  <div class="summary">
+    <span id="summary"></span>
+    <div id="savePill" class="status-pill saved"><div class="dot"></div>Saved</div>
+  </div>
+</div>
+
+<div class="noschool-row" id="nsRow">
+  <span id="nsChips" style="display:flex;gap:6px;flex-wrap:wrap"></span>
+  <input type="date" id="nsDate">
+  <input type="text" id="nsLabel" placeholder="Label (optional)" style="width:150px">
+  <button class="btn-icon" onclick="Schedule.addNoSchool()">Add</button>
+</div>
+
+<div id="warnings"></div>
+
+<div class="sched-main">
+  <aside class="palette" id="palette">
+    <div class="pal-section">
+      <div class="pal-head">Saved Modules <span class="mini" onclick="Schedule.loadPalette()">&#8635; refresh</span></div>
+      <div class="pal-body" id="palSaved"><div class="pal-note">Loading…</div></div>
+    </div>
+    <div class="pal-section">
+      <div class="pal-head">Topics</div>
+      <div class="pal-body" id="palTopics"></div>
+    </div>
+    <div class="pal-section">
+      <div class="pal-head">Finals <span class="mini" id="palFinalsNew" onclick="Schedule.newFinal()">+ new</span></div>
+      <div class="pal-body" id="palFinals"></div>
+    </div>
+    <div class="pal-section">
+      <div class="pal-head">Day Types</div>
+      <div class="pal-body" id="palDays"></div>
+    </div>
+  </aside>
+  <div class="board" id="board"></div>
+</div>
+
+<!-- Sync modal -->
+<div class="overlay" id="syncOverlay" onclick="Schedule.closeSync()"></div>
+<div class="modal" id="syncModal">
+  <div class="modal-head">
+    <h2 id="syncTitle">Sync to Canvas</h2>
+    <button class="x-btn" onclick="Schedule.closeSync()">&#x2715;</button>
+  </div>
+  <div class="modal-body">
+    <div>
+      <label>Course</label>
+      <select id="syncCourse"></select>
+    </div>
+    <div class="preview-box" id="syncPreview"></div>
+    <div id="syncResult" style="display:none"></div>
+  </div>
+  <div class="modal-foot">
+    <button class="btn-create" id="syncBtn" onclick="Schedule.doSync()">Sync</button>
+    <button class="btn-icon" onclick="Schedule.closeSync()">Close</button>
+  </div>
+</div>
+
+<!-- Final exam editor -->
+<div class="overlay" id="finalOverlay" onclick="Schedule.closeFinalEditor()"></div>
+<div class="modal" id="finalEditorModal">
+  <div class="modal-head">
+    <h2 id="feTitle">Edit Final</h2>
+    <button class="x-btn" onclick="Schedule.closeFinalEditor()">&#x2715;</button>
+  </div>
+  <div class="modal-body">
+    <textarea id="feText" spellcheck="false"></textarea>
+  </div>
+  <div class="modal-foot">
+    <button class="btn-create" onclick="Schedule.saveFinal()">Save</button>
+    <button class="btn-icon" onclick="Schedule.closeFinalEditor()">Cancel</button>
+    <button class="btn-icon" style="margin-left:auto;color:var(--red)" onclick="Schedule.deleteFinal()">Delete</button>
+  </div>
+</div>
+
+</section>
+
+<!-- ══════════════════════════ MODULE PLANNER ══════════════════════════ -->
+<section class="tab" id="tab-planner">
+
+<div class="pl-layout">
+  <div class="pl-sidebar">
+    <h2>Saved Modules</h2>
+    <div id="plSavedList"></div>
+    <button class="btn-new" onclick="Planner.newModule()">+ New module</button>
+  </div>
+
+  <div class="pl-main">
+    <div class="field">
+      <label>Module name</label>
+      <input type="text" id="fName" placeholder="e.g. Computer Setup and Git Usage" oninput="Planner.onNameInput()">
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label>Slug <span style="color:var(--muted)">(filename)</span></label>
+        <input type="text" id="fSlug" placeholder="auto-generated" oninput="Planner.touchSlug()">
+      </div>
+      <div class="field">
+        <label>Unit number <span style="color:var(--muted)">(suggested)</span></label>
+        <input type="number" id="fUnit" min="0" value="0" oninput="Planner.refreshAll()">
+      </div>
+    </div>
+    <div class="field">
+      <label>Description</label>
+      <textarea id="fDesc" placeholder="One-paragraph summary of what this module covers"></textarea>
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label>Points per assignment <span style="color:var(--muted)">(base)</span></label>
+        <input type="number" id="fPoints" value="10" min="0" oninput="Planner.refreshAll()">
+      </div>
+      <div class="field">
+        <label>Scale factor / unit</label>
+        <input type="number" id="fScale" value="1.15" min="0.01" step="0.01" oninput="Planner.refreshAll()">
+      </div>
+    </div>
+    <div class="scale-note">&#x2715;&thinsp;<span id="plScaleFactor">1.000</span> scale &rarr; <span id="plScaledPts">10</span>&thinsp;pts applied at import</div>
+
+    <div class="field">
+      <label>Lessons from Topics repo</label>
+      <div class="chip-input" id="plTopicChips" onclick="document.getElementById('plTopicText').focus()">
+        <input type="text" id="plTopicText" list="plTopicList" placeholder="Search topic…"
+               oninput="Planner.refreshTopicDatalist()" onchange="Planner.onTopicTextChange()" onkeydown="Planner.onTopicTextKey(event)">
+        <datalist id="plTopicList"></datalist>
+      </div>
+    </div>
+
+    <div id="plLessonsBlock" style="display:none">
+      <div class="lesson-table-head">
+        <div></div><div>Day</div><div>Title</div><div style="text-align:right">Contains Review</div>
+      </div>
+      <div id="plLessonRows"></div>
+    </div>
+    <div id="plStaleNote" class="stale-note" style="display:none"></div>
+
+    <div class="btn-row">
+      <button id="plSaveBtn" class="btn-create" onclick="Planner.saveModule()" disabled>Save Module</button>
+      <button id="plDeleteBtn" class="btn-danger" onclick="Planner.deleteModule()" style="display:none">Delete</button>
+      <span id="plResult"></span>
+    </div>
+  </div>
+</div>
+
+<!-- Lesson file editor -->
+<div id="plEditorOverlay" onclick="Planner.closeEditor()"></div>
+<div id="plEditor">
+  <div class="editor-header">
+    <div>
+      <h2 id="edTitle"></h2>
+      <div class="sub" id="edSub">Files render exactly as the hub uploads them to Canvas</div>
+    </div>
+    <button onclick="Planner.closeEditor()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1">&#x2715;</button>
+  </div>
+  <div class="editor-tabs" id="edTabs"></div>
+  <div class="editor-toolbar">
+    <div class="toggle-group">
+      <button class="toggle-btn active" id="edModeEdit" onclick="Planner.setEditorMode('edit')">Edit</button>
+      <button class="toggle-btn" id="edModePreview" onclick="Planner.setEditorMode('preview')">Canvas Preview</button>
+    </div>
+    <button class="btn-create" id="edSaveBtn" onclick="Planner.saveFile()" style="padding:6px 16px">Save</button>
+    <span id="edResult" style="font-size:12px"></span>
+    <span class="engine-hint" id="edEngine" style="margin-left:auto"></span>
+  </div>
+  <textarea id="edText" spellcheck="false" oninput="Planner.markDirty()"></textarea>
+  <div id="edPreview" class="mdview" style="display:none"></div>
+</div>
+
+</section>
+
+<div id="toast"></div>
+
+<script src="/static/shell.js"></script>
+<script src="/static/courses.js"></script>
+<script src="/static/schedule.js"></script>
+<script src="/static/planner.js"></script>
+<script>Shell.init();</script>
+</body>
+</html>

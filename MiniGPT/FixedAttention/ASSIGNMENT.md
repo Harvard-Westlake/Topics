@@ -12,7 +12,7 @@ By the end of this assignment you should be able to:
 - **Keep the ground rules straight.** State what a position is, what the context window contains, and why nothing in this chapter samples tokens or touches a training corpus.
 - **Convert scores to weights.** Implement a numerically stable softmax and explain what it guarantees (positive weights, rows summing to one) and what it never does (assign a permitted position exactly zero).
 - **Fill one matrix three ways.** Implement the three fillings of the same causal attention matrix — equal scores (uniform averaging), hand-rule scores (a `ScoreRule`), and dot-product scores — and be able to say what each filling adds that the previous one lacked, and which parts of the pipeline never change at all.
-- **Explain the three roles.** Describe query, key, and value with the archive metaphor, and identify which position produces the query.
+- **Explain the three roles.** Describe query, key, and value with the card-table metaphor — the request slip, the card face, the card contents — and identify which position produces the query.
 - **Cross the words-to-numbers bridge.** Explain why token identifiers cannot be dotted, and how feature vectors make match scores emerge from multiply-and-add.
 - **Respect causality.** Produce exact-zero future weights and demonstrate that changing a future token cannot alter any earlier output.
 - **Read and produce attention matrices.** Print the labeled table and interpret any row as the mixture a position used.
@@ -88,7 +88,7 @@ Then two experiments:
 Answer in your own words in the Canvas text box, below the stencil. Two to four sentences each — these carry as much weight as the code.
 
 1. **The positions question.** The sequence is `[7, 12, 7, 31]`. Standing at position 2, which positions may attention use, and what weights does uniform averaging assign? Explain why the training corpus is irrelevant to your answer.
-2. **The roles question.** Using the archive cards, explain query, key, and value in one sentence each. Then state precisely where the query comes from — one position or many?
+2. **The roles question.** Using the stat cards on the table, explain query, key, and value in one sentence each. Then state precisely where the query comes from — one position or many?
 3. **The scores question.** Stage 2 produced scores `[4, 0, 0]`. Why can these not be used directly as mixing fractions? Name the two properties weights must have, and what softmax guarantees about each.
 4. **The bridge question.** `PINEAPPLE` is token 301 and `PEPPERONI` is token 17. Explain why `301 * 17` is meaningless (cite Chapter 1's misconception) and what a feature vector provides that an identifier cannot.
 5. **The zero-slot question.** In the dot product, why does a feature slot contribute nothing when either card holds `0.0` there? What happens to the score when a shared slot holds a negative value — and is a negative score a problem for softmax?

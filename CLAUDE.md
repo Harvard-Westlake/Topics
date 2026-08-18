@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Purpose
 
-This is the public student-facing curriculum repository for the **Honors Topics** computer science course at Harvard-Westlake. Student-facing content is Markdown-only, rendered on GitHub. Course-planning tooling (planner UI, verifier) lives in underscore-prefixed folders and is never student-facing. No credentials are ever stored in this repo — the Canvas access key lives in the private sibling `../Admin` repo.
+This is the public student-facing curriculum repository for the **Honors Topics** computer science course at Harvard-Westlake. Student-facing content is Markdown-only, rendered on GitHub. Course-planning tooling (course hub, planner UI, verifier) lives in underscore-prefixed folders and is never student-facing. Teachers collaborate here via branches and change requests reviewed in meetings; students have read access.
+
+No credentials are ever stored in this repo — each teacher keeps their own Canvas token in a gitignored root `.env` (copy `.env.example`). Final exam content lives only in the private sibling `../Admin` repo (along with instructor solutions); the hub reads it cross-repo and only ever pushes date/points placeholders to Canvas.
 
 ## Structure
 
@@ -16,8 +18,12 @@ Topics/
       README.md         — individual lesson
   _modules/             — curated module JSONs (reusable unit plans) imported by the course hub
   _admin/               — course administration namespace (tooling, config, docs)
+    _hub/               — THE course hub: tabbed web app (Courses / Year Schedule /
+                          Module Planner), python3 _admin/_hub/server.py → port 5050
+    _schedules/         — per-teacher year-plan JSONs edited by the hub's Year Schedule tab
     _instructions/      — authoring guides for maintaining lessons
-    _coursePlannerUI/   — local web UI that creates/edits _modules/*.json (python3 server.py)
+    _coursePlannerUI/   — standalone stdlib-only planner (superseded by _hub's Module
+                          Planner tab; kept as a credential-free fallback)
     _configuration/     — module.schema.json defining the curated module format
     _lessonplans/       — GENERATED readable summaries of _modules — never edit by hand
     _verification/      — verify.py link/reference checker (also runs in CI on push)
@@ -86,8 +92,10 @@ Folders whose names begin with `_` (e.g. `_admin/`, `_modules/`) are **ignored b
 
 `_modules/<slug>.json` files are saved unit plans: an ordered selection of lessons (possibly spanning topics) with optional review fragments attached, plus unit number, base points, and scale factor. Format: `_admin/_configuration/module.schema.json`. Review fragments are stored as **references** (`{module, path, file}`), never inline content — the repo's markdown stays the single source of truth and the hub resolves content at import time.
 
-- **Edit** with the planner UI: `python3 _admin/_coursePlannerUI/server.py` → http://127.0.0.1:8901. Saving also regenerates `_admin/_lessonplans/<slug>.md`. Clicking a lesson title opens a file editor with a Canvas-fidelity preview (`mdrender.py` ports the hub's `md_to_html`; exact rendering needs `pip3 install markdown`, otherwise a built-in fallback is used).
-- **Import** happens from the course hub (`../Admin` Flask app) via its "Load saved module" dropdown; the hub owns the Canvas access key.
+- **The course hub** (`python3 _admin/_hub/server.py` → http://127.0.0.1:5050) is the one UI for everything: the **Module Planner** tab creates/edits `_modules/*.json` (with the same lesson file editor and Canvas-fidelity preview as the standalone planner), the **Year Schedule** tab drags modules/tests/finals onto real class dates (`_admin/_schedules/<teacher>.json`, one file per teacher), and the **Courses** tab talks to Canvas using the teacher's own token from the gitignored root `.env`.
+- Saving a module also regenerates `_admin/_lessonplans/<slug>.md`.
+- The standalone planner (`python3 _admin/_coursePlannerUI/server.py` → http://127.0.0.1:8901) still works as a stdlib-only, credential-free fallback; its `mdrender.py` must stay in lockstep with the hub's `md_to_html`.
+- Year schedules store module **references** (a `_modules` slug or topic folder name) — day counts and lessons re-resolve from the repo on every request, so content edits automatically re-date every teacher's schedule.
 - `_admin/_lessonplans/*.md` are generated — regenerate with `verify.py --fix`, never hand-edit.
 
 ## Verification

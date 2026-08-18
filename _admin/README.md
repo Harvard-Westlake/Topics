@@ -4,8 +4,10 @@ Everything in this folder is tooling, configuration, and documentation for runni
 
 | Folder | Purpose |
 |---|---|
+| [`_hub/`](_hub/) | **The course hub** — one tabbed web app for Canvas courses, per-teacher year schedules, and module planning — `python3 _admin/_hub/server.py` |
+| [`_schedules/`](_schedules/) | Per-teacher year-plan JSONs edited by the hub's Year Schedule tab |
 | [`_instructions/`](_instructions/) | Authoring guides and content-review notes for maintaining lessons |
-| [`_coursePlannerUI/`](_coursePlannerUI/) | Local web UI for creating and editing curated modules — `python3 _admin/_coursePlannerUI/server.py` |
+| [`_coursePlannerUI/`](_coursePlannerUI/) | Standalone credential-free planner (superseded by the hub's Module Planner tab, kept as a stdlib-only fallback) — `python3 _admin/_coursePlannerUI/server.py` |
 | [`_configuration/`](_configuration/) | Schemas and configuration — [`module.schema.json`](_configuration/module.schema.json) defines the curated module format |
 | [`_lessonplans/`](_lessonplans/) | **Generated** readable summaries of each curated module — do not edit by hand |
 | [`_verification/`](_verification/) | [`verify.py`](_verification/verify.py) — link and reference checker, run locally or via CI |
@@ -18,16 +20,20 @@ Curated module JSONs themselves live at the repo top level in [`_modules/`](../_
 lessons (topic folders)          the source content, one folder per topic
         │
         ▼
-_coursePlannerUI                 pick lessons + reviews, set unit/points
+_hub Module Planner tab          pick lessons + reviews, set unit/points
         │
         ▼
 _modules/<slug>.json             curated module (this repo = source of truth)
         │                        └─ _admin/_lessonplans/<slug>.md (generated summary)
         ▼
-../Admin course hub              "Load saved module" in the Create Module drawer;
-        │                        holds the Canvas access key (never stored here)
+_hub Year Schedule tab           drag modules/tests/finals onto real class dates
+        │                        (_admin/_schedules/<teacher>.json, one per teacher)
         ▼
-Canvas module + assignments
+Canvas module + assignments      synced with each teacher's own token (.env,
+                                 gitignored — never stored in this repo)
 ```
+
+Final exam **content** lives only in the private sibling Admin repo; syncing a
+test/final day pushes a placeholder assignment (title, date, points) to Canvas.
 
 `_verification/verify.py` runs on every push (`.github/workflows/verify.yml`) and confirms all of the arrows above still point at things that exist.

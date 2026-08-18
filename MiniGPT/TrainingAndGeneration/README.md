@@ -148,7 +148,7 @@ Choose according to resulting probabilities.
 
 ```text
 java Train \
-    --corpus geology/ \
+    --corpus pizzeria/ \
     --merges 128 \
     --context 32 \
     --width 32 \
@@ -161,7 +161,7 @@ java Train \
 ```text
 java Generate \
     --checkpoint model.bin \
-    --prompt "The sedimentary layer" \
+    --prompt "The dough must rest" \
     --tokens 250 \
     --temperature 0.8 \
     --top-k 30 \
@@ -206,7 +206,7 @@ You must:
 
 ## <font color="#388bfd">Misconception Checkpoint</font>
 
-> **Misconception:** Generated fluency is not evidence that the model understands geology or that its statements are factually correct.
+> **Misconception:** Generated fluency is not evidence that the model understands cooking or that its statements are factually correct. A model that writes "bake at 900 degrees for an hour" writes it fluently.
 
 ## <font color="#388bfd">Stretch Goals</font>
 

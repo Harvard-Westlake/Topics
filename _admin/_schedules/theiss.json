@@ -1,0 +1,30 @@
+{
+  "end_date": "2027-06-04",
+  "meeting_days": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "no_school": [],
+  "sequence": [
+    {
+      "id": "bmsxk4elr2rz4q",
+      "type": "module",
+      "source": "saved",
+      "ref": "unit-1-computer-setup-and-git-usage",
+      "inserts": []
+    },
+    {
+      "id": "bmsxk4c4ra4kqt",
+      "type": "module",
+      "source": "saved",
+      "ref": "u5-ai-module",
+      "inserts": []
+    }
+  ],
+  "start_date": "2026-08-26",
+  "updated": "2026-08-17T14:19:04",
+  "year": "2026-27"
+}

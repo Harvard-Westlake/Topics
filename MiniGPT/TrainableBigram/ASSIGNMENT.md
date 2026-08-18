@@ -12,7 +12,8 @@ By the end of this assignment you should be able to:
 - **Keep logits and probabilities straight.** Store unrestricted scores, convert one row to a forecast with the stable softmax from Chapter 3, and explain why the table does not store probabilities directly.
 - **Grade one guess.** Implement cross-entropy loss — Chapter 2's penalty charged to a single prediction — and read its scale (0 for certainty in the truth, $\ln V$ for a uniform forecast, huge for confident error).
 - **Compute the exact gradient.** Implement `p` minus one-hot for the used row, explain each entry's sign and magnitude, and verify it against a finite-difference wiggle.
-- **Run the training loop.** Reset, accumulate a batch, average, and step — and explain *why* the loop averages and *why* it resets.
+- **Write the training loop.** Assemble reset, accumulate, average, and step into one SGD update, repeat it inside `train` — and explain *why* the loop averages and *why* it resets.
+- **Keep grading separate from training.** Say which methods read the table and which write it, and explain why `averageLoss` must only grade — never measure a slope or nudge a logit.
 - **Read a loss trace.** Anchor step 0 at $\ln V$, recognize the loss floor set by the data's own disagreement, and diagnose too-cold and too-hot learning rates from the shape of the curve.
 - **Compare learning with counting.** Show that gradient descent converges to Chapter 2's count frequencies on the same order history — with no exact zeros, because softmax cannot say never.
 
@@ -28,10 +29,10 @@ Copy all four files from [starter/](starter/) into your project.
 |---|---|---|
 | [TrainableBigramModel.java](starter/TrainableBigramModel.java) | Starter | TODOs 1–7 (the constructor and the helpers at the bottom are provided) |
 | [TrainingData.java](starter/TrainingData.java) | Complete | — |
-| [Trainer.java](starter/Trainer.java) | Complete | — |
+| [Trainer.java](starter/Trainer.java) | Starter | TODOs 8–9 (the reporting and the experiment bench are provided) |
 | [Tester.java](starter/Tester.java) | Complete | Rerun it after every TODO |
 
-Do not modify the provided files, the provided constructor, or the helpers. `Tester` reproduces every worked trace from the [lesson page](README.md) and reports each check as `PASS`, `FAIL`, or `TODO`. `Trainer` is the experiment bench — `java Trainer` runs the full training run, the learned-versus-counted comparison, and the learning-rate experiment.
+Do not modify the provided files, the provided constructor, or the helpers. `Tester` reproduces every worked trace from the [lesson page](README.md) and reports each check as `PASS`, `FAIL`, or `TODO`. `Trainer` is half starter, half bench: you write the SGD step and the training loop (TODOs 8–9), while the reporting and the experiment bench below them are provided — `java Trainer` runs the full training run, the learned-versus-counted comparison, and the learning-rate experiment.
 
 ---
 
@@ -43,10 +44,10 @@ Do not modify the provided files, the provided constructor, or the helpers. `Tes
 
 | # | Method | The idea it isolates |
 |---|---|---|
-| 1 | `stableSoftmax` | Chapter 3's three steps — subtract the max, exponentiate, normalize — without mutating the input |
-| 2 | `probabilities` | One row of the table, read as a prediction distribution |
-| 3 | `loss` | Cross-entropy for one flashcard: `-Math.log` of the probability given to the target |
-| 4 | `backward` | The shortcut gradient `p[nextToken] - (nextToken == target ? 1 : 0)`, *accumulated* into the used row only |
+| 1 | `stableSoftmax` | Shared machinery: Chapter 3's three steps — subtract the max, exponentiate, normalize — without mutating the input |
+| 2 | `probabilities` | **Forecast** — one row of the table, read as a prediction distribution (reads; writes nothing) |
+| 3 | `loss` | **Grade** — cross-entropy for one flashcard: `-Math.log` of the probability given to the target (reads; writes nothing) |
+| 4 | `accumulateGradients` | **Measure** — the shortcut gradient `p[nextToken] - (nextToken == target ? 1 : 0)`, *accumulated* into the used row only (writes the bucket, never a logit) |
 
 After Part 1, `Tester` must confirm: softmax reproduces `[2,1,0] -> [0.6652, 0.2447, 0.0900]` and survives `[1000, 999, 998]` without overflow, the worked row `[1.2, 0.1, -0.4]` forecasts `[0.6516, 0.2169, 0.1315]` and charges loss `1.5284` for target `pineapple`, the gradient comes out `[0.6516, -0.7831, 0.1315]` and sums to zero, and the gradient check's analytical-versus-wiggle gap prints below $10^{-6}$.
 
@@ -56,9 +57,11 @@ Implement the remaining TODOs, in order:
 
 | # | Method | The idea it isolates |
 |---|---|---|
-| 5 | `step` | Average the accumulated gradients (divide by the example count), stride against the slope |
-| 6 | `zeroGradients` | Wipe every gradient and the example count — a stale slope describes a table that no longer exists |
-| 7 | `averageLoss` | Chapter 2's evaluation: mean loss over every adjacent pair of a token history |
+| 5 | `step` | **Nudge** — average the accumulated gradients (divide by the example count), stride against the slope; the only method that moves a logit |
+| 6 | `zeroGradients` | **Reset** — wipe every gradient and the example count — a stale slope describes a table that no longer exists |
+| 7 | `averageLoss` | **Report** — mean loss over every adjacent pair; it grades whichever history it is handed and trains on neither |
+| 8 | `stochasticGradientDescentStep` | In `Trainer` — one update: Reset the bucket, Measure `batchSize` random flashcards into it, take one averaged Nudge |
+| 9 | the loop in `train` | Learning itself: repeat the step, threading the run's one seeded `Random` through every draw, reporting on schedule |
 
 Then run the two experiments on the bench:
 
@@ -76,9 +79,11 @@ Then run the two experiments on the bench:
 - A uniform row costs exactly $\ln 3$ — Chapter 2's anchor.
 - Analytical and finite-difference gradients agree at every logit.
 - Gradient entries sum to zero, and only the current token's row receives them.
-- `backward` changes no logits; `step` moves no row that accumulated nothing.
+- `accumulateGradients` changes no logits; `step` moves no row that accumulated nothing.
 - Accumulated gradients are averaged, not summed — and `step` with nothing accumulated is refused.
 - One gradient step lowers the loss on a one-example dataset (`1.5284` down to `1.0474`).
+- `averageLoss` moves no logits and touches no gradients — grading is not training.
+- One seeded SGD step makes exactly one draw per flashcard and lands the average training loss on `1.0279`.
 - Training reduces both training and validation loss, and the learned table matches the counted one.
 - A fixed seed reproduces the initial table and the entire training run exactly.
 
@@ -102,7 +107,7 @@ Answer in your own words in the Canvas text box, below the stencil. Two to four 
 
 | Area | Weight |
 |---|---:|
-| Model implementation: TODOs 1–7 correct on the fixtures | 30% |
+| Implementation: TODOs 1–9 correct on the fixtures | 30% |
 | Concept questions | 20% |
 | Required tests all passing | 15% |
 | Evidence: the CSV loss trace and the learned-versus-counted table | 15% |
@@ -115,7 +120,7 @@ Answer in your own words in the Canvas text box, below the stencil. Two to four 
 
 Confirm each of the following before submitting:
 
-- [ ] **All seven TODOs implemented** — no `UnsupportedOperationException` remains reachable.
+- [ ] **All nine TODOs implemented** — no `UnsupportedOperationException` remains reachable.
 - [ ] **The worked trace reproduces by hand** — softmax `[0.6516, 0.2169, 0.1315]`, loss `1.5284`, gradient `[0.6516, -0.7831, 0.1315]`.
 - [ ] **One step lowers the loss** — learning rate 0.5 moves the worked row to `[0.8742, 0.4916, -0.4658]` and the loss to `1.0474`.
 - [ ] **The anchor holds** — a nearly empty table's average training loss prints `1.0987`, matching $\ln 3$.
@@ -125,7 +130,7 @@ Confirm each of the following before submitting:
 - [ ] **The learning-rate experiment is recorded** — three final losses plus a one-sentence shape description each.
 - [ ] **Paper problem sets A and B completed** — brought to Day 2, finished before submission.
 - [ ] **All seven concept questions answered** — in your own words, with the specific numbers where asked.
-- [ ] **Provided code unmodified** — the fixtures, `Trainer`, `Tester`, the constructor, and the helpers are untouched.
+- [ ] **Provided code unmodified** — the fixtures, `Tester`, the constructor, the helpers, and the provided parts of `Trainer` (the reporting and the bench) are untouched.
 
 ---
 

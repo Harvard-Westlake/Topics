@@ -430,7 +430,7 @@ Feature vectors feel abstract until the vector is *you*. In this activity the cl
 
 1. **Choose the feature slots together.** As a class, pick six to nine qualities — for example: stressed, happy, overworked, friendly, skilled at cooking, athletic, funny, charismatic, frugal.
 2. **Fill in your stat card.** Rank yourself 0–10 on every quality. A nickname or an invented persona works exactly as well as your real name — the math cannot tell the difference, which is itself a lesson in what a feature vector does and does not know.
-3. **One dot product by hand first.** Pair up. Pick three of the qualities ($d = 3$), divide each ranking by 10 so the features live between 0 and 1, and compute your score against your partner's card: multiply slot by slot, add, divide by $\sqrt{3}$. This is exactly TODO 4 with people instead of rocks.
+3. **One dot product by hand first.** Pair up. Pick three of the qualities ($d = 3$), divide each ranking by 10 so the features live between 0 and 1, and compute your score against your partner's card: multiply slot by slot, add, divide by $\sqrt{3}$. This is exactly TODO 4 with people instead of toppings.
 4. **Enter the roster.** Type or paste everyone's rankings into the page. It normalizes the features, scores every pair, and softmaxes each row into the class attention matrix.
 5. **Read the matrix.** Row $i$ is student $i$'s attention. Whose row concentrates on one or two classmates? Whose spreads out almost evenly — and what would that row have looked like in Stage 1?
 6. **Run a retrieval query.** Switch the spotlight to a custom request — "looking for a study partner: happy 9, funny 7, overworked 2" — and see whom the weights land on. A query does not have to be one of the keys.

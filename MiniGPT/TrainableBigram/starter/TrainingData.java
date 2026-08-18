@@ -42,10 +42,10 @@ public class TrainingData {
     }
 
     // Chapter 2 review: count current -> next transitions in a token history.
-    public static long[][] transitionCounts(int[] tokens, int vocabularySize) {
+    public static long[][] transitionCounts(int[] history, int vocabularySize) {
         long[][] counts = new long[vocabularySize][vocabularySize];
-        for (int position = 0; position + 1 < tokens.length; position++) {
-            counts[tokens[position]][tokens[position + 1]]++;
+        for (int position = 0; position + 1 < history.length; position++) {
+            counts[history[position]][history[position + 1]]++;
         }
         return counts;
     }

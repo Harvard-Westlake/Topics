@@ -25,7 +25,7 @@ The audience is students who have completed Data Structures and Design and alrea
 |---|---|
 | Replace matrix mathematics with objects | **Begin with objects, then reveal the equivalent vector and matrix operation.** Students need the mathematics eventually, but not before they have a concrete model. |
 | Replace backpropagation implementation with trace analysis | **Trace first, implement second.** Students analyze complete worked traces before implementing a deliberately tiny automatic-differentiation engine. |
-| Use culturally and personally meaningful data | **Keep the task textual, but allow meaningful archives.** Geology books, environmental reports, campus history, public oral histories, and community documents can all serve as corpora. |
+| Use culturally and personally meaningful data | **Keep the task textual, but make the default archive one everyone has opinions about.** The pizzeria's order tickets, recipes, and reviews are commonplace and mildly controversial — pineapple on pizza starts an argument in any room — which keeps attention on the prediction question. Campus history, public oral histories, and community documents can all serve as alternative corpora. |
 | Avoid excessive low-level complexity | **Build only narrow numerical tools.** Students do not build a general tensor library. |
 | Show a working system early | **Introduce non-learning attention in Chapter 3.** Students see the central idea before they possess the machinery required to train it. |
 | Preserve rigor through analysis | **Require both analysis and implementation.** Every assignment includes traces, invariants, tests, and an explanation of observed behavior. |
@@ -68,7 +68,7 @@ Students prove their work through invariants, gradient checks, tiny overfitting,
 
 ### <font color="#79c0ff">It incorporates relevance without sacrificing technical unity</font>
 
-Students may train on geology, environmental history, public local archives, or another approved corpus. The final task remains next-token language modeling for everyone, so class discussion and grading remain coherent. Moving the final project to unrelated civic prediction data would break the language-modeling throughline; using civic and community **text** preserves both relevance and architectural continuity.
+Students may train on food writing, local history, public archives, or another approved corpus. The final task remains next-token language modeling for everyone, so class discussion and grading remain coherent. Moving the final project to unrelated civic prediction data would break the language-modeling throughline; using civic and community **text** preserves both relevance and architectural continuity.
 
 ## <font color="#388bfd">Key Sources</font>
 

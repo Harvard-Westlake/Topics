@@ -43,10 +43,10 @@
 
 ## <font color="#388bfd">Dataset Choices</font>
 
-The default is three public-domain or properly licensed geology books. Approved alternatives may include:
+The default is three public-domain cookbooks or other food writing — historic cookbooks are plentiful in the public domain, and they keep the pizzeria story running to the final page. Approved alternatives may include:
 
+- Public-domain novels or short stories
 - Environmental field reports
-- Public geological surveys
 - Campus history archives
 - Public municipal planning documents
 - Publicly licensed oral histories

@@ -290,27 +290,27 @@ Notice `pizza`'s cards *disagree with each other* — forty say one thing, twent
 
 ## <font color="#388bfd">The Loop: Reset, Accumulate, Average, Step</font>
 
-One **training step** in the provided `Trainer` has a five-beat rhythm, built entirely from your TODOs:
+One **training step** has a five-beat rhythm, built entirely from your TODOs — and in this chapter the trainer is yours to write as well: one pass through the rhythm is `stochasticGradientDescentStep` (TODO 8), and the `repeat 300 times` around it is the loop you write inside `train` (TODO 9):
 
 ```text
 repeat 300 times:
-    zeroGradients()                    reset      - wipe the gradient bucket
-    24 times:                          batch      - 24 flashcards graded together
-        draw a random flashcard                     (a current token and its target)
-        backward(current, target)      accumulate - add this card's gradient,
-                                                    p minus one-hot, to the bucket
-    step(learningRate)                 average    - divide the bucket by 24, then
-                                       step       - stride downhill against the slope
+    zeroGradients()                              reset      - wipe the gradient bucket
+    24 times:                                    batch      - 24 flashcards graded together
+        draw a random flashcard                               (a current token and its target)
+        accumulateGradients(current, target)     accumulate - add this card's gradient,
+                                                              p minus one-hot, to the bucket
+    step(learningRate)                           average    - divide the bucket by 24, then
+                                                 step       - stride downhill against the slope
 ```
 
-One function name in there deserves a gloss, because it is the standard name and it is not descriptive: `backward` computes Day 1's shortcut gradient — `p` minus one-hot — for a single flashcard and adds it to the bucket. The name records a direction. Computing the loss runs the pipeline *forward*: row → softmax → probability of the target → loss. Computing the gradient walks the same road in reverse — from the loss back to the logits that caused it — so every training library calls this the **backward pass**. Forward makes the prediction; backward finds out what to blame.
+One function in there deserves a gloss: `accumulateGradients` computes Day 1's shortcut gradient — `p` minus one-hot — for a single flashcard and adds it to the bucket. The name says exactly what the method does, but the operation also has a standard name worth learning now. Computing the loss runs the pipeline *forward*: row → softmax → probability of the target → loss. Computing the gradient walks the same road in reverse — from the loss back to the logits that caused it — so every training library calls this the **backward pass** and names the method `backward`; Chapter 6 will use that name. Forward makes the prediction; backward finds out what to blame.
 
 The 24 flashcards graded together are a **batch**, and pouring their gradients into one running total is **gradient accumulation**. Because the flashcards are drawn *at random*, this is **Stochastic Gradient Descent** — stochastic is a formal word for random. With 121 flashcards and 24 per step, about five steps consume one deck's worth — one **epoch**, though with random draws the term is a unit of accounting rather than a strict pass.
 
 Two design choices in the loop deserve a *why*:
 
 - **Why divide by the number of examples before stepping?** The batch votes. Twenty-four gradients summed would be one gradient roughly 24 times louder — and then changing the batch size would secretly change the stride length. Averaging keeps the learning rate meaning what it says, whatever the batch size. (Your `step` does this division; the Tester checks it.)
-- **Why reset to zero after every update?** A gradient is a snapshot: it describes the table *as it was* when `backward` ran. The moment `step` moves the logits, every accumulated slope is stale. Forgetting `zeroGradients` is the classic training bug — old slopes contaminate every future step, and the loss chart goes haywire while each individual method still looks correct.
+- **Why reset to zero after every update?** A gradient is a snapshot: it describes the table *as it was* when `accumulateGradients` ran. The moment `step` moves the logits, every accumulated slope is stale. Forgetting `zeroGradients` is the classic training bug — old slopes contaminate every future step, and the loss chart goes haywire while each individual method still looks correct.
 
 ### <font color="#79c0ff">Check yourself — Set C</font>
 
@@ -352,7 +352,7 @@ Three observations, each load-bearing:
 
 ## <font color="#388bfd">Learning-Rate Sensitivity</font>
 
-Every run above used learning rate $0.5$. How much did that choice matter? This section's point: **with the model, the data, and the code all held fixed, the learning rate alone decides whether training crawls, converges, or thrashes.** The provided `Trainer` bench demonstrates it by rerunning the same 300 steps at three settings — same table, same flashcards, same seeds; only the stride changes:
+Every run above used learning rate $0.5$. How much did that choice matter? This section's point: **with the model, the data, and the code all held fixed, the learning rate alone decides whether training crawls, converges, or thrashes.** The provided bench in `Trainer` demonstrates it by rerunning the same 300 steps at three settings — same table, same flashcards, same seeds; only the stride changes:
 
 | Learning rate | Final training loss | What the trace looks like |
 |---:|---:|---|
@@ -372,9 +372,9 @@ One example, and the table is now more certain that `pineapple` follows `pizza` 
 
 ## <font color="#388bfd">The Referee: the Gradient Check</font>
 
-Here is an unsettling fact about training bugs: a `backward` with a wrong sign, a swapped index, or a forgotten term often *still sort of trains* — the loss drifts down, slowly and mysteriously badly, and nothing crashes. Silent wrongness is the default failure mode of gradient code everywhere.
+Here is an unsettling fact about training bugs: an `accumulateGradients` with a wrong sign, a swapped index, or a forgotten term often *still sort of trains* — the loss drifts down, slowly and mysteriously badly, and nothing crashes. Silent wrongness is the default failure mode of gradient code everywhere.
 
-The referee is the wiggle experiment from Day 1, applied automatically. For every logit in the worked row, the Tester nudges by $h = 0.0001$ in both directions, recomputes the loss, forms the finite-difference slope, and compares it against what your `backward` computed:
+The referee is the wiggle experiment from Day 1, applied automatically. For every logit in the worked row, the Tester nudges by $h = 0.0001$ in both directions, recomputes the loss, forms the finite-difference slope, and compares it against what your `accumulateGradients` computed:
 
 $$\text{numerical slope} = \frac{L(z_i + h) - L(z_i - h)}{2h}$$
 
@@ -426,24 +426,28 @@ Now scale the flaw. A real vocabulary has 50,000 tokens, so this table would nee
 
 ## <font color="#388bfd">What You Are Given</font>
 
-The starter code is in [starter/](starter/) — four files. One contains all the TODOs; the rest are complete:
+The starter code is in [starter/](starter/) — four files. Two contain TODOs; the rest are complete:
 
 | File | Status | Role |
 |---|---|---|
 | [TrainableBigramModel.java](starter/TrainableBigramModel.java) | **TODO 1–7** | The table: its forecasts, its loss, its gradient, its update |
 | [TrainingData.java](starter/TrainingData.java) | Complete | The training and validation histories, plus Chapter 2's counting for the comparison |
-| [Trainer.java](starter/Trainer.java) | Complete | The training loop and the experiment bench — run `java Trainer` once the Tester passes |
+| [Trainer.java](starter/Trainer.java) | **TODO 8–9** | The training itself: one SGD step and the loop that repeats it (the reporting and the experiment bench are provided — run `java Trainer` once the Tester passes) |
 | [Tester.java](starter/Tester.java) | Complete | Reproduces every worked trace on this page and runs the required tests |
+
+The model's TODOs follow one flashcard through its life, in the order the chapter taught it — **Forecast** the next token, **Grade** the guess, **Measure** the slope, **Nudge** the table — plus the machinery around them. Each stage is strict about what it may touch: Forecast, Grade, and the Report card only *read* the table; Measure writes only the gradient bucket; Nudge is the only method that moves a logit. The Tester checks those boundaries as seriously as the arithmetic.
 
 Implement the TODOs in order, rerunning `Tester` after each — unimplemented stages report as `TODO`, not `FAIL`:
 
-1. `stableSoftmax` — Chapter 3's three steps, rebuilt here (Day 1)
-2. `probabilities` — one row, read as a forecast (Day 1)
-3. `loss` — cross-entropy for one flashcard (Day 1)
-4. `backward` — accumulate `p` minus one-hot into the used row (Day 1)
-5. `step` — average the accumulated gradients, stride downhill (Day 2)
-6. `zeroGradients` — wipe the bucket between updates (Day 2)
-7. `averageLoss` — Chapter 2's evaluation over a whole history (Day 2)
+1. `stableSoftmax` — shared machinery: Chapter 3's three steps, rebuilt here (Day 1)
+2. `probabilities` — Forecast: one row, read as a prediction (Day 1)
+3. `loss` — Grade: cross-entropy for one flashcard (Day 1)
+4. `accumulateGradients` — Measure: pour `p` minus one-hot into the used row (Day 1)
+5. `step` — Nudge: average the accumulated gradients, stride downhill (Day 2)
+6. `zeroGradients` — Reset: wipe the bucket between updates (Day 2)
+7. `averageLoss` — Report: grade a whole history without training on it (Day 2)
+8. `stochasticGradientDescentStep` — in `Trainer`: Reset, Measure a random batch, one averaged Nudge (Day 2)
+9. the loop in `train` — repeat the step, reporting the CSV trace on schedule (Day 2)
 
 ## <font color="#388bfd">Evidence Checkpoint</font>
 
@@ -463,9 +467,11 @@ Five observations your finished code must produce:
 - Cross-entropy is near zero for a near-certain correct prediction, and large when the truth was called nearly impossible.
 - Analytical and finite-difference gradients agree at every logit.
 - Gradient entries sum to zero, and only the current token's row receives them.
-- `backward` changes no logits; `step` moves no row that accumulated nothing.
+- `accumulateGradients` changes no logits; `step` moves no row that accumulated nothing.
 - Accumulated gradients are averaged, not summed — and `step` with nothing accumulated is refused.
 - One gradient step lowers the loss on a one-example dataset.
+- `averageLoss` moves no logits and touches no gradients — grading is not training.
+- One seeded SGD step makes exactly one draw per flashcard and lands the average training loss on `1.0279`.
 - Training reduces both training and validation loss, and the learned table matches the counted one.
 - A fixed seed reproduces the initial table and the entire training run exactly.
 
@@ -516,6 +522,7 @@ More traps worth defusing now:
 | "The gradient check passed, so the model is good." | It certifies the slope formula only — not the learning rate, the data, or the model. |
 | "This chapter is generating pizza orders." | The sampler is off. Training reads transitions that already happened and adjusts numbers. |
 | "Epoch and step are the same thing." | A step is one update; an epoch is one deck's worth of examples — here about five steps. |
+| "Evaluating the model runs the whole lifecycle — forecast, grade, measure, nudge." | `averageLoss` only grades. Measuring slopes or nudging logits while evaluating would train on the validation history — exactly what Chapter 2's boundary rule forbids. |
 
 ## <font color="#388bfd">Stretch Goals</font>
 
@@ -531,7 +538,7 @@ More traps worth defusing now:
 
 ---
 
-The table can learn, but every current token owns an isolated row. `pineapple` and `pepperoni` both demand `pizza` next, yet each row had to discover that separately, and the one with fewer flashcards will always know it less well. In the archive's full vocabulary the same isolation strikes `basalt` and `granite` — twins that appear in near-identical sentences and can share nothing. The machine needs shared internal features.
+The table can learn, but every current token owns an isolated row. `pineapple` and `pepperoni` both demand `pizza` next, yet each row had to discover that separately, and the one with fewer flashcards will always know it less well. In the archive's full vocabulary the same isolation strikes `mushroom` and `olive` — twins that appear in near-identical sentences ("extra mushroom, light sauce" / "extra olive, light sauce") and can share nothing. The machine needs shared internal features.
 
 ## <font color="#388bfd">Skill Building</font>
 

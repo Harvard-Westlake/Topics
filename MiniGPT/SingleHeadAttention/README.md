@@ -66,26 +66,28 @@ red
 ### <font color="#79c0ff">Task B: delayed copy</font>
 
 ```text
-start granite filler filler recall
+start pineapple filler filler recall
 ```
 
 Target after `recall`:
 
 ```text
-granite
+pineapple
 ```
 
-### <font color="#79c0ff">Task C: paired sample lookup</font>
+### <font color="#79c0ff">Task C: paired order lookup</font>
 
 ```text
-sample1 basalt sample2 limestone query sample1
+orderA pineapple orderB pepperoni query orderA
 ```
 
 Target:
 
 ```text
-basalt
+pineapple
 ```
+
+Task C is Chapter 3's diagnostic passage — *the topping on Order A was ______* — stripped to bare tokens. In Chapter 3 you wrote the matching rule by hand; here the head must discover it.
 
 ## <font color="#388bfd">Detailed Requirements</font>
 
@@ -169,7 +171,7 @@ One attention head can learn one style of retrieval. Language contains many simu
 ### <font color="#79c0ff">Intermediate</font>
 
 - [ ] Can you implement the $Q$, $K$, $V$ projections and verify each with a numerical gradient check?
-- [ ] Can you overfit the paired sample lookup task and show the attention matrix retrieving the correct position?
+- [ ] Can you overfit the paired order lookup task and show the attention matrix retrieving the correct position?
 - [ ] Can you verify that masked positions receive zero attention weight and zero score gradient?
 
 ### <font color="#79c0ff">Advanced</font>

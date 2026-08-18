@@ -9,7 +9,7 @@
 
 ---
 
-> The archive has been digitized, but the machine does not see words, sentences, or geological ideas. It sees bytes. Even the word "sedimentary" has no special status. Before the machine can predict anything, your team must decide what its basic symbols will be. Choose symbols that are too small and every sentence becomes extremely long. Choose symbols that are too large and most of them will appear too rarely to learn.
+> The pizzeria's archive has been digitized, but the machine does not see words, sentences, or recipes. It sees bytes. Even the word "mozzarella" has no special status. Before the machine can predict anything, your team must decide what its basic symbols will be. Choose symbols that are too small and every sentence becomes extremely long. Choose symbols that are too large and most of them will appear too rarely to learn.
 
 ## <font color="#388bfd">Question to Carry</font>
 

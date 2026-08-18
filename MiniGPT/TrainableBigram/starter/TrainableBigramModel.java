@@ -7,6 +7,22 @@ import java.util.Random;
 // Chapter 2's bigram table held counts; Chapter 3's spotlight followed rules
 // you wrote. Every number in THIS table is adjusted by the training loop,
 // using nothing but the gradient of the model's own loss.
+//
+// The methods you write follow one flashcard through its life, in the order
+// the lesson taught them — and each stage is strict about what it may touch:
+//
+//   stage      method                  reads                 writes
+//   Forecast   probabilities()         one logits row        nothing
+//   Grade      loss()                  one logits row        nothing
+//   Measure    accumulateGradients()   one logits row        one gradients row
+//   Nudge      step()                  the gradient bucket   every logit
+//   Reset      zeroGradients()         nothing               wipes the bucket
+//   Report     averageLoss()           the logits            nothing
+//
+// Forecast, Grade, and Report only READ the table. Measure writes only the
+// gradient bucket. Nudge is the one method allowed to move a logit. The
+// Tester checks these boundaries — a method that touches what it shouldn't
+// fails even when its arithmetic is right.
 public class TrainableBigramModel {
 
     private final int vocabularySize;
@@ -37,8 +53,9 @@ public class TrainableBigramModel {
         return vocabularySize;
     }
 
-    // TODO 1: stable softmax — the same three steps you built in Chapter 3,
-    // rebuilt here so this class stands alone.
+    // TODO 1 — shared machinery: the stable softmax, the same three steps
+    // you built in Chapter 3, rebuilt here so this class stands alone.
+    // Every stage below that reads the table calls this to do it.
     //
     // The question: the table's numbers are free to be anything. How do you
     // turn one row of free numbers into an honest forecast that adds up to
@@ -67,7 +84,8 @@ public class TrainableBigramModel {
         throw new UnsupportedOperationException("TODO 1: stable softmax");
     }
 
-    // TODO 2: one row of the table, read as a prediction distribution.
+    // TODO 2 — the Forecast stage: one row of the table, read as a
+    // prediction distribution. Reads the table; writes nothing.
     //
     // The question: when you ask the table "what comes next?", which
     // numbers answer — and why must the asking never change them?
@@ -93,8 +111,8 @@ public class TrainableBigramModel {
         throw new UnsupportedOperationException("TODO 2: probabilities");
     }
 
-    // TODO 3: cross-entropy loss for one example — Chapter 2's penalty,
-    // charged to a single prediction.
+    // TODO 3 — the Grade stage: cross-entropy loss for one example —
+    // Chapter 2's penalty, charged to a single prediction. Reads only.
     //
     // The question: the order history knows what actually came next. How do you grade
     // one guess with one fair number — gentle on a near-miss, brutal on
@@ -121,7 +139,8 @@ public class TrainableBigramModel {
         throw new UnsupportedOperationException("TODO 3: loss");
     }
 
-    // TODO 4: the shortcut gradient, accumulated.
+    // TODO 4 — the Measure stage: the shortcut gradient, accumulated.
+    // Writes ONLY the gradient bucket — never a logit.
     //
     // The question: the grade says how wrong you were. How do you learn
     // which direction each number should move — without ever being handed
@@ -133,7 +152,7 @@ public class TrainableBigramModel {
     // answer: the right answer only ever entered through the grade.
     //
     // Computes "prediction minus one-hot" for one flashcard and pours it
-    // into the gradient bucket. Backward measures; step moves.
+    // into the gradient bucket. This method measures; step moves.
     //
     // Dimensions:
     // - gradients is (V x V), same shape as logits — but this method
@@ -145,7 +164,7 @@ public class TrainableBigramModel {
     //   gradients[currentToken][nextToken] +=
     //       p[nextToken] - (nextToken == targetToken ? 1.0 : 0.0)
     // then increment examplesSinceReset. The += is the accumulation: a
-    // batch calls backward many times before one step.
+    // batch calls accumulateGradients many times before one step.
     //
     // Example from the lesson: row [1.2, 0.1, -0.4], target pineapple (1)
     //   p:              [ 0.6516,   0.2169,   0.1315 ]
@@ -153,11 +172,12 @@ public class TrainableBigramModel {
     //   added to row:   [ 0.6516,  -0.7831,   0.1315 ]   (sums to zero)
     //
     // Call requireToken on both tokens first.
-    public void backward(int currentToken, int targetToken) {
-        throw new UnsupportedOperationException("TODO 4: backward");
+    public void accumulateGradients(int currentToken, int targetToken) {
+        throw new UnsupportedOperationException("TODO 4: accumulateGradients");
     }
 
-    // TODO 5: the update — one stride of gradient descent.
+    // TODO 5 — the Nudge stage: the update, one stride of gradient descent.
+    // The ONLY method in this class allowed to move a logit.
     //
     // The question: every number has a direction now. How far do you dare
     // move — and why should grading a bigger handful of examples NOT mean
@@ -182,7 +202,8 @@ public class TrainableBigramModel {
     // and therefore do not move. Do not reset anything here — resetting is
     // zeroGradients' job, and the Trainer calls the two separately.
     //
-    // Example from the lesson: after one backward on the worked row,
+    // Example from the lesson: after one accumulateGradients call on the
+    // worked row,
     // step(0.5) moves it
     //   [1.2, 0.1, -0.4]  ->  [0.8742, 0.4916, -0.4658]
     // and the loss falls 1.5284 -> 1.0474.
@@ -192,7 +213,7 @@ public class TrainableBigramModel {
         throw new UnsupportedOperationException("TODO 5: step");
     }
 
-    // TODO 6: reset — wipe the bucket between updates.
+    // TODO 6 — the Reset stage: wipe the bucket between updates.
     //
     // The question: yesterday's directions were measured on a table that
     // no longer exists. Why must the slate be wiped before the next
@@ -208,7 +229,8 @@ public class TrainableBigramModel {
         throw new UnsupportedOperationException("TODO 6: zero gradients");
     }
 
-    // TODO 7: Chapter 2's evaluation, one method.
+    // TODO 7 — the Report stage: Chapter 2's evaluation, one method.
+    // Reads the table; writes nothing.
     //
     // The question: one guess earned one grade. What is the report card
     // for the whole history — and what score must a table that knows nothing
@@ -219,18 +241,30 @@ public class TrainableBigramModel {
     // is proof the pipeline works, not a disappointment.
     //
     // Dimensions:
-    // - tokens:  a history of n tokens — which contains n - 1 flashcards,
-    //            one per adjacent pair.
-    // - returns: the mean of loss(tokens[position], tokens[position + 1])
-    //            over position = 0 .. tokens.length - 2.
+    // - historyToGrade: a history of n tokens — which contains n - 1
+    //                   flashcards, one per adjacent pair. Sometimes the
+    //                   training history, sometimes the validation history:
+    //                   this method grades whichever it is handed, and
+    //                   trains on neither.
+    // - returns: the mean of
+    //            loss(historyToGrade[position], historyToGrade[position + 1])
+    //            over position = 0 .. historyToGrade.length - 2.
+    //
+    // The trap: grading is not training. The only lifecycle stage this
+    // method runs is Grade — your own loss(), once per adjacent pair. No
+    // Measure, no Nudge: a report card that changes the student mid-exam
+    // measures nothing, and nudging during evaluation would train on the
+    // validation history — the one thing Chapter 2's boundary rule forbids.
+    // (The Tester checks that this method moves no logit and touches no
+    // gradient.)
     //
     // Examples from the lesson:
     //   {1, 0, 1} averages exactly two losses: loss(1,0) and loss(0,1).
     //   A nearly empty table (seed 7) on the full training history scores 1.0987 —
     //   ln(3) to three decimals, Chapter 2's uniform anchor.
     //
-    // Call requireHistory(tokens) first.
-    public double averageLoss(int[] tokens) {
+    // Call requireHistory(historyToGrade) first.
+    public double averageLoss(int[] historyToGrade) {
         throw new UnsupportedOperationException("TODO 7: average loss");
     }
 
@@ -272,12 +306,12 @@ public class TrainableBigramModel {
     public void requireExamples() {
         if (examplesSinceReset == 0) {
             throw new IllegalStateException(
-                "step called with no accumulated examples — call backward first.");
+                "step called with no accumulated examples — call accumulateGradients first.");
         }
     }
 
-    public static void requireHistory(int[] tokens) {
-        if (tokens == null || tokens.length < 2) {
+    public static void requireHistory(int[] history) {
+        if (history == null || history.length < 2) {
             throw new IllegalArgumentException(
                 "A token history needs at least two tokens to form one transition.");
         }

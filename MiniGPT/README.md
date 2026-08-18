@@ -9,7 +9,7 @@
 
 ---
 
-A university archive has obtained a collection of geology books, field reports, and notebooks. Much of the collection has been digitized, but sections are damaged or missing.
+A neighborhood pizzeria has kept everything for fifty years: order tickets, recipe cards, customer reviews, and delivery notebooks. The whole collection — the pizzeria's archive — has been digitized, but sections are damaged or missing. (*Strata* are layers; a pizza is built in layers, and so is this machine.)
 
 Your task is not to build a chatbot. It is to build a transparent statistical instrument that answers one precise question:
 
@@ -29,15 +29,15 @@ At the beginning, the machine cannot even distinguish a word from a newline. Ove
 10. A complete training and generation system.
 11. The ability to demonstrate, with evidence, that it improves over a Markov baseline.
 
-The geology archive is the shared default because it provides a coherent continuing example. You may later replace it with another approved archive. The story is not fictional decoration — every narrative event exposes a real technical limitation. For example, the course repeatedly uses a diagnostic passage such as:
+The pizzeria archive is the shared default because it provides a coherent continuing example that everyone already has opinions about — pineapple on pizza starts an argument in any classroom, and an argument about which token comes next is exactly this course's subject. You may later replace it with another approved archive. The story is not fictional decoration — every narrative event exposes a real technical limitation. For example, the course repeatedly uses a diagnostic passage such as:
 
 ```text
-Sample A was collected beside the basalt flow.
-Sample B was collected from a pale limestone layer.
-The rock associated with Sample A was ______.
+Order A was topped with pineapple.
+Order B was topped with pepperoni.
+The topping on Order A was ______.
 ```
 
-A one-token Markov model cannot reliably connect the blank with "basalt." A fixed-window model may succeed only when the relevant phrase is nearby. An attention-based model has a mechanism for selecting the earlier mention of "Sample A."
+A one-token Markov model cannot reliably connect the blank with "pineapple." A fixed-window model may succeed only when the relevant phrase is nearby. An attention-based model has a mechanism for selecting the earlier mention of "Order A."
 
 ---
 
@@ -187,7 +187,7 @@ Most importantly, the story remains focused from the first page to the last:
 
 - [ ] Can you state the one precise question the archive machine is built to answer?
 - [ ] Can you name the eleven capabilities the machine acquires, in order, and say which chapter delivers each one?
-- [ ] Can you explain why the diagnostic "Sample A" passage defeats a one-token Markov model?
+- [ ] Can you explain why the diagnostic "Order A" passage defeats a one-token Markov model?
 
 ### <font color="#79c0ff">Intermediate</font>
 

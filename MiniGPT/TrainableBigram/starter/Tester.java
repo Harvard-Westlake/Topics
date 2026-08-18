@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.Random;
 
 // PROVIDED — reproduces every worked trace from the lesson page and runs the
 // required tests. Complete the TODOs in order and rerun after each one:
@@ -12,12 +13,13 @@ public class Tester {
         testLoss();
 
         System.out.println("\n=== Part 2 (Day 2): gradient, update, training ===");
-        testBackward();
+        testAccumulateGradients();
         testGradientCheck();
         testStep();
         testAccumulation();
         testReproducibility();
         testAverageLoss();
+        testStochasticGradientDescentStep();
         runTraining();
     }
 
@@ -108,20 +110,20 @@ public class Tester {
 
     // ----- Part 2 -----------------------------------------------------
 
-    private static void testBackward() {
+    private static void testAccumulateGradients() {
         try {
             TrainableBigramModel model = new TrainableBigramModel(3, 7);
             model.setRow(0, 1.2, 0.1, -0.4);
-            model.backward(0, 1);
+            model.accumulateGradients(0, 1);
 
             double[] gradient = model.gradientRow(0);
-            check("backward: gradient is prediction minus one-hot — [0.6516, -0.7831, 0.1315]",
+            check("accumulateGradients: gradient is prediction minus one-hot — [0.6516, -0.7831, 0.1315]",
                     approxRow(gradient, 0.6516, -0.7831, 0.1315));
-            check("backward: gradient entries sum to zero",
+            check("accumulateGradients: gradient entries sum to zero",
                     Math.abs(gradient[0] + gradient[1] + gradient[2]) < 1e-9);
-            check("backward: only the current token's row received gradient",
+            check("accumulateGradients: only the current token's row received gradient",
                     allZero(model.gradientRow(1)) && allZero(model.gradientRow(2)));
-            check("backward: measuring changed no logits — backward measures, step moves",
+            check("accumulateGradients: measuring changed no logits — accumulateGradients measures, step moves",
                     Arrays.equals(model.logitRow(0), new double[] {1.2, 0.1, -0.4}));
         } catch (UnsupportedOperationException e) {
             todo(e);
@@ -133,7 +135,7 @@ public class Tester {
             TrainableBigramModel model = new TrainableBigramModel(3, 7);
             double[] base = {1.2, 0.1, -0.4};
             model.setRow(0, base);
-            model.backward(0, 1);
+            model.accumulateGradients(0, 1);
             double[] analytical = model.gradientRow(0);
 
             double h = 1e-4;
@@ -169,7 +171,7 @@ public class Tester {
             double[] rowOneBefore = model.logitRow(1);
             double lossBefore = model.loss(0, 1);
 
-            model.backward(0, 1);
+            model.accumulateGradients(0, 1);
             model.step(0.5);
 
             check("step: worked row moved to [0.8742, 0.4916, -0.4658]",
@@ -187,8 +189,8 @@ public class Tester {
         try {
             TrainableBigramModel model = new TrainableBigramModel(3, 7);
             model.setRow(0, 0.0, 0.0, 0.0);
-            model.backward(0, 1);
-            model.backward(0, 2);
+            model.accumulateGradients(0, 1);
+            model.accumulateGradients(0, 2);
             model.step(1.0);
 
             check("accumulate: two conflicting examples averaged — row is [-0.3333, 0.1667, 0.1667]",
@@ -238,12 +240,44 @@ public class Tester {
             check("averageLoss: a three-token history averages its two transitions",
                     Math.abs(model.averageLoss(new int[] {1, 0, 1}) - byHand) < 1e-9);
 
-            double fresh = model.averageLoss(TrainingData.trainingTokens());
+            double[][] logitsBefore = new double[3][];
+            double[][] gradientsBefore = new double[3][];
+            for (int row = 0; row < 3; row++) {
+                logitsBefore[row] = model.logitRow(row);
+                gradientsBefore[row] = model.gradientRow(row);
+            }
+            double nearlyEmptyLoss = model.averageLoss(TrainingData.trainingTokens());
+            boolean untouched = true;
+            for (int row = 0; row < 3; row++) {
+                untouched &= Arrays.equals(model.logitRow(row), logitsBefore[row])
+                        && Arrays.equals(model.gradientRow(row), gradientsBefore[row]);
+            }
+            check("averageLoss: grading moved no logits and touched no gradients — report cards only read",
+                    untouched);
             System.out.printf(
                     "  INFO  nearly empty table, average training loss: %.4f   (ln 3 = %.4f)%n",
-                    fresh, Math.log(3));
+                    nearlyEmptyLoss, Math.log(3));
             check("averageLoss: a nearly empty table scores at Chapter 2's uniform anchor",
-                    Math.abs(fresh - Math.log(3)) < 0.02);
+                    Math.abs(nearlyEmptyLoss - Math.log(3)) < 0.02);
+        } catch (UnsupportedOperationException e) {
+            todo(e);
+        }
+    }
+
+    private static void testStochasticGradientDescentStep() {
+        try {
+            int[] trainingHistory = TrainingData.trainingTokens();
+            TrainableBigramModel model = new TrainableBigramModel(3, 7);
+            double before = model.averageLoss(trainingHistory);
+
+            Random random = new Random(42);
+            Trainer.stochasticGradientDescentStep(model, trainingHistory, 24, 0.5, random);
+
+            double after = model.averageLoss(trainingHistory);
+            check("SGD step: one seeded step lowered the average training loss", after < before);
+            check("SGD step: the worked run's first step lands on 1.0279", approx(after, 1.0279));
+            check("SGD step: exactly one draw per flashcard — the 25th draw of seed 42 is 100",
+                    random.nextInt(trainingHistory.length - 1) == 100);
         } catch (UnsupportedOperationException e) {
             todo(e);
         }
@@ -251,16 +285,16 @@ public class Tester {
 
     private static void runTraining() {
         try {
-            int[] train = TrainingData.trainingTokens();
-            int[] validation = TrainingData.validationTokens();
+            int[] trainingHistory = TrainingData.trainingTokens();
+            int[] validationHistory = TrainingData.validationTokens();
 
             TrainableBigramModel model = new TrainableBigramModel(3, 7);
-            double initial = model.averageLoss(train);
+            double initial = model.averageLoss(trainingHistory);
             System.out.println("\n--- The worked loss trace: 300 steps, batch 24, learning rate 0.5 ---");
-            Trainer.train(model, train, validation, 300, 24, 0.5, 30, 42);
+            Trainer.train(model, trainingHistory, validationHistory, 300, 24, 0.5, 30, 42);
 
-            double finalTrain = model.averageLoss(train);
-            double finalValidation = model.averageLoss(validation);
+            double finalTrain = model.averageLoss(trainingHistory);
+            double finalValidation = model.averageLoss(validationHistory);
             check("training: loss fell — final training loss below the starting loss",
                     finalTrain < initial);
             check("training: final training loss reproduces 0.3300",
@@ -286,11 +320,11 @@ public class Tester {
                     pineappleConfidence > pepperoniConfidence);
 
             TrainableBigramModel rerun = new TrainableBigramModel(3, 7);
-            Trainer.train(rerun, train, validation, 300, 24, 0.5, 0, 42);
+            Trainer.train(rerun, trainingHistory, validationHistory, 300, 24, 0.5, 0, 42);
             check("training: the same seeds reproduce the same final loss exactly",
-                    rerun.averageLoss(train) == finalTrain);
+                    rerun.averageLoss(trainingHistory) == finalTrain);
 
-            Trainer.printComparison(model, train);
+            Trainer.printComparison(model, trainingHistory);
         } catch (UnsupportedOperationException e) {
             todo(e);
         }
