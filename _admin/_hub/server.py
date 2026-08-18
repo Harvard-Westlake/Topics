@@ -22,8 +22,10 @@ from flask import Flask, jsonify, request, send_from_directory
 from pathlib import Path
 from dotenv import load_dotenv
 from datetime import datetime, timedelta, timezone
+from zoneinfo import ZoneInfo
 import requests, os, sys, json, time, re, html
 import markdown as md_lib
+from icsimport import compress_calendar
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]                      # the Topics repo root
@@ -39,6 +41,7 @@ CACHE  = HERE / ".cache"                    # gitignored — contains student da
 TOPICS = ROOT
 
 SCHEDULES_DIR = ROOT / "_admin" / "_schedules"
+CALENDARS_DIR = SCHEDULES_DIR / "calendars"   # imported .ics class calendars
 FINALS = Path(os.environ.get("FINALS_DIR") or (ROOT.parent / "Admin" / "finals"))
 MODULES_DIR = ROOT / "_modules"
 
@@ -222,8 +225,13 @@ def api_courses():
         return err
     force = request.args.get("refresh") == "1"
     def fetch():
+        # Both states: unpublished courses (next year's shells) are exactly the
+        # ones being set up. include[]=concluded marks term-ended (read-only)
+        # courses so the UI can block them as sync targets.
         return sorted(
-            canvas_paged("/courses", {"enrollment_type": "teacher", "state[]": "available"}),
+            canvas_paged("/courses", {"enrollment_type": "teacher",
+                                      "state[]": ["available", "unpublished"],
+                                      "include[]": "concluded"}),
             key=year_key, reverse=True)
     if force:
         try:
@@ -355,7 +363,10 @@ def api_create_module(course_id):
     mod_res = requests.post(f"{BASE}/courses/{course_id}/modules", headers=hdrs(),
                             json={"module": {"name": mod_name, "position": 1}})
     if not mod_res.ok:
-        return jsonify({"error": f"Module creation failed: {mod_res.text}"}), 502
+        hint = (" — Canvas returns this for concluded (term-ended) courses, which are "
+                "read-only; pick a current-year course"
+                if mod_res.status_code == 401 else "")
+        return jsonify({"error": f"Module creation failed: {mod_res.text}{hint}"}), 502
     module_id = mod_res.json()["id"]
 
     results, errors = [], []
@@ -503,6 +514,14 @@ def api_github_review_content():
 
 # ── Curated modules saved in _modules/*.json ───────────────────────────────────
 
+# Saved-modules lists everywhere share one order: unit_number, then name.
+# A drag-reorder in the planner sidebar renumbers unit_number 1..N (see
+# /api/saved-order), so the planner, schedule palette, and courses drawer
+# all present the library in the same teacher-chosen sequence.
+def _saved_sort_key(m):
+    return (m.get("unit_number") is None, m.get("unit_number") or 0,
+            (m.get("name") or "").lower())
+
 @app.route("/api/github/saved-modules")
 def api_github_saved_modules():
     if not MODULES_DIR.exists():
@@ -522,7 +541,7 @@ def api_github_saved_modules():
                     "updated": mod.get("updated"),
                     "days": max((a.get("day", 1) + a.get("duration", 1) - 1
                                  for a in assignments), default=0)})
-    return jsonify({"modules": out})
+    return jsonify({"modules": sorted(out, key=_saved_sort_key)})
 
 @app.route("/api/github/saved-modules/<slug>")
 def api_github_saved_module(slug):
@@ -666,8 +685,7 @@ def api_render():
     html_parts.append(content_html)
     return jsonify({"html": "\n".join(html_parts), "engine": engine})
 
-@app.route("/api/saved")
-def api_saved_list():
+def _saved_modules_list():
     out = []
     if MODULES_DIR.exists():
         for jf in sorted(MODULES_DIR.glob("*.json")):
@@ -684,7 +702,40 @@ def api_saved_list():
                 "lesson_count": len(mod.get("assignments", [])),
                 "updated": mod.get("updated"),
             })
-    return jsonify({"modules": out})
+    return sorted(out, key=_saved_sort_key)
+
+@app.route("/api/saved")
+def api_saved_list():
+    return jsonify({"modules": _saved_modules_list()})
+
+@app.route("/api/saved-order", methods=["POST"])
+def api_saved_order():
+    """Persist a drag-reorder of the saved-modules library. unit_number becomes
+    the 1-based list position and the module's generated lesson plan is
+    refreshed (it embeds the unit in its day labels)."""
+    body = request.get_json(force=True) or {}
+    order = body.get("order") or []
+    if not order or not all(isinstance(s, str) and SLUG_RE.match(s) for s in order):
+        return jsonify({"error": "'order' must be a list of module slugs"}), 400
+    if len(set(order)) != len(order):
+        return jsonify({"error": "duplicate slugs in 'order'"}), 400
+    missing = [s for s in order if not (MODULES_DIR / f"{s}.json").exists()]
+    if missing:
+        return jsonify({"error": f"unknown module(s): {', '.join(missing)}"}), 404
+    changed = []
+    for position, slug in enumerate(order, start=1):
+        jf = MODULES_DIR / f"{slug}.json"
+        try:
+            mod = json.loads(jf.read_text())
+        except json.JSONDecodeError:
+            return jsonify({"error": f"_modules/{slug}.json is not valid JSON"}), 422
+        if mod.get("unit_number") != position:
+            mod["unit_number"] = position
+            jf.write_text(json.dumps(mod, indent=2) + "\n")
+            LESSONPLANS_DIR.mkdir(parents=True, exist_ok=True)
+            (LESSONPLANS_DIR / f"{slug}.md").write_text(generate_lessonplan(mod))
+            changed.append(slug)
+    return jsonify({"changed": changed, "modules": _saved_modules_list()})
 
 @app.route("/api/saved/<slug>", methods=["GET", "POST", "DELETE"])
 def api_saved(slug):
@@ -739,15 +790,68 @@ def load_schedule(name):
         return json.loads(p.read_text())
     return None
 
+# ── Class calendars (imported .ics, _admin/_schedules/calendars/<name>.json) ───
+# A calendar is the compressed local copy of a Didax teacher-schedule export:
+# per class slot (Block A-G + named non-block classes), the static list of real
+# meeting [date, start, end] triples in local time. A schedule binds to one
+# class via {"calendar": <name>, "calendar_class": <class id>} — its class
+# dates then come from actual meetings instead of the weekday grid.
+
+def calendar_path(name):
+    return CALENDARS_DIR / f"{name}.json"
+
+def load_calendar(name):
+    p = calendar_path(name or "")
+    if not p.exists():
+        return None
+    try:
+        return json.loads(p.read_text())
+    except json.JSONDecodeError:
+        return None
+
+def schedule_calendar_class(sched):
+    """(calendar, class record) a schedule is bound to, or (None, None)."""
+    cal_name, class_id = sched.get("calendar"), sched.get("calendar_class")
+    if not cal_name or not class_id or not NAME_RE.match(cal_name):
+        return None, None
+    cal = load_calendar(cal_name)
+    if not cal:
+        return None, None
+    cls = next((c for c in cal.get("classes", []) if c.get("id") == class_id), None)
+    return (cal, cls) if cls else (None, None)
+
+def _no_school_dates(sched):
+    return {n["date"] if isinstance(n, dict) else n for n in sched.get("no_school", [])}
+
+def schedule_class_meetings(sched):
+    """Bound-calendar meetings [date, start, end] after start/end clip and
+    no-school skips, or None when the schedule has no working calendar binding."""
+    cal, cls = schedule_calendar_class(sched)
+    if not cls:
+        return None
+    off = _no_school_dates(sched)
+    start = sched.get("start_date") or "0000"
+    end = sched.get("end_date") or "9999"
+    out, seen = [], set()
+    for m in cls.get("meetings", []):
+        if start <= m[0] <= end and m[0] not in off and m[0] not in seen:
+            seen.add(m[0])
+            out.append(m)
+    return out
+
 def schedule_class_dates(sched):
-    """Every date the class meets, in order: meeting weekdays minus no-school days."""
+    """Every date the class meets, in order — real meetings when a calendar
+    class is bound, otherwise meeting weekdays minus no-school days."""
+    meetings = schedule_class_meetings(sched)
+    if meetings is not None:
+        return [m[0] for m in meetings]
     try:
         start = datetime.strptime(sched["start_date"], "%Y-%m-%d").date()
         end   = datetime.strptime(sched["end_date"], "%Y-%m-%d").date()
     except (KeyError, TypeError, ValueError):
         return []
     meeting = set(sched.get("meeting_days") or [0, 1, 2, 3, 4])
-    off = {n["date"] if isinstance(n, dict) else n for n in sched.get("no_school", [])}
+    off = _no_school_dates(sched)
     out, d = [], start
     while d <= end:
         if d.weekday() in meeting and d.isoformat() not in off:
@@ -853,6 +957,23 @@ def resolve_schedule(sched):
     """Expand every block against the repo and map its days onto real class dates."""
     dates = schedule_class_dates(sched)
     blocks, warnings, idx, unit = [], [], 0, 0
+    cal, cls = schedule_calendar_class(sched)
+    if sched.get("calendar_class") and not cls:
+        warnings.append(f"Calendar class '{sched.get('calendar_class')}' not found in "
+                        f"calendar '{sched.get('calendar')}' — re-import the .ics or "
+                        "pick a class again; falling back to weekday-grid dates")
+    # Meeting times + the next class day after any date (for homework due dates).
+    # next_date uses the full meeting list past the end clip, minus no-school
+    # skips, so the last scheduled day still knows when the class meets next.
+    times = {m[0]: {"start": m[1], "end": m[2]} for m in (cls or {}).get("meetings", [])}
+    off = _no_school_dates(sched)
+    future = sorted({m[0] for m in (cls or {}).get("meetings", [])} - off)
+
+    def next_class_date(date_str):
+        for d in future:
+            if d > date_str:
+                return d
+        return None
     for block in sched.get("sequence", []):
         btype = block.get("type")
         if btype == "module":
@@ -885,6 +1006,9 @@ def resolve_schedule(sched):
                 idx += 1
                 day_num += 1
             s["day_num"] = day_num
+            if s["date"] and cls:
+                s["time"] = times.get(s["date"])
+                s["next_date"] = next_class_date(s["date"])
         out["days"] = day_num
         dated = [s["date"] for s in out["slots"] if s["date"]]
         out["start"] = dated[0] if dated else None
@@ -893,8 +1017,15 @@ def resolve_schedule(sched):
     if idx > len(dates):
         warnings.append(f"The schedule needs {idx} class days but only {len(dates)} exist "
                         f"between {sched.get('start_date')} and {sched.get('end_date')}")
-    return {"blocks": blocks, "warnings": warnings,
-            "calendar": {"total": len(dates), "used": idx, "remaining": len(dates) - idx}}
+    calendar_out = {"total": len(dates), "used": idx, "remaining": len(dates) - idx}
+    if cls:
+        mts = cls.get("meetings", [])
+        calendar_out["class"] = {
+            "id": cls["id"], "block": cls.get("block"), "course": cls.get("course"),
+            "location": cls.get("location"), "meetings": len(mts),
+            "first": mts[0][0] if mts else None, "last": mts[-1][0] if mts else None,
+            "timezone": cal.get("timezone"), "calendar": sched.get("calendar")}
+    return {"blocks": blocks, "warnings": warnings, "calendar": calendar_out}
 
 @app.route("/api/schedules")
 def api_schedules():
@@ -932,6 +1063,48 @@ def api_schedule(name):
         if sched is None:
             sched = json.loads(json.dumps(DEFAULT_SCHEDULE))
     return jsonify({"name": name, "schedule": sched, "resolved": resolve_schedule(sched)})
+
+@app.route("/api/calendars")
+def api_calendars():
+    out = []
+    if CALENDARS_DIR.exists():
+        for jf in sorted(CALENDARS_DIR.glob("*.json")):
+            cal = load_calendar(jf.stem)
+            if cal:
+                out.append({"name": jf.stem, "year_label": cal.get("year_label"),
+                            "imported": cal.get("imported"),
+                            "classes": len(cal.get("classes", []))})
+    return jsonify({"calendars": out})
+
+@app.route("/api/calendars/<name>", methods=["GET", "DELETE"])
+def api_calendar(name):
+    if not NAME_RE.match(name):
+        return jsonify({"error": "invalid calendar name"}), 400
+    if request.method == "DELETE":
+        p = calendar_path(name)
+        if p.exists():
+            p.unlink()
+        return jsonify({"deleted": name})
+    cal = load_calendar(name)
+    if cal is None:
+        return jsonify({"error": "calendar not found"}), 404
+    return jsonify({"name": name, "calendar": cal})
+
+@app.route("/api/calendars/<name>/import", methods=["POST"])
+def api_calendar_import(name):
+    """Body is the raw .ics text; compresses it to calendars/<name>.json."""
+    if not NAME_RE.match(name):
+        return jsonify({"error": "invalid calendar name"}), 400
+    text = request.get_data(as_text=True) or ""
+    try:
+        cal = compress_calendar(text, source_file=request.args.get("filename") or "upload.ics")
+    except (ValueError, KeyError) as e:
+        return jsonify({"error": f"Could not parse the .ics file: {e}"}), 400
+    if not cal["classes"]:
+        return jsonify({"error": "No class meetings found in this .ics file"}), 422
+    CALENDARS_DIR.mkdir(parents=True, exist_ok=True)
+    calendar_path(name).write_text(json.dumps(cal, indent=2) + "\n")
+    return jsonify({"name": name, "calendar": cal})
 
 # ── Final exams (private sibling Admin repo) ───────────────────────────────────
 # One markdown file per topic final, stored OUTSIDE this public repo. Content
@@ -1054,6 +1227,39 @@ def api_schedule_sync_block(name):
     if block.get("missing"):
         return jsonify({"error": "block source is missing from the repo"}), 422
 
+    # With a bound class calendar, Canvas gets real local times: an assignment
+    # unlocks when its class period starts and is due at 11:59 PM the night
+    # before the class meets next. Without one, the legacy UTC date stamps hold.
+    cal, cls = schedule_calendar_class(sched)
+    tzname = (cal or {}).get("timezone")
+    off = _no_school_dates(sched)
+    class_meetings = [m for m in (cls or {}).get("meetings", []) if m[0] not in off]
+    start_by_date = {m[0]: m[1] for m in class_meetings}
+    meeting_dates = sorted({m[0] for m in class_meetings})
+
+    def _next_meeting(date_str):
+        return next((d for d in meeting_dates if d > date_str), None)
+
+    def _due_at(date_str):
+        if not date_str:
+            return None
+        if tzname and cls:
+            nxt = _next_meeting(date_str)
+            d = (datetime.strptime(nxt, "%Y-%m-%d") - timedelta(days=1)) if nxt \
+                else datetime.strptime(date_str, "%Y-%m-%d")
+            return d.replace(hour=23, minute=59, tzinfo=ZoneInfo(tzname)).isoformat()
+        return _canvas_due(date_str)
+
+    def _unlock_at(date_str):
+        if not date_str:
+            return None
+        start_hm = start_by_date.get(date_str)
+        if tzname and start_hm:
+            hour, minute = map(int, start_hm.split(":"))
+            d = datetime.strptime(date_str, "%Y-%m-%d")
+            return d.replace(hour=hour, minute=minute, tzinfo=ZoneInfo(tzname)).isoformat()
+        return _canvas_unlock(date_str)
+
     results, errors = [], []
 
     def create_assignment(name, points, description, due, unlock, module_id=None):
@@ -1062,9 +1268,9 @@ def api_schedule_sync_block(name):
             "submission_types": ["online_upload", "online_text_entry"],
             "description": description, "published": False}}
         if due:
-            payload["assignment"]["due_at"] = _canvas_due(due)
+            payload["assignment"]["due_at"] = _due_at(due)
         if unlock:
-            payload["assignment"]["unlock_at"] = _canvas_unlock(unlock)
+            payload["assignment"]["unlock_at"] = _unlock_at(unlock)
         r = requests.post(f"{BASE}/courses/{course_id}/assignments", headers=hdrs(), json=payload)
         if not r.ok:
             errors.append({"name": name, "error": r.text})

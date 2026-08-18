@@ -20,7 +20,9 @@ Topics/
   _admin/               — course administration namespace (tooling, config, docs)
     _hub/               — THE course hub: tabbed web app (Courses / Year Schedule /
                           Module Planner), python3 _admin/_hub/server.py → port 5050
-    _schedules/         — per-teacher year-plan JSONs edited by the hub's Year Schedule tab
+    _schedules/         — per-teacher year-plan JSONs edited by the hub's Year Schedule tab;
+                          calendars/ holds compressed .ics imports (real class meeting
+                          dates/times per block, used instead of the weekday grid when bound)
     _instructions/      — authoring guides for maintaining lessons
     _coursePlannerUI/   — standalone stdlib-only planner (superseded by _hub's Module
                           Planner tab; kept as a credential-free fallback)

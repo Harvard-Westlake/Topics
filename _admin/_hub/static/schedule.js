@@ -6,6 +6,8 @@ let schedName = null;        // active schedule file (one per teacher)
 let schedList = [];
 let schedule = null;         // editable model
 let resolved = null;         // last server resolution (dates, expanded lessons)
+let calendar = null;         // imported .ics class calendar bound to this schedule
+let calName = null;
 let savedModules = [], topicList = [], finalsInfo = {available: false, finals: []};
 let topicLessons = {};       // topic name -> lessons (palette expansion)
 let expandedBlocks = new Set();
@@ -73,12 +75,23 @@ async function loadSchedule(name) {
   schedule = d.schedule;
   resolved = d.resolved;
   schedule.sequence.forEach(b => { if (!b.id) b.id = uid(); });
+  await loadCalendar();
   renderSettings();
   renderNoSchool();
   renderBoard();
   renderSummary();
   renderWarnings();
+  renderCalInfo();
   setPill('saved');
+}
+
+async function loadCalendar() {
+  calName = schedule.calendar || schedName;
+  calendar = null;
+  if (!calName) return;
+  const d = await fetch('/api/calendars/' + encodeURIComponent(calName))
+    .then(r => r.ok ? r.json() : null).catch(() => null);
+  if (d && d.calendar) calendar = d.calendar;
 }
 
 function pickSchedule(name) {
@@ -138,6 +151,7 @@ async function doSave() {
     renderBoard();
     renderSummary();
     renderWarnings();
+    renderCalInfo();
   } catch (e) {
     setPill('error');
   }
@@ -156,6 +170,99 @@ function renderSettings() {
   g.innerHTML = [0,1,2,3,4].map(d =>
     '<button class="dow-btn' + ((schedule.meeting_days || []).includes(d) ? ' active' : '') + '"' +
     ' onclick="Schedule.toggleDow(' + d + ')">' + DOW[d] + '</button>').join('');
+  renderCalClassPicker();
+}
+
+// ── Class calendar (imported .ics) ────────────────────────────────────────────
+// The calendar is the compressed copy of a Didax teacher-schedule export.
+// Binding a class replaces the weekday grid with the class's real meeting
+// dates; the grid controls hide because they no longer apply.
+
+function classLabel(c) {
+  if (c.block && c.course) return 'Block ' + c.block + ' — ' + c.course;
+  if (c.block) return 'Block ' + c.block + ' (free block)';
+  return c.course || c.id;
+}
+
+function renderCalClassPicker() {
+  const sel = document.getElementById('calClass');
+  const bound = !!(schedule.calendar_class && calendar &&
+                   calendar.classes.some(c => c.id === schedule.calendar_class));
+  let opts = '<option value="">' +
+    (calendar ? 'Manual (weekday grid)' : 'Manual — import an .ics for real dates') +
+    '</option>';
+  if (calendar) {
+    opts += calendar.classes.map(c =>
+      '<option value="' + esc(c.id) + '"' +
+      (schedule.calendar_class === c.id ? ' selected' : '') + '>' +
+      esc(classLabel(c)) + '</option>').join('');
+  }
+  sel.innerHTML = opts;
+  sel.disabled = !calendar;
+  document.getElementById('dowLabel').style.display = bound ? 'none' : '';
+  document.getElementById('dowGroup').style.display = bound ? 'none' : '';
+}
+
+function pickCalClass(id) {
+  if (!id) {
+    delete schedule.calendar_class;
+  } else {
+    const cls = calendar.classes.find(c => c.id === id);
+    schedule.calendar = calName;
+    schedule.calendar_class = id;
+    // Cover the class's whole span; narrow First/Last day to start a plan
+    // at any later meeting instead.
+    if (cls && cls.meetings.length) {
+      schedule.start_date = cls.meetings[0][0];
+      schedule.end_date = cls.meetings[cls.meetings.length - 1][0];
+    }
+  }
+  renderSettings();
+  markDirty();
+}
+
+async function importIcs(input) {
+  const file = input.files && input.files[0];
+  input.value = '';
+  if (!file || !schedName) return;
+  const text = await file.text();
+  // One calendar per schedule name: a new year's schedule gets its own
+  // calendar file, so re-importing never re-dates an older year's plan.
+  const name = schedName;
+  const d = await fetch('/api/calendars/' + encodeURIComponent(name) +
+      '/import?filename=' + encodeURIComponent(file.name), {
+    method: 'POST', headers: {'Content-Type': 'text/calendar'}, body: text,
+  }).then(r => r.json()).catch(e => ({error: String(e)}));
+  if (d.error) { toast(d.error); return; }
+  calendar = d.calendar;
+  calName = name;
+  schedule.calendar = name;
+  const withCourse = calendar.classes.filter(c => c.course).length;
+  toast('Imported ' + calendar.classes.length + ' class slots (' + withCourse +
+        ' with courses) — pick your class');
+  renderSettings();
+  renderCalInfo();
+  markDirty();
+}
+
+function renderCalInfo() {
+  const el = document.getElementById('calInfo');
+  const cls = resolved && resolved.calendar && resolved.calendar.class;
+  if (cls) {
+    el.style.display = '';
+    el.innerHTML = 'Dates from imported calendar: <b style="color:var(--text)">' +
+      esc(classLabel(cls)) + '</b>' +
+      (cls.location ? ' &middot; ' + esc(cls.location) : '') +
+      ' &middot; ' + cls.meetings + ' meetings ' + fmtShort(cls.first) + ' &ndash; ' +
+      fmtShort(cls.last) +
+      ' &middot; Canvas sync unlocks at class start; homework due 11:59 PM before the next class';
+  } else if (calendar) {
+    el.style.display = '';
+    el.innerHTML = 'Calendar &ldquo;' + esc(calName) + '&rdquo; imported (' +
+      calendar.classes.length + ' class slots) — pick a class above to use real meeting dates.';
+  } else {
+    el.style.display = 'none';
+  }
 }
 
 function toggleDow(d) {
@@ -403,8 +510,12 @@ function slotRow(blk, s, num) {
     : ' class="slot-title' + (s.kind === 'gap' ? ' gap' : '') + '"';
   const from = s.lesson && s.lesson._module ? ' <span class="from">' + esc(s.lesson._module) + '/' + esc(s.lesson.path || '') + '</span>'
     : (s.lesson_ref ? ' <span class="from">' + esc(s.lesson_ref.module) + '/' + esc(s.lesson_ref.path) + '</span>' : '');
+  const timeTip = s.time
+    ? ' title="Class ' + s.time.start + '–' + s.time.end +
+      (s.next_date ? ' · HW due 11:59 PM the night before ' + fmtShort(s.next_date) : '') + '"'
+    : '';
   return '<div class="slot-row' + (isInsert ? ' ins' : '') + '">' +
-    '<span class="slot-date">' + fmtD(s.date) + '</span>' +
+    '<span class="slot-date"' + timeTip + '>' + fmtD(s.date) + '</span>' +
     '<span class="slot-num">' + num + '</span>' +
     '<span>' + badge + '</span>' +
     '<span' + titleAttr + '>' + esc(s.title) + from + '</span>' +
@@ -746,14 +857,24 @@ async function openSync(blockId) {
     g.label = label;
     arr.forEach(c => {
       const o = document.createElement('option');
-      o.value = c.id; o.textContent = c.name;
-      if (String(c.id) === last) o.selected = true;
+      o.value = c.id;
+      o.textContent = c.name +
+        (c.concluded ? ' — concluded (read-only)'
+         : c.workflow_state === 'unpublished' ? ' — unpublished' : '');
+      if (c.concluded) o.disabled = true;
+      if (String(c.id) === last && !c.concluded) o.selected = true;
       g.appendChild(o);
     });
     sel.appendChild(g);
   };
   addGroup('★ Starred', starred);
   addGroup('All courses', rest);
+  // Never leave a concluded course selected — Canvas rejects all writes to it
+  const cur = sel.selectedOptions[0];
+  if (!cur || cur.disabled) {
+    const firstEnabled = Array.from(sel.options).find(o => !o.disabled);
+    if (firstEnabled) firstEnabled.selected = true;
+  }
 }
 
 function closeSync() {
@@ -841,6 +962,7 @@ async function deleteFinal() {
 }
 
 return {init, pickSchedule, newSchedule, loadPalette, toggleDow, toggleNoSchool,
+        pickCalClass, importIcs,
         addNoSchool, removeNoSchool, toggleTopic, toggleBlock, removeBlock,
         stepBlock, setBlockPoints, removeInsert, stepInsert, setInsertPoints,
         editBlockTitle, editInsertTitle, openSync, closeSync, doSync,

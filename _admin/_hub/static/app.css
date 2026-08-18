@@ -162,6 +162,8 @@ section.tab.active { display: block; }
 .badge-year   { background:#1e2d4a; color:var(--accent); }
 .badge-subj   { background:#2a1e4a; color:var(--purple); }
 .badge-other  { background:#2a2a1e; color:var(--yellow); }
+.badge-unpub  { background:#2a2a1e; color:var(--yellow); }
+.badge-concl  { background:#2a1e1e; color:var(--red); }
 .course-date  { font-size: 11px; color: var(--muted); white-space: nowrap; }
 .sub-btns     { display: flex; gap: 6px; margin-top: 9px; }
 .sub-btn {
@@ -357,6 +359,8 @@ section.tab.active { display: block; }
 }
 .saved-item:hover  { border-color: var(--accent); }
 .saved-item.active { border-color: var(--accent); background: var(--surface2); }
+.saved-item.drop-above { box-shadow: 0 -3px 0 0 var(--accent); }
+.saved-item.drop-below { box-shadow: 0 3px 0 0 var(--accent); }
 .saved-item .name { font-size: 13px; font-weight: 500; }
 .saved-item .meta { font-size: 11px; color: var(--muted); margin-top: 3px; }
 .btn-new { background: transparent; border: 1px dashed var(--border); color: var(--muted); padding: 9px; border-radius: 8px; font-size: 12px; cursor: pointer; font-family: inherit; transition: border-color .15s, color .15s; }

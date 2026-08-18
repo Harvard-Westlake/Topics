@@ -1,0 +1,101 @@
+{
+  "name": "large project",
+  "slug": "large-project",
+  "description": "",
+  "unit_number": 0,
+  "points_per_assignment": 10,
+  "scale_factor": 1.15,
+  "start_date": null,
+  "topic_names": [
+    "Terminal",
+    "ComputerSetup",
+    "GroupProgramming"
+  ],
+  "assignments": [
+    {
+      "day": 1,
+      "duration": 1,
+      "title": "Terminal Basics",
+      "path": "Basics",
+      "_module": "Terminal",
+      "review": null
+    },
+    {
+      "day": 1,
+      "duration": 1,
+      "title": "Initial Install",
+      "path": "InitialInstall",
+      "_module": "ComputerSetup",
+      "review": null
+    },
+    {
+      "day": 1,
+      "duration": 1,
+      "title": "Deliverables and Issue Tracking",
+      "path": "DeliverablesAndIssueTracking",
+      "_module": "GroupProgramming",
+      "review": null
+    },
+    {
+      "day": 2,
+      "duration": 3,
+      "title": "Sprint Work",
+      "path": "SprintWork",
+      "_module": "GroupProgramming",
+      "review": null
+    },
+    {
+      "day": 5,
+      "duration": 1,
+      "title": "MVP and Merge Discipline",
+      "path": "MVPAndMergeDiscipline",
+      "_module": "GroupProgramming",
+      "review": null
+    },
+    {
+      "day": 6,
+      "duration": 1,
+      "title": "Code Review and MVP Presentation",
+      "path": "CodeReviewAndPresentation",
+      "_module": "GroupProgramming",
+      "review": {
+        "module": "GitUsage",
+        "path": "RepositoriesAndCommits",
+        "file": "review-day-1.md"
+      }
+    },
+    {
+      "day": 7,
+      "duration": 1,
+      "title": "Issues as Work Requests",
+      "path": "IssuesAsWorkRequests",
+      "_module": "GroupProgramming",
+      "review": null
+    },
+    {
+      "day": 8,
+      "duration": 1,
+      "title": "Refactoring and the README",
+      "path": "RefactorAndReadme",
+      "_module": "GroupProgramming",
+      "review": null
+    },
+    {
+      "day": 9,
+      "duration": 2,
+      "title": "Help a Classmate",
+      "path": "HelpAClassmate",
+      "_module": "GroupProgramming",
+      "review": null
+    },
+    {
+      "day": 11,
+      "duration": 1,
+      "title": "Final Wrap-Up and Deployment",
+      "path": "FinalWrapUp",
+      "_module": "GroupProgramming",
+      "review": null
+    }
+  ],
+  "updated": "2026-08-18"
+}

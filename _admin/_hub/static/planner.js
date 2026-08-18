@@ -25,12 +25,82 @@ function init() {
 async function loadSavedList() {
   const res = await fetch('/api/saved').then(r => r.json());
   savedModules = res.modules || [];
-  $('plSavedList').innerHTML = savedModules.map(m =>
-    '<div class="saved-item' + (m.slug === currentSlug ? ' active' : '') + '" onclick="Planner.loadSaved(\'' + m.slug + '\')">' +
+  renderSavedList();
+}
+
+function renderSavedList() {
+  $('plSavedList').innerHTML = savedModules.map((m, i) =>
+    '<div class="saved-item' + (m.slug === currentSlug ? ' active' : '') + '" draggable="true"' +
+    ' ondragstart="Planner.savedDragStart(event,' + i + ')"' +
+    ' ondragover="Planner.savedDragOver(event)"' +
+    ' ondragleave="Planner.savedDragLeave(event)"' +
+    ' ondrop="Planner.savedDrop(event,' + i + ')"' +
+    ' ondragend="Planner.savedDragEnd()"' +
+    ' onclick="Planner.loadSaved(\'' + m.slug + '\')">' +
       '<div class="name">' + m.name + '</div>' +
       '<div class="meta">Unit ' + (m.unit_number ?? '—') + ' · ' + m.lesson_count + ' lessons · ' + (m.topic_names || []).join(', ') + '</div>' +
     '</div>'
   ).join('') || '<div style="font-size:12px;color:var(--muted)">No saved modules yet</div>';
+}
+
+// Drag to reorder the library — the new order autosaves: unit_number becomes
+// the list position (1..N) and lesson plans regenerate server-side.
+
+let savedDragIdx = null;
+
+function savedDragStart(e, i) {
+  savedDragIdx = i;
+  e.dataTransfer.effectAllowed = 'move';
+}
+
+function savedDragOver(e) {
+  if (savedDragIdx === null) return;
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  const box = e.currentTarget.getBoundingClientRect();
+  const above = e.clientY < box.top + box.height / 2;
+  e.currentTarget.classList.toggle('drop-above', above);
+  e.currentTarget.classList.toggle('drop-below', !above);
+}
+
+function savedDragLeave(e) {
+  e.currentTarget.classList.remove('drop-above', 'drop-below');
+}
+
+function savedDrop(e, i) {
+  e.preventDefault();
+  const above = e.currentTarget.classList.contains('drop-above');
+  e.currentTarget.classList.remove('drop-above', 'drop-below');
+  if (savedDragIdx === null) return;
+  const from = savedDragIdx;
+  savedDragIdx = null;
+  let to = i + (above ? 0 : 1);
+  if (to > from) to--;
+  if (to === from) return;
+  const [moved] = savedModules.splice(from, 1);
+  savedModules.splice(to, 0, moved);
+  renderSavedList();
+  saveOrder();
+}
+
+function savedDragEnd() {
+  savedDragIdx = null;
+  document.querySelectorAll('#plSavedList .drop-above, #plSavedList .drop-below')
+    .forEach(el => el.classList.remove('drop-above', 'drop-below'));
+}
+
+async function saveOrder() {
+  const d = await fetch('/api/saved-order', {
+    method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({order: savedModules.map(m => m.slug)}),
+  }).then(r => r.json()).catch(err => ({error: String(err)}));
+  if (d.error) { toast(d.error); loadSavedList(); return; }
+  savedModules = d.modules || savedModules;
+  renderSavedList();
+  // keep the open editor's Unit field in step with the renumbering
+  const cur = savedModules.find(m => m.slug === currentSlug);
+  if (cur && cur.unit_number != null) $('fUnit').value = cur.unit_number;
+  toast('Order saved — unit numbers now 1–' + savedModules.length);
 }
 
 function newModule() {
@@ -481,5 +551,6 @@ return {init, newModule, loadSaved, deleteModule, onNameInput, touchSlug,
         refreshAll, refreshTopicDatalist, onTopicTextChange, onTopicTextKey,
         removeTopicChip, onLessonCheck, toggleReview, onReviewModuleChange,
         onReviewLessonChange, onReviewFileChange, saveModule, openEditor,
-        openEditorTab, setEditorMode, saveFile, markDirty, closeEditor};
+        openEditorTab, setEditorMode, saveFile, markDirty, closeEditor,
+        savedDragStart, savedDragOver, savedDragLeave, savedDrop, savedDragEnd};
 })();

@@ -176,6 +176,8 @@ function buildCard(c, i) {
         '<div class="course-meta">' +
           '<span class="badge ' + (isOther ? 'badge-other' : 'badge-year') + '">' + yr + '</span>' +
           (!isOther ? '<span class="badge badge-subj">' + sub + '</span>' : '') +
+          (c.workflow_state === 'unpublished' ? '<span class="badge badge-unpub">Unpublished</span>' : '') +
+          (c.concluded ? '<span class="badge badge-concl">Concluded</span>' : '') +
         '</div>' +
         '<div class="sub-btns">' +
           makeSubBtn(c.id, 'assignments', 'Assignments') +

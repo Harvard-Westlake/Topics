@@ -1,5 +1,6 @@
 {
-  "end_date": "2027-06-04",
+  "calendar": "theiss",
+  "end_date": "2027-05-25",
   "meeting_days": [
     0,
     1,
@@ -10,21 +11,29 @@
   "no_school": [],
   "sequence": [
     {
-      "id": "bmsxk4elr2rz4q",
+      "id": "bmsz08lxc2lhp8",
       "type": "module",
       "source": "saved",
       "ref": "unit-1-computer-setup-and-git-usage",
       "inserts": []
     },
     {
-      "id": "bmsxk4c4ra4kqt",
+      "id": "bmsz0927j2w0k8",
+      "type": "module",
+      "source": "saved",
+      "ref": "large-project",
+      "inserts": []
+    },
+    {
+      "id": "bmsz094ne16rbx",
       "type": "module",
       "source": "saved",
       "ref": "u5-ai-module",
       "inserts": []
     }
   ],
-  "start_date": "2026-08-26",
-  "updated": "2026-08-17T14:19:04",
-  "year": "2026-27"
+  "start_date": "2026-08-24",
+  "updated": "2026-08-18T14:46:40",
+  "year": "2026-27",
+  "calendar_class": "block-a"
 }

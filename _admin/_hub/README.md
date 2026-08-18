@@ -36,6 +36,23 @@ so editing a module's `LESSONS.md` re-dates every schedule that uses it. Tests,
 finals, review/flex days, and single lessons can be dropped between modules or
 *inside* a module after any given day.
 
+## Class calendars (imported .ics)
+
+The Year Schedule tab's **Import .ics** button accepts a Didax teacher-schedule
+export and compresses it into `_schedules/calendars/<schedule>.json` — for every
+class slot (Blocks A–G plus named classes like a Directed Study), the static list
+of real meeting `[date, start, end]` triples in local time (`icsimport.py`, also
+usable standalone: `python3 _admin/_hub/icsimport.py HWSchedule.ics <name>`).
+Free blocks are kept too, so a section not present in the export can still be
+mapped onto its block's meeting times.
+
+Picking a class in the **Class** dropdown binds the schedule to it
+(`calendar` + `calendar_class` in the schedule JSON): class dates then come from
+the actual meeting list instead of the weekday grid. First/Last day still clip
+the range (start a plan at any meeting) and no-school days still skip dates.
+Canvas sync uses the real times: each assignment unlocks when its class period
+starts and is due at **11:59 PM the night before the class meets next**.
+
 ## Collaboration model
 
 The repo is the sync layer: make changes on a branch, open a change request, and

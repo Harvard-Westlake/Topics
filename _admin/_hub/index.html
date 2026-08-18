@@ -165,7 +165,12 @@ window.MathJax = {
   <label>Year</label><input type="text" id="setYear">
   <label>First day</label><input type="date" id="setStart">
   <label>Last day</label><input type="date" id="setEnd">
-  <label>Meets</label>
+  <label>Class</label>
+  <select id="calClass" onchange="Schedule.pickCalClass(this.value)" style="max-width:240px"></select>
+  <button class="btn-icon" onclick="document.getElementById('icsFile').click()"
+          title="Import a Didax teacher-schedule .ics export — extracts every class's real meeting dates and times">Import .ics</button>
+  <input type="file" id="icsFile" accept=".ics,text/calendar" style="display:none" onchange="Schedule.importIcs(this)">
+  <label id="dowLabel">Meets</label>
   <div class="dow-group" id="dowGroup"></div>
   <button class="btn-icon" id="nsToggle" onclick="Schedule.toggleNoSchool()">No-school days</button>
   <div class="summary">
@@ -180,6 +185,8 @@ window.MathJax = {
   <input type="text" id="nsLabel" placeholder="Label (optional)" style="width:150px">
   <button class="btn-icon" onclick="Schedule.addNoSchool()">Add</button>
 </div>
+
+<div id="calInfo" style="display:none;padding:8px 32px 0;font-size:12px;color:var(--muted)"></div>
 
 <div id="warnings"></div>
 
