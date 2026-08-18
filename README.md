@@ -18,6 +18,22 @@ The curriculum changes every year, and Git is what makes those changes manageabl
 - **History of progression** — the commit history preserves how every lesson has evolved across years: what changed, when, and why.
 - **Pick-and-choose scheduling** — every lesson, assignment, review fragment, and milestone is its own file, so the course hub can schedule any subset of items in any order and recombine them differently each year.
 
+## <font color="#388bfd">What This Design Solves</font>
+
+The folder layout is deliberate. Three problems drive it:
+
+### <font color="#79c0ff">Planning flexibility</font>
+
+Content lives in its own topic folder — never in a fixed sequence. The structure and order in which topics are combined into a course is assembled dynamically at planning time, and it is *meant* to change: as the technology landscape shifts, units can be reordered, dropped, or recombined for a new year without rewriting a single lesson.
+
+### <font color="#79c0ff">Class-specific adjustments</font>
+
+Review and supplemental material are composable fragments, each in its own file beside the lesson that introduced the concept. Any teacher can attach any fragment to any assignment, for whichever class needs it, on demand — so two sections of the same course can run the same lessons with different reinforcement, without forking the curriculum.
+
+### <font color="#79c0ff">Content without built-in numbering</font>
+
+No lesson or topic carries an inherent number — there is no "Unit 3" baked into a folder name. Unit numbers and day counts are assigned when a course is planned, not when content is written. When a unit needs more material, the new lesson is simply added to its topic's folder. That keeps collaboration focused — contributors can work deeply inside one topic — while leaving planners free to renumber, resequence, or refactor units without touching the content itself.
+
 ## <font color="#388bfd">Lesson Types</font>
 
 | | Type | What it means |
