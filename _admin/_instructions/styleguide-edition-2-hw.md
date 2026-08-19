@@ -1,18 +1,20 @@
 # Markdown Styleguide — Second Edition (Harvard-Westlake)
 
-*<font color="#8b949e">The working styleguide for this repository. It carries forward the structure of the [First Edition](styleguide-edition-1-acs.md) — the ACS "Typeset Terminal" system — re-grounded in Harvard-Westlake's red, gold, and black, and rewritten so every construction renders natively on GitHub. Where the First Edition records, this edition recommends: each rule explains what it asks for, why it earns its place, and shows the exact markup to copy.</font>*
+*<font color="#4D4D4D">The working styleguide for this repository. It carries forward the structure of the [First Edition](styleguide-edition-1-acs.md) — the ACS "Typeset Terminal" system — re-grounded in Harvard-Westlake's brand, and rewritten so every construction renders natively on GitHub. **Revision 2 (proposal):** every color and semantic role now comes from the school's official digital brand tokens, recorded verbatim in the [HW Digital Brand Reference](styleguide-learn-hw.md) extracted from learn.hw.com. Where the First Edition records, this edition recommends: each rule explains what it asks for, why it earns its place, and shows the exact markup to copy.</font>*
 
 ---
 
 ## Contents
 
 1. [What changed from the First Edition](#what-changed-from-the-first-edition)
-2. [Foundations](#foundations) — the accent trio, typography, voice
-3. [Shared document anatomy](#shared-document-anatomy)
-4. [Image stencils](#image-stencils)
-5. [Tables of contents](#tables-of-contents)
-6. [**Page 1 — Lesson pages**](#page-1--lesson-pages)
-7. [**Page 2 — Worksheet and assignment pages**](#page-2--worksheet-and-assignment-pages)
+2. [Revision 2 — alignment with learn.hw.com](#revision-2--alignment-with-learnhwcom)
+3. [Foundations](#foundations) — the approved palette, typography, voice
+4. [Shared document anatomy](#shared-document-anatomy)
+5. [Constructions borrowed from the app](#constructions-borrowed-from-the-app)
+6. [Image stencils](#image-stencils)
+7. [Tables of contents](#tables-of-contents)
+8. [**Page 1 — Lesson pages**](#page-1--lesson-pages)
+9. [**Page 2 — Worksheet and assignment pages**](#page-2--worksheet-and-assignment-pages)
 
 ---
 
@@ -20,9 +22,9 @@
 
 | Area | First Edition (ACS) | Second Edition (HW) |
 |---|---|---|
-| Rendering target | Custom stylesheet + print pipeline; class-based HTML | GitHub's renderer, light and dark themes; no stylesheet assumed |
-| Accent palette | Ten fixed colors | Three working accents — red, gold, ink — plus neutrals |
-| Color markup | CSS classes | `<font color="…">` tags, the one color mechanism GitHub honors |
+| Rendering target | Custom stylesheet + print pipeline; class-based HTML | GitHub's renderer; no stylesheet assumed |
+| Accent palette | Ten fixed colors | The approved HW brand palette — three primaries + five semantic secondaries |
+| Color markup | CSS classes | `<font color="…">` tags carrying the official token values |
 | Section badges | `>_` filled badge, `[ ]` brackets via CSS | Literal `>_` and `[ ]` characters — the terminal register survives as text |
 | Callouts | `<div class="callout">` | Bold-label blockquotes with a colored label |
 | Voice | Terse specification | Professional and direct; each rule states its reason |
@@ -32,33 +34,63 @@ Everything else carries over intact: the two-register identity, the flat informa
 
 ---
 
+## Revision 2 — alignment with learn.hw.com
+
+Revision 1 approximated the school's colors from print references and GitHub's own palette. The school's class resources app at learn.hw.com publishes the actual brand tokens; this revision adopts them wholesale. What changes, old → new:
+
+| What | Revision 1 | Revision 2 (this proposal) |
+|---|---|---|
+| Red | `#c8102e` print / `#f85149` screen | **Brand Red `#DA0016`** — the official token, one value |
+| Gold | `#a37e00` print / `#e3b341` screen | **Brand Gold `#EDA300`** |
+| Muted | `#6b6b6b` print / `#8b949e` screen | **Secondary Black `#4D4D4D`** |
+| Palette scope | Closed trio — "no success green, no info blue" | The approved eight: 3 primaries + 5 secondaries, each locked to its semantic role |
+| `WARNING` callouts | Red | **Secondary Orange `#FA7300`** — the app's warning color; red is reserved for errors, deadlines, and directives |
+| `OUTPUT` label | Bold ink | **Secondary Blue `#539ADC`** — restores the First Edition's Console Blue distinction with an approved token |
+| New label families | — | `INFO` (blue) and `DONE` (green) callouts |
+| New constructions | — | Eyebrow, step table, metrics table, labeled divider |
+| Emoji | Banned by repo convention | Confirmed by the brand: the app replaces emoji with SVG icons; markdown simply omits them |
+
+Dropping the print/screen dual values simplifies every construction: one token, one hex. Two tokens read poorly on dark surfaces — if a construction targets a surface known to be dark, substitute Brand Red → `#f85149` and Secondary Black → `#8b949e`; everywhere else the official values stand. Interactive `demos/*.html` pages carry their own CSS and should use the [full token set](styleguide-learn-hw.md) directly, tints and all.
+
+---
+
 ## Foundations
 
 A Harvard-Westlake document should read the way the school's print materials look: black ink doing the work, red appearing exactly where attention must land, gold warming the margins. The restraint is the brand. A page that uses color everywhere uses it nowhere.
 
-### The accent trio
+### The approved palette
 
-Three accents, each with a canonical print value and a screen value tuned to stay legible on GitHub's light *and* dark themes. Use the screen value in `<font>` tags; the print value belongs in stylesheets and exported PDFs.
+Eight colors, verbatim from the school's brand tokens. The three primaries do the everyday editorial work; the five secondaries appear **only in their semantic roles**, never decoratively.
 
-| Accent | Print | Screen | Role — and only this role |
-|---|---|---|---|
-| **Jet Ink** (black) | `#0f0f0f` | *default text color* | Titles, headings, structure, emphasis through weight. On screen, black is never a `<font>` tag — it is the absence of one, so it adapts to dark theme automatically. |
-| <font color="#f85149">**Press Red**</font> | `#c8102e` | `#f85149` | The signal color: callout labels (`TASK`, `WARNING`), due dates, the pathbar leaf, one emphasized cell per table at most. Pantone 186, the school red. |
-| <font color="#e3b341">**HW Gold**</font> | `#a37e00` | `#e3b341` | The annotation color: exercise hints, stretch markers, review tags, marginal notes. Gold comments; it never commands. |
-| Muted | `#6b6b6b` | `#8b949e` | Subtitles, metadata, footers — text that supports without competing. |
+| Accent | Token | Role — and only this role |
+|---|---|---|
+| **Brand Black** | `#000000` | Titles, headings, structure, emphasis through weight. On GitHub, black is never a `<font>` tag — it is the absence of one, so it adapts to dark theme automatically. |
+| <font color="#DA0016">**Brand Red**</font> | `#DA0016` | The signal color: directive labels (`TASK`), due dates, error callouts, the pathbar leaf, at most one emphasized cell per table. |
+| <font color="#EDA300">**Brand Gold**</font> | `#EDA300` | The annotation color: hints, stretch markers, review tags, marginal notes. The app's default callout is gold-bordered — "educational hints and important caveats." Gold comments; it never commands. |
+| <font color="#4D4D4D">**Secondary Black**</font> | `#4D4D4D` | Muted text: subtitles, eyebrows, metadata, footers — text that supports without competing. |
+| <font color="#539ADC">**Secondary Blue**</font> | `#539ADC` | Information: `INFO` callout labels and the `OUTPUT` label on output boxes. |
+| <font color="#9CCA00">**Secondary Green**</font> | `#9CCA00` | Success: `DONE` / `SUCCESS` callout labels and expected end states. |
+| <font color="#FA7300">**Secondary Orange**</font> | `#FA7300` | Warning: `WARNING` / `CAUTION` callout labels, destructive-command notes. |
+| <font color="#BFC299">**Secondary Khaki**</font> | `#BFC299` | The code identity (khaki-on-black in the app) and disabled states. In markdown it almost never appears as text color — GitHub styles code blocks itself — but demos and generated HTML use it for code surfaces. |
 
-**The Press Red Rule, kept.** Red on 10% or less of any page. One callout label, one due date, one breadcrumb leaf is a full allocation. If you have used red four times on a page, the fourth use has diluted the other three.
+**The Red Rule, kept.** Red on 10% or less of any page. One callout label, one due date, one breadcrumb leaf is a full allocation. If you have used red four times on a page, the fourth use has diluted the other three.
 
-**The trio is closed.** No success green, no info blue, no new accents. A semantic state is carried by its label text — `WARNING`, `DONE`, `OPTIONAL` — with at most one accent color behind it. (Course-identity colors from the First Edition — Console Blue, Course Green — remain reserved for logos and course marks, never page content.)
+**The palette is closed at the approved eight.** No new accents, and no secondary outside its role: blue never decorates a heading, green never highlights a table row, orange never marks a hint. A semantic state is carried by its label text — `WARNING`, `DONE`, `OPTIONAL` — with exactly its one assigned color behind it. (The tokens' 50% and 20% tints do not survive markdown; tables and blockquotes provide "occupied space" instead. Demos use the tints directly.)
 
 ### Typography and the two registers
 
-GitHub chooses the fonts, so the two-register identity survives through *markup* rather than typefaces:
+The brand sets Source Sans 3 — Black 900 headlines, Semibold subheads, Light/Regular body. GitHub chooses the fonts, so the hierarchy survives through *markup weight* instead: heading levels carry the Black-headline role, bold lead-ins carry Semibold, body text carries Regular. The two-register identity survives the same way:
 
 - **The typeset register** is ordinary prose: headings, paragraphs, tables.
-- **The terminal register** is everything inline-code and fenced: commands, filenames, exact values, and the literal `>_` and `[EX 01]` markers that label sections and exercises.
+- **The terminal register** is everything inline-code and fenced: commands, filenames, exact values, and the literal `>_` and `[EX 01]` markers that label sections and exercises. (In the app this register is literally khaki-on-black code panels; on GitHub, fenced blocks carry it.)
 
 The rule of thumb carries over from the First Edition: if a human says it, write it as prose; if a machine reads it or produces it, set it in backticks or a fence. `score >= 70` is machine text even mid-sentence.
+
+**Headings are black — with one sanctioned exception.** The app ships a `.red` utility: a Brand Red, all-uppercase heading for moments that must command the page. The markdown equivalent is allowed at most once per page, and it spends the entire red budget:
+
+```markdown
+## <font color="#DA0016">DUE DATES MOVED — READ BEFORE CLASS</font>
+```
 
 ### Voice
 
@@ -77,15 +109,16 @@ Every document opens with an identity block and closes with a footer, exactly as
 
 ### The run header and pathbar
 
-A centered identity block: school and course on one line, the path on the next with the **leaf in red** — the single red element of the header. The muted subtitle pattern matches the rest of this repository.
+A centered identity block: an eyebrow above, school and course on one line, the path on the next with the **leaf in red** — the single red element of the header. The eyebrow is the app's small-uppercase-label pattern: bold, uppercase, Secondary Black.
 
 ```markdown
 <div align="center">
 
-**Harvard-Westlake · Advanced Computer Science**
-*<font color="#8b949e">Unit 0 — Java Foundations</font>*
+**<font color="#4D4D4D">UNIT 0 · JAVA FOUNDATIONS</font>**
 
-`acs / unit-0 /` <font color="#f85149">**0.3-control-flow**</font> — `lesson.md`
+**Harvard-Westlake · Advanced Computer Science**
+
+`acs / unit-0 /` <font color="#DA0016">**0.3-control-flow**</font> — `lesson.md`
 
 </div>
 
@@ -102,17 +135,29 @@ One H1 per file, numbered `N.M — Title`. The number is the document's address:
 
 ### Callouts
 
-The First Edition's callout becomes a bold-label blockquote. The label is uppercase, colored, and unique on the page section it opens; the body is bold so it stands apart from surrounding prose without further color.
+The app's callouts and alerts translate to bold-label blockquotes. The label is uppercase, colored by its semantic family, and unique in the section it opens; the body of a directive is bold so it stands apart without further color.
+
+| Label family | Color | Use |
+|---|---|---|
+| `TASK` `DUE` `ERROR` | <font color="#DA0016">Brand Red `#DA0016`</font> | Directives, deadlines, errors — the page's red allocation |
+| `WARNING` `CAUTION` | <font color="#FA7300">Orange `#FA7300`</font> | Risky steps, destructive commands, common pitfalls |
+| `HINT` `NOTE` `STRETCH` | <font color="#EDA300">Gold `#EDA300`</font> | Educational hints and caveats — the app's default callout |
+| `INFO` | <font color="#539ADC">Blue `#539ADC`</font> | Background and context that isn't an instruction |
+| `DONE` `SUCCESS` | <font color="#9CCA00">Green `#9CCA00`</font> | Confirmations and expected end states |
 
 ```markdown
-> <font color="#f85149">**TASK**</font> — **Trace each conditional and predict the exact console output.**
+> <font color="#DA0016">**TASK**</font> — **Trace each conditional and predict the exact console output.**
+
+> <font color="#FA7300">**WARNING**</font> — `git reset --hard` erases uncommitted work. Run `git status` first.
+
+> <font color="#EDA300">**HINT**</font> — Boundary values are where conditional bugs most often hide.
+
+> <font color="#539ADC">**INFO**</font> — Canvas lists this assignment under Unit 0; the repo is the source of truth.
+
+> <font color="#9CCA00">**DONE**</font> — Your prompt now shows the branch name. That's the end state for this section.
 ```
 
-Reserve red labels for directives and warnings. Annotations take gold:
-
-```markdown
-> <font color="#e3b341">**HINT**</font> — Boundary values are where conditional bugs most often hide.
-```
+Budget: gold and blue are the everyday labels. Orange appears when a mistake would genuinely cost the student something. Green closes a section at most once. Red follows the Red Rule — one directive or one due date is a full allocation.
 
 ### The footer
 
@@ -123,7 +168,7 @@ A centered, muted close that repeats the document's address — the last thing o
 
 <div align="center">
 
-*<font color="#8b949e">0.3 Worksheet — Control Flow</font>*
+*<font color="#4D4D4D">0.3 Worksheet — Control Flow</font>*
 
 </div>
 ```
@@ -149,6 +194,69 @@ Unchanged from the First Edition — the names are the contract between lesson, 
 
 ---
 
+## Constructions borrowed from the app
+
+Four patterns from the app's component library translate cleanly to markdown. Use them when the content genuinely has their shape — never as decoration.
+
+### Step table
+
+The app's step cards — "numbered sequence cards for showing algorithm phases or process steps" — become a two-column table with bold, numbered step names:
+
+```markdown
+| Step | What happens |
+|---|---|
+| **1 — Pre-processing** | Pad the message to a multiple of 512 bits; append the original length. |
+| **2 — Chunk processing** | Break the padded message into 512-bit chunks; expand each into 80 words. |
+| **3 — Final hash** | Concatenate the five state variables into the 160-bit digest. |
+```
+
+### Metrics table
+
+The app's stat cards — "at-a-glance numbers for dashboards, summaries, or algorithm stats" — become a compact table with the numbers bold and the units plain:
+
+```markdown
+| Digest size | Rounds | Block size | Word size |
+|---|---|---|---|
+| **160** bits | **80** | **512** bits | **32** bits |
+```
+
+### Eyebrow
+
+The small uppercase label the app places above titles. In markdown it opens the identity block (see above) and may introduce a major page region:
+
+```markdown
+**<font color="#4D4D4D">INTERACTIVE TOOLS</font>**
+```
+
+### Labeled divider
+
+The app's divider-with-inline-label, for a hard break between unrelated page regions. Optional — most pages only need `---`:
+
+```markdown
+---
+
+<div align="center">
+
+**<font color="#4D4D4D">SECTION BREAK</font>**
+
+</div>
+```
+
+### Accordion
+
+Long reference material may fold, so the page stays scannable — the app's accordion is "expandable panels for hints, FAQs, or collapsible content," and GitHub renders `<details>` natively. Keep the summary line in the section's voice:
+
+```markdown
+<details>
+<summary><b>>_ Deep dive — how Java evaluates a chained condition</b></summary>
+
+Java checks each condition top to bottom and runs only the first true branch...
+
+</details>
+```
+
+---
+
 ## Image stencils
 
 Figures earn their place the same way sentences do. The mechanics carry over from the First Edition; the embed gains explicit sizing and a caption, because GitHub renders images at full width unless told otherwise.
@@ -167,7 +275,7 @@ attachments/<page-slug>-figure-<N>.png
        alt="Decision diamond: the true branch prints Passed, the false branch skips ahead"
        width="520">
 
-  *<font color="#8b949e">Figure 1 — one condition, two paths</font>*
+  *<font color="#4D4D4D">Figure 1 — one condition, two paths</font>*
 </div>
 ```
 
@@ -187,7 +295,7 @@ When a worksheet needs a *student-facing* placeholder — a space the student dr
 ```markdown
 <div align="center">
 
-| <font color="#e3b341">**PASTE YOUR SCREENSHOT HERE**</font> — full window, URL bar visible |
+| <font color="#EDA300">**PASTE YOUR SCREENSHOT HERE**</font> — full window, URL bar visible |
 |---|
 | <br><br><br><br> |
 
@@ -226,8 +334,8 @@ Tables, not link lists, wherever order or pairing matters — a table forces eve
 ```markdown
 | Day | Lesson | Focus |
 |---|---|---|
-| 0.3 | [Control Flow](0.3%20-%20Control%20Flow/lesson.md) | <font color="#e3b341">new concept</font> |
-| 0.4 | [Arithmetic Expressions](0.4%20-%20Arithmetic%20Expressions/lesson.md) | <font color="#e3b341">practice</font> |
+| 0.3 | [Control Flow](0.3%20-%20Control%20Flow/lesson.md) | <font color="#EDA300">new concept</font> |
+| 0.4 | [Arithmetic Expressions](0.4%20-%20Arithmetic%20Expressions/lesson.md) | <font color="#EDA300">practice</font> |
 ```
 
 ---
@@ -240,7 +348,7 @@ Tables, not link lists, wherever order or pairing matters — a table forces eve
 
 ## Structure, top to bottom
 
-1. **Identity block** — run header, pathbar, H1 (shared anatomy above).
+1. **Identity block** — eyebrow, run header, pathbar, H1 (shared anatomy above).
 2. **Meta block** — unit and learning target, closed with a rule.
 3. **Four fixed sections** — `>_ Lesson Notes`, `>_ Documentation`, `>_ Assignments`, `>_ Review Worksheets`.
 
@@ -262,7 +370,7 @@ Two labeled rows. The learning target is a first-person **"I can"** sentence the
 
 ### The four sections
 
-Section headings keep the literal `>_` marker — the terminal register surviving as text. Collapsibility survives too, through native `<details>`, which GitHub renders:
+Section headings keep the literal `>_` marker — the terminal register surviving as text:
 
 ````markdown
 ## >_ Lesson Notes
@@ -287,7 +395,7 @@ if (score >= 70) {
 
 - [Conditional Statements](<../../Documentation/Conditional Statements.md>)
 - [Boolean Operators](<../../Documentation/Boolean Operators.md>)
-- [Ternary Operator](<../../Documentation/Ternary Operator.md>) — <font color="#e3b341">stretch reference</font>
+- [Ternary Operator](<../../Documentation/Ternary Operator.md>) — <font color="#EDA300">stretch reference</font>
 
 ## >_ Assignments
 
@@ -299,20 +407,7 @@ if (score >= 70) {
 - [worksheet-solutions.md](worksheet-solutions.md) is the instructor key.
 ````
 
-Notice the accent budget of that whole page: gold twice (stretch marker, and it would take a hint callout), red zero times. A lesson page rarely needs red at all — red belongs to deadlines and warnings, and most lessons carry neither.
-
-### An optional collapsible variant
-
-Long reference material inside a lesson may fold, so the page stays scannable. Keep the summary line in the section's voice:
-
-```markdown
-<details>
-<summary><b>>_ Deep dive — how Java evaluates a chained condition</b></summary>
-
-Java checks each condition top to bottom and runs only the first true branch...
-
-</details>
-```
+Notice the accent budget of that whole page: gold twice (stretch marker, and it would take a hint callout), red zero times. A lesson page rarely needs red at all — red belongs to deadlines, directives, and errors, and most lessons carry none of them.
 
 ### Documentation notes
 
@@ -343,17 +438,17 @@ One line, three write-on fields:
 One per section, framing the work. The red label is usually the page's entire red allocation:
 
 ```markdown
-> <font color="#f85149">**TASK**</font> — **Trace each conditional and predict the exact console output.**
+> <font color="#DA0016">**TASK**</font> — **Trace each conditional and predict the exact console output.**
 ```
 
 ### The exercise block
 
 Each exercise is an H3 carrying the bracketed ID and a gold hint, then the body, then the answer area. The ID makes the exercise addressable in class ("look at EX 04"); the hint names the skill — two or three lowercase words: `if / trace`, `write`, `debug`, `boundary`, `choose structure`.
 
-A trace exercise pairs code with an output box — a fenced block the student fills in, labeled `OUTPUT` in bold ink:
+A trace exercise pairs code with an output box — a fenced block the student fills in, labeled `OUTPUT` in Secondary Blue, the machine-voice color the First Edition reserved for exactly this:
 
 ````markdown
-### [EX 01] <font color="#e3b341">if / trace</font>
+### [EX 01] <font color="#EDA300">if / trace</font>
 
 ```java
 int score = 72;
@@ -363,7 +458,7 @@ if (score >= 70) {
 System.out.println("Done");
 ```
 
-**OUTPUT**
+**<font color="#539ADC">OUTPUT</font>**
 
 ```text
 
@@ -374,7 +469,7 @@ System.out.println("Done");
 A written exercise pairs a prompt with a response area:
 
 ```markdown
-### [EX 06] <font color="#e3b341">write</font>
+### [EX 06] <font color="#EDA300">write</font>
 
 Write an `if` / `else` statement that prints `Low battery` when
 `batteryPercent` is less than `20`, and `Battery ready` otherwise.
@@ -407,7 +502,7 @@ The take-home lab keeps the First Edition's seven sections in fixed order. Secti
 | `## >_ Expected Behavior` | `[CHECK]` | What does correct output look like, verbatim? |
 | `## >_ Acceptance Checks` | `[CHECKS]` | What do I verify before submitting? |
 | `## >_ Submission` | `[SUBMIT]` | Where does it go? |
-| `## >_ Stretch Challenge` | `[STRETCH]` | What's next if I finish early? — <font color="#e3b341">optional, ungraded</font> |
+| `## >_ Stretch Challenge` | `[STRETCH]` | What's next if I finish early? — <font color="#EDA300">optional, ungraded</font> |
 
 A requirement block quotes exact values, because the autograder compares exact output — and a red **due** line in the snapshot is the assignment's one red element:
 
@@ -417,11 +512,11 @@ A requirement block quotes exact values, because the autograder compares exact o
 **Unit:** Unit 0 — Java Foundations
 **Day:** 0.3
 **File:** `ConditionalChallenge.java`
-**Due:** <font color="#f85149">**before next class**</font>
+**Due:** <font color="#DA0016">**before next class**</font>
 
 ## >_ Implementation Requirements
 
-### [REQ 02] <font color="#e3b341">temperature</font>
+### [REQ 02] <font color="#EDA300">temperature</font>
 
 Use these variables:
 
@@ -452,6 +547,6 @@ The stretch section stays generous in tone and firm in order: finish the require
 
 <div align="center">
 
-*<font color="#8b949e">Second Edition — Harvard-Westlake accents on the ACS Typeset Terminal. See the [First Edition](styleguide-edition-1-acs.md) for the source system.</font>*
+*<font color="#4D4D4D">Second Edition, Revision 2 — the official HW brand tokens on the ACS Typeset Terminal. Sources: the [First Edition](styleguide-edition-1-acs.md) for the system, the [HW Digital Brand Reference](styleguide-learn-hw.md) for the tokens.</font>*
 
 </div>

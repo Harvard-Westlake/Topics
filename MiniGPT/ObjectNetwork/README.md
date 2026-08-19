@@ -144,6 +144,8 @@ outputSecond:  z = 2 + (1)(0) + (1)(4)  =  6     linear:  6
 
 The machine's answer to input $[1, 2]$ is $[-4, 6]$. Notice what the silenced unit did to the outputs: `hiddenTop`'s wires into both outputs carried exactly nothing.
 
+> **Demo:** [The Practice Network](https://harvard-westlake.github.io/Topics/MiniGPT/ObjectNetwork/demos/practice-network.html) ([source](demos/practice-network.html)) runs this exact machine live — type any pair of inputs and the full trace recomputes, silenced units gray out their wires, and unchecking the gate previews the collapse you'll prove by hand below.
+
 ## <font color="#388bfd">The Same Machine as Objects</font>
 
 The starter code represents this with two classes you can hold in your head — a `Connection` is a labeled wire, and a `Neuron` owns a bias, a gate, a list of incoming connections, and one stored number:
