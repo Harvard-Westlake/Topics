@@ -440,6 +440,7 @@ Rules for `demos/` folders:
 - **One self-contained file per demo.** A complete HTML document (`<!doctype html>` through `</html>`) with all CSS and JavaScript inline. No external requests of any kind: no CDNs, no webfonts, no analytics, and no data leaving the page (classroom inputs stay in the browser).
 - **Naming:** lowercase kebab-case, e.g. `demos/spotlight-bench.html`.
 - **Viewing:** GitHub shows `.html` files as source only. The rendered page is served by **GitHub Pages** at `https://harvard-westlake.github.io/Topics/<Module>/<Lesson>/demos/<name>.html`. One-time setup (repo admin): Settings → Pages → Deploy from a branch → `main`, `/ (root)`. Pages serves whatever is on `main`, so a demo goes live on push.
+- **Pages serves files verbatim — never rendered markdown.** The root `.nojekyll` file disables Jekyll on purpose: Jekyll's kramdown cannot process markdown inside the `<div align="center">` title blocks (headers rendered as literal `# Topics *…*`), and Liquid can break builds on brace-heavy code. Do not delete `.nojekyll`, and never link students to a `.md` file on the Pages domain — lessons are read on github.com, which is the only renderer the markdown targets. The root `index.html` redirects Pages visitors to the GitHub repo.
 - **Linking from the lesson README** — always link both the live page and the source, in this format:
 
   ```markdown

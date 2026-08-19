@@ -64,7 +64,8 @@ Three ground rules for the week:
 | Bias | A trainable constant added to a unit's total. | The unit's resting level before any input arrives |
 | Weighted sum | Inputs multiplied by their weights and totaled, plus the bias. | Weigh every input, add it all up |
 | Activation function | A function applied to the weighted sum before it is passed on. | A gate on the unit's output |
-| Rectified Linear Unit (ReLU) | The gate $\max(0, z)$: negatives are silenced to zero. | A one-way valve — positive flows, negative stops |
+| Rectified Linear Unit (ReLU) | The gate $\max(0, z)$: negatives are silenced to zero. Also the name for a unit that wears this gate. | A one-way valve — positive flows, negative stops |
+| Linear unit | A unit with no gate: it reports its weighted sum unchanged. | The scale's reading, passed along as-is |
 | Nonlinearity | Any gate that keeps stacked layers from collapsing into one. | The bend in the pipe |
 | Layer | Units that read the same inputs at the same stage. | One row of scales, weighing in parallel |
 | Hidden layer | A layer between input and output — visible to you, internal to the machine. | The mixing chamber |
@@ -102,11 +103,15 @@ $$a = \max(0, z)$$
 | $z$ | the weighted sum from the formula above |
 | $\max(0, z)$ | whichever is larger: $0$ or $z$ — so negatives become exactly $0$, positives pass unchanged |
 
-A unit whose weighted sum came out negative is **silenced**: it outputs exactly zero, and zero times any downstream weight is still zero, so a silenced unit contributes nothing at all to the next layer. Hold on to a suspicion here — *why silence anything?* Wouldn't keeping the information be better? The end of Day 1 answers with a proof you do by hand: without the gate, stacking layers is pointless.
+The name unpacks piece by piece. *Rectified* is borrowed from electronics, where a rectifier is a one-way valve for current — this gate is a one-way valve for numbers. *Linear* describes the open half: for positive input the gate passes the value through unchanged, a straight line. And *Unit* is because the whole term names more than the gate — a unit that wears this gate is itself called **a Rectified Linear Unit (ReLU)**; this page also says **rectified unit**, which is what the starter code calls it.
+
+Not every unit wears the gate. A unit with no gate at all — one that reports its weighted sum exactly as computed — is a **linear unit**: its output is a plain weighted combination of its inputs, no bend, no silencing, negatives allowed. In this course's networks the division of labor is always the same: units in the middle of the machine wear the gate, and the final output units stay linear — their job is to produce unrestricted scores, Chapter 4's logits, which must be free to go negative; a gate there would clamp half the scale to zero.
+
+A unit whose weighted sum came out negative is **silenced**: it outputs exactly zero, and zero times any downstream weight is still zero, so a silenced unit contributes nothing at all to the next layer. Hold on to a suspicion here — *why silence anything?* Wouldn't keeping the information be better? The answer is just ahead, in [Why the Gate: the Collapse Proof](#why-the-gate-the-collapse-proof) — a proof you do by hand that without the gate, stacking layers is pointless.
 
 ## <font color="#388bfd">The Practice Network</font>
 
-Everything on Day 1 happens on one machine small enough to trace with a pencil — two inputs, two rectified hidden units, two linear output units, all-integer weights:
+So far, one unit: weigh, add, gate. Everything on Day 1 happens on one machine built by wiring a few of them together, small enough to trace with a pencil. It has three rows. At the top, two **inputs** — units with no wires coming in; their values are set from outside. In the middle, two **hidden units** — *hidden* because they are the machine's internal scratch work: nothing outside the machine ever reads them; they exist only to feed the row below. Both are Rectified Linear Units (ReLU) — they wear the gate. At the bottom, two **output units**, whose two numbers are the machine's answer — linear units, no gate, so the answer may be any number. Every weight is an integer:
 
 ```text
    inputLeft = 1     inputRight = 2        inputs, set from outside
