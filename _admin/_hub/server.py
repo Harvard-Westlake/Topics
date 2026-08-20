@@ -143,9 +143,17 @@ def md_to_html(text, base_path=""):
             return m.group(0)
         return f'[{text}]({GITHUB_BLOB}/{_resolve_path(base_path, path)})'
 
+    def rewrite_html_src(m):
+        attr, path = m.group(1), m.group(2)
+        if path.startswith(("http://", "https://", "data:")):
+            return m.group(0)
+        return f'{attr}="{GITHUB_RAW}/{_resolve_path(base_path, path)}"'
+
     text, math = _extract_math(text)
     text = re.sub(r'!\[([^\]]*)\]\(([^)]+)\)', rewrite_img, text)
     text = re.sub(r'(?<!!)\[([^\]]+)\]\(([^)]+)\)', rewrite_link, text)
+    # raw HTML <img src=""> / <source srcset=""> (e.g. light/dark logo <picture> blocks)
+    text = re.sub(r'(src|srcset)="([^"]+)"', rewrite_html_src, text)
     return _restore_math(md_lib.markdown(text, extensions=["tables", "fenced_code"]), math)
 
 def review_block_html(rev_html):
@@ -671,6 +679,13 @@ def api_file():
     broken = scan_file_links(target) if target.suffix == ".md" else []
     return jsonify({"saved": f"{module}/{path + '/' if path else ''}{file}",
                     "broken_links": broken})
+
+@app.route("/api/syllabus")
+def api_syllabus():
+    syllabus = ROOT / "SYLLABUS.md"
+    if not syllabus.exists():
+        return jsonify({"error": "SYLLABUS.md not found"}), 404
+    return jsonify({"html": md_to_html(syllabus.read_text(), "")})
 
 @app.route("/api/render", methods=["POST"])
 def api_render():

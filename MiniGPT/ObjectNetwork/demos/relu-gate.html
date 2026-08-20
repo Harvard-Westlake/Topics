@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Gate: ReLU Visualizer — Interactive Demo</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --panel: #1a2332;
+      --border: #2d3a4f;
+      --text: #e7ecf3;
+      --muted: #8b9bb4;
+      --accent: #3b82f6;
+      --green: #22c55e;
+      --green-dim: #166534;
+      --red: #ef4444;
+      --red-dim: #7f1d1d;
+      --silenced: #4b5563;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+      padding: 1.5rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      max-width: 640px;
+      width: 100%;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 1.25rem;
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.35rem;
+    }
+
+    header p {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .gate-formula {
+      display: inline-block;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.4rem 1rem;
+      font-family: "SF Mono", "Fira Code", Consolas, monospace;
+      font-size: 1.1rem;
+      margin-top: 0.75rem;
+      color: var(--green);
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin-top: 1.25rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      cursor: pointer;
+      accent-color: var(--accent);
+    }
+
+    .pipeline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin: 1.25rem 0;
+    }
+
+    .box {
+      flex: 1;
+      text-align: center;
+      padding: 0.75rem 0.5rem;
+      border-radius: 8px;
+      background: #111826;
+      border: 1px solid var(--border);
+    }
+
+    .box .label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .box .value {
+      font-family: "SF Mono", "Fira Code", Consolas, monospace;
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-top: 0.25rem;
+    }
+
+    .gate-box {
+      background: #1e293b;
+      border-color: var(--accent);
+    }
+
+    .gate-box code {
+      font-family: "SF Mono", "Fira Code", Consolas, monospace;
+      font-size: 0.85rem;
+      color: var(--text);
+    }
+
+    .arrow {
+      flex: 0 0 auto;
+      width: 28px;
+      height: 2px;
+      background: var(--border);
+      position: relative;
+      transition: background 0.2s;
+    }
+
+    .arrow::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: -4px;
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      border-left: 7px solid var(--border);
+      transition: border-left-color 0.2s;
+    }
+
+    .arrow.active { background: var(--green); }
+    .arrow.active::after { border-left-color: var(--green); }
+
+    .status {
+      text-align: center;
+      margin-top: 0.5rem;
+    }
+
+    .badge {
+      display: inline-block;
+      font-family: "SF Mono", "Fira Code", Consolas, monospace;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 0.3rem 0.9rem;
+      border-radius: 999px;
+      letter-spacing: 0.02em;
+    }
+
+    .badge.awake { background: var(--green-dim); color: var(--green); }
+    .badge.silenced { background: #374151; color: #9ca3af; }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 220px;
+      margin-top: 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #0b0f16;
+    }
+
+    .note {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 0.75rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>The Gate</h1>
+    <p>Slide the weighted sum <em>z</em> and watch the unit decide whether to speak.</p>
+    <div class="gate-formula">a = max(0, z)</div>
+  </header>
+
+  <div class="panel">
+    <label for="z-slider">Weighted sum (z): <span id="z-readout">-2.0</span></label>
+    <input type="range" id="z-slider" min="-10" max="10" value="-2" step="0.1" />
+
+    <div class="pipeline">
+      <div class="box">
+        <div class="label">Weighted sum</div>
+        <div class="value" id="val-z">z = -2.0</div>
+      </div>
+      <div class="arrow" id="arrow-out"></div>
+      <div class="box gate-box">
+        <div class="label">Gate</div>
+        <code>max(0, z)</code>
+      </div>
+      <div class="arrow" id="arrow-final"></div>
+      <div class="box">
+        <div class="label">Output</div>
+        <div class="value" id="val-a">a = 0.0</div>
+      </div>
+    </div>
+
+    <div class="status">
+      <span class="badge silenced" id="status-badge">silenced</span>
+    </div>
+
+    <canvas id="relu-chart" width="600" height="220"></canvas>
+    <p class="note">The dot marks the current (z, a) point on <code>a = max(0, z)</code>. Negative z is always flattened to exactly 0 — the unit contributes nothing downstream.</p>
+  </div>
+</div>
+
+<script>
+  const slider = document.getElementById('z-slider');
+  const zReadout = document.getElementById('z-readout');
+  const valZ = document.getElementById('val-z');
+  const valA = document.getElementById('val-a');
+  const statusBadge = document.getElementById('status-badge');
+  const arrowOut = document.getElementById('arrow-out');
+  const arrowFinal = document.getElementById('arrow-final');
+  const canvas = document.getElementById('relu-chart');
+  const ctx = canvas.getContext('2d');
+
+  const width = canvas.width;
+  const height = canvas.height;
+  const originX = width / 2;
+  const originY = height - 30;
+  const scale = 18;
+
+  function toCanvasX(z) { return originX + z * scale; }
+  function toCanvasY(a) { return originY - a * scale; }
+
+  function drawChart(currentZ, currentA) {
+    ctx.clearRect(0, 0, width, height);
+
+    ctx.strokeStyle = '#2d3a4f';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, originY);
+    ctx.lineTo(width, originY);
+    ctx.moveTo(originX, 0);
+    ctx.lineTo(originX, height);
+    ctx.stroke();
+
+    ctx.strokeStyle = '#3b82f6';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(toCanvasX(-10), toCanvasY(0));
+    ctx.lineTo(toCanvasX(0), toCanvasY(0));
+    ctx.lineTo(toCanvasX(10), toCanvasY(10));
+    ctx.stroke();
+
+    const dotX = toCanvasX(currentZ);
+    const dotY = toCanvasY(currentA);
+    ctx.beginPath();
+    ctx.arc(dotX, dotY, 6, 0, Math.PI * 2);
+    ctx.fillStyle = currentA > 0 ? '#22c55e' : '#ef4444';
+    ctx.fill();
+    ctx.strokeStyle = '#e7ecf3';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  }
+
+  function update() {
+    const z = parseFloat(slider.value);
+    const a = Math.max(0, z);
+
+    zReadout.textContent = z.toFixed(1);
+    valZ.textContent = `z = ${z.toFixed(1)}`;
+    valA.textContent = `a = ${a.toFixed(1)}`;
+
+    if (z > 0) {
+      statusBadge.textContent = 'awake';
+      statusBadge.className = 'badge awake';
+      arrowOut.classList.add('active');
+      arrowFinal.classList.add('active');
+    } else {
+      statusBadge.textContent = 'silenced';
+      statusBadge.className = 'badge silenced';
+      arrowOut.classList.remove('active');
+      arrowFinal.classList.remove('active');
+    }
+
+    drawChart(z, a);
+  }
+
+  slider.addEventListener('input', update);
+  update();
+</script>
+</body>
+</html>

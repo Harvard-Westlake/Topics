@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Following the Error Backward — Interactive Audit</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --panel: #1a2332;
+      --border: #2d3a4f;
+      --text: #e7ecf3;
+      --muted: #8b9bb4;
+      --accent: #3b82f6;
+      --accent-dim: #1e40af;
+      --green: #22c55e;
+      --green-dim: #166534;
+      --red: #ef4444;
+      --orange: #f59e0b;
+      --purple: #a78bfa;
+      --silenced: #4b5563;
+      --wire: #64748b;
+      --flow: #f59e0b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+      padding: 1.5rem;
+    }
+
+    .container { max-width: 1180px; margin: 0 auto; }
+
+    header { text-align: center; margin-bottom: 1.5rem; }
+    header h1 { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.35rem; }
+    header p { color: var(--muted); font-size: 0.95rem; max-width: 720px; margin: 0 auto; }
+
+    .gate-formula {
+      display: inline-block;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.4rem 1rem;
+      font-family: "SF Mono", "Fira Code", Consolas, monospace;
+      font-size: 1rem;
+      margin-top: 0.75rem;
+      color: var(--green);
+    }
+
+    .layout { display: grid; grid-template-columns: 1fr 400px; gap: 1.25rem; align-items: start; }
+    @media (max-width: 980px) { .layout { grid-template-columns: 1fr; } }
+
+    .card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; }
+    .card h2 {
+      font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--muted); margin-bottom: 1rem; font-weight: 600;
+    }
+
+    .controls { display: flex; flex-wrap: wrap; gap: 1rem; align-items: end; margin-bottom: 1rem; }
+    .control-group { display: flex; flex-direction: column; gap: 0.35rem; }
+    .control-group label { font-size: 0.8rem; color: var(--muted); font-weight: 500; }
+    .control-group input[type="number"] {
+      width: 90px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+      color: var(--text); padding: 0.5rem 0.65rem; font-size: 1rem; font-family: inherit;
+    }
+    .control-group input[type="number"]:focus {
+      outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+    }
+
+    .btn {
+      background: var(--accent); color: white; border: none; border-radius: 6px;
+      padding: 0.55rem 1rem; font-size: 0.88rem; font-weight: 600; cursor: pointer;
+      transition: background 0.15s, opacity 0.15s;
+    }
+    .btn:hover { background: #2563eb; }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn.secondary { background: transparent; border: 1px solid var(--border); color: var(--muted); }
+    .btn.secondary:hover { border-color: var(--muted); color: var(--text); }
+    .btn.danger { background: transparent; border: 1px solid rgba(239,68,68,0.5); color: #fca5a5; }
+    .btn.danger:hover { background: rgba(239,68,68,0.12); border-color: var(--red); }
+
+    .step-row { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.9rem; }
+
+    .network-wrap {
+      position: relative; background: #0c1017; border-radius: 10px; overflow: hidden; border: 1px solid var(--border);
+    }
+    svg { display: block; width: 100%; height: auto; }
+
+    .node-label {
+      font-size: 13px; font-weight: 700; fill: var(--text); text-anchor: middle;
+      dominant-baseline: central; pointer-events: none;
+    }
+    .node-value {
+      font-size: 11.5px; font-family: "SF Mono", Consolas, monospace; fill: var(--muted);
+      text-anchor: middle; pointer-events: none;
+    }
+    .node-grad {
+      font-size: 11.5px; font-family: "SF Mono", Consolas, monospace; fill: var(--orange);
+      text-anchor: middle; pointer-events: none; font-weight: 700;
+    }
+    .deriv-label {
+      font-size: 11px; font-family: "SF Mono", Consolas, monospace; fill: #94a3b8;
+      font-weight: 600; text-anchor: middle; pointer-events: none;
+    }
+    .flow-label {
+      font-size: 11px; font-family: "SF Mono", Consolas, monospace; fill: var(--flow);
+      font-weight: 700; text-anchor: middle; pointer-events: none;
+    }
+    .layer-label { font-size: 11px; fill: #8b9bb4; text-anchor: middle; font-weight: 600; }
+
+    .edge { stroke: var(--wire); stroke-width: 2.2; fill: none; transition: stroke 0.25s, stroke-width 0.25s, opacity 0.25s; }
+    .edge.flow { stroke: var(--flow); stroke-width: 3; }
+    .edge.pending { opacity: 0.35; }
+
+    .node-circle { transition: fill 0.25s, stroke 0.25s, filter 0.25s; }
+    .node-circle.processing { filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.9)); }
+
+    .calc-section { margin-bottom: 0.85rem; }
+    .calc-section:last-child { margin-bottom: 0; }
+    .calc-section h3 { font-size: 0.85rem; margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.5rem; }
+
+    .badge {
+      font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+      padding: 0.1rem 0.4rem; border-radius: 4px;
+    }
+    .badge.awake { background: var(--green-dim); color: var(--green); }
+    .badge.silenced { background: #374151; color: #9ca3af; }
+    .badge.pending { background: #1f2937; color: #6b7280; }
+
+    table.trace { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+    table.trace th, table.trace td {
+      text-align: left; padding: 0.4rem 0.45rem; border-bottom: 1px solid var(--border);
+      font-family: "SF Mono", Consolas, monospace; vertical-align: top;
+    }
+    table.trace th {
+      font-family: inherit; text-transform: uppercase; font-size: 0.62rem; letter-spacing: 0.04em;
+      color: var(--muted); font-weight: 600;
+    }
+    table.trace tr.pending td { color: #4b5563; }
+    table.trace tr.active td { color: var(--text); background: rgba(245, 158, 11, 0.06); }
+    table.trace td.blame { color: var(--orange); font-weight: 700; }
+    table.trace tr.pending td.blame { color: #4b5563; font-weight: 400; }
+
+    .result-box {
+      margin-top: 0.9rem; padding: 0.75rem 0.9rem; background: var(--bg); border-radius: 8px;
+      border-left: 3px solid var(--accent); font-size: 0.85rem;
+    }
+    .result-box strong { font-family: "SF Mono", Consolas, monospace; color: var(--green); }
+
+    .insight {
+      margin-top: 0.9rem; padding: 0.75rem 0.9rem; background: rgba(245, 158, 11, 0.08);
+      border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 8px; font-size: 0.82rem; color: #fcd34d;
+    }
+    .insight strong { color: var(--orange); }
+
+    .corrupt-box {
+      margin-top: 0.9rem; padding: 0.75rem 0.9rem; background: rgba(239, 68, 68, 0.08);
+      border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; font-size: 0.8rem; color: #fca5a5;
+      display: none;
+    }
+    .corrupt-box.shown { display: block; }
+    .corrupt-box strong { color: var(--red); }
+    .corrupt-grid {
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.4rem; margin-top: 0.5rem;
+      font-family: "SF Mono", Consolas, monospace; font-size: 0.75rem;
+    }
+    .corrupt-grid div { text-align: center; }
+    .corrupt-grid .name { color: var(--muted); font-family: inherit; font-size: 0.68rem; text-transform: uppercase; }
+
+    footer { margin-top: 1.5rem; text-align: center; font-size: 0.8rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Following the Error Backward — Interactive Audit</h1>
+      <p>
+        The practice graph from Day 1: one weight, one input, one bias, a gate, a square.<br>
+        Change the leaves, then step the backward pass one receipt at a time and watch blame accumulate.
+      </p>
+      <div class="gate-formula">z = w·x + b &nbsp;&nbsp; a = max(0, z) &nbsp;&nbsp; L = a·a</div>
+    </header>
+
+    <div class="layout">
+      <!-- LEFT: graph + controls -->
+      <div>
+        <div class="card" style="margin-bottom: 1.25rem;">
+          <h2>Leaves</h2>
+          <div class="controls">
+            <div class="control-group">
+              <label for="in-w">w</label>
+              <input type="number" id="in-w" value="2" step="1" />
+            </div>
+            <div class="control-group">
+              <label for="in-x">x</label>
+              <input type="number" id="in-x" value="3" step="1" />
+            </div>
+            <div class="control-group">
+              <label for="in-b">b</label>
+              <input type="number" id="in-b" value="-5" step="1" />
+            </div>
+            <button class="btn" id="btnReset">Reset to w=2, x=3, b=−5</button>
+            <button class="btn secondary" id="btnSilenced">Silenced variant (b=−7)</button>
+            <button class="btn secondary" id="btnRandom">Random leaves</button>
+          </div>
+          <div class="step-row">
+            <button class="btn" id="btnStep">Step backward → seed L</button>
+            <button class="btn secondary" id="btnResetAudit">Reset audit</button>
+            <button class="btn danger" id="btnCorrupt" disabled>⚠ Audit again — no reset</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Computation Graph</h2>
+          <div class="network-wrap">
+            <svg id="net" viewBox="0 0 860 400" xmlns="http://www.w3.org/2000/svg">
+              <text class="layer-label" x="60" y="35">LEAVES</text>
+              <text class="layer-label" x="270" y="35">PRODUCT</text>
+              <text class="layer-label" x="460" y="35">SUM z</text>
+              <text class="layer-label" x="640" y="35">GATE a</text>
+              <text class="layer-label" x="800" y="35">LOSS L</text>
+
+              <!-- edges (behind nodes) -->
+              <line class="edge pending" id="e-w-p" x1="88" y1="80" x2="240" y2="150" />
+              <text class="deriv-label" id="d-w-p" x="150" y="100"></text>
+              <text class="flow-label" id="f-w-p" x="150" y="115"></text>
+
+              <line class="edge pending" id="e-x-p" x1="88" y1="220" x2="240" y2="150" />
+              <text class="deriv-label" id="d-x-p" x="150" y="205"></text>
+              <text class="flow-label" id="f-x-p" x="150" y="220"></text>
+
+              <line class="edge pending" id="e-p-z" x1="290" y1="150" x2="430" y2="220" />
+              <text class="deriv-label" id="d-p-z" x="355" y="170"></text>
+              <text class="flow-label" id="f-p-z" x="355" y="185"></text>
+
+              <line class="edge pending" id="e-b-z" x1="88" y1="340" x2="430" y2="230" />
+              <text class="deriv-label" id="d-b-z" x="250" y="310"></text>
+              <text class="flow-label" id="f-b-z" x="250" y="325"></text>
+
+              <line class="edge pending" id="e-z-a" x1="480" y1="220" x2="610" y2="220" />
+              <text class="deriv-label" id="d-z-a" x="545" y="205"></text>
+              <text class="flow-label" id="f-z-a" x="545" y="235"></text>
+
+              <line class="edge pending" id="e-a-L1" x1="660" y1="212" x2="760" y2="200" />
+              <text class="deriv-label" id="d-a-L1" x="710" y="185"></text>
+
+              <line class="edge pending" id="e-a-L2" x1="660" y1="228" x2="760" y2="240" />
+              <text class="deriv-label" id="d-a-L2" x="710" y="260"></text>
+              <text class="flow-label" id="f-a-L" x="710" y="150"></text>
+
+              <!-- leaf nodes -->
+              <circle class="node-circle" id="n-w" cx="60" cy="80" r="28" fill="#1e3a5f" stroke="#3b82f6" stroke-width="2.5" />
+              <text class="node-label" x="60" y="73">w</text>
+              <text class="node-value" id="v-w" x="60" y="88">2</text>
+              <text class="node-grad" id="g-w" x="60" y="118">—</text>
+
+              <circle class="node-circle" id="n-x" cx="60" cy="220" r="28" fill="#1e3a5f" stroke="#3b82f6" stroke-width="2.5" />
+              <text class="node-label" x="60" y="213">x</text>
+              <text class="node-value" id="v-x" x="60" y="228">3</text>
+              <text class="node-grad" id="g-x" x="60" y="258">—</text>
+
+              <circle class="node-circle" id="n-b" cx="60" cy="340" r="28" fill="#1e3a5f" stroke="#3b82f6" stroke-width="2.5" />
+              <text class="node-label" x="60" y="333">b</text>
+              <text class="node-value" id="v-b" x="60" y="348">−5</text>
+              <text class="node-grad" id="g-b" x="60" y="378">—</text>
+
+              <!-- product -->
+              <circle class="node-circle" id="n-p" cx="265" cy="150" r="30" fill="#2e1065" stroke="#a78bfa" stroke-width="2.5" />
+              <text class="node-label" x="265" y="143">w·x</text>
+              <text class="node-value" id="v-p" x="265" y="161">6</text>
+              <text class="node-grad" id="g-product" x="265" y="192">—</text>
+
+              <!-- z -->
+              <circle class="node-circle" id="n-z" cx="455" cy="220" r="30" fill="#2e1065" stroke="#a78bfa" stroke-width="2.5" />
+              <text class="node-label" x="455" y="213">z</text>
+              <text class="node-value" id="v-z" x="455" y="231">1</text>
+              <text class="node-grad" id="g-z" x="455" y="262">—</text>
+
+              <!-- a -->
+              <circle class="node-circle" id="n-a" cx="635" cy="220" r="30" fill="#2e1065" stroke="#a78bfa" stroke-width="2.5" />
+              <text class="node-label" x="635" y="213">a</text>
+              <text class="node-value" id="v-a" x="635" y="231">1</text>
+              <text class="node-grad" id="g-a" x="635" y="262">—</text>
+
+              <!-- L -->
+              <circle class="node-circle" id="n-L" cx="800" cy="220" r="32" fill="#78350f" stroke="#f59e0b" stroke-width="2.5" />
+              <text class="node-label" x="800" y="212">L</text>
+              <text class="node-value" id="v-L" x="800" y="232">1</text>
+              <text class="node-grad" id="g-L" x="800" y="266">—</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: trace table + insight -->
+      <div class="card">
+        <h2>Live Trace <span class="badge pending" id="badge-gate" style="margin-left:0.4rem;">gate: pending</span></h2>
+        <table class="trace">
+          <thead>
+            <tr><th>Receipt</th><th>Made from</th><th>Fwd</th><th>Local deriv</th><th>Blame</th></tr>
+          </thead>
+          <tbody id="trace-body"></tbody>
+        </table>
+
+        <div class="result-box">
+          Forward answer: L = <strong id="res-L">1</strong>
+        </div>
+
+        <div class="insight" id="insight">
+          Click <strong>Step backward</strong> to seed L's own gradient at exactly 1.0, then keep clicking to walk the graph newest-to-oldest, one receipt at a time.
+        </div>
+
+        <div class="corrupt-box" id="corrupt-box">
+          <strong>Corrupted.</strong> Because gradients were never zeroed, this second call started from whatever was already sitting in every mailbox — the deliveries below <em>added onto</em> the first audit instead of replacing it.
+          <div class="corrupt-grid" id="corrupt-grid"></div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      Day 1 practice graph · z = w·x + b, a = max(0, z), L = a·a · one audit per graph — that is what <code>zeroGradients</code> and a fresh graph per step are for
+    </footer>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    function fmt(n) {
+      if (Object.is(n, -0)) n = 0;
+      if (Number.isInteger(n)) return String(n);
+      return (Math.round(n * 10000) / 10000).toString();
+    }
+    function sign(n) { return n < 0 ? `−${fmt(Math.abs(n))}` : fmt(n); }
+
+    // ---- graph state ----
+    let fwd = {};          // forward numbers
+    let grad = {};         // accumulated gradients
+    let stepIndex = 0;     // how many backward receipts have been processed (0..4)
+    let auditedOnce = false;
+    const BACK_ORDER = ["L", "a", "z", "product"]; // b, w, x are leaves: processed as side effects
+
+    const RECEIPT_ROWS = [
+      { id: "L", label: "L", made: "a · a" },
+      { id: "a", label: "a", made: "max(0, z)" },
+      { id: "z", label: "z", made: "product + b" },
+      { id: "product", label: "product", made: "w · x" },
+      { id: "b", label: "b", made: "leaf" },
+      { id: "w", label: "w", made: "leaf" },
+      { id: "x", label: "x", made: "leaf" },
+    ];
+
+    function computeForward() {
+      const w = Number($("in-w").value);
+      const x = Number($("in-x").value);
+      const b = Number($("in-b").value);
+      const product = w * x;
+      const z = product + b;
+      const a = Math.max(0, z);
+      const L = a * a;
+      fwd = { w, x, b, product, z, a, L };
+    }
+
+    function zeroGradients() {
+      grad = { w: 0, x: 0, b: 0, product: 0, z: 0, a: 0, L: 0 };
+    }
+
+    // Runs exactly one backward step (mutates `grad` in place, using CURRENT grad
+    // values — this is what makes the "audit again, no reset" corruption real).
+    function runBackwardStep(receiptId) {
+      if (receiptId === "L") {
+        grad.L = 1.0;                          // seed: L is perfectly sensitive to itself
+        grad.a += fwd.a;                       // slot 1 of a·a: sensitivity = other ingredient (a)
+        grad.a += fwd.a;                       // slot 2 of a·a: same source, second envelope
+      } else if (receiptId === "a") {
+        const gateDeriv = fwd.z > 0 ? 1 : 0;    // closed at exactly zero, same as the forward gate
+        grad.z += grad.a * gateDeriv;
+      } else if (receiptId === "z") {
+        grad.product += grad.z * 1;             // add: sensitivity 1
+        grad.b += grad.z * 1;
+      } else if (receiptId === "product") {
+        grad.w += grad.product * fwd.x;         // multiply: sensitivity is the other ingredient
+        grad.x += grad.product * fwd.w;
+      }
+    }
+
+    function localDerivText(receiptId) {
+      if (receiptId === "L") return `${fmt(fwd.a)} to a, ${fmt(fwd.a)} to a — two slots, same source`;
+      if (receiptId === "a") return fwd.z > 0 ? "1 (awake)" : "0 (silenced)";
+      if (receiptId === "z") return "1 to product, 1 to b";
+      if (receiptId === "product") return `${fmt(fwd.x)} to w, ${fmt(fwd.w)} to x`;
+      return "—";
+    }
+
+    function render() {
+      // node forward values (always live)
+      $("v-w").textContent = fmt(fwd.w);
+      $("v-x").textContent = fmt(fwd.x);
+      $("v-b").textContent = fmt(fwd.b);
+      $("v-p").textContent = fmt(fwd.product);
+      $("v-z").textContent = fmt(fwd.z);
+      $("v-a").textContent = fmt(fwd.a);
+      $("v-L").textContent = fmt(fwd.L);
+      $("res-L").textContent = fmt(fwd.L);
+
+      // gate badge + node color for a
+      const awake = fwd.z > 0;
+      const badge = $("badge-gate");
+      if (stepIndex === 0 && !auditedOnce) {
+        badge.textContent = "gate: pending";
+        badge.className = "badge pending";
+      } else {
+        badge.textContent = awake ? "gate: awake" : "gate: silenced";
+        badge.className = "badge " + (awake ? "awake" : "silenced");
+      }
+      $("n-a").setAttribute("fill", awake ? "#2e1065" : "#1f2937");
+      $("n-a").setAttribute("stroke", awake ? "#a78bfa" : "#6b7280");
+
+      // gradients on nodes
+      const processed = BACK_ORDER.slice(0, stepIndex);
+      const gtext = (id, val, isReady) => {
+        $(`g-${id}`).textContent = isReady ? fmt(val) : "—";
+      };
+      gtext("L", grad.L, stepIndex >= 1);
+      gtext("a", grad.a, stepIndex >= 2);
+      gtext("z", grad.z, stepIndex >= 3);
+      gtext("product", grad.product, stepIndex >= 4);
+      gtext("b", grad.b, stepIndex >= 3);
+      gtext("w", grad.w, stepIndex >= 4);
+      gtext("x", grad.x, stepIndex >= 4);
+
+      // edges: derivative labels always shown; "flow" state once that delivery ran
+      $("d-w-p").textContent = `= ${fmt(fwd.x)}`;
+      $("d-x-p").textContent = `= ${fmt(fwd.w)}`;
+      $("d-p-z").textContent = "= 1";
+      $("d-b-z").textContent = "= 1";
+      $("d-z-a").textContent = awake ? "= 1" : "= 0";
+      $("d-a-L1").textContent = `= ${fmt(fwd.a)}`;
+      $("d-a-L2").textContent = `= ${fmt(fwd.a)}`;
+
+      const setEdge = (id, active) => {
+        const el = $(id);
+        el.classList.toggle("flow", active);
+        el.classList.toggle("pending", !active);
+      };
+      setEdge("e-a-L1", stepIndex >= 1);
+      setEdge("e-a-L2", stepIndex >= 1);
+      setEdge("e-z-a", stepIndex >= 2);
+      setEdge("e-p-z", stepIndex >= 3);
+      setEdge("e-b-z", stepIndex >= 3);
+      setEdge("e-w-p", stepIndex >= 4);
+      setEdge("e-x-p", stepIndex >= 4);
+
+      $("f-a-L").textContent = stepIndex >= 1 ? `Δ=${fmt(grad.a)}` : "";
+      $("f-z-a").textContent = stepIndex >= 2 ? `Δ=${fmt(grad.z)}` : "";
+      $("f-p-z").textContent = stepIndex >= 3 ? `Δ=${fmt(grad.product)}` : "";
+      $("f-b-z").textContent = stepIndex >= 3 ? `Δ=${fmt(grad.b)}` : "";
+      $("f-w-p").textContent = stepIndex >= 4 ? `Δ=${fmt(grad.w)}` : "";
+      $("f-x-p").textContent = stepIndex >= 4 ? `Δ=${fmt(grad.x)}` : "";
+
+      // processing pulse on the node most recently audited
+      ["n-L", "n-a", "n-z", "n-p"].forEach((id) => $(id).classList.remove("processing"));
+      if (stepIndex >= 1 && stepIndex <= 4) {
+        const justProcessedNode = { 1: "n-L", 2: "n-a", 3: "n-z", 4: "n-p" }[stepIndex];
+        $(justProcessedNode).classList.add("processing");
+      }
+
+      // trace table
+      const readyFor = {
+        L: stepIndex >= 1, a: stepIndex >= 2, z: stepIndex >= 3, product: stepIndex >= 4,
+        b: stepIndex >= 3, w: stepIndex >= 4, x: stepIndex >= 4,
+      };
+      const justProcessed = BACK_ORDER[stepIndex - 1];
+      const rows = RECEIPT_ROWS.map((r) => {
+        const ready = readyFor[r.id];
+        const localDeriv = ready || r.id === justProcessed ? (r.made === "leaf" ? "—" : localDerivText(r.id)) : "—";
+        const blame = ready ? fmt(grad[r.id]) : "—";
+        const cls = r.id === justProcessed ? "active" : (ready ? "" : "pending");
+        return `<tr class="${cls}"><td>${r.label}</td><td>${r.made}</td><td>${fmt(fwd[r.id])}</td><td>${localDeriv}</td><td class="blame">${blame}</td></tr>`;
+      });
+      $("trace-body").innerHTML = rows.join("");
+
+      // step button label / disabled state
+      const stepBtn = $("btnStep");
+      const nextLabels = [
+        "Step backward → seed L",
+        "Step backward → audit a",
+        "Step backward → audit z",
+        "Step backward → audit product",
+        "Audit complete",
+      ];
+      stepBtn.textContent = nextLabels[Math.min(stepIndex, 4)];
+      stepBtn.disabled = stepIndex >= 4;
+      $("btnCorrupt").disabled = stepIndex < 4;
+
+      // insight text
+      const insight = $("insight");
+      if (stepIndex === 0) {
+        insight.innerHTML = `Click <strong>Step backward</strong> to seed L's own gradient at exactly 1.0, then keep clicking to walk the graph newest-to-oldest, one receipt at a time.`;
+      } else if (stepIndex === 1) {
+        insight.innerHTML = `<strong>Two envelopes.</strong> a feeds L through both multiply slots of a·a, so it receives blame twice — a.gradient = ${fmt(fwd.a)} + ${fmt(fwd.a)} = <strong>${fmt(grad.a)}</strong>. That is gradient accumulation.`;
+      } else if (stepIndex === 2) {
+        insight.innerHTML = awake
+          ? `<strong>Gate is awake.</strong> z &gt; 0, so all of a's blame passes straight through: z.gradient = ${fmt(grad.a)}.`
+          : `<strong>Gate is silenced.</strong> z ≤ 0, so the gate returns every envelope to sender: z.gradient = 0, no matter how much blame a was holding.`;
+      } else if (stepIndex === 3) {
+        insight.innerHTML = `<strong>Add splits evenly.</strong> z's blame passes unchanged to both of its ingredients — product.gradient = b.gradient = ${fmt(grad.z)}.`;
+      } else if (stepIndex === 4) {
+        insight.innerHTML = `<strong>Audit complete.</strong> w.gradient = ${fmt(grad.w)}, x.gradient = ${fmt(grad.x)}, b.gradient = ${fmt(grad.b)} — the exact slope of L with respect to every leaf, from one forward pass and one backward pass. Try <strong>⚠ Audit again — no reset</strong> to see why <code>backward</code> assumes it starts from zero.`;
+      }
+    }
+
+    function resetAudit(keepCorrupt) {
+      stepIndex = 0;
+      auditedOnce = false;
+      zeroGradients();
+      if (!keepCorrupt) $("corrupt-box").classList.remove("shown");
+      render();
+    }
+
+    function newGraph() {
+      computeForward();
+      resetAudit(false);
+    }
+
+    $("btnStep").addEventListener("click", () => {
+      if (stepIndex >= 4) return;
+      runBackwardStep(BACK_ORDER[stepIndex]);
+      stepIndex += 1;
+      if (stepIndex === 4) auditedOnce = true;
+      render();
+    });
+
+    $("btnResetAudit").addEventListener("click", () => resetAudit(false));
+
+    $("btnCorrupt").addEventListener("click", () => {
+      if (stepIndex < 4) return;
+      const before = { a: grad.a, z: grad.z, product: grad.product, b: grad.b, w: grad.w, x: grad.x };
+      // Re-run the whole reverse walk WITHOUT zeroing first — grad already holds the first audit's blame.
+      BACK_ORDER.forEach((id) => runBackwardStep(id));
+      const grid = ["a", "z", "product", "b", "w", "x"].map((id) => {
+        return `<div><div class="name">${id}</div>${fmt(before[id])} → <strong>${fmt(grad[id])}</strong></div>`;
+      }).join("");
+      $("corrupt-grid").innerHTML = grid;
+      $("corrupt-box").classList.add("shown");
+      render();
+    });
+
+    $("btnReset").addEventListener("click", () => {
+      $("in-w").value = 2; $("in-x").value = 3; $("in-b").value = -5;
+      newGraph();
+    });
+    $("btnSilenced").addEventListener("click", () => {
+      $("in-w").value = 2; $("in-x").value = 3; $("in-b").value = -7;
+      newGraph();
+    });
+    $("btnRandom").addEventListener("click", () => {
+      $("in-w").value = Math.floor(Math.random() * 9) - 4;
+      $("in-x").value = Math.floor(Math.random() * 9) - 4;
+      $("in-b").value = Math.floor(Math.random() * 11) - 5;
+      newGraph();
+    });
+    ["in-w", "in-x", "in-b"].forEach((id) => $(id).addEventListener("input", newGraph));
+
+    newGraph();
+  </script>
+</body>
+</html>

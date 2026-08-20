@@ -204,6 +204,8 @@ That `+=` line is the chain rule and gradient accumulation fused: multiply along
 
 > **Warning:** one audit per graph. `backward` assumes the graph's gradients start at zero, which fresh receipts guarantee. Audit the same graph twice and interior receipts still holding blame get compounded — on Set B's diamond graph, a second `backward` turns $\partial L / \partial a = 21$ into $63$, not $42$. Each training step builds a fresh graph; only the parameters persist, and the network's Reset clears them between steps.
 
+> **Demo:** [Following the Error Backward](https://harvard-westlake.github.io/Topics/MiniGPT/ScalarAutograd/demos/backward-pass.html) ([source](demos/backward-pass.html)) — the practice graph above, live. Change $w$, $x$, $b$, then click through the backward pass one receipt at a time and watch each row of the trace table fill in — accumulation at $a$'s two envelopes, the gate returning blame to sender in the silenced variant, and (via the "Audit again — no reset" button) exactly how skipping `zeroGradients` compounds every value above the leaves.
+
 ### <font color="#79c0ff">Check yourself — Set B</font>
 
 1. Rerun the first trace with $a = 4$, $b = 2$: forward values of $c$ and $L$, and both leaf blames.
@@ -533,7 +535,7 @@ More traps worth defusing now:
 
 ---
 
-The model now learns — genuinely, end to end, from its own mistakes. But look at what one training step costs: every add, every multiply, every gate mints a Java object, and a single full-batch step writes tens of thousands of receipts that a garbage collector must then sweep up. On the pizzeria this is invisible; on an archive of millions of token positions it is fatal. The glass-box engine is the correctness reference now — the next chapter performs the same mathematics on flat primitive arrays, with explicit backward formulas standing in for the receipts, and proves the fast engine right by checking it against this one.
+The model now learns — genuinely, end to end, from its own mistakes. `Value` earned that: every hand trace agreed with the wiggle referee, the shortcut from Chapter 4 fell out of six local rules for free, and the training run walked straight past the table onto the data's own floor. But look at what one training step actually cost to get there: every add, every multiply, every gate mints a Java object, and a single full-batch step over 119 flashcards writes tens of thousands of receipts that a garbage collector must then sweep up before the next step can begin. On the pizzeria this is invisible. On an archive of millions of token positions and the final course model's roughly 34,000 parameters, it is a computational catastrophe — the machine would choke to death on its own paperwork long before it finished learning anything. The glass-box engine does not get thrown away; it becomes the correctness reference. The next chapter performs this exact same mathematics on flat primitive arrays, with explicit backward formulas standing in for the receipts, and proves the fast engine right by checking it, number for number, against this one.
 
 ## <font color="#388bfd">Skill Building</font>
 

@@ -26,6 +26,7 @@ window.MathJax = {
     <button class="tab-btn" data-tab="courses">Courses</button>
     <button class="tab-btn" data-tab="schedule">Year Schedule</button>
     <button class="tab-btn" data-tab="planner">Module Planner</button>
+    <button class="tab-btn" data-tab="syllabus">Syllabus</button>
   </nav>
 </header>
 
@@ -344,12 +345,18 @@ window.MathJax = {
 
 </section>
 
+<!-- ══════════════════════════ SYLLABUS ══════════════════════════ -->
+<section class="tab" id="tab-syllabus">
+  <div id="syllabusView" class="mdview"><div class="page-spinner"></div></div>
+</section>
+
 <div id="toast"></div>
 
 <script src="/static/shell.js"></script>
 <script src="/static/courses.js"></script>
 <script src="/static/schedule.js"></script>
 <script src="/static/planner.js"></script>
+<script src="/static/syllabus.js"></script>
 <script>Shell.init();</script>
 </body>
 </html>

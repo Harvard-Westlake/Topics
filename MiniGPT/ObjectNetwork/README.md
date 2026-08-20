@@ -91,6 +91,23 @@ $$z = b + \sum_{i} w_i \, x_i$$
 
 Why the bias? Without it, every unit would be forced to output zero whenever its inputs are zero. The bias sets a resting level — and once the gate arrives below, it also decides how hard the inputs must push before the unit wakes up.
 
+## <font color="#388bfd">The Linear Trap</font>
+
+Before reaching for a gate, try the lazier option: skip it. Wire a unit's weighted sum straight into the next unit's weighted sum, with nothing in between:
+
+```text
+z1 = b1 + sum_i(w_i · x_i)          one unit's weighted sum
+z2 = b2 + v · z1                    a second unit, reading only z1
+```
+
+Substitute the first line into the second and the stack collapses:
+
+$$z_2 = (b_2 + v \, b_1) + \sum_i (v \, w_i) \, x_i$$
+
+That is still one weighted sum of the original inputs — a new bias, new weights, but the same shape as a single unit. Chain a hundred layers of pure weigh-and-add and the same substitution flattens all hundred into one. A linear machine, no matter how deep, can only blend and rescale its inputs; it can never make its behavior depend on *which* inputs showed up, only on how much of each.
+
+That is exactly the limitation the order history exposes. `pineapple` and `pepperoni` should each push a forecast toward `pizza` — but only when that specific token is the one that arrived, not some smeared average of "topping-ness" leaking into every context regardless of what was actually ordered. A purely linear machine cannot switch a signal on for one input and off for another; it can only turn a dial. Something in the machine has to behave differently depending on the *sign* of what arrives — not just its size. That something is the gate.
+
 ## <font color="#388bfd">The Gate</font>
 
 The weighted sum can be any number. Before passing it on, the unit applies a gate. This course's default gate is the **Rectified Linear Unit**, abbreviated **ReLU**:
@@ -105,23 +122,17 @@ $$a = \max(0, z)$$
 
 The name unpacks piece by piece. *Rectified* is borrowed from electronics, where a rectifier is a one-way valve for current — this gate is a one-way valve for numbers. *Linear* describes the open half: for positive input the gate passes the value through unchanged, a straight line. And *Unit* is because the whole term names more than the gate — a unit that wears this gate is itself called **a Rectified Linear Unit (ReLU)**; this page also says **rectified unit**, which is what the starter code calls it.
 
+> **Demo:** [The Gate](https://harvard-westlake.github.io/Topics/MiniGPT/ObjectNetwork/demos/relu-gate.html) ([source](demos/relu-gate.html)) — slide $z$ from negative to positive and watch a single unit flip between silenced and awake, with the $a = \max(0, z)$ curve drawn live.
+
 Not every unit wears the gate. A unit with no gate at all — one that reports its weighted sum exactly as computed — is a **linear unit**: its output is a plain weighted combination of its inputs, no bend, no silencing, negatives allowed. In this course's networks the division of labor is always the same: units in the middle of the machine wear the gate, and the final output units stay linear — their job is to produce unrestricted scores, Chapter 4's logits, which must be free to go negative; a gate there would clamp half the scale to zero.
 
-A unit whose weighted sum came out negative is **silenced**: it outputs exactly zero, and zero times any downstream weight is still zero, so a silenced unit contributes nothing at all to the next layer. Hold on to a suspicion here — *why silence anything?* Wouldn't keeping the information be better? The answer is just ahead, in [Why the Gate: the Collapse Proof](#why-the-gate-the-collapse-proof) — a proof you do by hand that without the gate, stacking layers is pointless.
+A unit whose weighted sum came out negative is **silenced**: it outputs exactly zero, and zero times any downstream weight is still zero, so a silenced unit contributes nothing at all to the next layer. That silencing is exactly the input-dependent switch [The Linear Trap](#the-linear-trap) said a linear machine could never have — the general proof of why it matters is just ahead, in [Why the Gate: the Collapse Proof](#why-the-gate-the-collapse-proof), where you do the algebra by hand on this section's own practice network.
 
 ## <font color="#388bfd">The Practice Network</font>
 
-So far, one unit: weigh, add, gate. Everything on Day 1 happens on one machine built by wiring a few of them together, small enough to trace with a pencil. It has three rows. At the top, two **inputs** — units with no wires coming in; their values are set from outside. In the middle, two **hidden units** — *hidden* because they are the machine's internal scratch work: nothing outside the machine ever reads them; they exist only to feed the row below. Both are Rectified Linear Units (ReLU) — they wear the gate. At the bottom, two **output units**, whose two numbers are the machine's answer — linear units, no gate, so the answer may be any number. Every weight is an integer:
+So far, one unit: weigh, add, gate. Everything on Day 1 happens on one machine built by wiring a few of them together, small enough to trace with a pencil. It has three rows. At the top, two **inputs** — units with no wires coming in; their values are set from outside. In the middle, two **hidden units** — *hidden* because they are the machine's internal scratch work: nothing outside the machine ever reads them; they exist only to feed the row below. Both are Rectified Linear Units (ReLU) — they wear the gate. One gate alone can only ever detect one pattern in the inputs; wiring several gated units in parallel, all reading the same inputs, builds a small **committee of pattern detectors**, each free to wake up for a different combination of inputs. At the bottom, two **output units**, whose two numbers are the machine's answer — linear units, no gate, so the answer may be any number. Every weight is an integer:
 
-```text
-   inputLeft = 1     inputRight = 2        inputs, set from outside
-          \   \       /   /
-           \   \     /   /                 every input wired to every hidden unit
-        hiddenTop   hiddenBottom           rectified units, biases 1 and -1
-          \   \     /   /
-           \   \   /   /                   every hidden unit wired to every output
-      outputFirst   outputSecond           linear units, biases 0 and 2
-```
+![Network diagram: inputs L (inputLeft) and R (inputRight) each wired to hidden units Top (hiddenTop) and Bot (hiddenBottom) — ReLU units with biases +1 and −1 — which are each wired to output units 1st (outputFirst) and 2nd (outputSecond) — linear units with biases 0 and +2. Shown live for inputs [1, 2]: Top is silenced at a=0, Bot is awake at a=4.](demos/practice-network-diagram.png)
 
 Eight wires, each with its weight:
 
@@ -204,7 +215,7 @@ Same numbers as the object trace — and not approximately: the Tester builds on
 
 ## <font color="#388bfd">Why the Gate: the Collapse Proof</font>
 
-Now settle the suspicion. Remove the gate from the practice network — make the hidden units linear — and chase the algebra. Write the hidden sums as expressions, not numbers:
+[The Linear Trap](#the-linear-trap) made the argument with generic symbols and one unit feeding one unit. Now make it exact, on the real practice network with two hidden units. Remove the gate from the practice network — make the hidden units linear — and chase the algebra. Write the hidden sums as expressions, not numbers:
 
 ```text
 z_top    = 1 + 1·x0 − 2·x1

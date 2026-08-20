@@ -8,14 +8,14 @@ window.Shell = (() => {
     document.querySelectorAll('section.tab').forEach(s => s.classList.toggle('active', s.id === 'tab-' + name));
     localStorage.setItem('hubTab', name);
     if (('#' + name) !== location.hash) history.replaceState(null, '', '#' + name);
-    const ns = {courses: window.Courses, schedule: window.Schedule, planner: window.Planner}[name];
+    const ns = {courses: window.Courses, schedule: window.Schedule, planner: window.Planner, syllabus: window.Syllabus}[name];
     if (ns && !inited[name]) { inited[name] = true; ns.init(); }
   }
 
   function init() {
     document.querySelectorAll('.tab-btn').forEach(b => b.onclick = () => show(b.dataset.tab));
     const start = (location.hash || '').replace('#', '') || localStorage.getItem('hubTab') || 'courses';
-    show(['courses', 'schedule', 'planner'].includes(start) ? start : 'courses');
+    show(['courses', 'schedule', 'planner', 'syllabus'].includes(start) ? start : 'courses');
   }
 
   return {init, show};

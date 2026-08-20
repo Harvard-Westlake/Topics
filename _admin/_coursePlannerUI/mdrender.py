@@ -52,8 +52,16 @@ def _rewrite_github_urls(text, base_path):
             return m.group(0)
         return f"[{label}]({GITHUB_BLOB}/{_resolve_path(base_path, path)})"
 
+    def rewrite_html_src(m):
+        attr, path = m.group(1), m.group(2)
+        if path.startswith(("http://", "https://", "data:")):
+            return m.group(0)
+        return f'{attr}="{GITHUB_RAW}/{_resolve_path(base_path, path)}"'
+
     text = re.sub(r"!\[([^\]]*)\]\(([^)]+)\)", rewrite_img, text)
     text = re.sub(r"(?<!!)\[([^\]]+)\]\(([^)]+)\)", rewrite_link, text)
+    # raw HTML <img src=""> / <source srcset=""> (e.g. light/dark logo <picture> blocks)
+    text = re.sub(r'(src|srcset)="([^"]+)"', rewrite_html_src, text)
     return text
 
 
