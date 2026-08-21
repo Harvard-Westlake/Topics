@@ -285,7 +285,7 @@ function renderPanel(type, data) {
     return rows.map(a =>
       '<div class="assign-row">' +
         '<div class="assign-due">' + fmtDue(a.due_at) + '</div>' +
-        '<div><a href="' + a.html_url + '" target="_blank">' + a.name + '</a></div>' +
+        '<div><a href="' + canvasLink(a.html_url) + '" target="_blank">' + a.name + '</a></div>' +
         '<div class="assign-pts">' + (a.points != null ? a.points + ' pts' : '&mdash;') + '</div>' +
       '</div>'
     ).join('');
@@ -792,7 +792,7 @@ async function createModule() {
     '</div>' +
     ok.map(r  => '<div class="result-row"><span class="result-ok">✓</span> ' + r.name + '</div>').join('') +
     err.map(r => '<div class="result-row"><span class="result-err">✕</span> ' + r.name + '</div>').join('') +
-    '<div style="margin-top:10px"><a href="https://hw.instructure.com/courses/' + courseId + '/modules" target="_blank" style="color:var(--accent);font-size:12px">Open in Canvas →</a></div>';
+    '<div style="margin-top:10px"><a href="' + canvasCourseUrl(courseId, '/modules') + '" target="_blank" style="color:var(--accent);font-size:12px">Open in Canvas →</a></div>';
 
   delete prefetched[courseId + '_modules'];
   delete prefetched[courseId + '_assignments'];

@@ -9,6 +9,5 @@ Environment setup followed by core Git workflows: install the toolchain, then le
 | Day | Lesson | Source | Review |
 |---|---|---|---|
 | 1.1 | Initial Install | [ComputerSetup/InitialInstall](../../ComputerSetup/InitialInstall/) | — |
-| 1.1 | Repositories and Commits | [GitUsage/RepositoriesAndCommits](../../GitUsage/RepositoriesAndCommits/) | [Chained Terminal Operations](../../Terminal/Basics/review/chained-terminal-operations.md) |
-| 1.2 | Branching and Merging | [GitUsage/BranchingAndMerging](../../GitUsage/BranchingAndMerging/) | — |
-| 1.3 | Forks and Collaboration | [GitUsage/ForksAndCollaboration](../../GitUsage/ForksAndCollaboration/) | — |
+| 1.2 | Repositories and Commits | [GitUsage/RepositoriesAndCommits](../../GitUsage/RepositoriesAndCommits/) | — |
+| 1.4 | Forks and Collaboration | [GitUsage/ForksAndCollaboration](../../GitUsage/ForksAndCollaboration/) | — |

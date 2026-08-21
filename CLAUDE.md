@@ -98,6 +98,7 @@ Folders whose names begin with `_` (e.g. `_admin/`, `_modules/`) are **ignored b
 - Saving a module also regenerates `_admin/_lessonplans/<slug>.md`.
 - The standalone planner (`python3 _admin/_coursePlannerUI/server.py` → http://127.0.0.1:8901) still works as a stdlib-only, credential-free fallback; its `mdrender.py` must stay in lockstep with the hub's `md_to_html`.
 - Year schedules store module **references** (a `_modules` slug or topic folder name) — day counts and lessons re-resolve from the repo on every request, so content edits automatically re-date every teacher's schedule.
+- A schedule's `show_day0_syllabus` flag (toggled in the Year Schedule tab) reserves the first class date for a syllabus placeholder — it isn't a `sequence` block, adds no unit number, and has no Canvas sync button; `resolve_schedule` returns its date as `day0_date` and every real block's first day starts on the class meeting after it.
 - `_admin/_lessonplans/*.md` are generated — regenerate with `verify.py --fix`, never hand-edit.
 
 ### Placeholder ("Additional Day") entries

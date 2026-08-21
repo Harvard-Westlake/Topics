@@ -111,19 +111,17 @@ If you fall behind, don't hesitate to seek help from instructors or classmates. 
 
 | Component | Weight |
 |---|---|
-| Major Quarterly Projects | 55% |
-| Daily Assignments | 20% |
-| Quizzes and Tests | 15% |
+| Projects (Including Project Assessments) | 80% |
+| Quizzes | 15% |
 | Class Participation | 5% |
-| Collaborative Class Projects | 5% |
 
 ### Assignment Categories and Late Penalties
 
 | Category | Typical use | Late penalty | Days counted |
 |---|---|---|---|
+| **Standard** | The most common category, especially in second semester | `score × 0.95 ^ days_late` — Harvard-Westlake's standard late policy: 5% off per class day late | Weekends and holidays excluded |
+| **Time-Critical** | Important work, often during app development | `score × 0.89 ^ class_periods_late` — 11% off per class period late; also applies if absent for a sports commitment, or not turned in by the end of the day it's due | Class periods counted; weekends and holidays excluded |
 | **Essential** | Core learning objectives, often collaborative | `score × 0.875 ^ days_late` | Weekends count; holidays do not |
-| **Time-Critical** | Important work, often during app development | `score × 0.95 ^ days_late` | Weekends and holidays excluded |
-| **Standard** | The most common category, especially in second semester | `score × 0.98 ^ days_late` | Weekends and holidays excluded |
 
 > <font color="#e3b341">**NOTE**</font> — Late penalties are deliberately structured to introduce a concept you will meet again in reinforcement learning: discounted rewards.
 

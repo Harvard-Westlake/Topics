@@ -40,7 +40,7 @@ Install WSL and Ubuntu to get a Unix terminal, then install Git, GitKraken, VS C
 
 | | Mac | PC |
 |---|---|---|
-| Terminal app | Terminal.app | Ubuntu (WSL) |
+| Unix terminal app | Terminal.app | Ubuntu (WSL) |
 | Shell | zsh | bash |
 | Package manager | Homebrew | apt |
 | Version control | Git | Git |
@@ -50,11 +50,11 @@ Install WSL and Ubuntu to get a Unix terminal, then install Git, GitKraken, VS C
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">Skill Building if done early</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you open a terminal on your computer?
+- [ ] Can you open a terminal on your computer?  Using shortcuts?
 - [ ] Can you run `git --version` without seeing an error?
 - [ ] Can you log in to your GitHub account in the browser?
 
@@ -63,12 +63,12 @@ Install WSL and Ubuntu to get a Unix terminal, then install Git, GitKraken, VS C
 - [ ] Can you open GitKraken and confirm it shows your GitHub account?
 - [ ] Can you create and run a Java program in VS Code?
 - [ ] Can you find your GitHub profile URL and open it in an incognito window?
+- [ ] Can you download a public repository from GitHub on github.com?
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you explain why GitKraken's free plan is enough for this course?
 - [ ] Can you configure Git with your name and email from the terminal?
-- [ ] Can you clone a public repository from GitHub to your local machine?
+- [ ] Can you clone a public repository from GitHub to your local machine using terminal?
 
 ---
 

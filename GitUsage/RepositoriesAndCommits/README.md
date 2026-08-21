@@ -11,26 +11,14 @@
 
 ## <font color="#388bfd">Table of Contents</font>
 
-**[What is a Repository?](#what-is-a-repository)**  
-Local vs remote repositories, the `.git` folder, and how Git stores history.
-
-**[Initializing a Repository](#initializing-a-repository)**  
-Two ways to start tracking a project with Git.
-
-**[Cloning a Repository](#cloning-a-repository)**  
-Downloading a complete copy of any repository from GitHub.
-
-**[The GitKraken Interface](#the-gitkraken-interface)**  
-Reading the commit graph, staging panel, and commit message area.
-
-**[Staging Changes](#staging-changes)**  
-Selecting exactly which changes to include in the next commit.
-
-**[Committing Changes](#committing-changes)**  
-Saving a permanent, labeled snapshot of staged work.
-
-**[Pushing and Pulling](#pushing-and-pulling)**  
-Keeping your local repo and GitHub in sync.
+1. [Learn what a repository is and how Git stores its history](#what-is-a-repository)
+2. [See where a repository actually lives — local vs. GitHub](#where-is-a-repository)
+3. [Start tracking a project with Git two different ways](#initializing-a-repository)
+4. [Download a complete copy of any repository from GitHub](#cloning-a-repository)
+5. [Read GitKraken's commit graph, staging panel, and commit message area](#the-gitkraken-interface)
+6. [Choose exactly which changes go into your next commit](#staging-changes)
+7. [Save a permanent, labeled snapshot of your staged work](#committing-changes)
+8. [Keep your local repo and GitHub in sync](#pushing-and-pulling)
 
 ---
 
@@ -45,12 +33,21 @@ ls -a                   # show hidden files — you will see .git listed
 ls .git                 # peek inside: branches, commits, config, objects
 ```
 
-Repositories exist in two places simultaneously:
+> **Tip:**
+> A name that starts with a dot, like `.git`, is the Unix convention for a **hidden file or folder** — a plain `ls` (and your file manager) skips over anything named this way by default, since it's meant for tools to read, not for you to browse. That's the whole reason `.git` doesn't clutter your project folder even though it's quietly holding your entire history. `ls -a` — the `a` is for "all" — overrides that and shows hidden names too.
+
+---
+
+## <font color="#388bfd">Where is a Repository?</font>
+
+A single repository actually exists in two places at once, and Git treats them as genuinely separate copies:
 
 | Type | Where | Purpose |
 |---|---|---|
 | **Local** | Your machine | Where you write and test code |
 | **Remote** | GitHub (or similar) | Shared backup and collaboration hub |
+
+Your **local** repo is just a folder on your computer with a `.git` inside it — it works completely offline, and every commit you make happens there first. Your **remote** repo is that same project hosted on the internet (GitHub, in this course), so anyone with access can see it, clone it, or collaborate on it.
 
 The two stay in sync through **push** (local → remote) and **pull** (remote → local). Git never assumes the two are in sync — you always sync them explicitly. This means you can commit freely offline and push everything when you are ready.
 
@@ -140,7 +137,7 @@ The commit graph is the visual record of your project. Every dot is a decision t
 
 ## <font color="#388bfd">Staging Changes</font>
 
-Staging is a preparation step that lets you choose exactly which changes to include in the next commit. Even if you modified ten files, you can commit just one.
+In plain English, "saving" your work in Git actually happens in two stages: **staging**, then **committing**. Staging is a preparation step that lets you choose exactly which changes to include in the next commit. Even if you modified ten files, you can commit just one.
 
 ```bash
 git status              # see what has changed since the last commit
@@ -160,7 +157,9 @@ After `git add`, run `git status` again. Staged files appear under **"Changes to
 
 ## <font color="#388bfd">Committing Changes</font>
 
-A commit saves a permanent, labeled snapshot of everything currently staged. Every commit requires a message explaining what changed.
+![Meme from Spaceballs: a soldier peers through binoculars as another asks "What are you preparing? You're always preparing!" and a third yells "JUST GO!" — staging is the preparing; committing is the JUST GO](assets/spaceballs-staging-vs-committing.jpg)
+
+Staging is the preparing. Committing is the "just go" — it's where the save actually happens. A commit saves a permanent, labeled snapshot of everything currently staged. Every commit requires a message explaining what changed.
 
 ```bash
 git commit -m "Short present-tense description of what changed"
@@ -186,6 +185,8 @@ git commit -m "Short present-tense description of what changed"
 ---
 
 ## <font color="#388bfd">Pushing and Pulling</font>
+
+Pushing is a third stage hiding behind the word "saving": staging prepares it, committing saves it locally, and pushing saves it online. So saving your work in Git is secretly three steps — stage, commit, push.
 
 **Push** uploads your local commits to GitHub so teammates (and backups) can see them:
 
@@ -216,7 +217,7 @@ git pull
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you explain what the `.git` folder is and why you should never edit it directly?
+- [ ] Can you explain what the `.git` folder is, why its name starts with a dot, and why you should never edit it directly?
 - [ ] Can you explain the difference between `git clone` and downloading a ZIP?
 - [ ] Can you push commits to GitHub and verify they appear on the repository page?
 

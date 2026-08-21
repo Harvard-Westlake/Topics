@@ -27,6 +27,14 @@ function esc(s) {
   return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+// Canvas is reached through hub.hw.com — a branded vanity domain for the
+// school's real *.instructure.com backend. User-facing Canvas links should
+// go through it; the hub's own API calls (server-side, BASE in server.py)
+// are unaffected and keep hitting the backend domain directly.
+const CANVAS_WEB = 'https://hub.hw.com';
+function canvasCourseUrl(courseId, path) { return CANVAS_WEB + '/courses/' + courseId + (path || ''); }
+function canvasLink(url) { return url ? url.replace(/^https?:\/\/[^/]*\.instructure\.com/, CANVAS_WEB) : url; }
+
 function uid() { return 'b' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
 
 function smartRound(n) {

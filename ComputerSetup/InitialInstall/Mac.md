@@ -47,17 +47,13 @@ Your Unix terminal is ready. The remaining steps install the tools you will use 
 
 Before creating your GitHub account, download an authenticator app on your smartphone. You will need it to set up two-factor authentication.
 
-Choose one of these:
+Choose one of these free options:
 
-| App | Cost |
-|---|---|
-| Authy | Free |
-| Google Authenticator | Free |
-| Microsoft Authenticator | Free |
-| Passwords *(Apple — iOS 18 only)* | Free |
-| Duo Mobile | Free |
-| 1Password | Paid |
-| LastPass | Paid |
+- Authy
+- Google Authenticator
+- Microsoft Authenticator
+- Passwords *(Apple — iOS 18 only)*
+- Duo Mobile
 
 After installing, sign up using your **personal email address**.
 

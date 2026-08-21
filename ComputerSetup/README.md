@@ -62,6 +62,5 @@ By the end of the install, your terminal accepts the same Unix commands used thr
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you explain why GitKraken's free plan is enough for this course?
 - [ ] Can you configure Git with your name and email from the terminal?
 - [ ] Can you clone a public repository from GitHub to your local machine?

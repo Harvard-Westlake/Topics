@@ -20,28 +20,15 @@
       "review": null
     },
     {
-      "day": 1,
+      "day": 2,
       "duration": 1,
       "title": "Repositories and Commits",
       "path": "RepositoriesAndCommits",
       "_module": "GitUsage",
-      "review": {
-        "module": "Terminal",
-        "path": "Basics",
-        "file": "chained-terminal-operations.md",
-        "label": "Chained Terminal Operations"
-      }
-    },
-    {
-      "day": 2,
-      "duration": 1,
-      "title": "Branching and Merging",
-      "path": "BranchingAndMerging",
-      "_module": "GitUsage",
       "review": null
     },
     {
-      "day": 3,
+      "day": 4,
       "duration": 1,
       "title": "Forks and Collaboration",
       "path": "ForksAndCollaboration",

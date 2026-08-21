@@ -323,6 +323,7 @@ section.tab.active { display: block; }
 .kb-flex   { background: #0d2d1e; color: var(--green); }
 .kb-custom { background: #262a35; color: var(--muted); }
 .kb-gap    { background: transparent; color: var(--muted); }
+.kb-day0   { background: #0d2d1e; color: var(--green); }
 
 .board { flex: 1; min-width: 0; display: flex; flex-direction: column; min-height: 70vh; }
 .board .dz:last-child { flex: 1; align-items: flex-start; padding-top: 6px; }
@@ -342,6 +343,9 @@ section.tab.active { display: block; }
 .block.b-review { border-left: 3px solid var(--purple); }
 .block.b-flex   { border-left: 3px solid var(--green); }
 .block.b-custom { border-left: 3px solid var(--muted); }
+.block.b-day0   { border-left: 3px solid var(--green); opacity: .85; }
+.block.b-day0 .block-title { cursor: pointer; }
+.block.b-day0 .block-title:hover { color: var(--green); }
 .block.b-lesson { border-left: 3px solid var(--accent); }
 .block-head { display: flex; align-items: center; gap: 10px; padding: 11px 14px; }
 .block-head .grip { color: var(--muted); cursor: grab; font-size: 13px; flex-shrink: 0; }

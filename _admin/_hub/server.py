@@ -863,6 +863,7 @@ DEFAULT_SCHEDULE = {
     "end_date": "2027-06-04",
     "meeting_days": [0, 1, 2, 3, 4],   # weekday numbers, Monday=0 … Friday=4
     "no_school": [],                   # [{"date": "YYYY-MM-DD", "label": "…"}]
+    "show_day0_syllabus": False,        # reserve the first class day for the syllabus (see resolve_schedule)
     "sequence": [],
 }
 
@@ -1041,6 +1042,13 @@ def expand_module_block(block):
 def resolve_schedule(sched):
     """Expand every block against the repo and map its days onto real class dates."""
     dates = schedule_class_dates(sched)
+    # Day 0 (first day of class) is a syllabus placeholder, not a block — it
+    # reserves the first class date for itself so the sequence's real content
+    # starts on the day after, but it adds no entry to `blocks`, consumes no
+    # unit_number, and has nothing to sync to Canvas.
+    day0_date = None
+    if sched.get("show_day0_syllabus") and dates:
+        day0_date, dates = dates[0], dates[1:]
     blocks, warnings, idx, unit = [], [], 0, 0
     cal, cls = schedule_calendar_class(sched)
     if sched.get("calendar_class") and not cls:
@@ -1082,7 +1090,7 @@ def resolve_schedule(sched):
                    "title": block.get("title") or (btype or "day").title(),
                    "file": block.get("file"), "points": block.get("points"),
                    "slots": _insert_slots(block)}
-        day_num, last_date = 0, None
+        day_num, last_date = -1, None  # first day in a block is day_num 0, matching Unit 0
         for s in out["slots"]:
             if s.get("co_day"):
                 s["date"] = last_date          # shares the class day of the slot above
@@ -1095,7 +1103,7 @@ def resolve_schedule(sched):
             if s["date"] and cls:
                 s["time"] = times.get(s["date"])
                 s["next_date"] = next_class_date(s["date"])
-        out["days"] = day_num
+        out["days"] = day_num + 1  # count of distinct days, not the 0-indexed last day_num
         dated = [s["date"] for s in out["slots"] if s["date"]]
         out["start"] = dated[0] if dated else None
         out["end"] = dated[-1] if dated else None
@@ -1111,7 +1119,7 @@ def resolve_schedule(sched):
             "location": cls.get("location"), "meetings": len(mts),
             "first": mts[0][0] if mts else None, "last": mts[-1][0] if mts else None,
             "timezone": cal.get("timezone"), "calendar": sched.get("calendar")}
-    return {"blocks": blocks, "warnings": warnings, "calendar": calendar_out}
+    return {"blocks": blocks, "warnings": warnings, "calendar": calendar_out, "day0_date": day0_date}
 
 @app.route("/api/schedules")
 def api_schedules():

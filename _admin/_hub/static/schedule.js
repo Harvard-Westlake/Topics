@@ -170,7 +170,13 @@ function renderSettings() {
   g.innerHTML = [0,1,2,3,4].map(d =>
     '<button class="dow-btn' + ((schedule.meeting_days || []).includes(d) ? ' active' : '') + '"' +
     ' onclick="Schedule.toggleDow(' + d + ')">' + DOW[d] + '</button>').join('');
+  document.getElementById('setDay0').checked = !!schedule.show_day0_syllabus;
   renderCalClassPicker();
+}
+
+function toggleDay0(checked) {
+  schedule.show_day0_syllabus = checked;
+  markDirty();
 }
 
 // ── Class calendar (imported .ics) ────────────────────────────────────────────
@@ -418,19 +424,35 @@ async function toggleTopic(e, name) {
 function renderBoard() {
   const board = document.getElementById('board');
   if (!schedule) return;
+  const day0 = day0Card();
   if (!schedule.sequence.length) {
-    board.innerHTML = dz(0) +
+    board.innerHTML = day0 + dz(0) +
       '<div class="board-empty">Drag saved modules, topics, finals, and day types here to build the year.<br>' +
       'Drop items <i>inside</i> an expanded module to add test days or extra lessons mid-unit.</div>';
     return;
   }
-  let html = dz(0), unit = 0;
+  let html = day0 + dz(0), unit = 0;
   schedule.sequence.forEach((blk, i) => {
     if (blk.type === 'module') { html += moduleCard(blk, unit); unit++; }
     else html += standaloneCard(blk);
     html += dz(i + 1);
   });
   board.innerHTML = html;
+}
+
+// Day 0 is a syllabus placeholder, not a sequence block — it reserves the
+// first class day (see resolve_schedule's day0_date) but has no drag handle,
+// no unit number, and no Sync button (nothing to push to Canvas).
+function day0Card() {
+  if (!schedule.show_day0_syllabus) return '';
+  const date = resolved && resolved.day0_date;
+  return '<div class="block b-day0">' +
+    '<div class="block-head">' +
+      '<span class="kb kb-day0">day 0</span>' +
+      '<span class="block-title" onclick="Shell.show(\'syllabus\')" title="Open the Syllabus tab">Syllabus — first day of class</span>' +
+      '<span class="block-dates">' + (date ? fmtD(date) : '…') + '</span>' +
+    '</div>' +
+  '</div>';
 }
 
 function dz(i) {
@@ -474,7 +496,7 @@ function moduleRows(blk, r) {
   let html = idz(blk.id, 0, null);
   const seenParts = {};
   r.slots.forEach((s, i) => {
-    html += slotRow(blk, s, s.day_num || i + 1);
+    html += slotRow(blk, s, s.day_num != null ? s.day_num : i);  // day_num is 0-indexed; 0 is a real value here
     const next = r.slots[i + 1];
     if (next && next.co_day) return;   // more lessons share this class day — zone after the last one
     if (s.insert_id) {
@@ -945,8 +967,8 @@ async function doSync() {
       (res.module_name ? esc(res.module_name) + ' created — ' : '') + ok.length + ' assignment' + (ok.length !== 1 ? 's' : '') + '</div>' +
     ok.map(x => '<div class="result-row"><span class="result-ok">&#x2713;</span> ' + esc(x.name) + '</div>').join('') +
     err.map(x => '<div class="result-row"><span class="result-err">&#x2715;</span> ' + esc(x.name) + '</div>').join('') +
-    '<div style="margin-top:8px"><a href="https://hw.instructure.com/courses/' + courseId +
-    '/modules" target="_blank" style="color:var(--accent);font-size:12px">Open in Canvas &rarr;</a></div>';
+    '<div style="margin-top:8px"><a href="' + canvasCourseUrl(courseId, '/modules') +
+    '" target="_blank" style="color:var(--accent);font-size:12px">Open in Canvas &rarr;</a></div>';
 }
 
 // ── Finals (stored in the private Admin repo) ─────────────────────────────────
@@ -998,7 +1020,7 @@ async function deleteFinal() {
   loadPalette();
 }
 
-return {init, pickSchedule, newSchedule, loadPalette, toggleDow, toggleNoSchool,
+return {init, pickSchedule, newSchedule, loadPalette, toggleDow, toggleDay0, toggleNoSchool,
         pickCalClass, importIcs,
         addNoSchool, removeNoSchool, toggleTopic, toggleBlock, removeBlock,
         stepBlock, setBlockPoints, removeInsert, stepInsert, setInsertPoints,

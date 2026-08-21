@@ -582,14 +582,20 @@ function onNameInput() {
 }
 
 function checkedAssignments() {
+  // Renumber days sequentially over just the checked subset — an unchecked
+  // lesson's original day must not leave a gap in the saved schedule.
+  let day = 1;
   return assignments
     .map((a, i) => ({a, i}))
     .filter(({i}) => { const cb = $('lcheck_' + i); return cb && cb.checked; })
-    .map(({a, i}) => ({
-      day: a.day, duration: a.duration || 1, title: a.title,
-      path: a.path, _module: a._module,
-      review: reviewSelections[i] || null,
-    }));
+    .map(({a, i}) => {
+      const dur = a.duration || 1;
+      const out = {day: day, duration: dur, title: a.title,
+                   path: a.path, _module: a._module,
+                   review: reviewSelections[i] || null};
+      day += dur;
+      return out;
+    });
 }
 
 function refreshAll() {

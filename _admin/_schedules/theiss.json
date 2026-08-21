@@ -12,14 +12,15 @@
   "no_school": [],
   "sequence": [
     {
-      "id": "bmt32xm78civgl",
-      "type": "module",
-      "source": "saved",
+      "id": "bmt3il6lp0k3zl",
+      "inserts": [],
       "ref": "computer-setup-and-git-usage",
-      "inserts": []
+      "source": "saved",
+      "type": "module"
     }
   ],
   "start_date": "2026-08-24",
-  "updated": "2026-08-21T08:03:44",
-  "year": "2026-27"
+  "updated": "2026-08-21T15:24:57",
+  "year": "2026-27",
+  "show_day0_syllabus": true
 }

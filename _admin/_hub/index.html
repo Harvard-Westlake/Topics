@@ -20,7 +20,7 @@ window.MathJax = {
 <header>
   <div>
     <h1>HW Course Hub</h1>
-    <div class="sub">Topics repo is the source of truth — Canvas LMS: hw.instructure.com</div>
+    <div class="sub">Topics repo is the source of truth — Canvas LMS: hub.hw.com</div>
   </div>
   <nav class="tabs">
     <button class="tab-btn" data-tab="courses">Courses</button>
@@ -174,6 +174,9 @@ window.MathJax = {
   <label id="dowLabel">Meets</label>
   <div class="dow-group" id="dowGroup"></div>
   <button class="btn-icon" id="nsToggle" onclick="Schedule.toggleNoSchool()">No-school days</button>
+  <label class="day0-toggle" style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);cursor:pointer">
+    <input type="checkbox" id="setDay0" onchange="Schedule.toggleDay0(this.checked)">Show syllabus for Day 0
+  </label>
   <div class="summary">
     <span id="summary"></span>
     <div id="savePill" class="status-pill saved"><div class="dot"></div>Saved</div>
