@@ -56,7 +56,7 @@ The `objects/` directory ends up with five files: two tree files and three blob 
 
 The diagram below shows the full object graph for this example — the root tree (`myProgram/`) references the `scripts/` tree and two blob files, and the `scripts/` tree references `Cat.java`'s blob:
 
-![Tree diagram showing myProgram/ root tree referencing blobs and a scripts/ subtree](trees.png)
+![Tree diagram showing myProgram/ root tree referencing blobs and a scripts/ subtree](assets/trees.png)
 
 ## <font color="#388bfd">Trees Must Be Built Bottom-Up</font>
 

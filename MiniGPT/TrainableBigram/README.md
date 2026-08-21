@@ -53,7 +53,7 @@ Three ground rules, mirroring Chapter 3's:
 
 Why a three-word toy? Because $3 \times 3 = 9$: the entire model is nine numbers, and every claim this page makes can be checked by eye. The archive corpus returns when the machinery is trusted.
 
-## <font color="#388bfd">Vocabulary — Day 1</font>
+## <font color="#388bfd">Vocabulary — Day 1 of 2</font>
 
 | Term | Definition | Picture to hold |
 |---|---|---|
@@ -74,7 +74,7 @@ Why a three-word toy? Because $3 \times 3 = 9$: the entire model is nine numbers
 
 ---
 
-## <font color="#388bfd">Day 1 — One Guess: Graded, Then Nudged</font>
+## <font color="#388bfd">Day 1 of 2 — One Guess: Graded, Then Nudged</font>
 
 ## <font color="#388bfd">The Same Table, a Different Filling</font>
 
@@ -106,7 +106,7 @@ exponentiate:             [ 1.0000,  0.9608,  0.9910 ]
 divide by sum 2.9518:     [ 0.3388,  0.3255,  0.3357 ]
 ```
 
-Read as a forecast: after `pizza`, the model says 34% `pizza`, 33% `pineapple`, 34% `pepperoni` — a shrug. This is the **prediction distribution**, and exactly like Chapter 2's smoothed rows, it is positive everywhere and sums to one. A nearly empty table like this one can only shrug: logits that are random but nearly zero softmax to nearly $\frac{1}{3}$ each, whichever row you read. Hold that thought — it becomes a free correctness test on Day 2.
+Read as a forecast: after `pizza`, the model says 34% `pizza`, 33% `pineapple`, 34% `pepperoni` — a shrug. This is the **prediction distribution**, and exactly like Chapter 2's smoothed rows, it is positive everywhere and sums to one. A nearly empty table like this one can only shrug: logits that are random but nearly zero softmax to nearly $\frac{1}{3}$ each, whichever row you read. Hold that thought — it becomes a free correctness test on the second day of this lesson.
 
 A shrug is honest, but it gives a grader almost nothing to push against. To watch grading and nudging do something visible, the rest of the day follows one deliberately opinionated row. Suppose the row for `pizza` instead held `[1.2, 0.1, -0.4]`:
 
@@ -219,7 +219,7 @@ Three things worth saying about it:
 - **The entries sum to zero.** The $p_i$ sum to 1, and you subtract a single 1. Belief is conserved: whatever the wrong answers lose, the right answer gains.
 - **Only the used row gets slopes.** The other rows never touched this prediction, so this example says nothing about them. Hold that thought too.
 
-Where does the formula come from? Calculus — the chain rule pushed through the logarithm and the softmax. Deriving it is a stretch goal, not a requirement; *using* it requires no calculus at all. But you should not take a formula on faith: on Day 2 you will make the wiggle experiment the **referee**, and require the two to agree to six decimal places. That referee has a name — the gradient check — and it is a required test.
+Where does the formula come from? Calculus — the chain rule pushed through the logarithm and the softmax. Deriving it is a stretch goal, not a requirement; *using* it requires no calculus at all. But you should not take a formula on faith: on the second day of this lesson you will make the wiggle experiment the **referee**, and require the two to agree to six decimal places. That referee has a name — the gradient check — and it is a required test.
 
 ## <font color="#388bfd">One Step Downhill</font>
 
@@ -243,7 +243,7 @@ new loss:       -ln(0.3509) = 1.0474
 
 The loss fell: $1.5284 \rightarrow 1.0474$. Look closely at what one step did and did not do. The truth's probability rose from $0.2169$ to $0.3509$ — but `pizza` still leads the forecast. **A step is a nudge, not a correction.** The model was not told the answer and did not jump to it; it moved every number a little in the direction that made the observed answer less surprising. Training is thousands of such nudges.
 
-The learning rate is a number *you* choose — Chapter 2 gave you the word for that: a **hyperparameter**, tuned on validation data, never on test data. Day 2 shows exactly what happens when you choose it badly.
+The learning rate is a number *you* choose — Chapter 2 gave you the word for that: a **hyperparameter**, tuned on validation data, never on test data. The second day of this lesson shows exactly what happens when you choose it badly.
 
 ### <font color="#79c0ff">Check yourself — Set B</font>
 
@@ -253,11 +253,11 @@ The learning rate is a number *you* choose — Chapter 2 gave you the word for t
 4. A different guess put $p = 0.98$ on the truth. What is the target's slope, and what does its small size mean the update will do?
 5. Wiggle time: with the worked row, nudging $z_2$ gives $L(z_2 + 0.01) = 1.52970$ and $L(z_2 - 0.01) = 1.52707$. Compute the slope. Which entry of the shortcut formula did you just confirm?
 
-**Day 1 homework:** [Assignment](ASSIGNMENT.md) Part 1 — implement the stable softmax, the forecast, the loss, and the gradient (TODOs 1–4), and bring problem sets A and B worked on paper.
+**Day 1 of 2 homework:** [Assignment](ASSIGNMENT.md) Part 1 — implement the stable softmax, the forecast, the loss, and the gradient (TODOs 1–4), and bring problem sets A and B worked on paper.
 
 ---
 
-## <font color="#388bfd">Vocabulary — Day 2</font>
+## <font color="#388bfd">Vocabulary — Day 2 of 2</font>
 
 | Term | Definition | Picture to hold |
 |---|---|---|
@@ -272,11 +272,11 @@ The learning rate is a number *you* choose — Chapter 2 gave you the word for t
 | Gradient check | Comparing an implemented gradient against a finite-difference estimate. | The wiggle experiment, hired as referee |
 | Numerical stability | Avoiding invalid or inaccurate floating-point results. | No `Infinity`, no `NaN`, no overflow |
 
-## <font color="#388bfd">Day 2 — A Hundred Guesses: The Training Loop</font>
+## <font color="#388bfd">Day 2 of 2 — A Hundred Guesses: The Training Loop</font>
 
 ## <font color="#388bfd">Every Adjacent Pair Is a Flashcard</font>
 
-Day 1 processed one example. The training history contains 122 tokens, and **every adjacent pair is one training example**: the current token is the front of a flashcard, the target is the back. That is 121 flashcards — and the validation history holds 41 more that the table is never allowed to learn from.
+The first day of this lesson processed one example. The training history contains 122 tokens, and **every adjacent pair is one training example**: the current token is the front of a flashcard, the target is the back. That is 121 flashcards — and the validation history holds 41 more that the table is never allowed to learn from.
 
 The deck is not balanced, and that matters later:
 
@@ -303,7 +303,7 @@ repeat 300 times:
                                                  step       - stride downhill against the slope
 ```
 
-One function in there deserves a gloss: `accumulateGradients` computes Day 1's shortcut gradient — `p` minus one-hot — for a single flashcard and adds it to the bucket. The name says exactly what the method does, but the operation also has a standard name worth learning now. Computing the loss runs the pipeline *forward*: row → softmax → probability of the target → loss. Computing the gradient walks the same road in reverse — from the loss back to the logits that caused it — so every training library calls this the **backward pass** and names the method `backward`; Chapter 6 will use that name. Forward makes the prediction; backward finds out what to blame.
+One function in there deserves a gloss: `accumulateGradients` computes the first day's shortcut gradient — `p` minus one-hot — for a single flashcard and adds it to the bucket. The name says exactly what the method does, but the operation also has a standard name worth learning now. Computing the loss runs the pipeline *forward*: row → softmax → probability of the target → loss. Computing the gradient walks the same road in reverse — from the loss back to the logits that caused it — so every training library calls this the **backward pass** and names the method `backward`; Chapter 6 will use that name. Forward makes the prediction; backward finds out what to blame.
 
 The 24 flashcards graded together are a **batch**, and pouring their gradients into one running total is **gradient accumulation**. Because the flashcards are drawn *at random*, this is **Stochastic Gradient Descent** — stochastic is a formal word for random. With 121 flashcards and 24 per step, about five steps consume one deck's worth — one **epoch**, though with random draws the term is a unit of accounting rather than a strict pass.
 
@@ -374,7 +374,7 @@ One example, and the table is now more certain that `pineapple` follows `pizza` 
 
 Here is an unsettling fact about training bugs: an `accumulateGradients` with a wrong sign, a swapped index, or a forgotten term often *still sort of trains* — the loss drifts down, slowly and mysteriously badly, and nothing crashes. Silent wrongness is the default failure mode of gradient code everywhere.
 
-The referee is the wiggle experiment from Day 1, applied automatically. For every logit in the worked row, the Tester nudges by $h = 0.0001$ in both directions, recomputes the loss, forms the finite-difference slope, and compares it against what your `accumulateGradients` computed:
+The referee is the wiggle experiment from the first day of this lesson, applied automatically. For every logit in the worked row, the Tester nudges by $h = 0.0001$ in both directions, recomputes the loss, forms the finite-difference slope, and compares it against what your `accumulateGradients` computed:
 
 $$\text{numerical slope} = \frac{L(z_i + h) - L(z_i - h)}{2h}$$
 
@@ -420,7 +420,7 @@ Now scale the flaw. A real vocabulary has 50,000 tokens, so this table would nee
 3. With 121 flashcards and a batch of 24, roughly how many steps make one epoch — and why is "epoch" only approximate in our loop?
 4. A classmate reports final training loss $0.0001$ on this order history. Without reading a line of their code, what do you know, and what is the likeliest kind of bug?
 
-**Day 2 homework:** [Assignment](ASSIGNMENT.md) Part 2 — implement the update, the reset, and the evaluation (TODOs 5–7), run the training and learning-rate experiments, and answer the concept questions.
+**Day 2 of 2 homework:** [Assignment](ASSIGNMENT.md) Part 2 — implement the update, the reset, and the evaluation (TODOs 5–7), run the training and learning-rate experiments, and answer the concept questions.
 
 ---
 
@@ -433,21 +433,21 @@ The starter code is in [starter/](starter/) — four files. Two contain TODOs; t
 | [TrainableBigramModel.java](starter/TrainableBigramModel.java) | **TODO 1–7** | The table: its forecasts, its loss, its gradient, its update |
 | [TrainingData.java](starter/TrainingData.java) | Complete | The training and validation histories, plus Chapter 2's counting for the comparison |
 | [Trainer.java](starter/Trainer.java) | **TODO 8–9** | The training itself: one SGD step and the loop that repeats it (the reporting and the experiment bench are provided — run `java Trainer` once the Tester passes) |
-| [Tester.java](starter/Tester.java) | Complete | Reproduces every worked trace on this page and runs the required tests |
+| [Ch4_TrainableBigram_Tester.java](starter/Ch4_TrainableBigram_Tester.java) | Complete | Reproduces every worked trace on this page and runs the required tests |
 
 The model's TODOs follow one flashcard through its life, in the order the chapter taught it — **Forecast** the next token, **Grade** the guess, **Measure** the slope, **Nudge** the table — plus the machinery around them. Each stage is strict about what it may touch: Forecast, Grade, and the Report card only *read* the table; Measure writes only the gradient bucket; Nudge is the only method that moves a logit. The Tester checks those boundaries as seriously as the arithmetic.
 
-Implement the TODOs in order, rerunning `Tester` after each — unimplemented stages report as `TODO`, not `FAIL`:
+Implement the TODOs in order, rerunning `Ch4_TrainableBigram_Tester` after each — unimplemented stages report as `TODO`, not `FAIL`:
 
-1. `stableSoftmax` — shared machinery: Chapter 3's three steps, rebuilt here (Day 1)
-2. `probabilities` — Forecast: one row, read as a prediction (Day 1)
-3. `loss` — Grade: cross-entropy for one flashcard (Day 1)
-4. `accumulateGradients` — Measure: pour `p` minus one-hot into the used row (Day 1)
-5. `step` — Nudge: average the accumulated gradients, stride downhill (Day 2)
-6. `zeroGradients` — Reset: wipe the bucket between updates (Day 2)
-7. `averageLoss` — Report: grade a whole history without training on it (Day 2)
-8. `stochasticGradientDescentStep` — in `Trainer`: Reset, Measure a random batch, one averaged Nudge (Day 2)
-9. the loop in `train` — repeat the step, reporting the CSV trace on schedule (Day 2)
+1. `stableSoftmax` — shared machinery: Chapter 3's three steps, rebuilt here (Day 1 of 2)
+2. `probabilities` — Forecast: one row, read as a prediction (Day 1 of 2)
+3. `loss` — Grade: cross-entropy for one flashcard (Day 1 of 2)
+4. `accumulateGradients` — Measure: pour `p` minus one-hot into the used row (Day 1 of 2)
+5. `step` — Nudge: average the accumulated gradients, stride downhill (Day 2 of 2)
+6. `zeroGradients` — Reset: wipe the bucket between updates (Day 2 of 2)
+7. `averageLoss` — Report: grade a whole history without training on it (Day 2 of 2)
+8. `stochasticGradientDescentStep` — in `Trainer`: Reset, Measure a random batch, one averaged Nudge (Day 2 of 2)
+9. the loop in `train` — repeat the step, reporting the CSV trace on schedule (Day 2 of 2)
 
 ## <font color="#388bfd">Evidence Checkpoint</font>
 
@@ -461,7 +461,7 @@ Five observations your finished code must produce:
 
 ## <font color="#388bfd">Required Tests</font>
 
-`Tester` covers all of these — confirm every one reports `PASS`:
+`Ch4_TrainableBigram_Tester` covers all of these — confirm every one reports `PASS`:
 
 - Softmax sums to one, survives huge logits without overflow, and is unchanged by adding a constant to every logit.
 - Cross-entropy is near zero for a near-certain correct prediction, and large when the truth was called nearly impossible.

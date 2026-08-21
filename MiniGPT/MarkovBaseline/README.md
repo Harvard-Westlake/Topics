@@ -272,7 +272,7 @@ The boundary rules, all of which the required tests enforce:
 3. **Validation chooses settings; test is touched once.** Tune $\alpha$ by comparing validation losses. Report test loss only after your choices are frozen.
 4. **A learned tokenizer can leak too.** Merge rules learned from the *whole* corpus have already extracted statistics from the held-out text.
 
-> **Warning:** Our own `Tester.java` trains BPE merges on the full files *before* splitting — a small, deliberate simplification for this week. Can you explain precisely why it is a leak? (Hint: merge rules learned from the whole corpus have already read the test text.)
+> **Warning:** Our own `Ch2_MarkovBaseline_Tester.java` trains BPE merges on the full files *before* splitting — a small, deliberate simplification for this week. Can you explain precisely why it is a leak? (Hint: merge rules learned from the whole corpus have already read the test text.)
 
 When the course begins making **formal held-out comparisons**, the pipeline must change to the leak-free order, and the pieces are already in place for it:
 
@@ -293,9 +293,9 @@ The programming this week is reinforcement: familiar counting and lookup pattern
 | [MarkovRevisited.java](starter/MarkovRevisited.java) | **TODO 5–6** | Provided: splitting, generation loop, validators. You write: evaluation and sampling |
 | [EvaluationResult.java](starter/EvaluationResult.java) | Complete | Turns accumulated loss into average loss, perplexity, bits per byte |
 | [CorpusSplit.java](starter/CorpusSplit.java) | Complete | The train/validation/test record |
-| [Tester.java](starter/Tester.java) | Complete | Runs your Chapter 1 tokenizer, then the first model check |
+| [Ch2_MarkovBaseline_Tester.java](starter/Ch2_MarkovBaseline_Tester.java) | Complete | Runs your Chapter 1 tokenizer, then the first model check |
 
-`Tester.java` needs your completed Chapter 1 `Tokenizer.java` in the same folder — the archive pipeline is now cumulative: **files → bytes → tokens → predictions**. Note how it sizes the models: it asks `t.vocabularySize()` rather than assuming 512, because `train(256)` only guarantees *up to* 256 merges — on a small corpus, merging stops early the moment no pair repeats.
+`Ch2_MarkovBaseline_Tester.java` needs your completed Chapter 1 `Tokenizer.java` in the same folder — the archive pipeline is now cumulative: **files → bytes → tokens → predictions**. Note how it sizes the models: it asks `t.vocabularySize()` rather than assuming 512, because `train(256)` only guarantees *up to* 256 merges — on a small corpus, merging stops early the moment no pair repeats.
 
 Implement the TODOs in this order, testing after each one. Each step isolates exactly one idea:
 

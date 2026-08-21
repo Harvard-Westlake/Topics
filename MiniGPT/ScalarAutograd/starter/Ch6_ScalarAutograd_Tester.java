@@ -5,7 +5,7 @@ import java.util.Set;
 // PROVIDED — reproduces every worked trace from the lesson page and runs the
 // required tests. Complete the TODOs in order and rerun after each one:
 // stages you have not implemented yet are reported as TODO, not FAIL.
-public class Tester {
+public class Ch6_ScalarAutograd_Tester {
 
     public static void main(String[] args) {
         System.out.println("=== Part 1 (Day 1): the receipts and the audit ===");

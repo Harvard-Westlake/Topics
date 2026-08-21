@@ -668,7 +668,7 @@ async function onReviewLessonChange(i) {
   if (!files.length) { fileSel.innerHTML = '<option value="">No reviews</option>'; return; }
   files.forEach(f => {
     const o = document.createElement('option');
-    o.value = f; o.textContent = f.replace(/\.md$/, '');
+    o.value = f.file; o.textContent = f.label;
     fileSel.appendChild(o);
   });
   fileSel.disabled = false;
@@ -677,7 +677,9 @@ async function onReviewLessonChange(i) {
 async function onReviewFileChange(i) {
   const module     = document.getElementById('rmod_' + i).value;
   const lessonPath = document.getElementById('rlesson_' + i).value;
-  const file       = document.getElementById('rfile_' + i).value;
+  const fileSel    = document.getElementById('rfile_' + i);
+  const file       = fileSel.value;
+  const label      = fileSel.selectedOptions[0] ? fileSel.selectedOptions[0].textContent : file;
   const badge      = document.getElementById('rbadge_' + i);
   if (!file) { badge.style.display = 'none'; delete reviewSelections[i]; return; }
   const res = await fetch('/api/github/review-content?module=' + encodeURIComponent(module) +
@@ -685,7 +687,7 @@ async function onReviewFileChange(i) {
                           '&file=' + encodeURIComponent(file)).then(r => r.json());
   if (res.content) {
     reviewSelections[i] = {module, lessonPath, file, content: res.content};
-    badge.textContent = file.replace(/\.md$/, '');
+    badge.textContent = label;
     badge.style.display = 'inline-block';
   }
 }

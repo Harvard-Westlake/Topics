@@ -1,4 +1,4 @@
-# Review — Repositories and Commits, Day 1
+# Review — The Commit Cycle
 
 *Originally covered in [Repositories and Commits](../README.md)*
 

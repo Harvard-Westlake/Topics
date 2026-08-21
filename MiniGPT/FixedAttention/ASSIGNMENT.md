@@ -30,17 +30,17 @@ Copy all four files from [starter/](starter/) into your project.
 | [FixedAttention.java](starter/FixedAttention.java) | Starter | TODOs 1–7 (the validators at the bottom are provided) |
 | [AttentionFixtures.java](starter/AttentionFixtures.java) | Complete | — |
 | [ScoreRule.java](starter/ScoreRule.java) | Complete | — |
-| [Tester.java](starter/Tester.java) | Complete | Rerun it after every TODO |
+| [Ch3_FixedAttention_Tester.java](starter/Ch3_FixedAttention_Tester.java) | Complete | Rerun it after every TODO |
 
-Do not modify the provided files or the validators. `Tester` reproduces every worked trace from the [lesson page](README.md) and reports each check as `PASS`, `FAIL`, or `TODO`.
+Do not modify the provided files or the validators. `Ch3_FixedAttention_Tester` reproduces every worked trace from the [lesson page](README.md) and reports each check as `PASS`, `FAIL`, or `TODO`.
 
 ---
 
-## Part 1 — After Day 1
+## Part 1 — After Day 1 of 2
 
-**On paper:** finish Check Yourself sets A and B from the lesson page and bring them to class. They are the raw material for Day 2's opening discussion.
+**On paper:** finish Check Yourself sets A and B from the lesson page and bring them to class. They are the raw material for the second day's opening discussion.
 
-**In code:** implement the first three TODOs, in order, rerunning `Tester` after each:
+**In code:** implement the first three TODOs, in order, rerunning `Ch3_FixedAttention_Tester` after each:
 
 | # | Method | The idea it isolates |
 |---|---|---|
@@ -48,9 +48,9 @@ Do not modify the provided files or the validators. `Tester` reproduces every wo
 | 2 | `stableSoftmax` | Shared machinery, used by all three fillings: subtract the max, exponentiate, normalize — without mutating the input |
 | 3 | `applyWeights` | Shared machinery — the blend: `outputs[query][slot]` sums `weights[query][key] * values[key][slot]` over every permitted `key` |
 
-After Part 1, `Tester` must confirm: uniform rows sum to one with exact-zero futures, softmax reproduces `[2,1,0] -> [0.6652, 0.2447, 0.0900]` and `[4,0,0] -> [0.9647, 0.0177, 0.0177]`, equal scores produce equal weights, and blending the three-card fixture uniformly yields `y2 = [1.0, 0.6667, 0.3333, 0.0]`.
+After Part 1, `Ch3_FixedAttention_Tester` must confirm: uniform rows sum to one with exact-zero futures, softmax reproduces `[2,1,0] -> [0.6652, 0.2447, 0.0900]` and `[4,0,0] -> [0.9647, 0.0177, 0.0177]`, equal scores produce equal weights, and blending the three-card fixture uniformly yields `y2 = [1.0, 0.6667, 0.3333, 0.0]`.
 
-## Part 2 — After Day 2
+## Part 2 — After Day 2 of 2
 
 Implement the remaining TODOs, in order:
 
@@ -63,14 +63,14 @@ Implement the remaining TODOs, in order:
 
 Then two experiments:
 
-1. **Run the full `Tester`.** It prints all three attention matrices for the three-card fixture, the uniform-versus-dot-product comparison at position 2, the Order A retrieval run, and the future-change demonstration.
+1. **Run the full `Ch3_FixedAttention_Tester`.** It prints all three attention matrices for the three-card fixture, the uniform-versus-dot-product comparison at position 2, the Order A retrieval run, and the future-change demonstration.
 2. **Write your own `ScoreRule`.** The provided `ORDER_RULE` scores the retrieval sequence with +3 for a matching order identifier, +1 for a matching category, minus a distance penalty. Write a second rule of your own design that still concentrates the earlier-position weight on the `Order A` cards, and be ready to defend your point values — there is no single correct rule, which is exactly the point of Stage 2.
 
 ---
 
 ## Required Tests
 
-`Tester` covers all of these — confirm every one reports `PASS`:
+`Ch3_FixedAttention_Tester` covers all of these — confirm every one reports `PASS`:
 
 - Each attention-matrix row sums to approximately one.
 - All future-position weights are exactly zero.
@@ -121,10 +121,10 @@ Confirm each of the following before submitting:
 - [ ] **The pipeline trace reproduces** — dot-product attention at position 2 of the three-card fixture gives weights `[0.384, 0.233, 0.384]` and output `[1.0, 0.767, 0.233, 0.0]`.
 - [ ] **The spotlight beats the blur** — the printed comparison shows `sweet` at 0.667 (uniform) versus 0.767 (dot product) at position 2.
 - [ ] **Retrieval succeeds** — rule-based attention on the retrieval fixture concentrates earlier-position weight on the `Order A` cards, under both `ORDER_RULE` and your own rule.
-- [ ] **The future is powerless** — the `Tester` demonstration shows identical outputs at positions 0 and 1 after the last card is replaced.
-- [ ] **Paper problem sets A and B completed** — brought to Day 2, finished before submission.
+- [ ] **The future is powerless** — the `Ch3_FixedAttention_Tester` demonstration shows identical outputs at positions 0 and 1 after the last card is replaced.
+- [ ] **Paper problem sets A and B completed** — brought to the second day of this lesson, finished before submission.
 - [ ] **All seven concept questions answered** — in your own words, with the specific numbers where asked.
-- [ ] **Provided code unmodified** — the fixtures, `ScoreRule`, `Tester`, and validators are untouched.
+- [ ] **Provided code unmodified** — the fixtures, `ScoreRule`, `Ch3_FixedAttention_Tester`, and validators are untouched.
 
 ---
 
@@ -149,4 +149,4 @@ Your rule's weights at the final retrieval position:
 
 ### Screenshot
 
-The screenshot must show your program's console output from a full `Tester` run: all three attention matrices for the three-card fixture, the uniform-versus-dot-product comparison line, and the future-change demonstration result. A screenshot of source code alone, or of a partial run missing the matrices, does not qualify.
+The screenshot must show your program's console output from a full `Ch3_FixedAttention_Tester` run: all three attention matrices for the three-card fixture, the uniform-versus-dot-product comparison line, and the future-change demonstration result. A screenshot of source code alone, or of a partial run missing the matrices, does not qualify.

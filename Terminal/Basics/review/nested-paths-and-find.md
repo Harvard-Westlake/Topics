@@ -1,4 +1,4 @@
-# Review — Terminal Basics, Day 2
+# Review — Nested Paths and Find
 
 *Originally covered in [Terminal Basics](../README.md)*
 

@@ -1,4 +1,4 @@
-# Review — Repositories and Commits, Day 2
+# Review — Cloning and Remotes
 
 *Originally covered in [Repositories and Commits](../README.md)*
 

@@ -1,4 +1,4 @@
-# Review — Forks and Collaboration, Day 1
+# Review — Forking and Remotes
 
 *Originally covered in [Repositories and Commits](../../RepositoriesAndCommits/README.md), [Branching and Merging](../../BranchingAndMerging/README.md), and [Forks and Collaboration](../README.md)*
 

@@ -11,35 +11,16 @@
 
 ## <font color="#388bfd">Table of Contents</font>
 
-**[1. Terminal](#1-terminal)**  
-Open the built-in macOS terminal and confirm your Unix shell is working.
-
-**[2. Authenticator App](#2-authenticator-app)**  
-Download a two-factor authentication app to your phone.
-
-**[3. GitHub Accounts](#3-github-accounts)**  
-Create two GitHub accounts and enable 2FA on both.
-
-**[4. Homebrew](#4-homebrew)**  
-Install the macOS package manager used to install Git and other tools.
-
-**[5. Git](#5-git)**  
-Install Git via Homebrew.
-
-**[6. GitKraken](#6-gitkraken)**  
-Install and sign in to the visual Git client.
-
-**[7. Visual Studio Code](#7-visual-studio-code)**  
-Install VS Code and the Java extension pack.
-
-**[8. Java 21 LTS](#8-java-21-lts)**  
-Check your chip type and install the correct Java version.
-
-**[9. Verify Your Setup](#9-verify-your-setup)**  
-Confirm Git and Java are working end-to-end.
-
-**[10. Update Your GitHub Profile](#10-update-your-github-profile)**  
-Add a photo and submit your profile URL.
+1. [Open the built-in Terminal and confirm your Unix shell](#1-terminal)
+2. [Download an authenticator app for two-factor authentication](#2-authenticator-app)
+3. [Create your GitHub account and enable two-factor authentication](#3-github-account)
+4. [Install Homebrew, the macOS package manager](#4-homebrew)
+5. [Install Git with Homebrew](#5-git)
+6. [Install GitKraken and sign in with your GitHub account](#6-gitkraken)
+7. [Install VS Code and the Java extension pack](#7-visual-studio-code)
+8. [Check your chip type and install Java 25 LTS](#8-java-25-lts)
+9. [Verify that Git, Java, and Homebrew all work](#9-verify-your-setup)
+10. [Add a photo and submit your GitHub profile URL](#10-update-your-github-profile)
 
 ---
 
@@ -64,7 +45,7 @@ Your Unix terminal is ready. The remaining steps install the tools you will use 
 
 ## <font color="#388bfd">2. Authenticator App</font>
 
-Before creating your GitHub accounts, download an authenticator app on your smartphone. You will need it to set up two-factor authentication.
+Before creating your GitHub account, download an authenticator app on your smartphone. You will need it to set up two-factor authentication.
 
 Choose one of these:
 
@@ -82,36 +63,15 @@ After installing, sign up using your **personal email address**.
 
 ---
 
-## <font color="#388bfd">3. GitHub Accounts</font>
+## <font color="#388bfd">3. GitHub Account</font>
 
-You will create **two separate GitHub accounts** — one for school, one personal.
-
-### <font color="#79c0ff">Account 1 — School account</font>
-
-Use your **hwemail.com** address to create the first account.
-
-> **Note:**
-> Your HW email account has restrictions that may limit some advanced coding activities. This is expected — use your personal account for those.
+Create a GitHub account using your **personal email address** — this is the account you will use for the rest of the course.
 
 After creating it, enable **two-factor authentication**:
 
 1. Go to **Settings → Password and Authentication → Two-factor Authentication**
 2. Follow the prompts
 3. When shown a QR code, scan it with the authenticator app you installed in step 2
-
-### <font color="#79c0ff">Account 2 — Personal account</font>
-
-Use your **personal email address** to create the second account.
-
-> **Note:**
-> Your personal account will not qualify for the free GitHub Student Developer Pack — that requires your school email.
-
-### <font color="#79c0ff">GitHub Student Developer Pack</font>
-
-Sign up for the [GitHub Student Developer Pack](https://education.github.com/pack) using your **hwemail.com** account. This unlocks free pro access to GitKraken and other tools.
-
-> **Tip:**
-> You likely won't need proof of enrollment if you use your hwemail.com address — GitHub recognises school email domains automatically.
 
 ---
 
@@ -154,10 +114,10 @@ git --version
 GitKraken is a visual interface for Git that you'll use in class.
 
 1. Download and install GitKraken from [gitkraken.com/download](https://www.gitkraken.com/download)
-2. Open GitKraken and sign in using your **hwemail.com** GitHub account — the one registered for the Student Developer Pack
+2. Open GitKraken and sign in with the GitHub account you just created
 
-> **Warning:**
-> You will likely see only a **7-day trial** at first. This is normal — your Student Developer Pack application takes time to be approved. Once approved, GitKraken Pro activates automatically. Make sure to click the confirmation email from GitHub to activate your pro features.
+> **Note:**
+> Sign up for the **Free** plan — do not start a paid trial or enter any payment information. Everything in this course works on the free plan.
 
 ---
 
@@ -166,11 +126,13 @@ GitKraken is a visual interface for Git that you'll use in class.
 1. Download and install VS Code from [code.visualstudio.com/download](https://code.visualstudio.com/download)
 2. Open VS Code
 3. Open the Extensions panel (`Cmd + Shift + X`)
-4. Search for and install: **Extension Pack for Java**
+4. Search `java` and install: **Extension Pack for Java**
+
+![VS Code Extensions panel with "java" searched in the marketplace; an arrow marked 1 points from the Extensions icon in the sidebar to an arrow marked 2 pointing at the Install button next to "Extension Pack for Java"](assets/vscode-extension-pack-for-java.png)
 
 ---
 
-## <font color="#388bfd">8. Java 21 LTS</font>
+## <font color="#388bfd">8. Java 25 LTS</font>
 
 ### <font color="#79c0ff">Check your chip type first</font>
 
@@ -185,9 +147,9 @@ macOS runs on two different chip architectures and you must download the matchin
 | Apple M1, M2, M3, M4… | M-chip (Apple Silicon) |
 | Intel Core i5, i7, i9… | Intel |
 
-### <font color="#79c0ff">Download Java 21 LTS</font>
+### <font color="#79c0ff">Download Java 25 LTS</font>
 
-Go to [Mac Java Downloads — Oracle](https://www.oracle.com/java/technologies/downloads/#jdk21-mac) and download the right installer:
+Go to [Mac Java Downloads — Oracle](https://www.oracle.com/java/technologies/downloads/#jdk25-mac) and download the right installer:
 
 | Chip | Installer to download |
 |---|---|
@@ -209,7 +171,7 @@ git --version
 # git version 2.x.x
 
 java -version
-# java version "21.x.x"
+# java version "25.x.x"
 
 brew --version
 # Homebrew x.x.x
@@ -240,7 +202,7 @@ Take a screenshot of the output — you may need to submit it.
 
 ## <font color="#388bfd">10. Update Your GitHub Profile</font>
 
-On your **hwemail.com GitHub account**:
+On your GitHub account:
 
 1. Add a profile photo
 2. Open your profile in an **incognito window** to confirm it is publicly visible

@@ -121,11 +121,46 @@ def _restore_math(rendered, math):
     return re.sub(r"«math(\d+)»", put, rendered)
 
 
+# GFM task-list checkboxes: neither python-markdown's "tables"/"fenced_code"
+# extensions nor the builtin fallback below render `- [ ]` as a real checkbox,
+# so it shows up as literal "[ ]" text in this preview and on Canvas itself.
+# Rewrite the marker to an inline, disabled checkbox before rendering — GitHub
+# still renders the untouched .md source with its own native task-list support.
+# Must stay in lockstep with ../_hub/server.py.
+_TASKLIST_RE = re.compile(r"^(\s*[-*])\s\[([ xX])\]\s+", re.MULTILINE)
+
+
+def _rewrite_tasklist(m):
+    checked = " checked" if m.group(2).lower() == "x" else ""
+    return f'{m.group(1)} <input type="checkbox" disabled{checked}> '
+
+
+# Centered title blocks (`<div align="center">` — see CLAUDE.md "Title format").
+# GitHub's CommonMark renderer ends a raw HTML block at the first blank line
+# after the opening tag, so the "# Title" / subtitle / label lines inside are
+# parsed as normal markdown. python-markdown has no such rule: it swallows the
+# whole <div>...</div> as one opaque raw block and never parses the markdown
+# inside it, so titles render literally as "# Title" instead of a heading. The
+# builtin fallback below doesn't have this problem (it processes each line on
+# its own regardless of surrounding raw tags), so this only applies when
+# python-markdown is the active engine. Must stay in lockstep with ../_hub/server.py.
+_TITLE_DIV_RE = re.compile(r'^<div align="center">\n\n(.*?)\n\n</div>[ \t]*$', re.MULTILINE | re.DOTALL)
+
+
+def _rewrite_title_divs(text):
+    def render_block(m):
+        inner_html = md_lib.markdown(m.group(1), extensions=["tables", "fenced_code"])
+        return f'<div align="center">\n\n{inner_html}\n\n</div>'
+    return _TITLE_DIV_RE.sub(render_block, text)
+
+
 def md_to_html(text, base_path=""):
     """Render markdown the way the hub does. Returns (html, engine)."""
     text, math = _extract_math(text)
+    text = _TASKLIST_RE.sub(_rewrite_tasklist, text)
     text = _rewrite_github_urls(text, base_path)
     if md_lib:
+        text = _rewrite_title_divs(text)
         rendered = md_lib.markdown(text, extensions=["tables", "fenced_code"])
     else:
         rendered = _builtin_render(text)

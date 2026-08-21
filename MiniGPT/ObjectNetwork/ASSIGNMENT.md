@@ -30,17 +30,17 @@ Copy all five files from [starter/](starter/) into your project.
 | [Neuron.java](starter/Neuron.java) | Starter | TODOs 1–2 (the factories and the state helpers are provided) |
 | [FeatureNetwork.java](starter/FeatureNetwork.java) | Starter | TODOs 3–10 (the constructor, the softmax, the parameter count, and the validators are provided) |
 | [NetworkFixtures.java](starter/NetworkFixtures.java) | Complete | — |
-| [Tester.java](starter/Tester.java) | Complete | Rerun it after every TODO |
+| [Ch5_ObjectNetwork_Tester.java](starter/Ch5_ObjectNetwork_Tester.java) | Complete | Rerun it after every TODO |
 
-Do not modify the provided files, the provided constructor, or the helpers. `Tester` reproduces every worked trace from the [lesson page](README.md) and reports each check as `PASS`, `FAIL`, or `TODO`; once everything passes, it also prints the punchline block you will quote in your submission. The provided model's 49 numbers were trained offline and are frozen — nothing you write this week changes any of them, and the Tester checks exactly that.
+Do not modify the provided files, the provided constructor, or the helpers. `Ch5_ObjectNetwork_Tester` reproduces every worked trace from the [lesson page](README.md) and reports each check as `PASS`, `FAIL`, or `TODO`; once everything passes, it also prints the punchline block you will quote in your submission. The provided model's 49 numbers were trained offline and are frozen — nothing you write this week changes any of them, and the Tester checks exactly that.
 
 ---
 
-## Part 1 — After Day 1
+## Part 1 — After Day 1 of 2
 
-**On paper:** finish Check Yourself sets A and B from the lesson page and bring them to class. Set B's collapse algebra is the raw material for Day 2's opening discussion.
+**On paper:** finish Check Yourself sets A and B from the lesson page and bring them to class. Set B's collapse algebra is the raw material for the second day's opening discussion.
 
-**In code:** implement the first four TODOs, in order, rerunning `Tester` after each:
+**In code:** implement the first four TODOs, in order, rerunning `Ch5_ObjectNetwork_Tester` after each:
 
 | # | Method | The idea it isolates |
 |---|---|---|
@@ -49,9 +49,9 @@ Do not modify the provided files, the provided constructor, or the helpers. `Tes
 | 3 | `weighAndAdd` | A whole layer as one loop over a weight table — a row of neurons without the objects |
 | 4 | `rectify` | The gate for a whole layer: negatives silenced to exactly zero, in a new array |
 
-After Part 1, `Tester` must confirm: the practice network lands on $[-2, 4]$, $[0, 4]$, $[-4, 6]$ from objects and from arrays alike, the gateless collapse produces $[-8, 4]$ both ways, and hidden unit 3 of the provided model computes $1.8724$ as an object graph and as an array call, agreeing to $10^{-9}$.
+After Part 1, `Ch5_ObjectNetwork_Tester` must confirm: the practice network lands on $[-2, 4]$, $[0, 4]$, $[-4, 6]$ from objects and from arrays alike, the gateless collapse produces $[-8, 4]$ both ways, and hidden unit 3 of the provided model computes $1.8724$ as an object graph and as an array call, agreeing to $10^{-9}$.
 
-## Part 2 — After Day 2
+## Part 2 — After Day 2 of 2
 
 Implement the remaining TODOs, in order:
 
@@ -64,7 +64,7 @@ Implement the remaining TODOs, in order:
 | 9 | `loss` | Step 7 — Chapter 4's grade, unchanged; computed, and then deliberately nothing happens |
 | 10 | `averageLoss` | The report card over a history — flashcards start at position three, so 122 tokens hold 119 |
 
-Then record the punchline readings from the full `Tester` run:
+Then record the punchline readings from the full `Ch5_ObjectNetwork_Tester` run:
 
 1. **The cousins.** Copy the three card distances and the two topping-context forecasts. In one sentence each: what did the network discover about the toppings, and which shared arrays carry the discovery?
 2. **The mixture.** Copy the after-pizza forecast beside the counted row. In one sentence: where did the 40-vs-20 mixture live, given that no pizza row exists anywhere in this model?
@@ -74,7 +74,7 @@ Then record the punchline readings from the full `Tester` run:
 
 ## Required Tests
 
-`Tester` covers all of these — confirm every one reports `PASS`:
+`Ch5_ObjectNetwork_Tester` covers all of these — confirm every one reports `PASS`:
 
 - A neuron's weighted sum reproduces the practice numbers, and computing it twice writes nothing — not even its own stored value.
 - `recomputeValue` overwrites the stored value; the gate silences negatives to exactly zero and passes positives; a linear unit keeps its negatives.
@@ -128,9 +128,9 @@ Confirm each of the following before submitting:
 - [ ] **The report card reproduces** — training loss $0.3957$ over 119 flashcards, validation loss $0.4013$ over 39.
 - [ ] **The punchlines are recorded** — cousins distances, both topping forecasts, the after-pizza mixture beside the counted row, and the leaderboard, each with its one-sentence explanation.
 - [ ] **Nothing moves** — the read-only test passes: a hundred forecasts change no stat card.
-- [ ] **Paper problem sets A and B completed** — brought to Day 2, finished before submission.
+- [ ] **Paper problem sets A and B completed** — brought to the second day of this lesson, finished before submission.
 - [ ] **All seven concept questions answered** — in your own words, with the specific numbers where asked.
-- [ ] **Provided code unmodified** — `Connection`, the fixtures, `Tester`, the constructor, the softmax, the parameter count, and the validators are untouched.
+- [ ] **Provided code unmodified** — `Connection`, the fixtures, `Ch5_ObjectNetwork_Tester`, the constructor, the softmax, the parameter count, and the validators are untouched.
 
 ---
 
@@ -158,4 +158,4 @@ Parameter count, with the three-term arithmetic:
 
 ### Screenshot
 
-The screenshot must show your program's console output from a full `Tester` run: the Part 1 and Part 2 test results and the complete punchline block at the bottom. A screenshot of source code alone, or of a partial run missing the punchline block, does not qualify.
+The screenshot must show your program's console output from a full `Ch5_ObjectNetwork_Tester` run: the Part 1 and Part 2 test results and the complete punchline block at the bottom. A screenshot of source code alone, or of a partial run missing the punchline block, does not qualify.

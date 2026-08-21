@@ -1,4 +1,4 @@
-# Review — Forks and Collaboration, Day 2
+# Review — Syncing and Contributing Upstream
 
 *Originally covered in [Repositories and Commits](../../RepositoriesAndCommits/README.md), [Branching and Merging](../../BranchingAndMerging/README.md), and [Forks and Collaboration](../README.md)*
 

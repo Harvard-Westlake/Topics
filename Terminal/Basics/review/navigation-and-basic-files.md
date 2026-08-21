@@ -1,4 +1,4 @@
-# Review — Terminal Basics, Day 1
+# Review — Navigation and Basic Files
 
 *Originally covered in [Terminal Basics](../README.md)*
 

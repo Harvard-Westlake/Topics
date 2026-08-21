@@ -62,7 +62,7 @@ The three are flavors of one another, not different machines. Each keeps everyth
 
 That sentence is also the course's trajectory: Chapter 8 upgrades the scorer a fourth time, to scores the model *learns for itself*. The mask, softmax, and blend you build this week survive to the final chapter untouched.
 
-## <font color="#388bfd">Vocabulary — Day 1</font>
+## <font color="#388bfd">Vocabulary — Day 1 of 2</font>
 
 | Term | Definition | Picture to hold |
 |---|---|---|
@@ -82,7 +82,7 @@ That sentence is also the course's trajectory: Chapter 8 upgrades the scorer a f
 
 ---
 
-## <font color="#388bfd">Day 1 — What the Spotlight Computes</font>
+## <font color="#388bfd">Day 1 of 2 — What the Spotlight Computes</font>
 
 ## <font color="#388bfd">Stage 1: Remember Everything Equally</font>
 
@@ -201,11 +201,11 @@ Notice also what softmax refuses to do: no permitted position ever gets weight *
 4. Without computing: softmax of `[5, 1, 1]` versus softmax of `[9, 5, 5]` — same or different? Why?
 5. Can an attention score be −2.7? Can an attention weight be −2.7?
 
-**Day 1 homework:** [Assignment](ASSIGNMENT.md) Part 1 — implement uniform causal weights, stable softmax, and the weighted blend (TODOs 1–3), and bring problem sets A and B worked on paper.
+**Day 1 of 2 homework:** [Assignment](ASSIGNMENT.md) Part 1 — implement uniform causal weights, stable softmax, and the weighted blend (TODOs 1–3), and bring problem sets A and B worked on paper.
 
 ---
 
-## <font color="#388bfd">Vocabulary — Day 2</font>
+## <font color="#388bfd">Vocabulary — Day 2 of 2</font>
 
 | Term | Definition | Picture to hold |
 |---|---|---|
@@ -215,7 +215,7 @@ Notice also what softmax refuses to do: no permitted position ever gets weight *
 | Dot product | The sum of products of corresponding vector entries. | Compare cards slot by slot, add it up |
 | Similarity | A numerical estimate of how strongly two representations match. | A bigger dot product |
 
-## <font color="#388bfd">Day 2 — How a Machine Computes the Spotlight</font>
+## <font color="#388bfd">Day 2 of 2 — How a Machine Computes the Spotlight</font>
 
 > **Demo:** Keep [The Spotlight Bench](https://harvard-westlake.github.io/Topics/MiniGPT/FixedAttention/demos/spotlight-bench.html) ([source](demos/spotlight-bench.html)) projected through this day — every table below is computed live in it, and any card can be swapped mid-discussion. The button in the top corner switches to a Pop-vs-Rap card set with messier, blended feature values — a second pass for students who want the training wheels off.
 
@@ -438,7 +438,7 @@ Feature vectors feel abstract until the vector is *you*. In this activity the cl
 
 > **Warning:** Say this out loud before showing the matrix: a dark cell between two students is a statement about a handful of self-reported numbers — not about friendship, compatibility, or worth. It is the same reason a large attention weight is never a complete explanation of a model's decision.
 
-**Day 2 homework:** [Assignment](ASSIGNMENT.md) Part 2 — implement the dot product, rule-based attention, fixed dot-product attention, and the visualization (TODOs 4–7), then answer the concept questions.
+**Day 2 of 2 homework:** [Assignment](ASSIGNMENT.md) Part 2 — implement the dot product, rule-based attention, fixed dot-product attention, and the visualization (TODOs 4–7), then answer the concept questions.
 
 ---
 
@@ -451,17 +451,17 @@ The starter code is in [starter/](starter/) — four files. One contains all the
 | [FixedAttention.java](starter/FixedAttention.java) | **TODO 1–7** | Every attention calculation in the chapter, plus provided validators |
 | [AttentionFixtures.java](starter/AttentionFixtures.java) | Complete | The hand-written stat cards: the three-card table, GYM SOCK, the Order A retrieval sequence, and two example scoring rules |
 | [ScoreRule.java](starter/ScoreRule.java) | Complete | The one-method interface a hand-written scoring rule implements |
-| [Tester.java](starter/Tester.java) | Complete | Reproduces every worked trace on this page and runs the required tests |
+| [Ch3_FixedAttention_Tester.java](starter/Ch3_FixedAttention_Tester.java) | Complete | Reproduces every worked trace on this page and runs the required tests |
 
-Implement the TODOs in order, rerunning `Tester` after each — it reports each stage as it comes alive:
+Implement the TODOs in order, rerunning `Ch3_FixedAttention_Tester` after each — it reports each stage as it comes alive:
 
-1. `uniformCausalWeights` — **Filling 1: equal scores** (Day 1)
-2. `stableSoftmax` — shared machinery: every filling's scores pass through it (Day 1)
-3. `applyWeights` — shared machinery: blends values under any filling's matrix (Day 1)
-4. `dotProduct` — Filling 3's scorer, met on its own first (Day 2)
-5. `ruleBasedCausalWeights` — **Filling 2: hand-rule scores** (Day 2)
-6. `dotProductCausalWeights` — **Filling 3: dot-product scores** — TODO 5's skeleton, new scorer (Day 2)
-7. `formatMatrix` — shared machinery: prints any filling's matrix (Day 2)
+1. `uniformCausalWeights` — **Filling 1: equal scores** (Day 1 of 2)
+2. `stableSoftmax` — shared machinery: every filling's scores pass through it (Day 1 of 2)
+3. `applyWeights` — shared machinery: blends values under any filling's matrix (Day 1 of 2)
+4. `dotProduct` — Filling 3's scorer, met on its own first (Day 2 of 2)
+5. `ruleBasedCausalWeights` — **Filling 2: hand-rule scores** (Day 2 of 2)
+6. `dotProductCausalWeights` — **Filling 3: dot-product scores** — TODO 5's skeleton, new scorer (Day 2 of 2)
+7. `formatMatrix` — shared machinery: prints any filling's matrix (Day 2 of 2)
 
 ## <font color="#388bfd">Evidence Checkpoint</font>
 

@@ -57,7 +57,8 @@ GITHUB_BLOB   = f"https://github.com/{GITHUB_REPO}/blob/{GITHUB_BRANCH}"
 sys.path.insert(0, str(ROOT / "_admin" / "_verification"))
 sys.path.insert(0, str(ROOT / "_admin" / "_coursePlannerUI"))
 from verify import (generate_lessonplan, LESSONPLANS_DIR,               # noqa: E402
-                    MD_LINK, HTML_SRC, FENCED_CODE, INLINE_CODE, PRE_BLOCK)
+                    MD_LINK, HTML_SRC, FENCED_CODE, INLINE_CODE, PRE_BLOCK,
+                    review_labels, review_label_for)
 from mdrender import (md_to_html as planner_md_to_html,                 # noqa: E402
                       review_block as planner_review_block,
                       ENGINE as PLANNER_ENGINE)
@@ -129,6 +130,34 @@ def _restore_math(rendered, math):
 
     return re.sub(r"«math(\d+)»", put, rendered)
 
+# GFM task-list checkboxes: python-markdown's "tables"/"fenced_code" extensions
+# don't render `- [ ]` as a real checkbox, so it shows up as literal "[ ]" text
+# in the Canvas-fidelity preview and on Canvas itself. Rewrite the marker to an
+# inline, disabled checkbox before markdown conversion — GitHub still renders
+# the untouched .md source with its own native task-list support.
+# Must stay in lockstep with ../_coursePlannerUI/mdrender.py.
+_TASKLIST_RE = re.compile(r'^(\s*[-*])\s\[([ xX])\]\s+', re.MULTILINE)
+
+def _rewrite_tasklist(m):
+    checked = " checked" if m.group(2).lower() == "x" else ""
+    return f'{m.group(1)} <input type="checkbox" disabled{checked}> '
+
+# Centered title blocks (`<div align="center">` — see CLAUDE.md "Title format").
+# GitHub's CommonMark renderer ends a raw HTML block at the first blank line
+# after the opening tag, so the "# Title" / subtitle / label lines inside are
+# parsed as normal markdown. python-markdown has no such rule: it swallows the
+# whole <div>...</div> as one opaque raw block and never parses the markdown
+# inside it, so titles rendered literally as "# Title" instead of a heading.
+# Pre-render just the inner markdown so this matches what GitHub shows.
+# Must stay in lockstep with ../_coursePlannerUI/mdrender.py.
+_TITLE_DIV_RE = re.compile(r'^<div align="center">\n\n(.*?)\n\n</div>[ \t]*$', re.MULTILINE | re.DOTALL)
+
+def _rewrite_title_divs(text):
+    def render_block(m):
+        inner_html = md_lib.markdown(m.group(1), extensions=["tables", "fenced_code"])
+        return f'<div align="center">\n\n{inner_html}\n\n</div>'
+    return _TITLE_DIV_RE.sub(render_block, text)
+
 def md_to_html(text, base_path=""):
     """Convert markdown to HTML with relative links rewritten to absolute GitHub URLs."""
     def rewrite_img(m):
@@ -150,10 +179,12 @@ def md_to_html(text, base_path=""):
         return f'{attr}="{GITHUB_RAW}/{_resolve_path(base_path, path)}"'
 
     text, math = _extract_math(text)
+    text = _TASKLIST_RE.sub(_rewrite_tasklist, text)
     text = re.sub(r'!\[([^\]]*)\]\(([^)]+)\)', rewrite_img, text)
     text = re.sub(r'(?<!!)\[([^\]]+)\]\(([^)]+)\)', rewrite_link, text)
     # raw HTML <img src=""> / <source srcset=""> (e.g. light/dark logo <picture> blocks)
     text = re.sub(r'(src|srcset)="([^"]+)"', rewrite_html_src, text)
+    text = _rewrite_title_divs(text)
     return _restore_math(md_lib.markdown(text, extensions=["tables", "fenced_code"]), math)
 
 def review_block_html(rev_html):
@@ -480,6 +511,14 @@ def review_files(module, path):
     return sorted(f.name for f in review_dir.iterdir()
                   if f.is_file() and f.suffix == ".md")
 
+def review_files_labeled(module, path):
+    """Review files for one lesson, each with its display label (the concept
+    it covers, numbered only when that concept repeats — see verify.review_labels)."""
+    review_dir = TOPICS / module / path / "review" if path else TOPICS / module / "review"
+    files = review_files(module, path)
+    labels = review_labels(review_dir, files)
+    return [{"file": f, "label": labels[f]} for f in files]
+
 def demo_files(module, path):
     demos_dir = TOPICS / module / path / "demos"
     if not demos_dir.exists():
@@ -505,7 +544,7 @@ def api_github_reviews():
     path   = request.args.get("path", "")
     if not module:
         return jsonify({"error": "module param required"}), 400
-    return jsonify({"files": review_files(module, path)})
+    return jsonify({"files": review_files_labeled(module, path)})
 
 @app.route("/api/github/review-content")
 def api_github_review_content():
@@ -992,17 +1031,18 @@ def resolve_schedule(sched):
     for block in sched.get("sequence", []):
         btype = block.get("type")
         if btype == "module":
+            this_unit = unit  # first module in the sequence is Unit 0
             unit += 1
             meta, slots = expand_module_block(block)
             if meta is None:
                 warnings.append(f"Module '{block.get('ref')}' was not found in the repo")
                 blocks.append({"id": block.get("id"), "type": "module", "ref": block.get("ref"),
-                               "source": block.get("source", "saved"), "unit_number": unit,
+                               "source": block.get("source", "saved"), "unit_number": this_unit,
                                "name": block.get("ref"), "missing": True, "slots": [],
                                "days": 0, "start": None, "end": None})
                 continue
             out = {"id": block.get("id"), "type": "module", "ref": block.get("ref"),
-                   "source": block.get("source", "saved"), "unit_number": unit,
+                   "source": block.get("source", "saved"), "unit_number": this_unit,
                    "name": meta["name"], "topic_names": meta["topic_names"],
                    "points": meta["points"], "scale": meta["scale"],
                    "missing": False, "slots": slots}

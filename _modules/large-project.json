@@ -2,7 +2,7 @@
   "name": "large project",
   "slug": "large-project",
   "description": "",
-  "unit_number": 0,
+  "unit_number": 2,
   "points_per_assignment": 10,
   "scale_factor": 1.15,
   "start_date": null,
@@ -61,7 +61,7 @@
       "review": {
         "module": "GitUsage",
         "path": "RepositoriesAndCommits",
-        "file": "review-day-1.md"
+        "file": "commit-cycle-basics.md"
       }
     },
     {

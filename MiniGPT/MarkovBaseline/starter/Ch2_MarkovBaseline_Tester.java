@@ -2,7 +2,7 @@ import java.nio.file.Path;
 
 // Requires your completed Chapter 1 Tokenizer.java in the same folder.
 // Replace textfile.txt / textfile2.txt with your own archive text files.
-public class Tester {
+public class Ch2_MarkovBaseline_Tester {
     public static void main(String[] args) {
 
         // ----- Chapter 1: tokenize the archive -----

@@ -257,6 +257,7 @@ function renderLessonTable() {
           '<select id="plrfile_' + i + '" onchange="Planner.onReviewFileChange(' + i + ')" disabled></select>' +
           '<span id="plrbadge_' + i + '" class="review-badge" style="display:none"></span>' +
         '</div>' +
+        '<div class="review-usage" id="plrusage_' + i + '"></div>' +
       '</div>' +
     '</div>'
   ).join('');
@@ -275,8 +276,55 @@ function toggleReview(i) {
   const cb = $('plreview_' + i);
   $('plrpanel_' + i).style.display = cb.checked ? 'block' : 'none';
   $('plrevlabel_' + i).classList.toggle('on', cb.checked);
-  if (cb.checked) populateReviewModules(i);
-  else { delete reviewSelections[i]; $('plrbadge_' + i).style.display = 'none'; }
+  if (cb.checked) { populateReviewModules(i); renderReviewUsage(i); }
+  else { delete reviewSelections[i]; $('plrbadge_' + i).style.display = 'none'; renderAllOpenReviewUsages(); }
+}
+
+// Show every OTHER lesson row's already-selected review, and where it lives,
+// so picking one here doesn't silently duplicate a review already in this plan.
+function renderReviewUsage(i) {
+  const el = $('plrusage_' + i);
+  if (!el) return;
+  const unitNum = parseInt($('fUnit').value) || 0;
+  const curModule = $('plrmod_' + i) ? $('plrmod_' + i).value : '';
+  const curPath   = $('plrlesson_' + i) ? $('plrlesson_' + i).value : '';
+  const curFile   = $('plrfile_' + i) ? $('plrfile_' + i).value : '';
+  const used = Object.keys(reviewSelections)
+    .map(k => parseInt(k))
+    .filter(j => j !== i && reviewSelections[j])
+    .map(j => {
+      const rev = reviewSelections[j];
+      const a = assignments[j];
+      const exact = !!curFile && rev.module === curModule && rev.path === curPath && rev.file === curFile;
+      const sameLesson = !exact && !!curPath && rev.module === curModule && rev.path === curPath;
+      return {
+        dayLabel: a ? fmtDayLabel(unitNum, a) : '?',
+        title: a ? a.title : '(removed lesson)',
+        label: rev.label || rev.file.replace(/\.md$/, ''),
+        exact, sameLesson,
+      };
+    })
+    .sort((x, y) => (y.exact - x.exact) || (y.sameLesson - x.sameLesson));
+  if (!used.length) { el.innerHTML = ''; return; }
+  el.innerHTML = '<div class="review-usage-head">Already used in this plan:</div>' +
+    used.map(u =>
+      '<div class="review-usage-item' + (u.exact ? ' dup' : (u.sameLesson ? ' same-lesson' : '')) + '">' +
+        '<span class="rday">' + esc(u.dayLabel) + '</span>' +
+        '<span class="rtitle">' + esc(u.title) + '</span>' +
+        '<span class="rwhat">' + esc(u.label) + '</span>' +
+        (u.exact ? '<span class="rtag">exact duplicate</span>'
+                 : (u.sameLesson ? '<span class="rtag">same lesson</span>' : '')) +
+      '</div>'
+    ).join('');
+}
+
+// Re-render usage in every row whose review panel is currently open, so a
+// change on one row is reflected wherever else a picker happens to be open.
+function renderAllOpenReviewUsages() {
+  assignments.forEach((_, j) => {
+    const panel = $('plrpanel_' + j);
+    if (panel && panel.style.display !== 'none') renderReviewUsage(j);
+  });
 }
 
 function populateReviewModules(i) {
@@ -297,6 +345,7 @@ async function onReviewModuleChange(i) {
   fileSel.innerHTML = '<option value="">Day…</option>'; fileSel.disabled = true;
   badge.style.display = 'none';
   delete reviewSelections[i];
+  renderReviewUsage(i); renderAllOpenReviewUsages();
   if (!module) return;
   const res = await fetch('/api/topics/' + encodeURIComponent(module)).then(r => r.json());
   const lessons = (res.assignments || []).filter(a => a.path);
@@ -315,6 +364,9 @@ async function onReviewLessonChange(i) {
   fileSel.innerHTML = '<option value="">Day…</option>'; fileSel.disabled = true;
   badge.style.display = 'none';
   delete reviewSelections[i];
+  // Update usage immediately on picking a lesson — before any file is chosen —
+  // so a "same lesson" match against another row's review is visible right away.
+  renderReviewUsage(i); renderAllOpenReviewUsages();
   if (!lessonPath) return;
   const res = await fetch('/api/reviews?module=' + encodeURIComponent(module) +
                           '&path=' + encodeURIComponent(lessonPath)).then(r => r.json());
@@ -322,19 +374,23 @@ async function onReviewLessonChange(i) {
   if (!files.length) { fileSel.innerHTML = '<option value="">No reviews</option>'; return; }
   files.forEach(f => {
     const o = document.createElement('option');
-    o.value = f; o.textContent = f.replace(/\.md$/, '');
+    o.value = f.file; o.textContent = f.label;
     fileSel.appendChild(o);
   });
   fileSel.disabled = false;
 }
 
 function onReviewFileChange(i) {
-  const module = $('plrmod_' + i).value, lessonPath = $('plrlesson_' + i).value, file = $('plrfile_' + i).value;
+  const module = $('plrmod_' + i).value, lessonPath = $('plrlesson_' + i).value;
+  const fileSel = $('plrfile_' + i), file = fileSel.value;
+  const label = fileSel.selectedOptions[0] ? fileSel.selectedOptions[0].textContent : file.replace(/\.md$/, '');
   const badge = $('plrbadge_' + i);
-  if (!file) { badge.style.display = 'none'; delete reviewSelections[i]; return; }
-  reviewSelections[i] = {module: module, path: lessonPath, file: file};
-  badge.textContent = file.replace(/\.md$/, '');
+  if (!file) { badge.style.display = 'none'; delete reviewSelections[i]; renderReviewUsage(i); renderAllOpenReviewUsages(); return; }
+  reviewSelections[i] = {module: module, path: lessonPath, file: file, label: label};
+  badge.textContent = label;
   badge.style.display = 'inline-block';
+  renderReviewUsage(i);
+  renderAllOpenReviewUsages();
 }
 
 // Restore a saved review ref into row i's pickers

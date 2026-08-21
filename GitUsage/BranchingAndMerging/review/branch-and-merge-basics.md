@@ -1,4 +1,4 @@
-# Review — Branching and Merging, Day 1
+# Review — Branching and Merging Basics
 
 *Originally covered in [Repositories and Commits](../../RepositoriesAndCommits/README.md) and [Branching and Merging](../README.md)*
 

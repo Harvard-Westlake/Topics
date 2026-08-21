@@ -185,6 +185,22 @@ Every README must open with a centered title block, followed by a rule, then bod
 Body content starts here...
 ```
 
+## Table of Contents (in-page navigation)
+
+When a README, a variant file (e.g. `Mac.md`/`PC.md`), or an `ASSIGNMENT.md` is long enough to need in-page navigation, add a numbered Table of Contents right after the intro paragraph (or right after the title block for `ASSIGNMENT.md`):
+
+```markdown
+## <font color="#388bfd">Table of Contents</font>
+
+1. [Descriptive link text that stands alone](#anchor-slug)
+2. [Another descriptive link](#anchor-slug)
+```
+
+Rules:
+- **Numbered, not bulleted or bold-linked** — the numbering matches the order sections appear in the page.
+- **The link text alone must say what the section covers.** Do not add a second line of prose under the link — fold that sentence into the link text itself, e.g. `1. [Install Homebrew, the macOS package manager](#4-homebrew)`, not `**[Homebrew](#4-homebrew)**` followed by a description line on the next line.
+- Anchors are GitHub's auto-generated heading slugs: lowercase, spaces become hyphens, punctuation is stripped.
+
 ## ASSIGNMENT.md files
 
 Any lesson subfolder may contain an optional `ASSIGNMENT.md` with the class instructions for that session. These will eventually be linked from Canvas assignments on the course hub, which will point directly to these files.
@@ -237,7 +253,7 @@ Rules for review files:
 - **Self-contained.** Must make sense when inserted into any other assignment with no surrounding context.
 - **Cumulative scope.** Each review file covers content up to and including the current lesson, plus any earlier lessons in the same module.
 - **Progressive complexity within a set.** When creating multiple review files for one lesson, each should be harder than the last — Day 1 tests isolated commands, Day 2 chains them, Day 3 requires multi-step reasoning.
-- **Name files descriptively in kebab-case.** For ordered review sets: `review-day-1.md`, `review-day-2.md`. For topic-specific fragments: `absolute-vs-relative-paths.md`.
+- **Name files descriptively in kebab-case, after what the review covers** — not after its position in a sequence. e.g. `absolute-vs-relative-paths.md`, `branch-and-merge-basics.md`. Only append a number (`-1`, `-2`, ...) when two or more files in the same set cover the identical topic and must be distinguished.
 - **Source link is required.** Points back to the lesson where the content was originally taught.
 - **No navigation links at the bottom.** These are fragments, not standalone pages.
 
@@ -293,6 +309,7 @@ When converting old-format assignments (pasted from Notion or elsewhere), always
 - Each subtopic README ends with `← prev — Next: next` navigation links using relative paths.
 - No emojis. No frontmatter. No HTML unless Markdown genuinely can't express it.
 - Audience: high school students new to CS. Be precise, not condescending.
+- Keep writing `- [ ]` / `- [x]` for every checkbox (Skill Building, Success Criteria) — GitHub renders these as real checkboxes natively, and the hub/planner renderer rewrites the same markers into actual `<input type="checkbox" disabled>` elements before conversion, so they also render as checkboxes in the Canvas-fidelity preview and on Canvas itself (see `_TASKLIST_RE` in `_admin/_hub/server.py` and `_admin/_coursePlannerUI/mdrender.py`). Never hand-write `<input>` checkboxes in content — the renderer already does it.
 
 ## Starter-code conventions
 
@@ -453,6 +470,21 @@ Rules for `demos/` folders:
 
 ---
 
+## assets/ folders (images and other embedded media)
+
+Any lesson folder, or `Docs/` folder, that embeds images (diagrams, screenshots, figures) holds them in an `assets/` subfolder rather than loose beside the `.md` file.
+
+Rules for `assets/` folders:
+
+- **Naming:** lowercase kebab-case, matching the concept it depicts, e.g. `assets/blob-example.png`, `assets/attention-matrix.png`.
+- **Referencing:** link with a relative path and a full descriptive alt text — the alt text is the only version of the image many students effectively read, so describe what it shows, not just its filename: `![Alt text describing the figure](assets/blob-example.png)`.
+- **One `assets/` folder per lesson (or per `Docs/` folder)** — do not create nested subfolders inside it or share an `assets/` folder across lessons.
+- **Prefer PNG/SVG** for diagrams and screenshots; keep files reasonably sized (compress before committing) since GitHub renders them inline in the lesson page.
+- `assets/` is never added to `LESSONS.md`, the root `README.md`, or module JSONs — it is lesson support material, like `review/` and `demos/`.
+- This is distinct from `demos/`: `demos/` holds standalone interactive HTML pages served by GitHub Pages; `assets/` holds static media embedded directly in markdown via `![]()`. A diagram that is a static export of a demo (e.g. a frozen screenshot) still lives in `assets/`, not `demos/`.
+
+---
+
 ## Common Operations
 
 These checklists are the authoritative source for keeping the repo consistent. Every item is required unless marked optional. **Finish every operation by running `python3 _admin/_verification/verify.py`** — it catches broken links, missing index rows, and stale module references.
@@ -496,13 +528,22 @@ A lesson is a new subfolder inside a module (e.g. `Terminal/PipeAndGREP/`).
 Review files are composable fragments in `LessonFolder/review/`. The module importer picks them up automatically — no index changes are needed.
 
 **Create:**
-1. `LessonFolder/review/review-day-N.md` (or a descriptive kebab-case name)
+1. `LessonFolder/review/descriptive-name.md` — named for what it covers, e.g. `branch-and-merge-basics.md` (add a `-N` suffix only when two files in the set cover the identical topic)
    - Title: `# Review — [Concept Name]`
    - Source link: `*Originally covered in [Lesson Title](../README.md)*`
    - Terse reference table (commands/syntax only — no explanations)
    - `## Tasks` numbered list (concrete actions, not "Can you…" checkboxes)
    - Cumulative scope: cover content up to and including this lesson plus all prior lessons in the module
    - Progressive complexity: each file in a set must be harder than the last
+
+**No other files need updating.**
+
+---
+
+### Add a media asset to a lesson
+
+1. Place the image in `LessonFolder/assets/` (create the folder if it doesn't exist yet), named descriptively in kebab-case
+2. Embed it in the relevant `.md` file with `![Descriptive alt text](assets/file-name.png)`
 
 **No other files need updating.**
 

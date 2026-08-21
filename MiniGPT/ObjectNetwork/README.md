@@ -54,7 +54,7 @@ Three ground rules for the week:
 2. **The weights are provided, trained, and frozen.** The network's 49 numbers arrive pre-trained: gradient descent was run on this same order history ahead of time, and the results were rounded to two decimals and printed into the fixtures file. The tools that training required do not exist in this course yet — Chapter 6 builds them. This week, you are given the trained numbers, not the training.
 3. **Nothing is written this week.** Chapter 4 alternated reads and writes: accumulate, step, reset. This chapter is pure reading. Every forecast creates a few scratch rows, uses them, and throws them away; the model itself comes back bit-for-bit identical, and the Tester checks that a hundred forecasts change nothing.
 
-## <font color="#388bfd">Vocabulary — Day 1</font>
+## <font color="#388bfd">Vocabulary — Day 1 of 2</font>
 
 | Term | Definition | Picture to hold |
 |---|---|---|
@@ -73,7 +73,7 @@ Three ground rules for the week:
 
 ---
 
-## <font color="#388bfd">Day 1 — The Machine, One Neuron at a Time</font>
+## <font color="#388bfd">Day 1 of 2 — The Machine, One Neuron at a Time</font>
 
 ## <font color="#388bfd">One Unit: Weigh and Add</font>
 
@@ -130,9 +130,9 @@ A unit whose weighted sum came out negative is **silenced**: it outputs exactly 
 
 ## <font color="#388bfd">The Practice Network</font>
 
-So far, one unit: weigh, add, gate. Everything on Day 1 happens on one machine built by wiring a few of them together, small enough to trace with a pencil. It has three rows. At the top, two **inputs** — units with no wires coming in; their values are set from outside. In the middle, two **hidden units** — *hidden* because they are the machine's internal scratch work: nothing outside the machine ever reads them; they exist only to feed the row below. Both are Rectified Linear Units (ReLU) — they wear the gate. One gate alone can only ever detect one pattern in the inputs; wiring several gated units in parallel, all reading the same inputs, builds a small **committee of pattern detectors**, each free to wake up for a different combination of inputs. At the bottom, two **output units**, whose two numbers are the machine's answer — linear units, no gate, so the answer may be any number. Every weight is an integer:
+So far, one unit: weigh, add, gate. Everything on the first day of this lesson happens on one machine built by wiring a few of them together, small enough to trace with a pencil. It has three rows. At the top, two **inputs** — units with no wires coming in; their values are set from outside. In the middle, two **hidden units** — *hidden* because they are the machine's internal scratch work: nothing outside the machine ever reads them; they exist only to feed the row below. Both are Rectified Linear Units (ReLU) — they wear the gate. One gate alone can only ever detect one pattern in the inputs; wiring several gated units in parallel, all reading the same inputs, builds a small **committee of pattern detectors**, each free to wake up for a different combination of inputs. At the bottom, two **output units**, whose two numbers are the machine's answer — linear units, no gate, so the answer may be any number. Every weight is an integer:
 
-![Network diagram: inputs L (inputLeft) and R (inputRight) each wired to hidden units Top (hiddenTop) and Bot (hiddenBottom) — ReLU units with biases +1 and −1 — which are each wired to output units 1st (outputFirst) and 2nd (outputSecond) — linear units with biases 0 and +2. Shown live for inputs [1, 2]: Top is silenced at a=0, Bot is awake at a=4.](demos/practice-network-diagram.png)
+![Network diagram: inputs L (inputLeft) and R (inputRight) each wired to hidden units Top (hiddenTop) and Bot (hiddenBottom) — ReLU units with biases +1 and −1 — which are each wired to output units 1st (outputFirst) and 2nd (outputSecond) — linear units with biases 0 and +2. Shown live for inputs [1, 2]: Top is silenced at a=0, Bot is awake at a=4.](assets/practice-network-diagram.png)
 
 Eight wires, each with its weight:
 
@@ -228,7 +228,7 @@ outputFirst (no gate) = 0 + 2·z_top − 1·z_bottom
 
 Read that last line again: it is a *single* weighted sum — bias $3$, weights $[-1, -5]$. The two-layer gateless machine **is** a one-layer machine wearing a costume. (`outputSecond` collapses the same way, to $2 + 4 \cdot x_0 - 1 \cdot x_1$; check with input $[1,2]$: the gateless network outputs $[-8, 4]$, and so do the collapsed formulas.) Stack fifty gateless layers and the same algebra flattens all fifty.
 
-The gate breaks the collapse, and the practice trace shows how: whether $\max(0, z)$ passes $z$ or silences it *depends on the input*. Different inputs wake different units, so the machine routes different inputs through genuinely different arithmetic. That input-dependent routing is the thing a single weighted sum cannot fake — and you will see it happen in the real model on Day 2.
+The gate breaks the collapse, and the practice trace shows how: whether $\max(0, z)$ passes $z$ or silences it *depends on the input*. Different inputs wake different units, so the machine routes different inputs through genuinely different arithmetic. That input-dependent routing is the thing a single weighted sum cannot fake — and you will see it happen in the real model on the second day of this lesson.
 
 ### <font color="#79c0ff">Check yourself — Set B</font>
 
@@ -237,11 +237,13 @@ The gate breaks the collapse, and the practice trace shows how: whether $\max(0,
 3. How many multiplications does `weighAndAdd` perform for a layer of 4 units reading 6 slots? Where does each product's weight live in the weight table?
 4. A row of `Neuron` objects and one `weighAndAdd` call produce identical numbers. What is actually different between the two forms, and what is identical?
 
-**Day 1 homework:** [Assignment](ASSIGNMENT.md) Part 1 — implement the neuron and the layer machinery (TODOs 1–4), and bring problem sets A and B worked on paper.
+> **Tip:** Stop here and open the starter code — this is the point to implement TODOs 1–4, not after reading further. The rest of this lesson assumes that machinery already runs.
+
+**Day 1 of 2 homework:** [Assignment](ASSIGNMENT.md) Part 1 — implement the neuron and the layer machinery (TODOs 1–4), and bring problem sets A and B worked on paper.
 
 ---
 
-## <font color="#388bfd">Vocabulary — Day 2</font>
+## <font color="#388bfd">Vocabulary — Day 2 of 2</font>
 
 | Term | Definition | Picture to hold |
 |---|---|---|
@@ -257,7 +259,7 @@ The gate breaks the collapse, and the practice trace shows how: whether $\max(0,
 | Shape | The dimensions of an array — how many rows, how many slots. | The label on the box, before you look inside |
 | Multi-Layer Perceptron (MLP) | The standard name for this architecture: layers of weigh-and-add with gates between. | The whole assembly line, named |
 
-## <font color="#388bfd">Day 2 — The Life of One Forecast</font>
+## <font color="#388bfd">Day 2 of 2 — The Life of One Forecast</font>
 
 The model is **five frozen arrays** — meet them before the pipeline runs:
 
@@ -269,7 +271,7 @@ The model is **five frozen arrays** — meet them before the pipeline runs:
 | `outputWeights` | $3 \times 4$ | one output unit per vocabulary token, each reading all four hidden units |
 | `outputBiases` | $3$ | one bias per output unit |
 
-That is $6 + 28 + 15 = 49$ numbers, every one trained offline on the order history and then frozen. The whole of Day 2 follows **one forecast** through them: the context `pineapple pizza pineapple` — tokens `[1, 0, 1]` — which really occurs at the very start of the training history, where the next token is `pizza`. Six steps, in the order they always run. For each step: *when* it happens, then *how*.
+That is $6 + 28 + 15 = 49$ numbers, every one trained offline on the order history and then frozen. The whole of the second day of this lesson follows **one forecast** through them: the context `pineapple pizza pineapple` — tokens `[1, 0, 1]` — which really occurs at the very start of the training history, where the next token is `pizza`. Six steps, in the order they always run. For each step: *when* it happens, then *how*.
 
 ## <font color="#388bfd">Step 1 — Look Up: a Token Number Becomes a Stat Card</font>
 
@@ -310,7 +312,7 @@ Order **is** meaning here: the hidden layer's weight for slot 4 is specifically 
 
 ## <font color="#388bfd">Step 3 — Weigh and Add: the Hidden Layer</font>
 
-**When:** the joined row exists; now the four hidden units each weigh all six slots — Day 1's `weighAndAdd`, verbatim, just wider.
+**When:** the joined row exists; now the four hidden units each weigh all six slots — the first day's `weighAndAdd`, verbatim, just wider.
 
 **How:** unit by unit, $z = b + \sum_i w_i x_i$. Two of the four, with every product shown:
 
@@ -439,7 +441,7 @@ The week's discipline, in one table — every array a forecast touches, and its 
 | hidden sums / gated row | Steps 3–4 | Steps 4–5 | Created, used, discarded |
 | scores / forecast | Steps 5–6 | Steps 6–7 | Created, used, discarded |
 
-Compare Chapter 4, where the gradient bucket was **accumulated** into, the logits were **overwritten** by `step`, and the bucket was **reset** by `zeroGradients`. This chapter has no accumulate, no overwrite, no reset — the only writes anywhere are `Neuron.setValue` and `recomputeValue` overwriting one neuron's stored value during Day 1's object traces. That is why the Tester can demand: a hundred forecasts and grades, then every stat card bit-for-bit identical.
+Compare Chapter 4, where the gradient bucket was **accumulated** into, the logits were **overwritten** by `step`, and the bucket was **reset** by `zeroGradients`. This chapter has no accumulate, no overwrite, no reset — the only writes anywhere are `Neuron.setValue` and `recomputeValue` overwriting one neuron's stored value during the first day's object traces. That is why the Tester can demand: a hundred forecasts and grades, then every stat card bit-for-bit identical.
 
 ## <font color="#388bfd">Punchline One: the Cousins Found Each Other</font>
 
@@ -537,7 +539,7 @@ You met one tool that could, in principle, do it: Chapter 4's wiggle experiment 
 3. Count the parameters for $V = 1000$, $D = 16$, $C = 3$, $H = 64$, and compare against a $1000 \times 1000$ table.
 4. A classmate looks at the leaderboard and concludes "networks are worse than tables." Give the two-part correction.
 
-**Day 2 homework:** [Assignment](ASSIGNMENT.md) Part 2 — implement the pipeline (TODOs 5–10), record the punchline readings, and answer the concept questions.
+**Day 2 of 2 homework:** [Assignment](ASSIGNMENT.md) Part 2 — implement the pipeline (TODOs 5–10), record the punchline readings, and answer the concept questions.
 
 ---
 
@@ -551,20 +553,20 @@ The starter code is in [starter/](starter/) — five files. Two contain TODOs; t
 | [Neuron.java](starter/Neuron.java) | **TODO 1–2** | One unit: weigh and add, then the gate — the object form |
 | [FeatureNetwork.java](starter/FeatureNetwork.java) | **TODO 3–10** | The forecast pipeline as arrays (the softmax and the parameter count are provided) |
 | [NetworkFixtures.java](starter/NetworkFixtures.java) | Complete | The practice network, the trained-and-frozen provided model, and the order history |
-| [Tester.java](starter/Tester.java) | Complete | Reproduces every worked trace on this page, runs the required tests, prints the punchlines |
+| [Ch5_ObjectNetwork_Tester.java](starter/Ch5_ObjectNetwork_Tester.java) | Complete | Reproduces every worked trace on this page, runs the required tests, prints the punchlines |
 
-Implement the TODOs in order, rerunning `Tester` after each — unimplemented stages report as `TODO`, not `FAIL`:
+Implement the TODOs in order, rerunning `Ch5_ObjectNetwork_Tester` after each — unimplemented stages report as `TODO`, not `FAIL`:
 
-1. `weighAndAddInputs` — one neuron reads its wires: bias plus value-times-weight, totaled (Day 1)
-2. `recomputeValue` — the gate, then the only overwrite: the neuron's stored value (Day 1)
-3. `weighAndAdd` — a whole layer as one loop over a weight table (Day 1)
-4. `rectify` — the gate applied to a whole layer, negatives silenced to exactly zero (Day 1)
-5. `lookUpStatCards` — Step 1: token numbers fetch cloned cards from the binder (Day 2)
-6. `joinCards` — Step 2: cards glued into one row, order preserved (Day 2)
-7. `unrestrictedScores` — Steps 1–5 chained: fetch, glue, mix, gate, score (Day 2)
-8. `forecast` — Step 6: the provided softmax turns scores into a distribution (Day 2)
-9. `loss` — Step 7: Chapter 4's grade, charged to this pipeline (Day 2)
-10. `averageLoss` — the report card over a history, flashcards starting at position three (Day 2)
+1. `weighAndAddInputs` — one neuron reads its wires: bias plus value-times-weight, totaled (Day 1 of 2)
+2. `recomputeValue` — the gate, then the only overwrite: the neuron's stored value (Day 1 of 2)
+3. `weighAndAdd` — a whole layer as one loop over a weight table (Day 1 of 2)
+4. `rectify` — the gate applied to a whole layer, negatives silenced to exactly zero (Day 1 of 2)
+5. `lookUpStatCards` — Step 1: token numbers fetch cloned cards from the binder (Day 2 of 2)
+6. `joinCards` — Step 2: cards glued into one row, order preserved (Day 2 of 2)
+7. `unrestrictedScores` — Steps 1–5 chained: fetch, glue, mix, gate, score (Day 2 of 2)
+8. `forecast` — Step 6: the provided softmax turns scores into a distribution (Day 2 of 2)
+9. `loss` — Step 7: Chapter 4's grade, charged to this pipeline (Day 2 of 2)
+10. `averageLoss` — the report card over a history, flashcards starting at position three (Day 2 of 2)
 
 ## <font color="#388bfd">Evidence Checkpoint</font>
 
@@ -579,7 +581,7 @@ Six observations your finished code must produce:
 
 ## <font color="#388bfd">Required Tests</font>
 
-`Tester` covers all of these — confirm every one reports `PASS`:
+`Ch5_ObjectNetwork_Tester` covers all of these — confirm every one reports `PASS`:
 
 - A neuron's weighted sum reproduces the practice numbers, and computing it twice changes nothing — reading is not writing.
 - `recomputeValue` overwrites the stored value; the gate silences negative totals to exactly zero, passes positives, and a linear unit keeps its negatives.

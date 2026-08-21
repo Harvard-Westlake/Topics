@@ -9,7 +9,7 @@
 
 ---
 
-This lesson gets your machine ready for the rest of the course. Mac and PC take different paths to the same destination — a Unix terminal with Git, GitKraken, VS Code, and Java 21.
+This lesson gets your machine ready for the rest of the course. Mac and PC take different paths to the same destination — a Unix terminal with Git, GitKraken, VS Code, and Java 25.
 
 Choose your operating system and follow the steps in order.
 
@@ -18,13 +18,21 @@ Choose your operating system and follow the steps in order.
 
 ---
 
+## <font color="#388bfd">Table of Contents</font>
+
+1. [Pick Mac or PC and follow the matching setup guide](#choose-your-operating-system)
+2. [Compare the finished Mac and PC environments side by side](#what-youll-have-when-youre-done)
+3. [Check your understanding with the Skill Building questions](#skill-building)
+
+---
+
 ## <font color="#388bfd">Choose your operating system</font>
 
 **[Mac](Mac.md)**  
-Open Terminal, install Homebrew and Git, set up GitKraken and VS Code, and install Java 21.
+Open Terminal, install Homebrew and Git, set up GitKraken and VS Code, and install Java 25.
 
 **[PC](PC.md)**  
-Install WSL and Ubuntu to get a Unix terminal, then install Git, GitKraken, VS Code, and Java 21.
+Install WSL and Ubuntu to get a Unix terminal, then install Git, GitKraken, VS Code, and Java 25.
 
 ---
 
@@ -38,7 +46,7 @@ Install WSL and Ubuntu to get a Unix terminal, then install Git, GitKraken, VS C
 | Version control | Git | Git |
 | Visual Git client | GitKraken | GitKraken |
 | Code editor | VS Code | VS Code |
-| Language runtime | Java 21 LTS | Java 21 LTS |
+| Language runtime | Java 25 LTS | Java 25 LTS |
 
 ---
 
@@ -48,7 +56,7 @@ Install WSL and Ubuntu to get a Unix terminal, then install Git, GitKraken, VS C
 
 - [ ] Can you open a terminal on your computer?
 - [ ] Can you run `git --version` without seeing an error?
-- [ ] Can you log in to both of your GitHub accounts in the browser?
+- [ ] Can you log in to your GitHub account in the browser?
 
 ### <font color="#79c0ff">Intermediate</font>
 
@@ -58,7 +66,7 @@ Install WSL and Ubuntu to get a Unix terminal, then install Git, GitKraken, VS C
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you explain why you have two GitHub accounts and what each is used for?
+- [ ] Can you explain why GitKraken's free plan is enough for this course?
 - [ ] Can you configure Git with your name and email from the terminal?
 - [ ] Can you clone a public repository from GitHub to your local machine?
 

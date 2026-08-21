@@ -30,17 +30,17 @@ Copy all four files from [starter/](starter/) into your project.
 | [TrainableBigramModel.java](starter/TrainableBigramModel.java) | Starter | TODOs 1–7 (the constructor and the helpers at the bottom are provided) |
 | [TrainingData.java](starter/TrainingData.java) | Complete | — |
 | [Trainer.java](starter/Trainer.java) | Starter | TODOs 8–9 (the reporting and the experiment bench are provided) |
-| [Tester.java](starter/Tester.java) | Complete | Rerun it after every TODO |
+| [Ch4_TrainableBigram_Tester.java](starter/Ch4_TrainableBigram_Tester.java) | Complete | Rerun it after every TODO |
 
-Do not modify the provided files, the provided constructor, or the helpers. `Tester` reproduces every worked trace from the [lesson page](README.md) and reports each check as `PASS`, `FAIL`, or `TODO`. `Trainer` is half starter, half bench: you write the SGD step and the training loop (TODOs 8–9), while the reporting and the experiment bench below them are provided — `java Trainer` runs the full training run, the learned-versus-counted comparison, and the learning-rate experiment.
+Do not modify the provided files, the provided constructor, or the helpers. `Ch4_TrainableBigram_Tester` reproduces every worked trace from the [lesson page](README.md) and reports each check as `PASS`, `FAIL`, or `TODO`. `Trainer` is half starter, half bench: you write the SGD step and the training loop (TODOs 8–9), while the reporting and the experiment bench below them are provided — `java Trainer` runs the full training run, the learned-versus-counted comparison, and the learning-rate experiment.
 
 ---
 
-## Part 1 — After Day 1
+## Part 1 — After Day 1 of 2
 
-**On paper:** finish Check Yourself sets A and B from the lesson page and bring them to class. They are the raw material for Day 2's opening discussion.
+**On paper:** finish Check Yourself sets A and B from the lesson page and bring them to class. They are the raw material for the second day's opening discussion.
 
-**In code:** implement the first four TODOs, in order, rerunning `Tester` after each:
+**In code:** implement the first four TODOs, in order, rerunning `Ch4_TrainableBigram_Tester` after each:
 
 | # | Method | The idea it isolates |
 |---|---|---|
@@ -49,9 +49,9 @@ Do not modify the provided files, the provided constructor, or the helpers. `Tes
 | 3 | `loss` | **Grade** — cross-entropy for one flashcard: `-Math.log` of the probability given to the target (reads; writes nothing) |
 | 4 | `accumulateGradients` | **Measure** — the shortcut gradient `p[nextToken] - (nextToken == target ? 1 : 0)`, *accumulated* into the used row only (writes the bucket, never a logit) |
 
-After Part 1, `Tester` must confirm: softmax reproduces `[2,1,0] -> [0.6652, 0.2447, 0.0900]` and survives `[1000, 999, 998]` without overflow, the worked row `[1.2, 0.1, -0.4]` forecasts `[0.6516, 0.2169, 0.1315]` and charges loss `1.5284` for target `pineapple`, the gradient comes out `[0.6516, -0.7831, 0.1315]` and sums to zero, and the gradient check's analytical-versus-wiggle gap prints below $10^{-6}$.
+After Part 1, `Ch4_TrainableBigram_Tester` must confirm: softmax reproduces `[2,1,0] -> [0.6652, 0.2447, 0.0900]` and survives `[1000, 999, 998]` without overflow, the worked row `[1.2, 0.1, -0.4]` forecasts `[0.6516, 0.2169, 0.1315]` and charges loss `1.5284` for target `pineapple`, the gradient comes out `[0.6516, -0.7831, 0.1315]` and sums to zero, and the gradient check's analytical-versus-wiggle gap prints below $10^{-6}$.
 
-## Part 2 — After Day 2
+## Part 2 — After Day 2 of 2
 
 Implement the remaining TODOs, in order:
 
@@ -65,14 +65,14 @@ Implement the remaining TODOs, in order:
 
 Then run the two experiments on the bench:
 
-1. **The training run.** `java Tester` now trains for 300 steps (batch 24, learning rate 0.5) and prints the CSV loss trace. It must match the lesson page digit for digit — from `1.0987` at step 0 down to `0.3300 / 0.3311` at step 300 — followed by the learned-versus-counted table. Copy the CSV lines into a `.csv` file; that file is part of your submission evidence.
+1. **The training run.** `java Ch4_TrainableBigram_Tester` now trains for 300 steps (batch 24, learning rate 0.5) and prints the CSV loss trace. It must match the lesson page digit for digit — from `1.0987` at step 0 down to `0.3300 / 0.3311` at step 300 — followed by the learned-versus-counted table. Copy the CSV lines into a `.csv` file; that file is part of your submission evidence.
 2. **The learning-rate experiment.** `java Trainer` reruns the same training at learning rates 0.01, 0.5, and 20. Record the three final losses and, in one sentence each, describe the shape of each run using the lesson's vocabulary (crawl, floor, bounce).
 
 ---
 
 ## Required Tests
 
-`Tester` covers all of these — confirm every one reports `PASS`:
+`Ch4_TrainableBigram_Tester` covers all of these — confirm every one reports `PASS`:
 
 - Softmax sums to one, survives huge logits, and is unchanged by adding a constant to every logit.
 - Cross-entropy is near zero for a near-certain correct prediction and large when the truth was called nearly impossible.
@@ -128,9 +128,9 @@ Confirm each of the following before submitting:
 - [ ] **The loss trace reproduces digit for digit** — ending at `0.3300` training, `0.3311` validation — and is saved as a `.csv` file.
 - [ ] **The tables converge** — learned probabilities within a few hundredths of the counted frequencies, with no exact zeros.
 - [ ] **The learning-rate experiment is recorded** — three final losses plus a one-sentence shape description each.
-- [ ] **Paper problem sets A and B completed** — brought to Day 2, finished before submission.
+- [ ] **Paper problem sets A and B completed** — brought to the second day of this lesson, finished before submission.
 - [ ] **All seven concept questions answered** — in your own words, with the specific numbers where asked.
-- [ ] **Provided code unmodified** — the fixtures, `Tester`, the constructor, the helpers, and the provided parts of `Trainer` (the reporting and the bench) are untouched.
+- [ ] **Provided code unmodified** — the fixtures, `Ch4_TrainableBigram_Tester`, the constructor, the helpers, and the provided parts of `Trainer` (the reporting and the bench) are untouched.
 
 ---
 
@@ -156,4 +156,4 @@ Final training loss at lr 0.01 / 0.5 / 20:
 
 ### Screenshot
 
-The screenshot must show your program's console output from a full `Tester` run: the test results, the complete CSV loss trace from step 0 to step 300, and the learned-versus-counted comparison table. A screenshot of source code alone, or of a partial run missing the trace or the table, does not qualify.
+The screenshot must show your program's console output from a full `Ch4_TrainableBigram_Tester` run: the test results, the complete CSV loss trace from step 0 to step 300, and the learned-versus-counted comparison table. A screenshot of source code alone, or of a partial run missing the trace or the table, does not qualify.

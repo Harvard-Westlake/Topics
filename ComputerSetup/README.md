@@ -9,7 +9,7 @@
 
 ---
 
-Before we start learning terminal commands together, everyone needs to arrive at the same starting point: a Unix terminal with Git, GitKraken, VS Code, and Java 21 installed.
+Before we start learning terminal commands together, everyone needs to arrive at the same starting point: a Unix terminal with Git, GitKraken, VS Code, and Java 25 installed.
 
 Mac and PC take different paths to get there — Mac already has a Unix terminal built in, while PC requires installing one through WSL. Once both are done, the commands work the same on either machine.
 
@@ -34,7 +34,7 @@ By the end of the install, your terminal accepts the same Unix commands used thr
 | Version control | Git | Git |
 | Visual Git client | GitKraken | GitKraken |
 | Code editor | VS Code | VS Code |
-| Language runtime | Java 21 LTS | Java 21 LTS |
+| Language runtime | Java 25 LTS | Java 25 LTS |
 
 ---
 
@@ -51,7 +51,7 @@ By the end of the install, your terminal accepts the same Unix commands used thr
 ### <font color="#79c0ff">Introductory</font>
 
 - [ ] Can you open a terminal on your computer?
-- [ ] Can you log in to your `hwemail.com` GitHub account?
+- [ ] Can you log in to your GitHub account?
 - [ ] Can you confirm Git is installed by running `git --version`?
 
 ### <font color="#79c0ff">Intermediate</font>
@@ -62,6 +62,6 @@ By the end of the install, your terminal accepts the same Unix commands used thr
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you explain why you have two GitHub accounts and what each is used for?
+- [ ] Can you explain why GitKraken's free plan is enough for this course?
 - [ ] Can you configure Git with your name and email from the terminal?
 - [ ] Can you clone a public repository from GitHub to your local machine?

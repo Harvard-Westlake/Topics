@@ -34,11 +34,11 @@ Copy all eight files from [starter/](starter/) into your project, alongside your
 | [MarkovRevisited.java](starter/MarkovRevisited.java) | Splitting, generation, and validators provided | TODO 5: `evaluate` · TODO 6: `sampleNext` |
 | [EvaluationResult.java](starter/EvaluationResult.java) | Complete | — |
 | [CorpusSplit.java](starter/CorpusSplit.java) | Complete | — |
-| [Tester.java](starter/Tester.java) | Complete | Extend it as you complete each TODO |
+| [Ch2_MarkovBaseline_Tester.java](starter/Ch2_MarkovBaseline_Tester.java) | Complete | Extend it as you complete each TODO |
 
-Do not modify the provided methods or records. Adding methods to `Tester.java` (or a separate test class) is expected.
+Do not modify the provided methods or records. Adding methods to `Ch2_MarkovBaseline_Tester.java` (or a separate test class) is expected.
 
-> **Note:** `Tester.java` runs `t.train(256)` and then reads the real vocabulary from `t.vocabularySize()` — 256 plus the merges *actually performed*, which is 512 only if all 256 merges succeeded. Never hard-code the vocabulary size. For your first full run, `t.train(0)` keeps raw byte tokens ($V = 256$) — the dense table stays small and generated output can be read directly by converting each token back to a byte.
+> **Note:** `Ch2_MarkovBaseline_Tester.java` runs `t.train(256)` and then reads the real vocabulary from `t.vocabularySize()` — 256 plus the merges *actually performed*, which is 512 only if all 256 merges succeeded. Never hard-code the vocabulary size. For your first full run, `t.train(0)` keeps raw byte tokens ($V = 256$) — the dense table stays small and generated output can be read directly by converting each token back to a byte.
 
 ---
 

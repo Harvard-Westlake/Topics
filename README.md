@@ -51,7 +51,7 @@ No lesson or topic carries an inherent number — there is no "Unit 3" baked int
 **[Computer Setup](ComputerSetup/)**  
 Step-by-step guide to standardizing your terminal environment and installing developer tools on Mac or PC.
 
-- [Initial Install](ComputerSetup/InitialInstall/) — terminal, Git, GitKraken, VS Code, and Java 21 on Mac or PC
+- [Initial Install](ComputerSetup/InitialInstall/) — terminal, Git, GitKraken, VS Code, and Java 25 on Mac or PC
 
 <font color="#a371f7">■ Learning</font>
 

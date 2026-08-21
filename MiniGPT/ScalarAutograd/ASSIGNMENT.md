@@ -30,17 +30,17 @@ Copy all five files from [starter/](starter/) into your project.
 | [TrainableFeatureNetwork.java](starter/TrainableFeatureNetwork.java) | Starter | TODOs 8–12 (the constructor, validators, accessors, softmax, and `forecast` are provided) |
 | [Trainer.java](starter/Trainer.java) | Starter | TODOs 13–14 (the reporting, the oracle comparison, and the experiment bench in `main` are provided) |
 | [AutogradFixtures.java](starter/AutogradFixtures.java) | Complete | — |
-| [Tester.java](starter/Tester.java) | Complete | Rerun it after every TODO |
+| [Ch6_ScalarAutograd_Tester.java](starter/Ch6_ScalarAutograd_Tester.java) | Complete | Rerun it after every TODO |
 
-Do not modify the provided files, the provided constructors, or the helpers. `Tester` reproduces every worked trace from the [lesson page](README.md) and reports each check as `PASS`, `FAIL`, or `TODO`; once everything passes, `java Trainer` produces the three experiment blocks you will quote in your submission.
+Do not modify the provided files, the provided constructors, or the helpers. `Ch6_ScalarAutograd_Tester` reproduces every worked trace from the [lesson page](README.md) and reports each check as `PASS`, `FAIL`, or `TODO`; once everything passes, `java Trainer` produces the three experiment blocks you will quote in your submission.
 
 ---
 
-## Part 1 — After Day 1
+## Part 1 — After Day 1 of 2
 
-**On paper:** finish Check Yourself sets A and B from the lesson page and bring them to class. Set B's diamond audit — including what a second `backward` does — is the raw material for Day 2's opening discussion.
+**On paper:** finish Check Yourself sets A and B from the lesson page and bring them to class. Set B's diamond audit — including what a second `backward` does — is the raw material for the second day's opening discussion.
 
-**In code:** implement the engine, in order, rerunning `Tester` after each TODO:
+**In code:** implement the engine, in order, rerunning `Ch6_ScalarAutograd_Tester` after each TODO:
 
 | # | Method | The idea it isolates |
 |---|---|---|
@@ -52,9 +52,9 @@ Do not modify the provided files, the provided constructors, or the helpers. `Te
 | 6 | `topologicalOrder` | Every ingredient before its dish, depth-first, visited exactly once |
 | 7 | `backward` | Seed 1, walk in reverse, `+=` through every door — the audit itself |
 
-After Part 1, `Tester` must confirm: the first trace lands on $4 / 2 / 1$, the reused leaf on $6$, the practice graph on $6 / 4 / 2$ with the silenced variant all exactly zero, the diamond on $21 / 16$ (and $63$ on an illegal second audit), and the composite referee graph agrees with the wiggle to $10^{-6}$ on all three leaves.
+After Part 1, `Ch6_ScalarAutograd_Tester` must confirm: the first trace lands on $4 / 2 / 1$, the reused leaf on $6$, the practice graph on $6 / 4 / 2$ with the silenced variant all exactly zero, the diamond on $21 / 16$ (and $63$ on an illegal second audit), and the composite referee graph agrees with the wiggle to $10^{-6}$ on all three leaves.
 
-## Part 2 — After Day 2
+## Part 2 — After Day 2 of 2
 
 Implement the network and the training, in order:
 
@@ -78,7 +78,7 @@ Then run `java Trainer` and record the three experiment blocks:
 
 ## Required Tests
 
-`Tester` covers all of these — confirm every one reports `PASS`:
+`Ch6_ScalarAutograd_Tester` covers all of these — confirm every one reports `PASS`:
 
 - Each operation mints a new receipt with the right number, touches no ingredient, and assigns no blame at creation; `naturalLog` refuses zero and negatives; the gate is closed at exactly zero; computed receipts refuse `setNumber`.
 - `topologicalOrder` lists every receipt exactly once, ingredients first, the audited receipt last — on the first trace and the diamond.
@@ -132,9 +132,9 @@ Confirm each of the following before submitting:
 - [ ] **The gap closes** — the 120-step trace ends at $0.3181 / 0.3222$, past the table on both histories.
 - [ ] **The oracle is reproduced** — ten steps from the fresh start, largest gap below $0.005$.
 - [ ] **The drumbeat runs** — memorized below $0.005$, pizzeria forgotten past $2$, forecast above 99%.
-- [ ] **Paper problem sets A and B completed** — brought to Day 2, finished before submission.
+- [ ] **Paper problem sets A and B completed** — brought to the second day of this lesson, finished before submission.
 - [ ] **All seven concept questions answered** — in your own words, with the specific numbers where asked.
-- [ ] **Provided code unmodified** — the fixtures, `Tester`, both constructors, the validators, the accessors, `add`, the softmax, and the bench are untouched.
+- [ ] **Provided code unmodified** — the fixtures, `Ch6_ScalarAutograd_Tester`, both constructors, the validators, the accessors, `add`, the softmax, and the bench are untouched.
 
 ---
 
@@ -161,4 +161,4 @@ Drumbeat after 50 steps (drumbeat loss / pizzeria loss):
 
 ### Screenshot
 
-The screenshot must show your program's console output from a full `Tester` run: the Part 1 and Part 2 test results and the complete punchline block at the bottom. A screenshot of source code alone, or of a partial run missing the punchline block, does not qualify.
+The screenshot must show your program's console output from a full `Ch6_ScalarAutograd_Tester` run: the Part 1 and Part 2 test results and the complete punchline block at the bottom. A screenshot of source code alone, or of a partial run missing the punchline block, does not qualify.

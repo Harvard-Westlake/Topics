@@ -110,6 +110,24 @@ section.tab.active { display: block; }
   font-size: 11px; padding: 2px 8px; background: var(--purple);
   color: #fff; border-radius: 10px; white-space: nowrap;
 }
+.review-usage { margin-top: 8px; }
+.review-usage:empty { margin-top: 0; }
+.review-usage-head { font-size: 10px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin-bottom: 4px; }
+.review-usage-item {
+  display: flex; align-items: center; gap: 8px; padding: 3px 8px;
+  border-radius: 5px; font-size: 11.5px; color: var(--muted);
+}
+.review-usage-item .rday { color: var(--accent); font-weight: 600; font-variant-numeric: tabular-nums; flex-shrink: 0; }
+.review-usage-item .rtitle { color: var(--text); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.review-usage-item .rwhat { color: var(--purple); white-space: nowrap; }
+.review-usage-item .rtag {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .03em;
+  padding: 1px 6px; border-radius: 8px; white-space: nowrap;
+}
+.review-usage-item.same-lesson { background: rgba(167, 139, 250, .08); }
+.review-usage-item.same-lesson .rtag { background: rgba(167, 139, 250, .18); color: var(--purple); }
+.review-usage-item.dup { background: rgba(251, 191, 36, .1); }
+.review-usage-item.dup .rtag { background: var(--yellow); color: #1a1400; }
 .chip-input {
   display: flex; flex-wrap: wrap; gap: 5px; padding: 5px 8px;
   border: 1px solid var(--border); border-radius: 6px;

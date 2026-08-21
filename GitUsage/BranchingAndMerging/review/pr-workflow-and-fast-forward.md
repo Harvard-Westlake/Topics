@@ -1,4 +1,4 @@
-# Review — Branching and Merging, Day 2
+# Review — Pull Request Workflow and Fast-Forward Merges
 
 *Originally covered in [Repositories and Commits](../../RepositoriesAndCommits/README.md) and [Branching and Merging](../README.md)*
 

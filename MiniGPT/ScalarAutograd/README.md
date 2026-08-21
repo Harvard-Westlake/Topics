@@ -43,7 +43,7 @@ Same tiny world: the pizzeria's order history, the 122-token training history an
 2. **Nothing is random this week.** Chapter 4 drew random batches, so runs needed seeds. This chapter grades *every* flashcard on *every* step — full batch — so there is nothing to draw, and every machine prints the same loss trace to the last digit.
 3. **Receipts are scratch; parameters survive.** Every forecast and every training step builds a fresh pile of records and throws it away, exactly like Chapter 5's scratch rows. The 49 parameters are the only things that persist — the only place blame collects, and the only numbers a nudge may move.
 
-## <font color="#388bfd">Vocabulary — Day 1</font>
+## <font color="#388bfd">Vocabulary — Day 1 of 2</font>
 
 | Term | Definition | Picture to hold |
 |---|---|---|
@@ -62,7 +62,7 @@ Same tiny world: the pizzeria's order history, the 122-token training history an
 
 ---
 
-## <font color="#388bfd">Day 1 — The Audit, One Receipt at a Time</font>
+## <font color="#388bfd">Day 1 of 2 — The Audit, One Receipt at a Time</font>
 
 ## <font color="#388bfd">The Dead End, Measured</font>
 
@@ -161,7 +161,7 @@ Who reads and who writes — this week's ledger:
 
 ## <font color="#388bfd">The Practice Graph</font>
 
-Everything on Day 1 lands on one graph small enough for a pencil, built to rhyme with the real network — a weight, an input, a bias, a gate:
+Everything on the first day of this lesson lands on one graph small enough for a pencil, built to rhyme with the real network — a weight, an input, a bias, a gate:
 
 $$z = w \cdot x + b \qquad a = \max(0, z) \qquad L = a \cdot a$$
 
@@ -213,11 +213,11 @@ That `+=` line is the chain rule and gradient accumulation fused: multiply along
 3. The diamond graph: $s = a + b$, $\,p = a \cdot b$, $\,L = s \cdot p$, with $a = 2$, $b = 3$. Forward all four values, then audit by hand — show the two-path addition for both $a$ and $b$.
 4. Call `backward` a second time on the diamond's graph, with no zeroing anywhere. What does $a$'s blame read now, and which single character of the audit loop made it happen?
 
-**Day 1 homework:** [Assignment](ASSIGNMENT.md) Part 1 — implement the engine (TODOs 1–7), and bring problem sets A and B worked on paper.
+**Day 1 of 2 homework:** [Assignment](ASSIGNMENT.md) Part 1 — implement the engine (TODOs 1–7), and bring problem sets A and B worked on paper.
 
 ---
 
-## <font color="#388bfd">Vocabulary — Day 2</font>
+## <font color="#388bfd">Vocabulary — Day 2 of 2</font>
 
 | Term | Definition | Picture to hold |
 |---|---|---|
@@ -228,7 +228,7 @@ That `+=` line is the chain rule and gradient accumulation fused: multiply along
 | Memorization | Driving loss toward zero on data that has no mixture to be honest about. | The drumbeat, learned exactly |
 | Catastrophic forgetting | New training overwriting the shared machinery old skills lived in. | The pizzeria, lost to the drumbeat |
 
-## <font color="#388bfd">Day 2 — The Machine Rebuilt, Audited, and Finally Trained</font>
+## <font color="#388bfd">Day 2 of 2 — The Machine Rebuilt, Audited, and Finally Trained</font>
 
 ## <font color="#388bfd">The Network, Rebuilt from Receipts</font>
 
@@ -256,7 +256,7 @@ $$L = -\ln\!\left(\frac{e^{z_t - m}}{\sum_j e^{z_j - m}}\right) = \ln\!\Big(\sum
 | $m$ | the largest score, subtracted from all of them — Chapter 4's overflow shield, which provably changes no share |
 | $\ln \sum e^{(\cdot)}$ | the natural logarithm of the summed exponentials — built from `exponential`, `add`, `naturalLog` |
 
-The division is gone: the grade is a log of a sum of exponentials, minus the target's shifted score — every piece an operation you built on Day 1. One bookkeeping subtlety (TODO 10): $m$ is found with a plain `double` loop and wrapped as a **constant leaf**. It is a shield, not an ingredient — Chapter 4 proved the shift changes nothing, so its blame is simply never read. The referee will confirm the gradients come out exactly right anyway.
+The division is gone: the grade is a log of a sum of exponentials, minus the target's shifted score — every piece an operation you built on the first day of this lesson. One bookkeeping subtlety (TODO 10): $m$ is found with a plain `double` loop and wrapped as a **constant leaf**. It is a shield, not an ingredient — Chapter 4 proved the shift changes nothing, so its blame is simply never read. The referee will confirm the gradients come out exactly right anyway.
 
 Run it on the featured flashcard — context `pineapple pizza pineapple`, truth `pizza`. The receipts reproduce Chapter 5 to the last digit: scores $[1.5504, -1.6160, -1.1503]$, loss $0.1037$. Same numbers, one difference: these remember where they came from.
 
@@ -427,24 +427,24 @@ The starter code is in [starter/](starter/) — five files. Three contain TODOs;
 | [TrainableFeatureNetwork.java](starter/TrainableFeatureNetwork.java) | **TODO 8–12** | Chapter 5's pipeline rebuilt from receipts, the auditable loss, and the Reset |
 | [Trainer.java](starter/Trainer.java) | **TODO 13–14** | One full-batch step, the training loop, and the provided experiment bench |
 | [AutogradFixtures.java](starter/AutogradFixtures.java) | Complete | The frozen start, the fresh offline start, both histories, and the drumbeat |
-| [Tester.java](starter/Tester.java) | Complete | Reproduces every worked number on this page, runs the required tests, prints the punchlines |
+| [Ch6_ScalarAutograd_Tester.java](starter/Ch6_ScalarAutograd_Tester.java) | Complete | Reproduces every worked number on this page, runs the required tests, prints the punchlines |
 
-Implement the TODOs in order, rerunning `Tester` after each — unimplemented stages report as `TODO`, not `FAIL`:
+Implement the TODOs in order, rerunning `Ch6_ScalarAutograd_Tester` after each — unimplemented stages report as `TODO`, not `FAIL`:
 
-1. `multiply` — the crossover rule: each ingredient's sensitivity is the other ingredient (Day 1)
-2. `subtract` — addition's twin, one sign flipped (Day 1)
-3. `rectify` — the gate's blame policy: all of it, or none of it (Day 1)
-4. `exponential` — the receipt whose result is its own sensitivity (Day 1)
-5. `naturalLog` — sensitivity $1/x$, and a loud refusal below zero (Day 1)
-6. `topologicalOrder` — every ingredient before its dish, depth-first (Day 1)
-7. `backward` — seed 1, walk in reverse, `+=` through every door (Day 1)
-8. `weighAndAddValues` — Chapter 5's layer loop, third notation (Day 2)
-9. `unrestrictedScoreValues` — fetch (no clones!), join, mix, gate, score (Day 2)
-10. `lossValueFromScores` — the grade as $\ln \sum e - $ target, ready for audit (Day 2)
-11. `averageLossValue` — one graph for the whole history; the bucket, dissolved (Day 2)
-12. `zeroGradients` — Reset: wipe all 49 mailboxes (Day 2)
-13. `gradientDescentStep` — the full lifecycle: Reset, Grade, Measure, Nudge (Day 2)
-14. the loop in `train` — learning is nothing else (Day 2)
+1. `multiply` — the crossover rule: each ingredient's sensitivity is the other ingredient (Day 1 of 2)
+2. `subtract` — addition's twin, one sign flipped (Day 1 of 2)
+3. `rectify` — the gate's blame policy: all of it, or none of it (Day 1 of 2)
+4. `exponential` — the receipt whose result is its own sensitivity (Day 1 of 2)
+5. `naturalLog` — sensitivity $1/x$, and a loud refusal below zero (Day 1 of 2)
+6. `topologicalOrder` — every ingredient before its dish, depth-first (Day 1 of 2)
+7. `backward` — seed 1, walk in reverse, `+=` through every door (Day 1 of 2)
+8. `weighAndAddValues` — Chapter 5's layer loop, third notation (Day 2 of 2)
+9. `unrestrictedScoreValues` — fetch (no clones!), join, mix, gate, score (Day 2 of 2)
+10. `lossValueFromScores` — the grade as $\ln \sum e - $ target, ready for audit (Day 2 of 2)
+11. `averageLossValue` — one graph for the whole history; the bucket, dissolved (Day 2 of 2)
+12. `zeroGradients` — Reset: wipe all 49 mailboxes (Day 2 of 2)
+13. `gradientDescentStep` — the full lifecycle: Reset, Grade, Measure, Nudge (Day 2 of 2)
+14. the loop in `train` — learning is nothing else (Day 2 of 2)
 
 ## <font color="#388bfd">Evidence Checkpoint</font>
 
@@ -459,7 +459,7 @@ Six observations your finished code must produce:
 
 ## <font color="#388bfd">Required Tests</font>
 
-`Tester` covers all of these — confirm every one reports `PASS`:
+`Ch6_ScalarAutograd_Tester` covers all of these — confirm every one reports `PASS`:
 
 - Each operation mints a new receipt with the right number, touches no ingredient, and assigns no blame at creation; `naturalLog` refuses zero and negatives; the gate is closed at exactly zero.
 - A computed receipt refuses `setNumber` — only leaves may be nudged.

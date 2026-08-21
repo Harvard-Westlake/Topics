@@ -1,4 +1,4 @@
-# Review — Terminal Basics, Day 3
+# Review — Chained Terminal Operations
 
 *Originally covered in [Terminal Basics](../README.md)*
 

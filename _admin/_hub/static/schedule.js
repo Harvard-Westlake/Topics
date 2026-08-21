@@ -336,6 +336,16 @@ async function loadPalette() {
   finalsInfo   = finals;
   topicLessons = {};
   renderPalette();
+  // A module already placed on the board may have changed since this schedule
+  // was loaded (e.g. edited in the Planner tab) — re-resolve it too, not just
+  // the drag-source list, so the board's dates/points/lesson counts catch up.
+  if (schedName) {
+    const d = await fetch('/api/schedules/' + encodeURIComponent(schedName)).then(r => r.json());
+    resolved = d.resolved;
+    renderBoard();
+    renderSummary();
+    renderWarnings();
+  }
 }
 
 function renderPalette() {
@@ -416,7 +426,7 @@ function renderBoard() {
   }
   let html = dz(0), unit = 0;
   schedule.sequence.forEach((blk, i) => {
-    if (blk.type === 'module') { unit++; html += moduleCard(blk, unit); }
+    if (blk.type === 'module') { html += moduleCard(blk, unit); unit++; }
     else html += standaloneCard(blk);
     html += dz(i + 1);
   });

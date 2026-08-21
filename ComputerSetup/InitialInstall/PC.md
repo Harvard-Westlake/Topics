@@ -11,32 +11,15 @@
 
 ## <font color="#388bfd">Table of Contents</font>
 
-**[1. Terminal](#1-terminal)**  
-Install WSL and Ubuntu to get a Unix shell on Windows.
-
-**[2. Authenticator App](#2-authenticator-app)**  
-Download a two-factor authentication app to your phone.
-
-**[3. GitHub Accounts](#3-github-accounts)**  
-Create two GitHub accounts and enable 2FA on both.
-
-**[4. Git](#4-git)**  
-Install Git inside Ubuntu.
-
-**[5. GitKraken](#5-gitkraken)**  
-Install and sign in to the visual Git client.
-
-**[6. Visual Studio Code](#6-visual-studio-code)**  
-Install VS Code and the Java extension pack.
-
-**[7. Java 21 LTS](#7-java-21-lts)**  
-Install Java 21 for Windows.
-
-**[8. Verify Your Setup](#8-verify-your-setup)**  
-Confirm Git and Java are working end-to-end.
-
-**[9. Update Your GitHub Profile](#9-update-your-github-profile)**  
-Add a photo and submit your profile URL.
+1. [Install WSL and Ubuntu to get a Unix shell on Windows](#1-terminal)
+2. [Download an authenticator app for two-factor authentication](#2-authenticator-app)
+3. [Create your GitHub account and enable two-factor authentication](#3-github-account)
+4. [Install Git inside Ubuntu](#4-git)
+5. [Install GitKraken and sign in with your GitHub account](#5-gitkraken)
+6. [Install VS Code and the Java extension pack](#6-visual-studio-code)
+7. [Install Java 25 LTS for Windows](#7-java-25-lts)
+8. [Verify that Git and Java both work](#8-verify-your-setup)
+9. [Add a photo and submit your GitHub profile URL](#9-update-your-github-profile)
 
 ---
 
@@ -103,7 +86,7 @@ You should see a single folder named after your Ubuntu username.
 
 ## <font color="#388bfd">2. Authenticator App</font>
 
-Before creating your GitHub accounts, download an authenticator app on your smartphone. You will need it to set up two-factor authentication.
+Before creating your GitHub account, download an authenticator app on your smartphone. You will need it to set up two-factor authentication.
 
 Choose one of these:
 
@@ -120,36 +103,15 @@ After installing, sign up using your **personal email address**.
 
 ---
 
-## <font color="#388bfd">3. GitHub Accounts</font>
+## <font color="#388bfd">3. GitHub Account</font>
 
-You will create **two separate GitHub accounts** — one for school, one personal.
-
-### <font color="#79c0ff">Account 1 — School account</font>
-
-Use your **hwemail.com** address to create the first account.
-
-> **Note:**
-> Your HW email account has restrictions that may limit some advanced coding activities. This is expected — use your personal account for those.
+Create a GitHub account using your **personal email address** — this is the account you will use for the rest of the course.
 
 After creating it, enable **two-factor authentication**:
 
 1. Go to **Settings → Password and Authentication → Two-factor Authentication**
 2. Follow the prompts
 3. When shown a QR code, scan it with the authenticator app you installed in step 2
-
-### <font color="#79c0ff">Account 2 — Personal account</font>
-
-Use your **personal email address** to create the second account.
-
-> **Note:**
-> Your personal account will not qualify for the free GitHub Student Developer Pack — that requires your school email.
-
-### <font color="#79c0ff">GitHub Student Developer Pack</font>
-
-Sign up for the [GitHub Student Developer Pack](https://education.github.com/pack) using your **hwemail.com** account. This unlocks free pro access to GitKraken and other tools.
-
-> **Tip:**
-> You likely won't need proof of enrollment if you use your hwemail.com address — GitHub recognises school email domains automatically.
 
 ---
 
@@ -178,10 +140,10 @@ git --version
 GitKraken is a visual interface for Git that you'll use in class.
 
 1. Download and install GitKraken from [gitkraken.com/download](https://www.gitkraken.com/download)
-2. Open GitKraken and sign in using your **hwemail.com** GitHub account — the one registered for the Student Developer Pack
+2. Open GitKraken and sign in with the GitHub account you just created
 
-> **Warning:**
-> You will likely see only a **7-day trial** at first. This is normal — your Student Developer Pack application takes time to be approved. Once approved, GitKraken Pro activates automatically. Make sure to click the confirmation email from GitHub to activate your pro features.
+> **Note:**
+> Sign up for the **Free** plan — do not start a paid trial or enter any payment information. Everything in this course works on the free plan.
 
 ---
 
@@ -190,13 +152,15 @@ GitKraken is a visual interface for Git that you'll use in class.
 1. Download and install VS Code from [code.visualstudio.com/download](https://code.visualstudio.com/download)
 2. Open VS Code
 3. Open the Extensions panel (`Ctrl + Shift + X`)
-4. Search for and install: **Extension Pack for Java**
+4. Search `java` and install: **Extension Pack for Java**
+
+![VS Code Extensions panel with "java" searched in the marketplace; an arrow marked 1 points from the Extensions icon in the sidebar to an arrow marked 2 pointing at the Install button next to "Extension Pack for Java"](assets/vscode-extension-pack-for-java.png)
 
 ---
 
-## <font color="#388bfd">7. Java 21 LTS</font>
+## <font color="#388bfd">7. Java 25 LTS</font>
 
-Go to [Windows Java Downloads — Oracle](https://www.oracle.com/java/technologies/downloads/#jdk21-windows) and download the **x64 Installer**.
+Go to [Windows Java Downloads — Oracle](https://www.oracle.com/java/technologies/downloads/#jdk25-windows) and download the **x64 Installer**.
 
 Run the installer and follow the prompts.
 
@@ -238,7 +202,7 @@ Take a screenshot of the output — you may need to submit it.
 
 ## <font color="#388bfd">9. Update Your GitHub Profile</font>
 
-On your **hwemail.com GitHub account**:
+On your GitHub account:
 
 1. Add a profile photo
 2. Open your profile in an **incognito window** to confirm it is publicly visible

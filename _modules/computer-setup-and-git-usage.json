@@ -1,10 +1,10 @@
 {
-  "name": "U1 - Computer Setup and Git Usage",
-  "slug": "unit-1-computer-setup-and-git-usage",
+  "name": "Computer Setup and Git Usage",
+  "slug": "computer-setup-and-git-usage",
   "description": "Environment setup followed by core Git workflows: install the toolchain, then learn repositories, commits, branching, merging, and fork-based collaboration.",
-  "unit_number": 1,
+  "unit_number": 3,
   "points_per_assignment": 10,
-  "scale_factor": 1.15,
+  "scale_factor": 1,
   "start_date": null,
   "topic_names": [
     "ComputerSetup",
@@ -28,7 +28,8 @@
       "review": {
         "module": "Terminal",
         "path": "Basics",
-        "file": "review-day-3.md"
+        "file": "chained-terminal-operations.md",
+        "label": "Chained Terminal Operations"
       }
     },
     {
@@ -48,5 +49,5 @@
       "review": null
     }
   ],
-  "updated": "2026-08-11"
+  "updated": "2026-08-21"
 }

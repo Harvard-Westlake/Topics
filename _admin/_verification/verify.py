@@ -148,6 +148,63 @@ def check_structure():
 
 REQUIRED_KEYS = ("name", "slug", "topic_names", "assignments")
 
+# A review file's display name is the concept it covers, not its filename —
+# parsed from its own "# Review — <Concept>" title (see _instructions/ review
+# file format). An ordered set (review-day-1.md, review-day-2.md, ...) bakes
+# ", Day N" into that title to keep each file's title unique on its own; here
+# that suffix is stripped back off to find the shared topic underneath it.
+REVIEW_TITLE_RE = re.compile(r"^#\s*Review\s*[—-]\s*(.+?)\s*$", re.MULTILINE)
+REVIEW_DAY_SUFFIX_RE = re.compile(r",?\s*Day\s+(\d+)\s*$", re.IGNORECASE)
+
+
+def review_file_title(path):
+    """The concept a review file covers, from its own '# Review — X' heading."""
+    try:
+        text = path.read_text()
+    except OSError:
+        return path.stem
+    m = REVIEW_TITLE_RE.search(text)
+    return m.group(1).strip() if m else path.stem
+
+
+def review_topic_and_day(title):
+    """Split a review title into (base topic, explicit day number or None)."""
+    m = REVIEW_DAY_SUFFIX_RE.search(title)
+    if m:
+        return REVIEW_DAY_SUFFIX_RE.sub("", title).strip(), int(m.group(1))
+    return title, None
+
+
+def review_labels(review_dir, filenames):
+    """Display label per review filename: the topic it covers, numbered only
+    when that same topic recurs across more than one file in `filenames`."""
+    parsed = {f: review_topic_and_day(review_file_title(review_dir / f)) for f in filenames}
+    counts = {}
+    for topic, _ in parsed.values():
+        counts[topic] = counts.get(topic, 0) + 1
+    next_seq, labels = {}, {}
+    for f in filenames:
+        topic, day = parsed[f]
+        if counts[topic] <= 1:
+            labels[f] = topic
+        elif day is not None:
+            labels[f] = f"{topic} {day}"
+        else:
+            next_seq[topic] = next_seq.get(topic, 0) + 1
+            labels[f] = f"{topic} {next_seq[topic]}"
+    return labels
+
+
+def review_label_for(review_file_path):
+    """Display label for one review markdown file, disambiguated against its
+    siblings in the same review/ folder (see `review_labels`)."""
+    review_dir = review_file_path.parent
+    if not review_dir.is_dir():
+        return review_file_path.stem
+    siblings = sorted(f.name for f in review_dir.iterdir()
+                       if f.is_file() and f.suffix == ".md")
+    return review_labels(review_dir, siblings).get(review_file_path.name, review_file_path.stem)
+
 
 def day_label(unit, a):
     base = f"{unit}.{a['day']}" if unit is not None else str(a["day"])
@@ -183,10 +240,12 @@ def generate_lessonplan(mod):
     for a in mod.get("assignments", []):
         src = f"{a['_module']}/{a['path']}"
         rev = a.get("review")
-        rev_cell = (
-            f"[{rev['file'].removesuffix('.md')}](../../{rev['module']}/{rev['path']}/review/{rev['file']})"
-            if rev else "—"
-        )
+        if rev:
+            rev_file = ROOT / rev["module"] / rev["path"] / "review" / rev["file"]
+            label = review_label_for(rev_file) if rev_file.exists() else rev["file"].removesuffix(".md")
+            rev_cell = f"[{label}](../../{rev['module']}/{rev['path']}/review/{rev['file']})"
+        else:
+            rev_cell = "—"
         lines.append(f"| {day_label(unit, a)} | {a['title']} | [{src}](../../{src}/) | {rev_cell} |")
     lines.append("")
     return "\n".join(lines)

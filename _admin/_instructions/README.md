@@ -141,7 +141,7 @@ Rules:
 - **Self-contained.** Must make sense when injected into any assignment without surrounding context.
 - **Cumulative scope.** Each review covers content up to and including the current lesson, plus all prior lessons in the same module.
 - **Progressive complexity in ordered sets.** Day 1 = isolated commands. Day 2 = chained operations. Day 3 = multi-step reasoning.
-- **Filename in kebab-case.** Ordered sets: `review-day-1.md`, `review-day-2.md`. Topic fragments: `absolute-vs-relative-paths.md`.
+- **Filename in kebab-case, named for the content.** e.g. `absolute-vs-relative-paths.md`, `branch-and-merge-basics.md`. Only append a number (`-1`, `-2`, ...) when two or more files in the same set genuinely cover the identical topic and must be told apart.
 - **Source link required.** Points to the lesson where the content was originally taught.
 - **No bottom navigation links.** Fragments, not standalone pages.
 
