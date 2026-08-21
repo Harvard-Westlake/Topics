@@ -265,7 +265,7 @@ section.tab.active { display: block; }
 .sched-main { display: flex; gap: 20px; padding: 20px 32px; align-items: flex-start; }
 
 .palette { width: 300px; flex-shrink: 0; display: flex; flex-direction: column; gap: 14px; position: sticky; top: 16px; max-height: calc(100vh - 32px); overflow-y: auto; }
-.pal-section { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.pal-section { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; flex-shrink: 0; }
 .pal-head { padding: 10px 14px; font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
 .pal-head .mini { font-size: 11px; font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--accent); cursor: pointer; }
 .pal-body { padding: 8px; display: flex; flex-direction: column; gap: 4px; }

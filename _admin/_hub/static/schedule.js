@@ -858,7 +858,14 @@ async function openSync(blockId) {
     return;
   }
   sel.innerHTML = '';
-  const last = localStorage.getItem('syncCourseId');
+  // Remembered per-schedule, not globally — a teacher who syncs multiple
+  // courses through this hub must not have one schedule's last-used course
+  // silently carry over as the default for a different schedule's sync.
+  const last = schedName ? localStorage.getItem('syncCourseId_' + schedName) : null;
+  const placeholder = document.createElement('option');
+  placeholder.value = '';
+  placeholder.textContent = '— Select a course —';
+  sel.appendChild(placeholder);
   const starred = courses.filter(c => favoriteIds.has(c.id));
   const rest    = courses.filter(c => !favoriteIds.has(c.id));
   const addGroup = (label, arr) => {
@@ -879,12 +886,30 @@ async function openSync(blockId) {
   };
   addGroup('★ Starred', starred);
   addGroup('All courses', rest);
-  // Never leave a concluded course selected — Canvas rejects all writes to it
-  const cur = sel.selectedOptions[0];
-  if (!cur || cur.disabled) {
-    const firstEnabled = Array.from(sel.options).find(o => !o.disabled);
-    if (firstEnabled) firstEnabled.selected = true;
+  // No remembered course for this schedule — force an explicit pick rather
+  // than silently defaulting to whatever sorts first in the list.
+  if (!last) placeholder.selected = true;
+  onSyncCourseChange();
+}
+
+function onSyncCourseChange() {
+  const sel = document.getElementById('syncCourse');
+  const opt = sel.selectedOptions[0];
+  const btn = document.getElementById('syncBtn');
+  const target = document.getElementById('syncTarget');
+  const warn = document.getElementById('syncCourseWarn');
+  if (!opt || !opt.value) {
+    btn.disabled = true;
+    target.textContent = '';
+    warn.style.display = 'none';
+    return;
   }
+  btn.disabled = false;
+  target.innerHTML = 'Will write to: <b>' + esc(opt.textContent) + '</b>';
+  const last = schedName ? localStorage.getItem('syncCourseId_' + schedName) : null;
+  const switched = last && String(opt.value) !== last;
+  warn.style.display = switched ? 'block' : 'none';
+  if (switched) warn.textContent = '⚠ Different course than this schedule last synced to — double-check before syncing.';
 }
 
 function closeSync() {
@@ -893,9 +918,11 @@ function closeSync() {
 }
 
 async function doSync() {
-  const courseId = document.getElementById('syncCourse').value;
+  const sel = document.getElementById('syncCourse');
+  const courseId = sel.value;
   if (!courseId || !schedName) return;
-  localStorage.setItem('syncCourseId', courseId);
+  if (!confirm('Sync to “' + sel.selectedOptions[0].textContent + '”?')) return;
+  localStorage.setItem('syncCourseId_' + schedName, courseId);
   const btn = document.getElementById('syncBtn');
   btn.disabled = true;
   btn.textContent = 'Syncing…';
@@ -975,6 +1002,6 @@ return {init, pickSchedule, newSchedule, loadPalette, toggleDow, toggleNoSchool,
         pickCalClass, importIcs,
         addNoSchool, removeNoSchool, toggleTopic, toggleBlock, removeBlock,
         stepBlock, setBlockPoints, removeInsert, stepInsert, setInsertPoints,
-        editBlockTitle, editInsertTitle, openSync, closeSync, doSync,
+        editBlockTitle, editInsertTitle, openSync, closeSync, doSync, onSyncCourseChange,
         newFinal, openFinalEditor, closeFinalEditor, saveFinal, deleteFinal};
 })();

@@ -10,8 +10,16 @@
     4
   ],
   "no_school": [],
-  "sequence": [],
+  "sequence": [
+    {
+      "id": "bmt32xm78civgl",
+      "type": "module",
+      "source": "saved",
+      "ref": "computer-setup-and-git-usage",
+      "inserts": []
+    }
+  ],
   "start_date": "2026-08-24",
-  "updated": "2026-08-21T07:02:17",
+  "updated": "2026-08-21T08:03:44",
   "year": "2026-27"
 }
