@@ -1,5 +1,7 @@
 # Assignment — Sprint Work
 
+*Lesson: [Sprint Work](README.md)*
+
 **Duration:** 3 class periods  
 **Due:** Each sprint is due 2+ hours before the following class
 

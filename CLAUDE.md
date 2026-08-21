@@ -100,6 +100,21 @@ Folders whose names begin with `_` (e.g. `_admin/`, `_modules/`) are **ignored b
 - Year schedules store module **references** (a `_modules` slug or topic folder name) — day counts and lessons re-resolve from the repo on every request, so content edits automatically re-date every teacher's schedule.
 - `_admin/_lessonplans/*.md` are generated — regenerate with `verify.py --fix`, never hand-edit.
 
+### Placeholder ("Additional Day") entries
+
+The Module Planner's lesson table has a hover-revealed insert control above/below every row (`Planner.insertPlaceholder` in `planner.js`) for dropping in an "Additional Day" stub — a day slot with no real lesson yet, to be filled in later. On disk it's an ordinary `assignments` entry with `"placeholder": true` and empty `path`/`_module`:
+
+```json
+{ "day": 4, "duration": 1, "title": "Additional Day", "path": "", "_module": "", "placeholder": true }
+```
+
+- Lesson-existence checks (`verify.py`'s `check_modules`, the hub's and standalone planner's `validate_module`) skip a placeholder's `path`/`_module`, but still validate its `review` reference if it has one.
+- `generate_lessonplan` renders its Source cell as *placeholder — not yet filled in* instead of a broken link.
+- Year Schedule resolution (`expand_module_block`) needs no special case — it already builds a slot from whatever `title`/`day`/`duration` an assignment carries.
+- Canvas assignment creation must skip placeholders rather than create an empty assignment for them — both `api_create_module` (guards on `a.get("placeholder")`) and the Year Schedule's `api_schedule_sync_block` (guards on the slot's lesson having an empty `path`/`_module`, since that loop's slots don't carry the flag itself).
+- The standalone planner's UI doesn't render placeholders at all; its save handler merges any forward from the prior save so they aren't silently dropped, but editing them (renaming, reordering, deleting) currently only works from the hub's Module Planner.
+- Inserting or removing a placeholder renumbers every `day` in that module sequentially from array order — an explicit, opt-in action, not something that happens on a plain load/save.
+
 ## Verification
 
 After ANY content, structure, or module change, run:
@@ -264,6 +279,8 @@ Every assignment file follows this structure:
 ```markdown
 # Assignment — [Lesson Name]
 
+*Lesson: [Lesson Name](README.md)*
+
 **Due:** [due date or relative deadline]
 
 ---
@@ -300,6 +317,8 @@ When converting old-format assignments (pasted from Notion or elsewhere), always
 2. Add a Submission section with a copy-paste stencil for any text fields
 3. Specify exactly what the screenshot must show (and what disqualifies it)
 4. Clarify any ambiguous criteria with a `> [!NOTE]` callout
+
+The `*Lesson: [Lesson Name](README.md)*` line is required on every ASSIGNMENT.md — it's how a student looks up the day's context from inside Canvas. When the hub pushes this assignment to Canvas, it also automatically prepends a collapsible "View the lesson for this assignment" block with the full rendered README (see `_lesson_readme_html` in `_admin/_hub/server.py`) — that's pipeline behavior, not something to hand-author. Milestone files (`milestones/gp-X-N.md`) don't need their own lesson link — they already link to their parent ASSIGNMENT.md, which links to the lesson.
 
 ## Content conventions
 
@@ -361,6 +380,8 @@ LessonName/
 **`ASSIGNMENT.md` menu format:**
 ```markdown
 # Assignment — [Lesson Name]
+
+*Lesson: [Lesson Name](README.md)*
 
 **Duration:** N class periods
 **Due:** [due date]

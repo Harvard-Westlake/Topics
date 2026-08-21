@@ -1,5 +1,7 @@
 # Assignment — Widget Iteration from Feedback
 
+*Lesson: [Widget Iteration from Feedback](README.md)*
+
 **Due:** Next class
 
 ---

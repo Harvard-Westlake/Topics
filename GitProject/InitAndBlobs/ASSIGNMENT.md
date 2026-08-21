@@ -1,5 +1,7 @@
 # Assignment — Initialization and Blobs
 
+*Lesson: [Initialization and Blobs](README.md)*
+
 **Duration:** 3 class periods  
 **Due:** End of this block
 

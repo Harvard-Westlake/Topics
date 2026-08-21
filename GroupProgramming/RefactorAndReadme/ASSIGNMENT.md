@@ -1,5 +1,7 @@
 # Assignment — Refactoring and the README
 
+*Lesson: [Refactoring and the README](README.md)*
+
 **Due:** End of class today
 
 **Points:** 50

@@ -1,5 +1,7 @@
 # Assignment — MVP and Merge Discipline
 
+*Lesson: [MVP and Merge Discipline](README.md)*
+
 **Due:** Next class
 
 **Points:** 980

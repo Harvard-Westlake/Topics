@@ -1,5 +1,7 @@
 # Assignment — The Hand-Built Spotlight
 
+*Lesson: [The Hand-Built Spotlight](README.md)*
+
 **Duration:** 2 class periods  
 **Due:** End of Week 3
 

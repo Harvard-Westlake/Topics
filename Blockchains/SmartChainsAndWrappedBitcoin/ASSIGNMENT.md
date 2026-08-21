@@ -1,5 +1,7 @@
 # Assignment — Smart Chains and Wrapped Bitcoin
 
+*Lesson: [Smart Chains and Wrapped Bitcoin](README.md)*
+
 **Due:** Next class
 **Points:** 50
 

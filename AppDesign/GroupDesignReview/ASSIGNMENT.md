@@ -1,5 +1,7 @@
 # Assignment — Group Design Review
 
+*Lesson: [Group Design Review](README.md)*
+
 **Due:** End of class
 
 ---

@@ -1,5 +1,7 @@
 # Assignment — Deliverables and Issue Tracking
 
+*Lesson: [Deliverables and Issue Tracking](README.md)*
+
 **Due:** Next class
 
 **Points:** 250

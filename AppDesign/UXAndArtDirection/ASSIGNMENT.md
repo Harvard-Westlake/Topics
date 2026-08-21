@@ -1,5 +1,7 @@
 # Assignment — UX and Art Direction
 
+*Lesson: [UX and Art Direction](README.md)*
+
 **Due:** Next class
 
 ---

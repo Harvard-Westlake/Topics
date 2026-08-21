@@ -1,5 +1,7 @@
 # Assignment — The Learning Widget Project
 
+*Lesson: [The Learning Widget Project](README.md)*
+
 **Duration:** 2 class periods  
 **Due:** Phases 1 and 2 before next class; Phase 3 by the end of the project window  
 **Points:** 100

@@ -1,5 +1,7 @@
 # Assignment — Commits
 
+*Lesson: [Commits](README.md)*
+
 **Duration:** 4 class periods  
 **Due:** End of this block
 

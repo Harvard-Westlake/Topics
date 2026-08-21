@@ -1,5 +1,7 @@
 # Assignment — Deploying an ERC20 Token
 
+*Lesson: [Deploying an ERC20 Token](README.md)*
+
 **Due:** Next class
 **Points:** 500
 

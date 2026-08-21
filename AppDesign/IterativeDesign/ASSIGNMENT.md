@@ -1,5 +1,7 @@
 # Assignment — Iterative Design
 
+*Lesson: [Iterative Design](README.md)*
+
 **Due:** Next class
 
 ---

@@ -1,5 +1,7 @@
 # Assignment — Wrapped Tokens and Layer 2
 
+*Lesson: [Wrapped Tokens and Layer 2](README.md)*
+
 **Due:** Next class
 
 ---

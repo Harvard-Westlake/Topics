@@ -137,9 +137,10 @@ def validate_module(mod):
         if not (ROOT / t).is_dir():
             problems.append(f"topic '{t}' is not a folder in the repo")
     for a in mod.get("assignments", []):
-        lesson_dir = ROOT / a.get("_module", "") / a.get("path", "")
-        if not (lesson_dir / "README.md").exists():
-            problems.append(f"lesson '{a.get('_module')}/{a.get('path')}' does not exist")
+        if not a.get("placeholder"):
+            lesson_dir = ROOT / a.get("_module", "") / a.get("path", "")
+            if not (lesson_dir / "README.md").exists():
+                problems.append(f"lesson '{a.get('_module')}/{a.get('path')}' does not exist")
         rev = a.get("review")
         if rev:
             rev_file = ROOT / rev.get("module", "") / rev.get("path", "") / "review" / rev.get("file", "")
@@ -273,6 +274,21 @@ class Handler(BaseHTTPRequestHandler):
             if not SLUG_RE.match(slug):
                 return self._json({"error": "invalid slug"}, 400)
             body["slug"] = slug
+            # This UI doesn't render "Additional Day" placeholder entries added
+            # from the hub's Module Planner — merge any back in from the prior
+            # save instead of silently dropping them (see CLAUDE.md "Placeholder
+            # ('Additional Day') entries").
+            prior_file = MODULES_DIR / f"{slug}.json"
+            if prior_file.exists():
+                try:
+                    prior = json.loads(prior_file.read_text())
+                except json.JSONDecodeError:
+                    prior = {}
+                placeholders = [a for a in prior.get("assignments", []) if a.get("placeholder")]
+                if placeholders:
+                    body["assignments"] = sorted(
+                        list(body.get("assignments", [])) + placeholders,
+                        key=lambda a: a.get("day", 0))
             problems = validate_module(body)
             if problems:
                 return self._json({"error": "validation failed", "problems": problems}, 422)

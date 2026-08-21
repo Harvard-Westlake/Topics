@@ -1,5 +1,7 @@
 # Assignment — The Design Challenge
 
+*Lesson: [The Design Challenge](README.md)*
+
 **Duration:** 2 class periods  
 **Due:** Start of the presentation class
 

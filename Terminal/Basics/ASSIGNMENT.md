@@ -1,5 +1,7 @@
 # Assignment — Terminal Basics
 
+*Lesson: [Terminal Basics](README.md)*
+
 **Due:** Next class
 
 ---

@@ -65,11 +65,15 @@
           "title": { "type": "string" },
           "path": {
             "type": "string",
-            "description": "Lesson folder name inside the topic folder, e.g. \"RepositoriesAndCommits\""
+            "description": "Lesson folder name inside the topic folder, e.g. \"RepositoriesAndCommits\". Empty string for a placeholder entry (see \"placeholder\")."
           },
           "_module": {
             "type": "string",
-            "description": "Top-level topic folder the lesson lives in, e.g. \"GitUsage\". Named to match the hub's create-module payload."
+            "description": "Top-level topic folder the lesson lives in, e.g. \"GitUsage\". Named to match the hub's create-module payload. Empty string for a placeholder entry (see \"placeholder\")."
+          },
+          "placeholder": {
+            "type": "boolean",
+            "description": "True for an \"Additional Day\" stub inserted from the Module Planner that doesn't reference a real lesson yet (path/_module are empty strings). Skipped by lesson-existence checks; excluded from Canvas assignment creation until it references a real lesson and this flag is removed."
           },
           "review": {
             "type": ["object", "null"],

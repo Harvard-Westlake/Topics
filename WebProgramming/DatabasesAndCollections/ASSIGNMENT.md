@@ -1,5 +1,7 @@
 # Assignment — Databases and Collections
 
+*Lesson: [Databases and Collections](README.md)*
+
 **Due:** End of class (Part 1 is timed); Part 2 before next class  
 **Points:** 10
 

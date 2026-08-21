@@ -1,5 +1,7 @@
 # Assignment — Combining Tech Specs
 
+*Lesson: [Combining Tech Specs](README.md)*
+
 **Due:** End of class
 
 ---

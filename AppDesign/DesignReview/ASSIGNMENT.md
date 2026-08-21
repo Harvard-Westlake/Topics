@@ -1,5 +1,7 @@
 # Assignment — Design Review
 
+*Lesson: [Design Review](README.md)*
+
 **Due:** Next class
 
 ---

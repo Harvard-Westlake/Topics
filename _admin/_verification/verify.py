@@ -8,7 +8,7 @@ that exist:
   2. Every topic folder has LESSONS.md + README.md, LESSONS.md paths exist,
      and every lesson folder is listed in LESSONS.md
   3. Lesson READMEs contain a Skill Building section and link ASSIGNMENT.md
-     when one exists
+     when one exists; every ASSIGNMENT.md links back to its lesson README
   4. Every topic is listed in the root README
   5. Every _modules/*.json is valid: slug matches filename, lessons and
      review references exist, titles match LESSONS.md, and the generated
@@ -142,6 +142,12 @@ def check_structure():
                 err(f"{rel}/README.md: ASSIGNMENT.md exists but is not linked")
             if links_assignment and not has_assignment:
                 err(f"{rel}/README.md: links ASSIGNMENT.md but the file does not exist")
+            if has_assignment:
+                assignment_paras = (lesson / "ASSIGNMENT.md").read_text().split("\n\n", 2)
+                lesson_link_para = assignment_paras[1] if len(assignment_paras) > 1 else ""
+                if "](README.md)" not in lesson_link_para:
+                    err(f"{rel}/ASSIGNMENT.md: missing the *Lesson: [...](README.md)* "
+                        "link under the title (see CLAUDE.md \"ASSIGNMENT.md format\")")
 
 
 # ── 5. Curated module JSONs ────────────────────────────────────────────────────
@@ -238,7 +244,11 @@ def generate_lessonplan(mod):
         lines += [mod["description"], ""]
     lines += ["| Day | Lesson | Source | Review |", "|---|---|---|---|"]
     for a in mod.get("assignments", []):
-        src = f"{a['_module']}/{a['path']}"
+        if a.get("placeholder"):
+            src_cell = "*placeholder — not yet filled in*"
+        else:
+            src = f"{a['_module']}/{a['path']}"
+            src_cell = f"[{src}](../../{src}/)"
         rev = a.get("review")
         if rev:
             rev_file = ROOT / rev["module"] / rev["path"] / "review" / rev["file"]
@@ -246,7 +256,7 @@ def generate_lessonplan(mod):
             rev_cell = f"[{label}](../../{rev['module']}/{rev['path']}/review/{rev['file']})"
         else:
             rev_cell = "—"
-        lines.append(f"| {day_label(unit, a)} | {a['title']} | [{src}](../../{src}/) | {rev_cell} |")
+        lines.append(f"| {day_label(unit, a)} | {a['title']} | {src_cell} | {rev_cell} |")
     lines.append("")
     return "\n".join(lines)
 
@@ -271,19 +281,20 @@ def check_modules(fix=False):
                 err(f"{rel}: topic_names entry '{t}' is not a folder in the repo")
 
         for a in mod.get("assignments", []):
-            label = f"{a.get('_module')}/{a.get('path')}"
-            lesson_dir = ROOT / a.get("_module", "") / a.get("path", "")
-            if not (lesson_dir / "README.md").exists():
-                err(f"{rel}: assignment '{a.get('title')}' points at missing lesson '{label}/'")
-                continue
-            if not (lesson_dir / "ASSIGNMENT.md").exists():
-                warn(f"{rel}: lesson '{label}/' has no ASSIGNMENT.md — the Canvas assignment body will be empty")
-            rows = parse_lessons_md(ROOT / a["_module"])
-            row = next((r for r in rows if r["path"] == a["path"]), None)
-            if row is None:
-                warn(f"{rel}: lesson '{label}/' is not listed in {a['_module']}/LESSONS.md")
-            elif row["title"] != a["title"]:
-                warn(f"{rel}: title '{a['title']}' drifted from LESSONS.md ('{row['title']}') — resave from planner")
+            if not a.get("placeholder"):
+                label = f"{a.get('_module')}/{a.get('path')}"
+                lesson_dir = ROOT / a.get("_module", "") / a.get("path", "")
+                if not (lesson_dir / "README.md").exists():
+                    err(f"{rel}: assignment '{a.get('title')}' points at missing lesson '{label}/'")
+                    continue
+                if not (lesson_dir / "ASSIGNMENT.md").exists():
+                    warn(f"{rel}: lesson '{label}/' has no ASSIGNMENT.md — the Canvas assignment body will be empty")
+                rows = parse_lessons_md(ROOT / a["_module"])
+                row = next((r for r in rows if r["path"] == a["path"]), None)
+                if row is None:
+                    warn(f"{rel}: lesson '{label}/' is not listed in {a['_module']}/LESSONS.md")
+                elif row["title"] != a["title"]:
+                    warn(f"{rel}: title '{a['title']}' drifted from LESSONS.md ('{row['title']}') — resave from planner")
             rev = a.get("review")
             if rev:
                 rev_file = ROOT / rev["module"] / rev["path"] / "review" / rev["file"]

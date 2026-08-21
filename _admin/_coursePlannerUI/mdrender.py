@@ -149,7 +149,7 @@ _TITLE_DIV_RE = re.compile(r'^<div align="center">\n\n(.*?)\n\n</div>[ \t]*$', r
 
 def _rewrite_title_divs(text):
     def render_block(m):
-        inner_html = md_lib.markdown(m.group(1), extensions=["tables", "fenced_code"])
+        inner_html = md_lib.markdown(m.group(1), extensions=["tables", "fenced_code", "toc"])
         return f'<div align="center">\n\n{inner_html}\n\n</div>'
     return _TITLE_DIV_RE.sub(render_block, text)
 
@@ -161,7 +161,9 @@ def md_to_html(text, base_path=""):
     text = _rewrite_github_urls(text, base_path)
     if md_lib:
         text = _rewrite_title_divs(text)
-        rendered = md_lib.markdown(text, extensions=["tables", "fenced_code"])
+        # "toc" only for its side effect of stamping id="..." on headings so
+        # #anchor links resolve — see the matching comment in ../_hub/server.py.
+        rendered = md_lib.markdown(text, extensions=["tables", "fenced_code", "toc"])
     else:
         rendered = _builtin_render(text)
     return _restore_math(rendered, math), ENGINE
@@ -201,10 +203,25 @@ def _inline(s):
     return re.sub(r"\x00(\d+)\x00", lambda m: spans[int(m.group(1))], s)
 
 
+def _heading_slug(text, seen):
+    """id="..." for a heading, approximating python-markdown's "toc" slugs
+    closely enough for hand-written #anchor links to resolve in this fallback
+    renderer too (see the "toc" extension note in ../_hub/server.py)."""
+    text = re.sub(r'\[([^\]]+)\]\([^)]+\)', r'\1', text)
+    text = re.sub(r'[`*_]', '', text)
+    slug = re.sub(r'[-\s]+', '-', re.sub(r'[^\w\s-]', '', text).strip().lower())
+    if slug in seen:
+        seen[slug] += 1
+        return f"{slug}-{seen[slug]}"
+    seen[slug] = 0
+    return slug
+
+
 def _builtin_render(text):
     out, i = [], 0
     lines = text.splitlines()
     in_list = None  # 'ul' | 'ol' | None
+    seen_ids = {}
 
     def close_list():
         nonlocal in_list
@@ -240,7 +257,9 @@ def _builtin_render(text):
         m = re.match(r"^(#{1,6})\s+(.*)", stripped)
         if m:
             close_list()
-            out.append(f"<h{len(m.group(1))}>{_inline(m.group(2))}</h{len(m.group(1))}>")
+            level = len(m.group(1))
+            slug = _heading_slug(m.group(2), seen_ids)
+            out.append(f'<h{level} id="{slug}">{_inline(m.group(2))}</h{level}>')
         elif re.match(r"^(-{3,}|\*{3,})$", stripped):
             close_list()
             out.append("<hr>")

@@ -1,5 +1,7 @@
 # Assignment — Branching and Merging
 
+*Lesson: [Branching and Merging](README.md)*
+
 **Due:** Next class
 
 ---

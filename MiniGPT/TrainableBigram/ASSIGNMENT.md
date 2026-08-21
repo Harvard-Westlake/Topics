@@ -1,5 +1,7 @@
 # Assignment — A Table That Learns
 
+*Lesson: [A Table That Learns](README.md)*
+
 **Duration:** 2 class periods  
 **Due:** End of Week 4
 

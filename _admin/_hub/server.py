@@ -154,7 +154,7 @@ _TITLE_DIV_RE = re.compile(r'^<div align="center">\n\n(.*?)\n\n</div>[ \t]*$', r
 
 def _rewrite_title_divs(text):
     def render_block(m):
-        inner_html = md_lib.markdown(m.group(1), extensions=["tables", "fenced_code"])
+        inner_html = md_lib.markdown(m.group(1), extensions=["tables", "fenced_code", "toc"])
         return f'<div align="center">\n\n{inner_html}\n\n</div>'
     return _TITLE_DIV_RE.sub(render_block, text)
 
@@ -185,7 +185,10 @@ def md_to_html(text, base_path=""):
     # raw HTML <img src=""> / <source srcset=""> (e.g. light/dark logo <picture> blocks)
     text = re.sub(r'(src|srcset)="([^"]+)"', rewrite_html_src, text)
     text = _rewrite_title_divs(text)
-    return _restore_math(md_lib.markdown(text, extensions=["tables", "fenced_code"]), math)
+    # "toc" only for its side effect of stamping id="..." on headings so that
+    # #anchor links (a lesson's own TOC, our cross-lesson link back to it)
+    # resolve once this HTML lands in Canvas — we never insert a [TOC] marker.
+    return _restore_math(md_lib.markdown(text, extensions=["tables", "fenced_code", "toc"]), math)
 
 def review_block_html(rev_html):
     """Wrap rendered review markdown in the purple callout used on Canvas."""
@@ -193,6 +196,25 @@ def review_block_html(rev_html):
             'padding:12px 16px;margin-bottom:20px;border-radius:0 6px 6px 0">'
             '<p style="font-weight:600;color:#8957e5;margin:0 0 8px 0">&#9997;&nbsp;Review</p>'
             + rev_html + '</div>')
+
+def _lesson_readme_html(module_dir, lesson_path):
+    """Collapsible <details> block with the day's README, so a Canvas
+    assignment can show full lesson context without the student leaving
+    Canvas. Native HTML disclosure widget — no JS, survives Canvas's HTML
+    sanitization. Complements (doesn't replace) the plain README.md link
+    every ASSIGNMENT.md opens with (see CLAUDE.md "ASSIGNMENT.md format")."""
+    if not (module_dir and lesson_path):
+        return None
+    rf = TOPICS / module_dir / lesson_path / "README.md"
+    if not rf.exists():
+        return None
+    return ('<details style="background:#f6f8fa;border:1px solid #d0d7de;'
+            'border-radius:6px;margin-bottom:20px;padding:10px 16px">'
+            '<summary style="cursor:pointer;font-weight:600;color:#57606a">'
+            '&#128214;&nbsp;View the lesson for this assignment</summary>'
+            '<div style="margin-top:12px">'
+            + md_to_html(rf.read_text(), f"{module_dir}/{lesson_path}")
+            + '</div></details>')
 
 # ── Canvas helpers ─────────────────────────────────────────────────────────────
 
@@ -410,20 +432,28 @@ def api_create_module(course_id):
 
     results, errors = [], []
     for a in assignments:
+        if a.get("placeholder"):
+            continue  # not yet filled in — nothing to sync to Canvas
         day      = a["day"]
         duration = a.get("duration", 1)
         name     = f"{unit_num}.{day}: {a['title']}"
 
         # Build HTML description
         html_parts = []
+        mod_dir  = a.get("_module", "")
+        lesson_p = a.get("path", "")
+
+        # Lesson context (collapsible, so the student can pull up the day's
+        # README without leaving Canvas)
+        readme_html = _lesson_readme_html(mod_dir, lesson_p)
+        if readme_html:
+            html_parts.append(readme_html)
 
         # Review section (rendered markdown)
         if a.get("review_markdown"):
             html_parts.append(review_block_html(md_to_html(a["review_markdown"])))
 
         # Assignment content from ASSIGNMENT.md
-        mod_dir  = a.get("_module", "")
-        lesson_p = a.get("path", "")
         if mod_dir and lesson_p:
             assign_file = TOPICS / mod_dir / lesson_p / "ASSIGNMENT.md"
             if assign_file.exists():
@@ -662,9 +692,10 @@ def validate_module(mod):
         if not (TOPICS / t).is_dir():
             problems.append(f"topic '{t}' is not a folder in the repo")
     for a in mod.get("assignments", []):
-        lesson_dir = TOPICS / a.get("_module", "") / a.get("path", "")
-        if not (lesson_dir / "README.md").exists():
-            problems.append(f"lesson '{a.get('_module')}/{a.get('path')}' does not exist")
+        if not a.get("placeholder"):
+            lesson_dir = TOPICS / a.get("_module", "") / a.get("path", "")
+            if not (lesson_dir / "README.md").exists():
+                problems.append(f"lesson '{a.get('_module')}/{a.get('path')}' does not exist")
         rev = a.get("review")
         if rev:
             rev_file = TOPICS / rev.get("module", "") / rev.get("path", "") / "review" / rev.get("file", "")
@@ -1249,6 +1280,9 @@ def _canvas_unlock(date_str):
 
 def _lesson_description(module_dir, lesson_path, review_ref):
     html_parts = []
+    readme_html = _lesson_readme_html(module_dir, lesson_path)
+    if readme_html:
+        html_parts.append(readme_html)
     if review_ref:
         rf = (TOPICS / review_ref.get("module", "") / review_ref.get("path", "")
               / "review" / review_ref.get("file", ""))
@@ -1372,6 +1406,8 @@ def api_schedule_sync_block(name):
             kind = s.get("kind")
             if kind == "lesson" and s.get("lesson"):
                 a = s["lesson"]
+                if not (a.get("_module") and a.get("path")):
+                    continue  # placeholder ("Additional Day") — not yet filled in, nothing to sync
                 create_assignment(f"{unit}.{day_num}: {a['title']}", points,
                                   _lesson_description(a.get("_module"), a.get("path"),
                                                       a.get("review")),

@@ -1,5 +1,7 @@
 # Assignment — MVP Planning
 
+*Lesson: [MVP Planning](README.md)*
+
 **Due:** Next class
 
 ---

@@ -1,5 +1,7 @@
 # Assignment — Interfacing with AI
 
+*Lesson: [Interfacing with AI](README.md)*
+
 **Due:** End of class
 
 ---

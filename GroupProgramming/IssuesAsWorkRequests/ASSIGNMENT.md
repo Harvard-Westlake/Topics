@@ -1,5 +1,7 @@
 # Assignment — Issues as Work Requests
 
+*Lesson: [Issues as Work Requests](README.md)*
+
 **Due:** Next class
 
 **Points:** 300

@@ -1,5 +1,7 @@
 # Assignment — JavaScript and Coding with Cursor
 
+*Lesson: [JavaScript and Coding with Cursor](README.md)*
+
 **Due:** Next class  
 **Points:** 5
 

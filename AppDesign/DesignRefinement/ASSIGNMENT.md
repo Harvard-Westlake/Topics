@@ -1,5 +1,7 @@
 # Assignment — Design Refinement
 
+*Lesson: [Design Refinement](README.md)*
+
 **Duration:** 3 class periods  
 **Due:** End of the final refinement day
 

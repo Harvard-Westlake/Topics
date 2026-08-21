@@ -1,5 +1,7 @@
 # Assignment — Collaborative Peer Review
 
+*Lesson: [Collaborative Peer Review](README.md)*
+
 **Due:** Next class  
 **Points:** 100
 
