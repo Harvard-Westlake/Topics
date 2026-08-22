@@ -177,25 +177,25 @@ This is why GitHub can authenticate millions of developers without storing a sin
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you state the difference between symmetric and asymmetric encryption in one sentence?
-- [ ] Can you name the three guarantees of a digital signature and give a one-line description of each?
-- [ ] Can you run the three starter scripts in order and get a `VALID` verification of your own message?
+- [ ] State the difference between symmetric and asymmetric encryption in one sentence.
+- [ ] Name the three guarantees of a digital signature and give a one-line description of each.
+- [ ] Run the three starter scripts in order and get a `VALID` verification of your own message.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you explain why the signature encrypts the message's hash rather than the message itself?
-- [ ] Can you describe the two numbers a verifier computes and what a mismatch between them means?
-- [ ] Can you explain why publishing the modulus is safe when the primes are huge but unsafe when they are small?
+- [ ] Explain why the signature encrypts the message's hash rather than the message itself.
+- [ ] Describe the two numbers a verifier computes and what a mismatch between them means.
+- [ ] Explain why publishing the modulus is safe when the primes are huge but unsafe when they are small.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you explain why a symmetric key cannot provide non-repudiation but a private key can?
-- [ ] Can you trace how SSH login proves your identity to a server without a password ever being transmitted?
-- [ ] Can you predict what a verifier reports when a message is altered after signing — and which of the two computed numbers changed?
+- [ ] Explain why a symmetric key cannot provide non-repudiation but a private key can.
+- [ ] Trace how SSH login proves your identity to a server without a password ever being transmitted.
+- [ ] Predict what a verifier reports when a message is altered after signing — and which of the two computed numbers changed.
 
 ---
 

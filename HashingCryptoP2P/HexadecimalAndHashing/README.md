@@ -282,25 +282,25 @@ URYYB  → ROT13 →  HELLO
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you list the sixteen hex digits and the value of each letter `A`–`F`?
-- [ ] Can you convert `FF` to decimal and 26 to hex without a calculator?
-- [ ] Can you name the four key properties of a hash function?
+- [ ] List the sixteen hex digits and the value of each letter `A`–`F`.
+- [ ] Convert `FF` to decimal and 26 to hex without a calculator.
+- [ ] Name the four key properties of a hash function.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you convert `1A3` to binary using the 4-bits-per-digit substitution, without any arithmetic?
-- [ ] Can you compute `hash(x) = (x × 256) mod 100` for `x = 5` by hand and explain why this toy hash is not collision resistant?
-- [ ] Can you explain the difference between hashing and encryption in one sentence each?
+- [ ] Convert `1A3` to binary using the 4-bits-per-digit substitution, without any arithmetic.
+- [ ] Compute `hash(x) = (x × 256) mod 100` for `x = 5` by hand and explain why this toy hash is not collision resistant.
+- [ ] Explain the difference between hashing and encryption in one sentence each.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you explain why SHA-256 digests are written as exactly 64 hex characters?
-- [ ] Can you explain how a salt defends stored password hashes against precomputed lookup tables?
-- [ ] Can you explain why applying ROT13 twice returns the original message, and why that makes it symmetric?
+- [ ] Explain why SHA-256 digests are written as exactly 64 hex characters.
+- [ ] Explain how a salt defends stored password hashes against precomputed lookup tables.
+- [ ] Explain why applying ROT13 twice returns the original message, and why that makes it symmetric.
 
 ---
 

@@ -150,25 +150,25 @@ If you want to see the protocol live (on your own machine, not required):
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you describe the client-server model and name what happens to it when the server goes down?
-- [ ] Can you define seeder, leecher, and tracker in one sentence each?
-- [ ] Can you state what a torrent file contains, and what it does *not* contain?
+- [ ] Describe the client-server model and name what happens to it when the server goes down.
+- [ ] Define seeder, leecher, and tracker in one sentence each.
+- [ ] State what a torrent file contains, and what it does *not* contain.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you explain how a downloader verifies a piece received from an untrusted stranger?
-- [ ] Can you explain why a P2P network gets faster as more users join, while a client-server service gets slower?
-- [ ] Can you trace what happens in a swarm when a seeder suddenly disconnects?
+- [ ] Explain how a downloader verifies a piece received from an untrusted stranger.
+- [ ] Explain why a P2P network gets faster as more users join, while a client-server service gets slower.
+- [ ] Trace what happens in a swarm when a seeder suddenly disconnects.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you explain why piece-level hash verification means peers never need to be trusted?
-- [ ] Can you argue where the legal and ethical line sits in P2P file sharing, using the uploading-while-downloading fact?
-- [ ] Can you predict which properties of P2P networks a cryptocurrency needs and why a central server would defeat its purpose?
+- [ ] Explain why piece-level hash verification means peers never need to be trusted.
+- [ ] Argue where the legal and ethical line sits in P2P file sharing, using the uploading-while-downloading fact.
+- [ ] Predict which properties of P2P networks a cryptocurrency needs and why a central server would defeat its purpose.
 
 ---
 

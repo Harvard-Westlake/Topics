@@ -122,25 +122,25 @@ Before your PR, your testing must cover at least:
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you define an MVP in one sentence, hitting all three requirements (core value, runs, demonstrable end-to-end)?
-- [ ] Can you list the six steps of the GitKraken workflow in order?
-- [ ] Can you name the four required fields of a Test Evidence section?
+- [ ] Define an MVP in one sentence, hitting all three requirements (core value, runs, demonstrable end-to-end).
+- [ ] List the six steps of the GitKraken workflow in order.
+- [ ] Name the four required fields of a Test Evidence section.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you explain why merging `main` into your branch surfaces conflicts earlier and more safely than merging your branch straight into `main`?
-- [ ] Can you name the three minimum testing checks and give a concrete example of each for your project?
-- [ ] Can you explain why accepting someone's pull request makes their broken code your responsibility too?
+- [ ] Explain why merging `main` into your branch surfaces conflicts earlier and more safely than merging your branch straight into `main`.
+- [ ] Name the three minimum testing checks and give a concrete example of each for your project.
+- [ ] Explain why accepting someone's pull request makes their broken code your responsibility too.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you perform the full six-step workflow on your real project, including resolving a merge conflict in GitKraken?
-- [ ] Can you write a complete Test Evidence section that another student could reproduce exactly?
-- [ ] Can you explain what could go wrong if a team skips step 4 (testing after the merge) and only tests before merging `main` in?
+- [ ] Perform the full six-step workflow on your real project, including resolving a merge conflict in GitKraken.
+- [ ] Write a complete Test Evidence section that another student could reproduce exactly.
+- [ ] Explain what could go wrong if a team skips step 4 (testing after the merge) and only tests before merging `main` in.
 
 ---
 

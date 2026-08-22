@@ -76,22 +76,22 @@ The `~` is shorthand for your **home directory** — the folder that belongs to 
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you open a terminal on your computer?
-- [ ] Can you identify the three parts of a command: command, options, and argument?
-- [ ] Can you run `ls` and see output appear?
+- [ ] Open a terminal on your computer.
+- [ ] Identify the three parts of a command: command, options, and argument.
+- [ ] Run `ls` and see output appear.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you read the prompt and identify what the `~` symbol means?
-- [ ] Can you run a command that uses both an option and an argument at the same time?
-- [ ] Can you explain the difference between a command and an option in your own words?
+- [ ] Read the prompt and identify what the `~` symbol means.
+- [ ] Run a command that uses both an option and an argument at the same time.
+- [ ] Explain the difference between a command and an option in your own words.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you predict what `ls -la Documents/` will do before running it?
-- [ ] Can you explain what the shell is and how it differs from the terminal window itself?
-- [ ] Can you describe what happens between pressing Return and seeing the next prompt?
+- [ ] Predict what `ls -la Documents/` will do before running it.
+- [ ] Explain what the shell is and how it differs from the terminal window itself.
+- [ ] Describe what happens between pressing Return and seeing the next prompt.

@@ -199,25 +199,25 @@ Man pages open in a pager. Key controls:
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you run `pwd` and read the full path it returns?
-- [ ] Can you create a folder with `mkdir` and a file inside it with `touch`?
-- [ ] Can you open a man page and quit it with `q`?
+- [ ] Run `pwd` and read the full path it returns.
+- [ ] Create a folder with `mkdir` and a file inside it with `touch`.
+- [ ] Open a man page and quit it with `q`.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you navigate two levels up from a nested folder in a single `cd` command?
-- [ ] Can you use `find` to locate a file by name from your home directory?
-- [ ] Can you read `ls -lsa` output and identify which entries are files and which are folders?
+- [ ] Navigate two levels up from a nested folder in a single `cd` command.
+- [ ] Use `find` to locate a file by name from your home directory.
+- [ ] Read `ls -lsa` output and identify which entries are files and which are folders.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you create a nested folder structure three levels deep in a single command?
-- [ ] Can you use `find` with a wildcard to locate all files of a given type?
-- [ ] Can you use `man` to discover a flag for a command you have never used before, then apply it?
+- [ ] Create a nested folder structure three levels deep in a single command.
+- [ ] Use `find` with a wildcard to locate all files of a given type.
+- [ ] Use `man` to discover a flag for a command you have never used before, then apply it.
 
 ---
 

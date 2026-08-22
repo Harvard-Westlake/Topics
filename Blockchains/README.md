@@ -36,22 +36,22 @@ We start with something almost embarrassingly simple: a shared text file of IOUs
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you name the three ingredients from the previous module that a blockchain is built from?
-- [ ] Can you explain, in one sentence, what makes a chain of hash-linked files hard to rewrite?
-- [ ] Can you state the safety rule this module applies to every on-chain activity?
+- [ ] Name the three ingredients from the previous module that a blockchain is built from.
+- [ ] Explain, in one sentence, what makes a chain of hash-linked files hard to rewrite.
+- [ ] State the safety rule this module applies to every on-chain activity.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you describe the path this module takes from a shared text file of IOUs to a deployed token?
-- [ ] Can you explain why the module teaches Bitcoin before Ethereum?
-- [ ] Can you say what a "test network" is and why the class uses one instead of a real blockchain?
+- [ ] Describe the path this module takes from a shared text file of IOUs to a deployed token.
+- [ ] Explain why the module teaches Bitcoin before Ethereum.
+- [ ] Say what a "test network" is and why the class uses one instead of a real blockchain.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you explain why no lesson in this module requires trusting a central server — and which lesson first demonstrates that?
-- [ ] Can you predict which skills from the Java lessons carry over to writing smart contracts in Vyper?
-- [ ] Can you argue for or against the claim that "a blockchain is just a slow, shared file" using ideas from at least three lessons?
+- [ ] Explain why no lesson in this module requires trusting a central server — and which lesson first demonstrates that.
+- [ ] Predict which skills from the Java lessons carry over to writing smart contracts in Vyper.
+- [ ] Argue for or against the claim that "a blockchain is just a slow, shared file" using ideas from at least three lessons.

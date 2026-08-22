@@ -72,25 +72,25 @@ Details, evaluation criteria, and submission are in the [assignment](ASSIGNMENT.
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you state what UX Design owns and what Art Direction owns, in one sentence each?
-- [ ] Can you name the two artifacts the UX track produces and the two main artifacts the art track produces?
-- [ ] Can you explain what a mood board is for?
+- [ ] State what UX Design owns and what Art Direction owns, in one sentence each.
+- [ ] Name the two artifacts the UX track produces and the two main artifacts the art track produces.
+- [ ] Explain what a mood board is for.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you draw a UX flowchart for a three-screen app without describing any visuals?
-- [ ] Can you build a five-color palette and explain the role each color plays in the interface?
-- [ ] Can you explain why a wireframe deliberately excludes color and style?
+- [ ] Draw a UX flowchart for a three-screen app without describing any visuals.
+- [ ] Build a five-color palette and explain the role each color plays in the interface.
+- [ ] Explain why a wireframe deliberately excludes color and style.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you take one key screen and produce both its wireframe and its art-directed mockup, keeping the two concerns separate?
-- [ ] Can you critique a design where the UX is clear but the art direction is inconsistent — and name the specific inconsistencies?
-- [ ] Can you plan when in a project user testing should happen, and what each round should test?
+- [ ] Take one key screen and produce both its wireframe and its art-directed mockup, keeping the two concerns separate.
+- [ ] Critique a design where the UX is clear but the art direction is inconsistent — and name the specific inconsistencies.
+- [ ] Plan when in a project user testing should happen, and what each round should test.
 
 ---
 

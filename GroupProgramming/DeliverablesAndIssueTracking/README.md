@@ -114,25 +114,25 @@ Suppose you created an issue and, partway through, discovered it is far more wor
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you list the three steps of doing team work the right way, in order?
-- [ ] Can you create a GitHub Issue, assign yourself to it, and link it to a pull request?
-- [ ] Can you name the three issue statuses and say what each one means?
+- [ ] List the three steps of doing team work the right way, in order.
+- [ ] Create a GitHub Issue, assign yourself to it, and link it to a pull request.
+- [ ] Name the three issue statuses and say what each one means.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you explain the two checks that tell you whether your work communicates effectively?
-- [ ] Can you state the two situations in which it is acceptable to submit work to `main`?
-- [ ] Can you explain why a non-author — ideally from another group — must merge a feature into `main`?
+- [ ] Explain the two checks that tell you whether your work communicates effectively.
+- [ ] State the two situations in which it is acceptable to submit work to `main`.
+- [ ] Explain why a non-author — ideally from another group — must merge a feature into `main`.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you walk through delivering an issue that turned out to be too big — splitting it, committing what you finished, and documenting what remains?
-- [ ] Can you set up a parent feature issue with individual child issues for a two-person feature?
-- [ ] Can you argue why a programmer who communicates a small deliverable beats one who silently writes twice as much code?
+- [ ] Walk through delivering an issue that turned out to be too big — splitting it, committing what you finished, and documenting what remains.
+- [ ] Set up a parent feature issue with individual child issues for a two-person feature.
+- [ ] Argue why a programmer who communicates a small deliverable beats one who silently writes twice as much code.
 
 ---
 

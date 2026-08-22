@@ -169,25 +169,25 @@ You must:
 
 You now possess the central block of a transformer. The final engineering chapter turns that block into a complete language-modeling system that can train, stop, save itself, reload, and generate text.
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you explain why model width must be divisible by the number of heads?
-- [ ] Can you trace a token representation through the block diagram, naming each stage?
-- [ ] Can you state the different roles of attention and the feed-forward network in one sentence each?
+- [ ] Explain why model width must be divisible by the number of heads.
+- [ ] Trace a token representation through the block diagram, naming each stage.
+- [ ] State the different roles of attention and the feed-forward network in one sentence each.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you implement Root Mean Square Normalization and pass a numerical gradient check?
-- [ ] Can you verify that a one-head configuration exactly reproduces your Chapter 8 model?
-- [ ] Can you design a test proving the feed-forward network never mixes information across positions?
+- [ ] Implement Root Mean Square Normalization and pass a numerical gradient check.
+- [ ] Verify that a one-head configuration exactly reproduces your Chapter 8 model.
+- [ ] Design a test proving the feed-forward network never mixes information across positions.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you count the block's parameters by component and reconcile the total against the enumerated parameters?
-- [ ] Can you explain what residual connections contribute to gradient flow through the block?
-- [ ] Can you run a head-removal experiment and interpret whether all heads contribute equally?
+- [ ] Count the block's parameters by component and reconcile the total against the enumerated parameters.
+- [ ] Explain what residual connections contribute to gradient flow through the block.
+- [ ] Run a head-removal experiment and interpret whether all heads contribute equally.
 
 ---
 

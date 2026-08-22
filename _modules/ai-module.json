@@ -1,6 +1,6 @@
 {
-  "name": "U5 - AI Module",
-  "slug": "u5-ai-module",
+  "name": "AI Module",
+  "slug": "ai-module",
   "description": "",
   "unit_number": 3,
   "points_per_assignment": 10,
@@ -99,5 +99,5 @@
       "review": null
     }
   ],
-  "updated": "2026-08-13"
+  "updated": "2026-08-22"
 }

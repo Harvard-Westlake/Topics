@@ -1,8 +1,8 @@
-# Module — U5 - AI Module
+# Module — AI Module
 
-*Generated from [`_modules/u5-ai-module.json`](../../_modules/u5-ai-module.json) — do not edit by hand. Regenerate with `python3 _admin/_verification/verify.py --fix` or by saving from the planner UI.*
+*Generated from [`_modules/ai-module.json`](../../_modules/ai-module.json) — do not edit by hand. Regenerate with `python3 _admin/_verification/verify.py --fix` or by saving from the planner UI.*
 
-**Unit 3** · 10 pts/assignment · scale ×1.15 · updated 2026-08-13
+**Unit 3** · 10 pts/assignment · scale ×1.15 · updated 2026-08-22
 
 | Day | Lesson | Source | Review |
 |---|---|---|---|

@@ -136,7 +136,7 @@ No explanations. Enough to jog memory, not re-teach.
 ```
 
 Rules:
-- **Task-based.** Reviews are exercises the student performs — numbered tasks under `## Tasks`, not "Can you…" checkboxes (those live in Skill Building sections in lesson READMEs).
+- **Task-based.** Reviews are exercises the student performs — numbered tasks under `## Tasks`, not checkbox self-assessments (those live in Check for Understanding sections in lesson READMEs).
 - **Terse reference only.** The top section is a quick-reference table or bullet list, nothing more. No explanatory prose.
 - **Self-contained.** Must make sense when injected into any assignment without surrounding context.
 - **Cumulative scope.** Each review covers content up to and including the current lesson, plus all prior lessons in the same module.
@@ -212,16 +212,20 @@ Type Label in color
 
 [body content]
 
-## Skill Building
+## ☑️ Check for Understanding
 
 ### Introductory
-- [ ] Can you ...
+- [ ] Plain statement of an action the student can perform
 
 ### Intermediate
-- [ ] Can you ...
+- [ ] ...
 
 ### Advanced
-- [ ] Can you ...
+- [ ] ...
+
+## 🚀 Stretch Goals   (optional)
+
+- [ ] ...
 
 ---
 

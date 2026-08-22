@@ -1,0 +1,47 @@
+{
+  "name": "Git Project",
+  "slug": "git-project",
+  "description": "Program Git",
+  "unit_number": 2,
+  "points_per_assignment": 10,
+  "scale_factor": 1.15,
+  "start_date": null,
+  "topic_names": [
+    "GitProject"
+  ],
+  "assignments": [
+    {
+      "day": 1,
+      "duration": 1,
+      "title": "Project Setup",
+      "path": "ProjectSetup",
+      "_module": "GitProject",
+      "review": null
+    },
+    {
+      "day": 2,
+      "duration": 3,
+      "title": "Initialization and Blobs",
+      "path": "InitAndBlobs",
+      "_module": "GitProject",
+      "review": null
+    },
+    {
+      "day": 5,
+      "duration": 3,
+      "title": "Trees",
+      "path": "Trees",
+      "_module": "GitProject",
+      "review": null
+    },
+    {
+      "day": 8,
+      "duration": 4,
+      "title": "Commits",
+      "path": "Commits",
+      "_module": "GitProject",
+      "review": null
+    }
+  ],
+  "updated": "2026-08-22"
+}

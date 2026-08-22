@@ -42,25 +42,25 @@ Every commit in this project must begin with the milestone label in its summary:
 
 This format is required throughout the entire project. A commit history without these labels is incomplete and will affect your grade.
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you explain the difference between the `.git/` folder and the `git/` folder your code creates?
-- [ ] Can you explain why `/git` must be in `.gitignore`?
-- [ ] Can you create a GitHub repository, clone it, and verify the remote with `git remote -v`?
+- [ ] Explain the difference between the `.git/` folder and the `git/` folder your code creates.
+- [ ] Explain why `/git` must be in `.gitignore`.
+- [ ] Create a GitHub repository, clone it, and verify the remote with `git remote -v`.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you explain what the `HEAD` file stores and why it is part of `init()`?
-- [ ] Can you describe the role of the commit label convention (GP-X.Y) and why a consistent history matters?
-- [ ] Can you verify that your `.gitignore` is working by checking that `git/` does not appear in `git status`?
+- [ ] Explain what the `HEAD` file stores and why it is part of `init()`.
+- [ ] Describe the role of the commit label convention (GP-X.Y) and why a consistent history matters.
+- [ ] Verify that your `.gitignore` is working by checking that `git/` does not appear in `git status`.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you set up the full project structure — repo, class, `.gitignore`, HEAD — from memory without referencing the instructions?
-- [ ] Can you explain what would happen if you forgot the `/git` entry in `.gitignore` and pushed to GitHub?
-- [ ] Can you write a commit message that would help a classmate understand exactly what was changed, if they were picking up your code in Part 4?
+- [ ] Set up the full project structure — repo, class, `.gitignore`, HEAD — from memory without referencing the instructions.
+- [ ] Explain what would happen if you forgot the `/git` entry in `.gitignore` and pushed to GitHub.
+- [ ] Write a commit message that would help a classmate understand exactly what was changed, if they were picking up your code in Part 4.
 
 ---
 

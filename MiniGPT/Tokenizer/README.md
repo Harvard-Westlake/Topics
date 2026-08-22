@@ -222,25 +222,25 @@ On ordinary English text the token count should fall substantially, and the earl
 
 The machine now possesses an alphabet, but an alphabet does not predict anything. The next chapter gives it the smallest possible memory.
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you explain the difference between a character, a byte, and a token?
-- [ ] Can you trace how `addFiles` turns a text file into a list of integers, and explain why every starting token is between 0 and 255?
-- [ ] Can you explain why `nextTokenId` starts at 256, and why `vocabularySize()` reports the merges actually performed rather than the merges requested?
+- [ ] Explain the difference between a character, a byte, and a token.
+- [ ] Trace how `addFiles` turns a text file into a list of integers, and explain why every starting token is between 0 and 255.
+- [ ] Explain why `nextTokenId` starts at 256, and why `vocabularySize()` reports the merges actually performed rather than the merges requested.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you count every adjacent pair in `[97, 98, 97, 98]` by hand and match what `countPairs` must return?
-- [ ] Can you explain why `mergeMostFrequentPair` returns `false` when no pair occurs at least twice, and what `train` does when that happens?
-- [ ] Can you show why merging `(97, 97)` turns `[97, 97, 97]` into `[256, 97]` and not `[256, 256]`?
+- [ ] Count every adjacent pair in `[97, 98, 97, 98]` by hand and match what `countPairs` must return.
+- [ ] Explain why `mergeMostFrequentPair` returns `false` when no pair occurs at least twice, and what `train` does when that happens.
+- [ ] Show why merging `(97, 97)` turns `[97, 97, 97]` into `[256, 97]` and not `[256, 256]`.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you explain why the single-pass merge costs time proportional to the document length, while a search-and-replace loop can cost quadratic time?
-- [ ] Can you explain how two correct programs trained on the same file could learn different vocabularies without the tie rule — and walk through the rule that prevents it?
-- [ ] Can you explain why the ordered `MergeRule` list is exactly what `encode` needs to tokenize text the trainer never saw, and why replaying the rules out of order breaks it?
+- [ ] Explain why the single-pass merge costs time proportional to the document length, while a search-and-replace loop can cost quadratic time.
+- [ ] Explain how two correct programs trained on the same file could learn different vocabularies without the tie rule — and walk through the rule that prevents it.
+- [ ] Explain why the ordered `MergeRule` list is exactly what `encode` needs to tokenize text the trainer never saw, and why replaying the rules out of order breaks it.
 
 ---
 

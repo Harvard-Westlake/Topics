@@ -129,25 +129,25 @@ Using the class platform — [https://learn.hw.com/code/vyper-framework#/app](ht
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you explain a smart contract using "if this, then that" and the vending machine analogy?
-- [ ] Can you name the four key features of deployed contracts and say which one makes bugs permanent?
-- [ ] Can you name the three famous exploits and roughly what each one cost?
+- [ ] Explain a smart contract using "if this, then that" and the vending machine analogy.
+- [ ] Name the four key features of deployed contracts and say which one makes bugs permanent.
+- [ ] Name the three famous exploits and roughly what each one cost.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you contrast the UTXO and account-based models in one sentence each?
-- [ ] Can you use the bus analogy to explain why a contract call does not create its own block?
-- [ ] Can you explain which contract calls must be included in a block and which need none at all?
+- [ ] Contrast the UTXO and account-based models in one sentence each.
+- [ ] Use the bus analogy to explain why a contract call does not create its own block.
+- [ ] Explain which contract calls must be included in a block and which need none at all.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you explain what a reentrancy attack interrupts, and why the DAO hack forced a hard fork?
-- [ ] Can you explain what Patricia Merkle Trees store for Ethereum that Bitcoin never needs to store?
-- [ ] Can you argue why Vyper deliberately removes language features that Solidity keeps?
+- [ ] Explain what a reentrancy attack interrupts, and why the DAO hack forced a hard fork.
+- [ ] Explain what Patricia Merkle Trees store for Ethereum that Bitcoin never needs to store.
+- [ ] Argue why Vyper deliberately removes language features that Solidity keeps.
 
 ---
 

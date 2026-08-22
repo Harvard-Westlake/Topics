@@ -32,25 +32,25 @@ By the end of this part, running your program should:
 
 Your program creates a `git/` directory in the project root. This is separate from the `.git/` folder that real Git uses for your project's version control. The `.gitignore` from Part 1 prevents your `git/` folder from being accidentally committed to GitHub.
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you explain what `init()` creates and why each file or folder is needed?
-- [ ] Can you verify your SHA-1 hash against an online tool to confirm it is correct?
-- [ ] Can you describe what is stored in a blob file — what the filename is and what the content is?
+- [ ] Explain what `init()` creates and why each file or folder is needed.
+- [ ] Verify your SHA-1 hash against an online tool to confirm it is correct.
+- [ ] Describe what is stored in a blob file — what the filename is and what the content is.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you implement `init()` so that calling it twice does not overwrite the existing structure?
-- [ ] Can you stage two files with identical content and show that only one blob is created but two index entries exist?
-- [ ] Can you stage a modified file and show that the index entry updates to the new hash?
+- [ ] Implement `init()` so that calling it twice does not overwrite the existing structure.
+- [ ] Stage two files with identical content and show that only one blob is created but two index entries exist.
+- [ ] Stage a modified file and show that the index entry updates to the new hash.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you write a tester that creates files, stages them, and verifies the blob files and index entries programmatically?
-- [ ] Can you explain why identical file content produces a single blob, and why that is useful for storage efficiency?
-- [ ] Can you explain what would go wrong if two different files happened to produce the same SHA-1 hash (a collision)?
+- [ ] Write a tester that creates files, stages them, and verifies the blob files and index entries programmatically.
+- [ ] Explain why identical file content produces a single blob, and why that is useful for storage efficiency.
+- [ ] Explain what would go wrong if two different files happened to produce the same SHA-1 hash (a collision).
 
 ---
 

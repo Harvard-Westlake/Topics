@@ -62,22 +62,22 @@ Read the doc for each concept before starting the part that uses it.
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you explain what a blob is and why it uses a hash as its filename?
-- [ ] Can you explain the difference between staging a file and committing it?
-- [ ] Can you trace from a commit hash through a root tree to a specific file's content?
+- [ ] Explain what a blob is and why it uses a hash as its filename.
+- [ ] Explain the difference between staging a file and committing it.
+- [ ] Trace from a commit hash through a root tree to a specific file's content.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you implement `init()` so it is safe to call multiple times without overwriting existing data?
-- [ ] Can you build tree files for a directory structure where some subdirectories are nested three levels deep?
-- [ ] Can you read a classmate's codebase, understand their design, and extend it without breaking existing behavior?
+- [ ] Implement `init()` so it is safe to call multiple times without overwriting existing data.
+- [ ] Build tree files for a directory structure where some subdirectories are nested three levels deep.
+- [ ] Read a classmate's codebase, understand their design, and extend it without breaking existing behavior.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you explain why the working list algorithm in GP-3.3 produces trees bottom-up rather than top-down?
-- [ ] Can you implement `checkout` — restoring the working directory to the exact state of any prior commit?
-- [ ] Can you explain what a directed acyclic graph is and why the commit chain is one?
+- [ ] Explain why the working list algorithm in GP-3.3 produces trees bottom-up rather than top-down.
+- [ ] Implement `checkout` — restoring the working directory to the exact state of any prior commit.
+- [ ] Explain what a directed acyclic graph is and why the commit chain is one.

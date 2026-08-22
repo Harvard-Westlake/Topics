@@ -26,6 +26,7 @@ window.MathJax = {
     <button class="tab-btn" data-tab="courses">Courses</button>
     <button class="tab-btn" data-tab="schedule">Year Schedule</button>
     <button class="tab-btn" data-tab="planner">Module Planner</button>
+    <button class="tab-btn" data-tab="editor">Module Editor</button>
     <button class="tab-btn" data-tab="syllabus">Syllabus</button>
   </nav>
 </header>
@@ -310,7 +311,7 @@ window.MathJax = {
 
     <div id="plLessonsBlock" style="display:none">
       <div class="lesson-table-head">
-        <div></div><div>Day</div><div>Title</div><div style="text-align:right">Contains Review</div>
+        <div></div><div></div><div>Day</div><div>Title</div><div>Length</div><div style="text-align:right">Contains Review</div>
       </div>
       <div id="plLessonRows"></div>
     </div>
@@ -350,6 +351,184 @@ window.MathJax = {
 
 </section>
 
+<!-- ══════════════════════════ MODULE EDITOR ══════════════════════════ -->
+<section class="tab" id="tab-editor">
+
+<div class="me-layout">
+  <aside class="me-topics">
+    <h2>Topics</h2>
+    <div id="meTopicList"></div>
+    <button class="btn-new" onclick="Editor.openNewTopic()">+ New topic</button>
+  </aside>
+
+  <aside class="me-lessons" id="meLessonsPane" style="display:none">
+    <h2 id="meTopicName"></h2>
+    <div id="meLessonList"></div>
+    <button class="btn-new" onclick="Editor.openNewLesson()">+ New lesson</button>
+  </aside>
+
+  <div class="me-main">
+    <div class="me-empty" id="meEmpty">Pick a topic, then a lesson — everything in that lesson (README, assignment, activities, reviews, demos, uploads) is editable in one place.</div>
+
+    <div id="meWork" style="display:none">
+      <div class="me-workhead">
+        <div>
+          <h2 id="meLessonTitle"></h2>
+          <div class="sub" id="meLessonPath"></div>
+        </div>
+        <div class="me-actions">
+          <button class="btn-icon" onclick="Editor.openRename()">Rename</button>
+          <button class="btn-icon me-danger" onclick="Editor.openDeleteLesson()">Delete lesson</button>
+        </div>
+      </div>
+
+      <div id="meImpact" class="me-impact" style="display:none"></div>
+
+      <div class="editor-tabs" id="meTabs"></div>
+
+      <div class="editor-toolbar" id="meToolbar">
+        <div class="toggle-group">
+          <button class="toggle-btn active" id="meModeEdit" onclick="Editor.setMode('edit')">Edit</button>
+          <button class="toggle-btn" id="meModePreview" onclick="Editor.setMode('preview')">Canvas Preview</button>
+        </div>
+        <button class="btn-create" id="meSaveBtn" onclick="Editor.saveFile()" style="padding:6px 16px">Save</button>
+        <button class="btn-icon me-danger" id="meFileDeleteBtn" onclick="Editor.deleteCurrentFile()" style="display:none">Delete file</button>
+        <span id="meResult" style="font-size:12px"></span>
+        <span class="engine-hint" id="meEngine" style="margin-left:auto"></span>
+      </div>
+
+      <textarea id="meText" spellcheck="false" oninput="Editor.markDirty()"></textarea>
+      <div id="mePreview" class="mdview" style="display:none"></div>
+
+      <div id="meAssets" class="me-assets" style="display:none">
+        <div class="me-assets-head">
+          <div>
+            <strong>Uploaded materials</strong>
+            <div class="sub">Packets, worksheets, and images live in this lesson's <code>assets/</code> folder. Copy a snippet to link one from the README or assignment.</div>
+          </div>
+          <button class="btn-create" style="padding:6px 16px" onclick="document.getElementById('meUploadInput').click()">Upload file…</button>
+          <input type="file" id="meUploadInput" style="display:none" onchange="Editor.uploadAsset(this)">
+        </div>
+        <div id="meAssetList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- New topic modal -->
+<div class="overlay" id="meNewTopicOverlay" onclick="Editor.closeModals()"></div>
+<div class="modal" id="meNewTopicModal">
+  <div class="modal-head"><h2>New Topic</h2><button class="x-btn" onclick="Editor.closeModals()">&#x2715;</button></div>
+  <div class="modal-body">
+    <div class="field"><label>Folder name <span style="color:var(--muted)">(CamelCase, e.g. DataStructures)</span></label>
+      <input type="text" id="mtFolder" placeholder="DataStructures"></div>
+    <div class="field"><label>Display title</label><input type="text" id="mtTitle" placeholder="Data Structures"></div>
+    <div class="field"><label>One-sentence summary</label><input type="text" id="mtSummary" placeholder="What this topic covers"></div>
+    <div class="field"><label>Lesson type</label>
+      <select id="mtType"><option>Learning</option><option>Environment Configuration</option><option>Reinforce</option><option>Review</option></select></div>
+    <div style="border-top:1px solid var(--border);padding-top:12px;font-size:12px;color:var(--muted)">Every topic starts with its first lesson so all index files stay valid:</div>
+    <div class="row2">
+      <div class="field"><label>First lesson folder</label><input type="text" id="mtLessonFolder" placeholder="Introduction"></div>
+      <div class="field"><label>First lesson title</label><input type="text" id="mtLessonTitle" placeholder="Introduction"></div>
+    </div>
+    <div id="mtResult"></div>
+  </div>
+  <div class="modal-foot">
+    <button class="btn-create" onclick="Editor.createTopic()">Create topic</button>
+    <button class="btn-icon" onclick="Editor.closeModals()">Cancel</button>
+  </div>
+</div>
+
+<!-- New lesson modal -->
+<div class="overlay" id="meNewLessonOverlay" onclick="Editor.closeModals()"></div>
+<div class="modal" id="meNewLessonModal">
+  <div class="modal-head"><h2 id="mlHead">New Lesson</h2><button class="x-btn" onclick="Editor.closeModals()">&#x2715;</button></div>
+  <div class="modal-body">
+    <div class="row2">
+      <div class="field"><label>Folder name <span style="color:var(--muted)">(CamelCase)</span></label>
+        <input type="text" id="mlFolder" placeholder="PipeAndGrep"></div>
+      <div class="field"><label>Duration (class periods)</label><input type="number" id="mlDuration" value="1" min="1"></div>
+    </div>
+    <div class="field"><label>Title</label><input type="text" id="mlTitle" placeholder="Pipes and Grep"></div>
+    <div class="field"><label>Italic subtitle</label><input type="text" id="mlSubtitle" placeholder="Chaining commands and searching output"></div>
+    <div class="row2">
+      <div class="field"><label>Lesson type</label>
+        <select id="mlType"><option>Learning</option><option>Environment Configuration</option><option>Reinforce</option><option>Review</option></select></div>
+      <div class="field"><label>Position</label><select id="mlPosition"></select></div>
+    </div>
+    <div id="mlResult"></div>
+  </div>
+  <div class="modal-foot">
+    <button class="btn-create" onclick="Editor.createLesson()">Create lesson</button>
+    <button class="btn-icon" onclick="Editor.closeModals()">Cancel</button>
+  </div>
+</div>
+
+<!-- Rename modal -->
+<div class="overlay" id="meRenameOverlay" onclick="Editor.closeModals()"></div>
+<div class="modal" id="meRenameModal">
+  <div class="modal-head"><h2>Rename Lesson</h2><button class="x-btn" onclick="Editor.closeModals()">&#x2715;</button></div>
+  <div class="modal-body">
+    <div id="mrImpact" class="me-impact-inline"></div>
+    <div class="field"><label>Folder name</label><input type="text" id="mrFolder"></div>
+    <div class="field"><label>Title <span style="color:var(--muted)">(updates the README H1 and every index)</span></label>
+      <input type="text" id="mrTitle"></div>
+    <div id="mrResult"></div>
+  </div>
+  <div class="modal-foot">
+    <button class="btn-create" onclick="Editor.doRename()">Rename</button>
+    <button class="btn-icon" onclick="Editor.closeModals()">Cancel</button>
+  </div>
+</div>
+
+<!-- Delete confirm modal (lesson / review / activity / asset) -->
+<div class="overlay" id="meDeleteOverlay" onclick="Editor.closeModals()"></div>
+<div class="modal" id="meDeleteModal">
+  <div class="modal-head"><h2 id="mdHead">Confirm Delete</h2><button class="x-btn" onclick="Editor.closeModals()">&#x2715;</button></div>
+  <div class="modal-body">
+    <div id="mdMessage" style="font-size:13px;line-height:1.5"></div>
+    <div class="field" id="mdTypedField" style="display:none">
+      <label>Type <code id="mdTypedTarget"></code> to confirm</label>
+      <input type="text" id="mdTyped" autocomplete="off">
+    </div>
+    <div id="mdResult"></div>
+  </div>
+  <div class="modal-foot">
+    <button class="btn-create me-danger-btn" id="mdConfirmBtn" onclick="Editor.doDelete()">Delete</button>
+    <button class="btn-icon" onclick="Editor.closeModals()">Cancel</button>
+  </div>
+</div>
+
+<!-- New review / new activity modal -->
+<div class="overlay" id="meNewFileOverlay" onclick="Editor.closeModals()"></div>
+<div class="modal" id="meNewFileModal">
+  <div class="modal-head"><h2 id="mfHead">New Review</h2><button class="x-btn" onclick="Editor.closeModals()">&#x2715;</button></div>
+  <div class="modal-body">
+    <div class="field"><label id="mfLabel1">Concept name</label><input type="text" id="mfName" placeholder=""></div>
+    <div class="field" id="mfConceptField" style="display:none">
+      <label>Concept sentence <span style="color:var(--muted)">(one sentence naming the idea this activity proves)</span></label>
+      <input type="text" id="mfConcept">
+    </div>
+    <div id="mfHint" style="font-size:12px;color:var(--muted)"></div>
+    <div class="field" style="border-top:1px solid var(--border);padding-top:12px">
+      <label>Draft it with AI — full lesson text (README + assignment + reviews + activities) with instructions appended</label>
+      <div style="display:flex;gap:8px;align-items:center">
+        <textarea id="mfAiText" readonly rows="1" wrap="off" spellcheck="false"
+                  style="flex:1;height:30px;line-height:14px;resize:none;white-space:nowrap;overflow:hidden;background:var(--bg);border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:8px 10px;font-size:11px;font-family:'SF Mono','Fira Code',Menlo,monospace;outline:none"></textarea>
+        <button class="btn-create" style="padding:7px 14px;white-space:nowrap" onclick="Editor.copyAiPrompt()">Copy for AI</button>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px">One click copies everything — paste it straight into a chat, then paste the result into the created file.</div>
+    </div>
+    <div id="mfResult"></div>
+  </div>
+  <div class="modal-foot">
+    <button class="btn-create" id="mfCreateBtn" onclick="Editor.createFile()">Create</button>
+    <button class="btn-icon" onclick="Editor.closeModals()">Cancel</button>
+  </div>
+</div>
+
+</section>
+
 <!-- ══════════════════════════ SYLLABUS ══════════════════════════ -->
 <section class="tab" id="tab-syllabus">
   <div id="syllabusView" class="mdview"><div class="page-spinner"></div></div>
@@ -361,6 +540,7 @@ window.MathJax = {
 <script src="/static/courses.js"></script>
 <script src="/static/schedule.js"></script>
 <script src="/static/planner.js"></script>
+<script src="/static/editor.js"></script>
 <script src="/static/syllabus.js"></script>
 <script>Shell.init();</script>
 </body>

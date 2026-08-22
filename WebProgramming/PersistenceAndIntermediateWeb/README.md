@@ -120,25 +120,25 @@ The variable died with the old page. The local storage entry did not — it belo
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you explain what happens to JavaScript variables when a page reloads?
-- [ ] Can you name the four rungs of the persistence ladder in order?
-- [ ] Can you state the difference between an interactive website and a persistent one?
+- [ ] Explain what happens to JavaScript variables when a page reloads.
+- [ ] Name the four rungs of the persistence ladder in order.
+- [ ] State the difference between an interactive website and a persistent one.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you store a value in local storage from the console and prove it survives a refresh?
-- [ ] Can you pick the right rung of the ladder for a "welcome back" message, and a different one for a public leaderboard?
-- [ ] Can you explain why browser storage cannot follow a user to a different device?
+- [ ] Store a value in local storage from the console and prove it survives a refresh.
+- [ ] Pick the right rung of the ladder for a "welcome back" message, and a different one for a public leaderboard.
+- [ ] Explain why browser storage cannot follow a user to a different device.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you list two things your Learning Widget should remember and justify which rung each belongs on?
-- [ ] Can you explain why `JSON.stringify` and `JSON.parse` are needed when storing objects in local storage?
-- [ ] Can you describe what a shared database makes possible that browser storage never can?
+- [ ] List two things your Learning Widget should remember and justify which rung each belongs on.
+- [ ] Explain why `JSON.stringify` and `JSON.parse` are needed when storing objects in local storage.
+- [ ] Describe what a shared database makes possible that browser storage never can.
 
 ---
 

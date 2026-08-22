@@ -72,25 +72,25 @@ That link — your contract, with the mint events visible — is your submission
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you match each piece of TicketToken.java to its counterpart in ERC20.vy?
-- [ ] Can you point to the line in ERC20.vy that prevents overspending?
-- [ ] Can you customize a token's name, symbol, and initial supply before deploying?
+- [ ] Match each piece of TicketToken.java to its counterpart in ERC20.vy.
+- [ ] Point to the line in ERC20.vy that prevents overspending.
+- [ ] Customize a token's name, symbol, and initial supply before deploying.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you explain why the ledger is keyed by `address` instead of a typed-in name, and what that fixes?
-- [ ] Can you explain what a Transfer event is for and who listens to it?
-- [ ] Can you find your contract's #events tab on sepolia.etherscan.io and identify your mints?
+- [ ] Explain why the ledger is keyed by `address` instead of a typed-in name, and what that fixes.
+- [ ] Explain what a Transfer event is for and who listens to it.
+- [ ] Find your contract's #events tab on sepolia.etherscan.io and identify your mints.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you explain what `approve`/`allowance` enables that plain `transfer` cannot?
-- [ ] Can you explain the access-control assert on `mint` and what would happen without it?
-- [ ] Can you explain why your deployed token keeps working even if you delete your local copy of the code?
+- [ ] Explain what `approve`/`allowance` enables that plain `transfer` cannot.
+- [ ] Explain the access-control assert on `mint` and what would happen without it.
+- [ ] Explain why your deployed token keeps working even if you delete your local copy of the code.
 
 ---
 

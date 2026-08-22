@@ -47,25 +47,25 @@ Your commit history matters as much as the document: at least **three commits, e
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you name all five business requirements from memory?
-- [ ] Can you state your design's explicit value in one sentence?
-- [ ] Can you explain what makes a repository "public" and why this assignment requires it?
+- [ ] Name all five business requirements from memory.
+- [ ] State your design's explicit value in one sentence.
+- [ ] Explain what makes a repository "public" and why this assignment requires it.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you describe how your design's competitive element drives engagement between students?
-- [ ] Can you explain how engagement will be measured (unique active users and median active time) and how your design scores well on both?
-- [ ] Can you explain why the commit-an-hour-apart rule exists, in terms of how good designs develop?
+- [ ] Describe how your design's competitive element drives engagement between students.
+- [ ] Explain how engagement will be measured (unique active users and median active time) and how your design scores well on both.
+- [ ] Explain why the commit-an-hour-apart rule exists, in terms of how good designs develop.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you walk through how your design satisfies the California non-discrimination clause, feature by feature?
-- [ ] Can you describe a concrete expansion path for your design beyond this school?
-- [ ] Can you defend your design against the question "why would a student open this a second time?"
+- [ ] Walk through how your design satisfies the California non-discrimination clause, feature by feature.
+- [ ] Describe a concrete expansion path for your design beyond this school.
+- [ ] Defend your design against the question "why would a student open this a second time?"
 
 ---
 

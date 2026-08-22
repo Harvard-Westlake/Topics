@@ -36,22 +36,22 @@ Forking public repositories, keeping your fork in sync, and contributing back th
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you explain the difference between a local and a remote repository?
-- [ ] Can you stage, commit, and push a change using only the terminal?
-- [ ] Can you create a branch, commit to it, and switch back to `main`?
+- [ ] Explain the difference between a local and a remote repository.
+- [ ] Stage, commit, and push a change using only the terminal.
+- [ ] Create a branch, commit to it, and switch back to `main`.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you clone a repository, make a change, and open a pull request on GitHub?
-- [ ] Can you explain when a fast-forward merge occurs and why it matters?
-- [ ] Can you fork a repository and push a change to your fork?
+- [ ] Clone a repository, make a change, and open a pull request on GitHub.
+- [ ] Explain when a fast-forward merge occurs and why it matters.
+- [ ] Fork a repository and push a change to your fork.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you sync a fork with an upstream repository using the terminal?
-- [ ] Can you explain the entire open source contribution workflow from fork to merged PR?
-- [ ] Can you write commit messages that clearly communicate intent to a future reader?
+- [ ] Sync a fork with an upstream repository using the terminal.
+- [ ] Explain the entire open source contribution workflow from fork to merged PR.
+- [ ] Write commit messages that clearly communicate intent to a future reader.

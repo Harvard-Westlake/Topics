@@ -381,25 +381,25 @@ More traps worth defusing now:
 
 The Markov reader can imitate local texture, but it forgets almost everything. The next question is no longer whether counts help — they do. The question is how a model can carry forward useful information from farther back *without* enumerating every possible history. The answer begins with selective memory.
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you explain what it means for a language model to "assign probability to reality," and how that differs from a deterministic lookup of the most common next token?
-- [ ] Can you walk through the three steps that turn likelihood into negative log-likelihood — and name the specific problem each step solves?
-- [ ] Can you compute the four smoothed probabilities for `[0, 1, 0, 1, 1]` with $V=2$ and $\alpha=1$ by hand, and verify each row sums to one?
+- [ ] Explain what it means for a language model to "assign probability to reality," and how that differs from a deterministic lookup of the most common next token.
+- [ ] Walk through the three steps that turn likelihood into negative log-likelihood — and name the specific problem each step solves.
+- [ ] Compute the four smoothed probabilities for `[0, 1, 0, 1, 1]` with $V=2$ and $\alpha=1$ by hand, and verify each row sums to one.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you use the milk example to explain why accuracy scores a near-miss and an arrogant miss identically, while NLL separates them?
-- [ ] Can you explain why the uniform model's perplexity is exactly $V$ and a perfect model's perplexity is exactly 1?
-- [ ] Can you explain why the 80/10/10 split must be contiguous, using the near-duplicate-windows argument?
+- [ ] Use the milk example to explain why accuracy scores a near-miss and an arrogant miss identically, while NLL separates them.
+- [ ] Explain why the uniform model's perplexity is exactly $V$ and a perfect model's perplexity is exactly 1.
+- [ ] Explain why the 80/10/10 split must be contiguous, using the near-duplicate-windows argument.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you explain why mean squared error is the wrong loss for next-token prediction, and what NLL measures instead?
-- [ ] Can you interpret a bits-per-byte of 3.5 as a compression claim, and explain when bits per byte must replace per-token loss?
-- [ ] Can you explain why our Tester's train-merges-then-split pipeline is technically data leakage, and how to restructure it?
+- [ ] Explain why mean squared error is the wrong loss for next-token prediction, and what NLL measures instead.
+- [ ] Interpret a bits-per-byte of 3.5 as a compression claim, and explain when bits per byte must replace per-token loss.
+- [ ] Explain why our Tester's train-merges-then-split pipeline is technically data leakage, and how to restructure it.
 
 ---
 

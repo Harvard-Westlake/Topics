@@ -114,25 +114,25 @@ This phase is not about having the most features. It is about proving:
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you explain the difference between a code review and a product review, and who each is for?
-- [ ] Can you state your team's MVP in one sentence using the target-user / core-job / core-value format?
-- [ ] Can you show that a demo is running from `main`, including the commit hash?
+- [ ] Explain the difference between a code review and a product review, and who each is for.
+- [ ] State your team's MVP in one sentence using the target-user / core-job / core-value format.
+- [ ] Show that a demo is running from `main`, including the commit hash.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you list the four required parts of the individual deep dive and the time budget for each?
-- [ ] Can you pick a 10–25 line snippet from `main` that you materially contributed, with its file path and function name?
-- [ ] Can you present your work's scope and known issues against the tech spec diagram?
+- [ ] List the four required parts of the individual deep dive and the time budget for each.
+- [ ] Pick a 10–25 line snippet from `main` that you materially contributed, with its file path and function name.
+- [ ] Present your work's scope and known issues against the tech spec diagram.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you trace the exact execution path of your feature — entry point, the next 2–4 functions by name, the data shape as it moves, and where validation happens?
-- [ ] Can you explain the technical challenge in your contribution and why your solution is correct, even if AI helped write it?
-- [ ] Can you identify every integration point where your code touches other sections of the codebase?
+- [ ] Trace the exact execution path of your feature — entry point, the next 2–4 functions by name, the data shape as it moves, and where validation happens.
+- [ ] Explain the technical challenge in your contribution and why your solution is correct, even if AI helped write it.
+- [ ] Identify every integration point where your code touches other sections of the codebase.
 
 ---
 

@@ -526,25 +526,25 @@ More traps worth defusing now — each one caught a real learner:
 
 You have built a useful spotlight, but every rule was written manually — you chose the +4, you chose the feature slots, you decided toppings matter. Modern models receive none of that. The next question is how numbers like these can adjust *themselves*, and it begins with a table that learns.
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you explain what "position" means in this chapter, and why the three-card table involves no sampling and no training corpus?
-- [ ] Can you compute the uniform causal weights at every position of a four-token sequence, and name which cards are mixed at position 2?
-- [ ] Can you explain query, key, and value in one sentence each using the request slip, card face, and card contents — and say which single position the query comes from?
+- [ ] Explain what "position" means in this chapter, and why the three-card table involves no sampling and no training corpus.
+- [ ] Compute the uniform causal weights at every position of a four-token sequence, and name which cards are mixed at position 2.
+- [ ] Explain query, key, and value in one sentence each using the request slip, card face, and card contents — and say which single position the query comes from.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you run softmax on `[4.0, 0.0, 0.0]` by hand, including the max-subtraction step, and explain why the result — unlike the raw scores — can serve as mixing weights?
-- [ ] Can you explain why token identifiers cannot be fed to the dot product but feature vectors can, using Chapter 1's identifiers-are-labels misconception?
-- [ ] Can you compute the dot product of two labeled stat cards by hand and explain why a slot contributes only when both cards have something in it?
+- [ ] Run softmax on `[4.0, 0.0, 0.0]` by hand, including the max-subtraction step, and explain why the result — unlike the raw scores — can serve as mixing weights.
+- [ ] Explain why token identifiers cannot be fed to the dot product but feature vectors can, using Chapter 1's identifiers-are-labels misconception.
+- [ ] Compute the dot product of two labeled stat cards by hand and explain why a slot contributes only when both cards have something in it.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you trace the complete pipeline at position 2 of the three-card table — scaled scores, softmax, weighted blend — and show the `sweet` feature rising from 0.667 to 0.767 relative to uniform mixing?
-- [ ] Can you prove that adding a constant to all permitted scores leaves softmax unchanged, and explain why all-equal scores reproduce Stage 1 exactly?
-- [ ] Can you explain why raw dot products grow with vector dimension and how dividing by $\sqrt{d}$ repairs the problem before softmax?
+- [ ] Trace the complete pipeline at position 2 of the three-card table — scaled scores, softmax, weighted blend — and show the `sweet` feature rising from 0.667 to 0.767 relative to uniform mixing.
+- [ ] Prove that adding a constant to all permitted scores leaves softmax unchanged, and explain why all-equal scores reproduce Stage 1 exactly.
+- [ ] Explain why raw dot products grow with vector dimension and how dividing by $\sqrt{d}$ repairs the problem before softmax.
 
 ---
 

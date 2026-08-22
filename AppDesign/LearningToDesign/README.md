@@ -75,25 +75,25 @@ Talk with your partner briefly about what you learned. What was hard about disti
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you name the six sections of a game design writeup?
-- [ ] Can you describe one behavior from a game you played today in fully non-technical language?
-- [ ] Can you state the quick test that separates a design sentence from a specification sentence?
+- [ ] Name the six sections of a game design writeup.
+- [ ] Describe one behavior from a game you played today in fully non-technical language.
+- [ ] State the quick test that separates a design sentence from a specification sentence.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you explain the difference between a game's *behaviors* and its *functions*?
-- [ ] Can you take one sentence from your writeup and decide — with a reason — whether it is design or specification?
-- [ ] Can you find a design behavior your partner's document missed?
+- [ ] Explain the difference between a game's *behaviors* and its *functions*.
+- [ ] Take one sentence from your writeup and decide — with a reason — whether it is design or specification.
+- [ ] Find a design behavior your partner's document missed.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you rewrite a technical sentence like "the ghost's state variable switches to FRIGHTENED" as pure design language?
-- [ ] Can you explain a *relationship* between two game elements and why it matters to the player's experience?
-- [ ] Can you explain why this lesson banned AI tools, in terms of what skill the lesson builds?
+- [ ] Rewrite a technical sentence like "the ghost's state variable switches to FRIGHTENED" as pure design language.
+- [ ] Explain a *relationship* between two game elements and why it matters to the player's experience.
+- [ ] Explain why this lesson banned AI tools, in terms of what skill the lesson builds.
 
 ---
 

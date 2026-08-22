@@ -71,25 +71,25 @@ Your workflow over the three days:
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you name the four things a browser needs to reach a contract on a blockchain?
-- [ ] Can you explain what a wallet extension like MetaMask actually does when a page requests a transaction?
-- [ ] Can you say where the contract address and the ABI each come from in your own deployment?
+- [ ] Name the four things a browser needs to reach a contract on a blockchain.
+- [ ] Explain what a wallet extension like MetaMask actually does when a page requests a transaction.
+- [ ] Say where the contract address and the ABI each come from in your own deployment.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you explain why the ABI is called a stencil — what information the raw bytecode is missing that the ABI supplies?
-- [ ] Can you explain why a wrong or outdated ABI breaks a page even when the contract address is correct?
-- [ ] Can you describe the difference between reading contract state and writing it, and which one costs gas?
+- [ ] Explain why the ABI is called a stencil — what information the raw bytecode is missing that the ABI supplies.
+- [ ] Explain why a wrong or outdated ABI breaks a page even when the contract address is correct.
+- [ ] Describe the difference between reading contract state and writing it, and which one costs gas.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you explain how two visitors' browsers see the same application state with no server owned by you in the middle?
-- [ ] Can you design a contract the whole class can meaningfully interact with, and defend why it is more than a counter?
-- [ ] Can you walk the full path of one button click — encode, sign, broadcast, mine, re-read — naming which of the four requirements each step depends on?
+- [ ] Explain how two visitors' browsers see the same application state with no server owned by you in the middle.
+- [ ] Design a contract the whole class can meaningfully interact with, and defend why it is more than a counter.
+- [ ] Walk the full path of one button click — encode, sign, broadcast, mine, re-read — naming which of the four requirements each step depends on.
 
 ---
 

@@ -93,25 +93,25 @@ The blockchain remains the court of final settlement (either party can always cl
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you generate an RSA keypair by hand from `p = 5` and `q = 11`, ending with the public and private keys?
-- [ ] Can you say which key encrypts and which key decrypts when sending a secret message?
-- [ ] Can you explain what "2-of-3" means for a multisig wallet?
+- [ ] Generate an RSA keypair by hand from `p = 5` and `q = 11`, ending with the public and private keys.
+- [ ] Say which key encrypts and which key decrypts when sending a secret message.
+- [ ] Explain what "2-of-3" means for a multisig wallet.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you encrypt the message `m = 7` with the public key `(3, 55)` and show the ciphertext is 13?
-- [ ] Can you explain why publishing `(e, n)` does not reveal `d` for real-sized keys?
-- [ ] Can you describe the three phases of a payment channel and which ones touch the blockchain?
+- [ ] Encrypt the message `m = 7` with the public key `(3, 55)` and show the ciphertext is 13.
+- [ ] Explain why publishing `(e, n)` does not reveal `d` for real-sized keys.
+- [ ] Describe the three phases of a payment channel and which ones touch the blockchain.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you explain how the same RSA math produces signatures when run with the keys swapped?
-- [ ] Can you design a multisig setup for a family emergency fund and justify your choice of m and n?
-- [ ] Can you explain why Layer 2 payments stay honest even though the blockchain never sees them?
+- [ ] Explain how the same RSA math produces signatures when run with the keys swapped.
+- [ ] Design a multisig setup for a family emergency fund and justify your choice of m and n.
+- [ ] Explain why Layer 2 payments stay honest even though the blockchain never sees them.
 
 ---
 

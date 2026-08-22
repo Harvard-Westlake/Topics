@@ -126,25 +126,25 @@ The written analysis you turn in — Activity 2 — is in the [assignment](ASSIG
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you name the three UX principles from this lesson and give a one-sentence definition of each?
-- [ ] Can you list the three questions clear navigation must answer at every moment?
-- [ ] Can you name the three heatmap types and what data each is built from?
+- [ ] Name the three UX principles from this lesson and give a one-sentence definition of each.
+- [ ] List the three questions clear navigation must answer at every moment.
+- [ ] Name the three heatmap types and what data each is built from.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you sketch the intended user flow of your Learning Widget from arrival to payoff?
-- [ ] Can you explain why heatmap data often contradicts what users say about their own behavior?
-- [ ] Can you evaluate a website's engagement speed and point to the specific element that hooked you?
+- [ ] Sketch the intended user flow of your Learning Widget from arrival to payoff.
+- [ ] Explain why heatmap data often contradicts what users say about their own behavior.
+- [ ] Evaluate a website's engagement speed and point to the specific element that hooked you.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you predict what a click map of your widget would show, and name one non-link users would click?
-- [ ] Can you explain how you would capture click positions with web events and store them in Firestore?
-- [ ] Can you take one idea from an inspiration site and describe concretely how it would improve your widget's flow?
+- [ ] Predict what a click map of your widget would show, and name one non-link users would click.
+- [ ] Explain how you would capture click positions with web events and store them in Firestore.
+- [ ] Take one idea from an inspiration site and describe concretely how it would improve your widget's flow.
 
 ---
 

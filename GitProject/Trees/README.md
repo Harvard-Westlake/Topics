@@ -42,25 +42,25 @@ The algorithm works bottom-up: find the deepest directory whose children are all
 
 See [Docs/trees.md](../Docs/trees.md) and the interactive visualizer linked in the assignment for a step-by-step walkthrough.
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you explain why tree files must be built from the inside out (deepest directory first)?
-- [ ] Can you describe what a tree file contains — what each line represents?
-- [ ] Can you trace from a root tree hash through all child hashes to reconstruct a directory's contents?
+- [ ] Explain why tree files must be built from the inside out (deepest directory first).
+- [ ] Describe what a tree file contains — what each line represents.
+- [ ] Trace from a root tree hash through all child hashes to reconstruct a directory's contents.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you implement `createTree(dirPath)` recursively so it handles subdirectories of any depth?
-- [ ] Can you explain the difference between `createTree(dirPath)` and `createTreeFromIndex()` and when each is used?
-- [ ] Can you walk through the working list algorithm for a three-file, two-directory example without looking at notes?
+- [ ] Implement `createTree(dirPath)` recursively so it handles subdirectories of any depth.
+- [ ] Explain the difference between `createTree(dirPath)` and `createTreeFromIndex()` and when each is used.
+- [ ] Walk through the working list algorithm for a three-file, two-directory example without looking at notes.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you explain why the working list is sorted by path before processing, and what would go wrong if it weren't?
-- [ ] Can you show that running `createTreeFromIndex()` twice on the same index produces identical tree hashes?
-- [ ] Can you modify your implementation so that adding only one file to the index changes only the tree files along that file's path — not the entire tree structure?
+- [ ] Explain why the working list is sorted by path before processing, and what would go wrong if it weren't.
+- [ ] Show that running `createTreeFromIndex()` twice on the same index produces identical tree hashes.
+- [ ] Modify your implementation so that adding only one file to the index changes only the tree files along that file's path — not the entire tree structure.
 
 ---
 

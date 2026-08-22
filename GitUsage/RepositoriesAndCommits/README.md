@@ -37,7 +37,7 @@ ls .git                 # peek inside: branches, commits, config, objects
 > A name that starts with a dot, like `.git`, is the Unix convention for a **hidden file or folder** — a plain `ls` (and your file manager) skips over anything named this way by default, since it's meant for tools to read, not for you to browse. That's the whole reason `.git` doesn't clutter your project folder even though it's quietly holding your entire history. `ls -a` — the `a` is for "all" — overrides that and shows hidden names too.
 
 👉 <details>
-<summary><strong>Activity: The Hidden Detective</strong> — click to expand</summary>
+<summary><h3>Activity: The Hidden Detective — click to expand</h3></summary>
 
 *Concept: Proving that a repository's history lives locally, inside the hidden `.git` folder.*
 
@@ -163,7 +163,7 @@ Always clone. Downloading a ZIP gives you the files but none of the Git machiner
 **In GitKraken:** click **Clone a Repo** on the home screen → paste the repository URL → choose a destination folder → click **Clone the repo!**
 
 👉 <details>
-<summary><strong>Activity: Clone vs. ZIP Challenge</strong> — click to expand</summary>
+<summary><h3>Activity: Clone vs. ZIP Challenge — click to expand</h3></summary>
 
 *Concept: A cloned repository is a living thing with history attached; a downloaded ZIP is a dead snapshot with none.*
 
@@ -255,7 +255,7 @@ git commit -m "Short present-tense description of what changed"
 **In GitKraken:** fill in the **Summary** field and optionally a **Description**, then click **Commit Changes**.
 
 👉 <details>
-<summary><strong>Activity: The Split Commit</strong> — click to expand</summary>
+<summary><h3>Activity: The Split Commit — click to expand</h3></summary>
 
 *Concept: The staging area gives you granular control over exactly what gets saved in a commit.*
 

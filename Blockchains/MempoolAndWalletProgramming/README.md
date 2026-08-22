@@ -69,25 +69,25 @@ Run it, take the address it prints to a testnet faucet, and watch your program r
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you explain what the mempool is and which transactions live in it?
-- [ ] Can you explain what a faucet is and why testnets need them?
-- [ ] Can you state the rule about private keys and seed phrases in this class?
+- [ ] Explain what the mempool is and which transactions live in it.
+- [ ] Explain what a faucet is and why testnets need them.
+- [ ] State the rule about private keys and seed phrases in this class.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you explain how a miner decides which mempool transactions make it into the next block?
-- [ ] Can you connect the card reader's "Pending" state to a transaction's life in the mempool?
-- [ ] Can you describe what `WalletAppKit` does for your wallet program?
+- [ ] Explain how a miner decides which mempool transactions make it into the next block.
+- [ ] Connect the card reader's "Pending" state to a transaction's life in the mempool.
+- [ ] Describe what `WalletAppKit` does for your wallet program.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you explain why a low-fee transaction might wait in the mempool for hours, and what a sender can do about it?
-- [ ] Can you compare holding a Bitcoin ETF with holding your own keys — who can freeze each one?
-- [ ] Can you trace the full journey of a faucet coin: faucet's wallet → mempool → block → your program's address?
+- [ ] Explain why a low-fee transaction might wait in the mempool for hours, and what a sender can do about it.
+- [ ] Compare holding a Bitcoin ETF with holding your own keys — who can freeze each one.
+- [ ] Trace the full journey of a faucet coin: faucet's wallet → mempool → block → your program's address.
 
 ---
 

@@ -104,25 +104,25 @@ Today's activities — the assumption experiment and the divergence analysis —
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you define an assumption in the context of prompting AI and give one example?
-- [ ] Can you create an HTML file in Cursor and open it in a browser?
-- [ ] Can you name the five steps of the AI research technique?
+- [ ] Define an assumption in the context of prompting AI and give one example.
+- [ ] Create an HTML file in Cursor and open it in a browser.
+- [ ] Name the five steps of the AI research technique.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you take a vague prompt and list three decisions the AI would have to make on its own?
-- [ ] Can you explain why the same prompt gives different students different results?
-- [ ] Can you use the edit-save-refresh loop to change a page and see the change appear?
+- [ ] Take a vague prompt and list three decisions the AI would have to make on its own.
+- [ ] Explain why the same prompt gives different students different results.
+- [ ] Use the edit-save-refresh loop to change a page and see the change appear.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you rewrite a vague prompt so that two different people would get nearly identical results?
-- [ ] Can you verify an AI claim against a primary source and explain why that step is never optional?
-- [ ] Can you apply the research technique to a topic outside computer science and show it still works?
+- [ ] Rewrite a vague prompt so that two different people would get nearly identical results.
+- [ ] Verify an AI claim against a primary source and explain why that step is never optional.
+- [ ] Apply the research technique to a topic outside computer science and show it still works.
 
 ---
 

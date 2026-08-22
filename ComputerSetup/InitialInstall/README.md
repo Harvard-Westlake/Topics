@@ -17,7 +17,7 @@ Choose your operating system and follow the steps in order.
 > Complete this before starting the Terminal lessons. Every lesson from here on assumes you have a working Unix terminal with Git installed.
 
 👉 <details>
-<summary><strong>Activity: Environment Verification</strong> — click to expand</summary>
+<summary><h3>Activity: Environment Verification — click to expand</h3></summary>
 
 *Concept: Proving the environment tools are installed and accessible from your terminal.*
 
@@ -88,7 +88,7 @@ Think of it like "take a left out the front doors and it's the second building o
 > When programming, relative paths are usually better — if you send your project folder to a teammate, their user folder is going to be named differently than yours. A relative path ensures the code still finds the files inside the project folder no matter whose computer it's on.
 
 👉 <details>
-<summary><strong>Activity: The Path Finder</strong> — click to expand</summary>
+<summary><h3>Activity: The Path Finder — click to expand</h3></summary>
 
 *Concept: Experiencing the strict difference between absolute and relative paths in code.*
 

@@ -46,22 +46,22 @@ The lessons follow the life cycle of a real team project:
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you name the three steps of the team work cycle (issue, branch, review) in order?
-- [ ] Can you explain why work merged into `main` must be reviewed by someone who didn't write it?
-- [ ] Can you state what a deliverable is in one sentence?
+- [ ] Name the three steps of the team work cycle (issue, branch, review) in order.
+- [ ] Explain why work merged into `main` must be reviewed by someone who didn't write it.
+- [ ] State what a deliverable is in one sentence.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you explain why communicating your work clearly can matter more than the amount of code you write?
-- [ ] Can you describe what "demonstrated from `main`" means and why a feature-branch demo doesn't count?
-- [ ] Can you list what a handoff needs so a stranger can continue the project?
+- [ ] Explain why communicating your work clearly can matter more than the amount of code you write.
+- [ ] Describe what "demonstrated from `main`" means and why a feature-branch demo doesn't count.
+- [ ] List what a handoff needs so a stranger can continue the project.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you trace one feature through the full life cycle: issue → branch → pull request → review → protected `main` → demo → documentation?
-- [ ] Can you explain how the tech spec from App Design and Planning drives the issues, branches, and reviews in this unit?
-- [ ] Can you argue why a team that ships less code with full review discipline beats a team that ships more code without it?
+- [ ] Trace one feature through the full life cycle: issue → branch → pull request → review → protected `main` → demo → documentation.
+- [ ] Explain how the tech spec from App Design and Planning drives the issues, branches, and reviews in this unit.
+- [ ] Argue why a team that ships less code with full review discipline beats a team that ships more code without it.

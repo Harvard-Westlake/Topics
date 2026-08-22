@@ -113,25 +113,25 @@ This widget is not finished when it deploys — it will go through [feedback ite
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you state the three phases of the project and what each one produces?
-- [ ] Can you explain why the topic must be approved before any planning starts?
-- [ ] Can you name the two hard rules every widget must follow?
+- [ ] State the three phases of the project and what each one produces.
+- [ ] Explain why the topic must be approved before any planning starts.
+- [ ] Name the two hard rules every widget must follow.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you explain why `PLAN.md` must be committed before AI rewrites it?
-- [ ] Can you describe the fork-branch-pull-request path your code takes from idea to submission?
-- [ ] Can you check whether your idea already exists online and articulate what yours does differently?
+- [ ] Explain why `PLAN.md` must be committed before AI rewrites it.
+- [ ] Describe the fork-branch-pull-request path your code takes from idea to submission.
+- [ ] Check whether your idea already exists online and articulate what yours does differently.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you write a plan detailed enough that a classmate could build the widget from it?
-- [ ] Can you match an existing site's styles exactly by inspecting its pages?
-- [ ] Can you break the build into Agent-sized pieces and verify each one before moving on?
+- [ ] Write a plan detailed enough that a classmate could build the widget from it.
+- [ ] Match an existing site's styles exactly by inspecting its pages.
+- [ ] Break the build into Agent-sized pieces and verify each one before moving on.
 
 ---
 

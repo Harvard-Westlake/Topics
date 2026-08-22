@@ -171,25 +171,25 @@ A good management loop for any feature:
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you attach a click handler to a button and change text on the page when it fires?
-- [ ] Can you name the four families of events and one example of each?
-- [ ] Can you state what Cursor's Ask, Plan, and Agent modes each do?
+- [ ] Attach a click handler to a button and change text on the page when it fires.
+- [ ] Name the four families of events and one example of each.
+- [ ] State what Cursor's Ask, Plan, and Agent modes each do.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you explain the difference between `setTimeout` and `setInterval` and pick the right one for a countdown clock?
-- [ ] Can you write a class with a constructor and two methods, and create two independent instances of it?
-- [ ] Can you explain why a manager uses Ask and Plan before Agent?
+- [ ] Explain the difference between `setTimeout` and `setInterval` and pick the right one for a countdown clock.
+- [ ] Write a class with a constructor and two methods, and create two independent instances of it.
+- [ ] Explain why a manager uses Ask and Plan before Agent.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you combine a keyboard event, a timer, and a class into one small interactive program?
-- [ ] Can you catch an AI-generated bug by testing in the browser rather than trusting the chat?
-- [ ] Can you explain what `this` refers to inside a method and why each instance keeps its own data?
+- [ ] Combine a keyboard event, a timer, and a class into one small interactive program.
+- [ ] Catch an AI-generated bug by testing in the browser rather than trusting the chat.
+- [ ] Explain what `this` refers to inside a method and why each instance keeps its own data.
 
 ---
 

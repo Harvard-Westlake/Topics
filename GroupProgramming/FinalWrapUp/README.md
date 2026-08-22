@@ -67,25 +67,25 @@ Key notes:
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you list the four steps of today's wrap-up in order?
-- [ ] Can you run `firebase deploy` and open the live version of your app?
-- [ ] Can you state why major rewrites are the wrong move on the final day?
+- [ ] List the four steps of today's wrap-up in order.
+- [ ] Run `firebase deploy` and open the live version of your app.
+- [ ] State why major rewrites are the wrong move on the final day.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you decide whether to merge or decline an open pull request based on its relevance to the project?
-- [ ] Can you test the live deployment the way a first-time user would, not the way its author would?
-- [ ] Can you use the MVP.md file history to see what each contributor added?
+- [ ] Decide whether to merge or decline an open pull request based on its relevance to the project.
+- [ ] Test the live deployment the way a first-time user would, not the way its author would.
+- [ ] Use the MVP.md file history to see what each contributor added.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you triage the final 15 minutes — choosing the fixes that most improve usability and skipping the rest?
-- [ ] Can you diagnose a case where the app works locally but misbehaves on the live deployment?
-- [ ] Can you confirm that the deployed version, the `main` branch, and your documentation all describe the same product?
+- [ ] Triage the final 15 minutes — choosing the fixes that most improve usability and skipping the rest.
+- [ ] Diagnose a case where the app works locally but misbehaves on the live deployment.
+- [ ] Confirm that the deployed version, the `main` branch, and your documentation all describe the same product.
 
 ---
 

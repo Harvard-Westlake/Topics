@@ -59,25 +59,25 @@ The full grading rubric is on the [assignment page](ASSIGNMENT.md), but the shap
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you list the six steps of the workflow, from fork to pull request?
-- [ ] Can you state the 100-point split and what each portion is for?
-- [ ] Can you fork and clone a classmate's repository?
+- [ ] List the six steps of the workflow, from fork to pull request.
+- [ ] State the 100-point split and what each portion is for.
+- [ ] Fork and clone a classmate's repository.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you get a project you have never seen running using only its README?
-- [ ] Can you choose the right feature from someone else's MVP.md and justify the choice?
-- [ ] Can you write a pull request description that explains the purpose and changes clearly?
+- [ ] Get a project you have never seen running using only its README.
+- [ ] Choose the right feature from someone else's MVP.md and justify the choice.
+- [ ] Write a pull request description that explains the purpose and changes clearly.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you implement a feature in an unfamiliar codebase while matching its existing style and structure?
-- [ ] Can you update someone else's MVP.md so the next contributor sees an accurate, prioritized state?
-- [ ] Can you explain the design decisions and trade-offs of your contribution in the PR, commit by commit?
+- [ ] Implement a feature in an unfamiliar codebase while matching its existing style and structure.
+- [ ] Update someone else's MVP.md so the next contributor sees an accurate, prioritized state.
+- [ ] Explain the design decisions and trade-offs of your contribution in the PR, commit by commit.
 
 ---
 

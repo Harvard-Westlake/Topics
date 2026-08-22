@@ -108,25 +108,25 @@ Once every teammate's issues exist, set priorities **as a team**: rank the full 
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you name the five parts of a well-structured issue in order?
-- [ ] Can you write an issue title that is actionable and specific rather than vague?
-- [ ] Can you state the hard rules for this assignment, including what AI may and may not be used for?
+- [ ] Name the five parts of a well-structured issue in order.
+- [ ] Write an issue title that is actionable and specific rather than vague.
+- [ ] State the hard rules for this assignment, including what AI may and may not be used for.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you write acceptance criteria with a happy path, one failure case, and expected results for each step?
-- [ ] Can you explain what branch protection on `main` changes about how work gets merged?
-- [ ] Can you list a realistic set of dependencies for a feature in your own project?
+- [ ] Write acceptance criteria with a happy path, one failure case, and expected results for each step.
+- [ ] Explain what branch protection on `main` changes about how work gets merged.
+- [ ] List a realistic set of dependencies for a feature in your own project.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you fix a PR that cannot merge cleanly into `main` using checkout, merge, re-verify, and push?
-- [ ] Can you explain how the manual review-and-verify workflow maps onto what CI/CD automates at companies?
-- [ ] Can you take a vague request like "make login better" and rewrite it as an issue with only one correct interpretation?
+- [ ] Fix a PR that cannot merge cleanly into `main` using checkout, merge, re-verify, and push.
+- [ ] Explain how the manual review-and-verify workflow maps onto what CI/CD automates at companies.
+- [ ] Take a vague request like "make login better" and rewrite it as an issue with only one correct interpretation.
 
 ---
 

@@ -191,25 +191,25 @@ Commit and push your `.gitignore` like any other file. It applies to everyone wh
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you create a new branch with a descriptive name and switch to it?
-- [ ] Can you list all branches in a repository and identify which one is current?
-- [ ] Can you merge a feature branch into main and confirm the commits appear?
+- [ ] Create a new branch with a descriptive name and switch to it.
+- [ ] List all branches in a repository and identify which one is current.
+- [ ] Merge a feature branch into main and confirm the commits appear.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you push a branch to GitHub and open a pull request with a clear title and description?
-- [ ] Can you explain when a fast-forward merge occurs and when it cannot?
-- [ ] Can you create a `.gitignore` that correctly excludes compiled Java files and macOS system files?
+- [ ] Push a branch to GitHub and open a pull request with a clear title and description.
+- [ ] Explain when a fast-forward merge occurs and when it cannot.
+- [ ] Create a `.gitignore` that correctly excludes compiled Java files and macOS system files.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you explain the difference between a fast-forward merge and a merge commit, and when each is appropriate?
-- [ ] Can you describe the full pull request workflow from branch creation to merged PR?
-- [ ] Can you explain why `.gitignore` must be committed and what happens to files Git already tracks?
+- [ ] Explain the difference between a fast-forward merge and a merge commit, and when each is appropriate.
+- [ ] Describe the full pull request workflow from branch creation to merged PR.
+- [ ] Explain why `.gitignore` must be committed and what happens to files Git already tracks.
 
 ---
 

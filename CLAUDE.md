@@ -19,7 +19,8 @@ Topics/
   _modules/             — curated module JSONs (reusable unit plans) imported by the course hub
   _admin/               — course administration namespace (tooling, config, docs)
     _hub/               — THE course hub: tabbed web app (Courses / Year Schedule /
-                          Module Planner), python3 _admin/_hub/server.py → port 5050
+                          Module Planner / Module Editor / Syllabus),
+                          python3 _admin/_hub/server.py → port 5050
     _schedules/         — per-teacher year-plan JSONs edited by the hub's Year Schedule tab;
                           calendars/ holds compressed .ics imports (real class meeting
                           dates/times per block, used instead of the weekday grid when bound)
@@ -31,7 +32,7 @@ Topics/
     _verification/      — verify.py link/reference checker (also runs in CI on push)
 ```
 
-Current topics: `ComputerSetup/` (InitialInstall), `Terminal/` (Basics), `GitUsage/` (RepositoriesAndCommits, BranchingAndMerging, ForksAndCollaboration), `GitProject/` (ProjectSetup, InitAndBlobs, Trees, Commits, Branches), `MiniGPT/` (Tokenizer, MarkovBaseline, FixedAttention, TrainableBigram, ObjectNetwork, ScalarAutograd, DenseEngine, SingleHeadAttention, TransformerBlock, TrainingAndGeneration, Capstone), `WebProgramming/` (InterfacingWithAI, WebsiteHosting, JavaScriptAndCursor, DebuggingJavaScript, LearningWidget, PersistenceAndIntermediateWeb, DatabasesAndCollections, UXAndBehaviorTracking, WidgetIteration, PeerReview), `AppDesign/` (LearningToDesign, CommunicatingDesign, DesignChallenge, DesignReview, IterativeDesign, TeamDesignAndPitch, GroupDesignReview, DesignRefinement, MergeDesigns, UXAndArtDirection, AmbiguityAndArchitecture, TechnicalSpecification, CombineTechSpecs, MVPPlanning, ScrumAndStandup), `GroupProgramming/` (DeliverablesAndIssueTracking, SprintWork, MVPAndMergeDiscipline, CodeReviewAndPresentation, IssuesAsWorkRequests, RefactorAndReadme, HelpAClassmate, FinalWrapUp), `HashingCryptoP2P/` (HexadecimalAndHashing, DigitalSignatures, PeerToPeerNetworks), `Blockchains/` (TransactionsAndLedgers, BitcoinAndWallets, MempoolAndWalletProgramming, KeysAndLayerTwo, SmartChainsAndWrappedBitcoin, TokensInJava, ProofOfStake, WritingCodeOnEthereum, VyperCustomBehavior, ERC20Deployment, CryptoResearchProject), `AdvancedEVM/` (WrappedTokensAndLayerTwo, DecentralizedFinance, IPFSAndNFTs, Web2Web3App)
+Current topics: `ComputerSetup/` (InitialInstall), `Terminal/` (Basics), `GitUsage/` (RepositoriesAndCommits, BranchingAndMerging, ForksAndCollaboration), `GitProject/` (ProjectSetup, InitAndBlobs, Trees, Commits, Branches), `MiniGPT/` (Tokenizer, MarkovBaseline, FixedAttention, TrainableBigram, ObjectNetwork, ScalarAutograd, DenseEngine, SingleHeadAttention, TransformerBlock, TrainingAndGeneration, Capstone), `WebProgramming/` (InterfacingWithAI, WebsiteHosting, JavaScriptAndCursor, DebuggingJavaScript, LearningWidget, PersistenceAndIntermediateWeb, DatabasesAndCollections, UXAndBehaviorTracking, WidgetIteration, PeerReview), `AppDesign/` (LearningToDesign, CommunicatingDesign, DesignChallenge, DesignReview, IterativeDesign, TeamDesignAndPitch, GroupDesignReview, DesignRefinement, MergeDesigns, UXAndArtDirection, AmbiguityAndArchitecture, TechnicalSpecification, CombineTechSpecs, MVPPlanning, ScrumAndStandup), `GroupProgramming/` (DeliverablesAndIssueTracking, SprintWork, MVPAndMergeDiscipline, CodeReviewAndPresentation, IssuesAsWorkRequests, RefactorAndReadme, HelpAClassmate, FinalWrapUp), `HashingCryptoP2P/` (HexadecimalAndHashing, DigitalSignatures, PeerToPeerNetworks), `Blockchains/` (TransactionsAndLedgers, BitcoinAndWallets, MempoolAndWalletProgramming, KeysAndLayerTwo, SmartChainsAndWrappedBitcoin, TokensInJava, ProofOfStake, WritingCodeOnEthereum, VyperCustomBehavior, ERC20Deployment, CryptoResearchProject), `AdvancedEVM/` (WrappedTokensAndLayerTwo, DecentralizedFinance, IPFSAndNFTs, Web2Web3App), `DNDReview/` (DNDReview)
 
 ## Root README
 
@@ -51,24 +52,33 @@ One-sentence description of the topic.
 
 ## Check for Understanding and Stretch Goals
 
-**Current standard (use for every new or edited lesson).** Every README (both topic indexes and individual lesson pages) must end with two sections placed just above the bottom navigation link — this replaced the older three-tier "Skill Building" format (Introductory/Intermediate/Advanced), which some not-yet-migrated lessons still carry; don't reintroduce the tiered format anywhere.
+**Current standard (use for every new or edited lesson).** Every README (both topic indexes and individual lesson pages) must end with a Check for Understanding section placed just above the bottom navigation link. The section header is always `☑️ Check for Understanding` — the old `Skill Building` header is retired and must never come back — and its items are grouped into the three difficulty tiers:
 
 ```markdown
 ## <font color="#388bfd">☑️ Check for Understanding</font>
 
-- [ ] I can ...
-- [ ] I can ...
-- [ ] I can ...
+### <font color="#79c0ff">Introductory</font>
+
+- [ ] Plain statement of an action the student can now perform.
+
+### <font color="#79c0ff">Intermediate</font>
+
+- [ ] ...
+
+### <font color="#79c0ff">Advanced</font>
+
+- [ ] ...
 
 ## <font color="#388bfd">🚀 Stretch Goals</font>
 
 - [ ] ...
-- [ ] ...
 ```
 
-- **Check for Understanding** — one `- [ ]` item per concept taught on the page, phrased as first-person "I can ..." statements (not "Can you...?" questions). No difficulty tiers — list items in the order the concepts were introduced.
-- **Stretch Goals** — optional exploration just beyond the curriculum: a related command, tool, or idea a curious student can chase on their own. Not required, not tested, no fixed count.
+- **Check for Understanding** — one `- [ ]` item per concept taught on the page, phrased as a plain imperative statement ("Create a branch and switch to it."). Never "Can you...?" questions and never an "I can ..." prefix.
+- **Tiers** — the three `### <font color="#79c0ff">...</font>` subheaders (Introductory / Intermediate / Advanced) group items by difficulty, in that order.
+- **Stretch Goals** — optional section after Check for Understanding: exploration just beyond the curriculum (a related command, tool, or idea a curious student can chase on their own). Not required, not tested, no fixed count.
 - Both use plain `- [ ]` checkboxes like every other checklist in this repo (see the `- [ ]` / `- [x]` note under Content Conventions).
+- A few recently authored lessons (e.g. `ComputerSetup/InitialInstall`, `GitUsage/RepositoriesAndCommits`) intentionally use a flat, untiered "I can ..." list instead — leave those as they are unless asked.
 
 ## Topic README (parent folder)
 
@@ -94,6 +104,8 @@ Folders whose names begin with `_` (e.g. `_admin/`, `_modules/`) are **ignored b
 `_modules/<slug>.json` files are saved unit plans: an ordered selection of lessons (possibly spanning topics) with optional review fragments attached, plus unit number, base points, and scale factor. Format: `_admin/_configuration/module.schema.json`. Review fragments are stored as **references** (`{module, path, file}`), never inline content — the repo's markdown stays the single source of truth and the hub resolves content at import time.
 
 - **The course hub** (`python3 _admin/_hub/server.py` → http://127.0.0.1:5050) is the one UI for everything: the **Module Planner** tab creates/edits `_modules/*.json` (with the same lesson file editor and Canvas-fidelity preview as the standalone planner), the **Year Schedule** tab drags modules/tests/finals onto real class dates (`_admin/_schedules/<teacher>.json`, one file per teacher), and the **Courses** tab talks to Canvas using the teacher's own token from the gitignored root `.env`.
+- **Planner lesson rows are drag-reorderable and may interleave topics.** Each row has a `⋮⋮` drag handle; the table order IS the module order, so lessons from different selected topics can be intermixed day by day (with placeholders anywhere). The saved `assignments` array order is authoritative: loading a module rebuilds rows in saved order, appends repo lessons missing from the save unchecked, and reports saved-but-deleted lessons as stale. Adding/removing a topic chip preserves the existing row order and only appends/removes that topic's lessons. Tabs also refresh their repo-derived lists every time they're re-shown (`onShow` in `shell.js`), so topics/lessons created in the Module Editor appear in the Planner and Year Schedule palettes without a page reload.
+- **The Module Editor tab** edits the topic folders themselves — the content layer upstream of the Planner. Strict one-way flow: content → curated modules (references) → schedules (references); no tab writes upstream. Clicking a lesson opens everything in it (README, ASSIGNMENT, milestones, activities, reviews, demos, `assets/` uploads) in one workspace, with an impact banner showing which curated modules and schedules reference the lesson (`_scan_usage` in `server.py`). Structural ops (create/rename/delete/reorder lessons, new topics) regenerate every index file server-side (LESSONS.md, topic README table, root README bullets, the CLAUDE.md "Current topics" line, prev/next navs) and rewrite `_modules/*.json` references on rename; deleting a lesson or review file that a curated module still references is refused — detach it in the Planner first. Saving an activity file auto-regenerates its embedded `<details>` toggle in the README (matched by the standalone-file link), so the two intentional duplicates can't drift; creating one inserts the toggle above Check for Understanding, deleting one removes it. The workspace's file tabs are grouped into labeled rows (Lesson / Milestones / Activities / Reviews / Demos / Materials), and the new-review / new-activity dialogs include a one-click "Copy for AI" prompt: the lesson's full text (README + assignment + reviews + activities, from `/api/editor/bundle`) with an intention prompt appended, ready to paste into a chat. Uploads land in the lesson's `assets/` (filenames kebab-cased, extension whitelist) and return a ready-to-paste link snippet; asset deletion is refused while any markdown in the topic still links to the file.
 - Saving a module also regenerates `_admin/_lessonplans/<slug>.md`.
 - The standalone planner (`python3 _admin/_coursePlannerUI/server.py` → http://127.0.0.1:8901) still works as a stdlib-only, credential-free fallback; its `mdrender.py` must stay in lockstep with the hub's `md_to_html`.
 - Year schedules store module **references** (a `_modules` slug or topic folder name) — day counts and lessons re-resolve from the repo on every request, so content edits automatically re-date every teacher's schedule.
@@ -107,6 +119,12 @@ The Module Planner's lesson table has a hover-revealed insert control above/belo
 ```json
 { "day": 4, "duration": 1, "title": "Additional Day", "path": "", "_module": "", "placeholder": true }
 ```
+
+A placeholder may also carry an optional `"kind"` flag (a select on the placeholder row in the Module Planner) controlling what Canvas sync does with it:
+
+- **no `kind`** — plain Additional Day: to be filled with a real lesson later; sync creates nothing.
+- **`"kind": "page"`** — in-class day with no homework: sync creates an unpublished Canvas **Page** (titled `unit.day: Title`, linked into the module, containing any attached review plus an "In-class day — no assignment due" note) instead of an assignment. Both sync paths handle it via `create_canvas_page` in `_admin/_hub/server.py`.
+- **`"kind": "test"`** — reserved test day: the day still consumes its `unit.day` number (so numbering stays consistent for a manually placed test) but sync creates nothing.
 
 - Lesson-existence checks (`verify.py`'s `check_modules`, the hub's and standalone planner's `validate_module`) skip a placeholder's `path`/`_module`, but still validate its `review` reference if it has one.
 - `generate_lessonplan` renders its Source cell as *placeholder — not yet filled in* instead of a broken link.
@@ -124,7 +142,7 @@ python3 _admin/_verification/verify.py        # exit 1 on errors
 python3 _admin/_verification/verify.py --fix  # also regenerate _admin/_lessonplans/
 ```
 
-It checks every relative link in every `.md`, topic/lesson structure (LESSONS.md ↔ folders, Skill Building / Check for Understanding sections, ASSIGNMENT.md links), root README coverage, and `_modules/*.json` referential integrity (lessons, review files, title drift, lesson-plan sync). CI runs it on every push via `.github/workflows/verify.yml` — do not leave the repo in a state where it fails.
+It checks every relative link in every `.md`, topic/lesson structure (LESSONS.md ↔ folders, Check for Understanding sections, ASSIGNMENT.md links), root README coverage, and `_modules/*.json` referential integrity (lessons, review files, title drift, lesson-plan sync). CI runs it on every push via `.github/workflows/verify.yml` — do not leave the repo in a state where it fails.
 
 ## Module and day-lesson structure
 
@@ -536,7 +554,7 @@ LessonFolder/
 
 ```markdown
 👉 <details>
-<summary><strong>Activity: [Title]</strong> — click to expand</summary>
+<summary><h3>Activity: [Title] — click to expand</h3></summary>
 
 *Concept: [one sentence naming the idea this activity proves]*
 
@@ -554,6 +572,7 @@ The `<details>` body is a **full, byte-for-byte duplicate** of the activity file
 
 Rules:
 - **Naming:** the activity file is numbered (`01-`, `02-`, ...) matching the order activities appear in the README, then a short kebab-case description, e.g. `activities/02-clone-vs-zip-challenge.md`. The embedded toggle's summary is always `Activity: [Title]`, where `[Title]` is that same activity's title **before** it was turned into the kebab-case filename (e.g. file `02-clone-vs-zip-challenge.md` ↔ summary `Activity: Clone vs. ZIP Challenge`) — this is the fixed, mechanical link between a toggle you see in the README and the file it lives in, so anyone can find one from the other.
+- **Activity headers are always large.** The toggle's summary text is wrapped in `<h3>` (as in the template above), never plain bold — activity headers must render larger than body text so they stand out while scrolling a lesson. The hub's Module Editor writes and re-syncs toggles in this format automatically (`_activity_toggle` in `_admin/_hub/server.py`).
 - **One concept per activity.** Keep each one short enough to do in a few minutes without breaking lecture flow.
 - **Self-contained task steps.** A student should be able to follow the numbered steps without leaving the toggle (or the standalone file) for more instructions.
 - **A blank line must follow `<summary>...</summary>`** — GitHub only renders the markdown inside an HTML block (headers, lists, code fences) when a blank line separates it from the opening tag; skip it and the whole body renders as literal text.

@@ -80,25 +80,25 @@ The goal: every subsequent less-important feature is combined **into** the more 
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you recite the priority color scheme (green, yellow, orange/red/purple)?
-- [ ] Can you state the branch naming convention for merge groups?
-- [ ] Can you explain what "soft locking" is and why the group needs it?
+- [ ] Recite the priority color scheme (green, yellow, orange/red/purple).
+- [ ] State the branch naming convention for merge groups.
+- [ ] Explain what "soft locking" is and why the group needs it.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you explain why `.drawio` files are dangerous to merge concurrently, in terms of their file format?
-- [ ] Can you decide when two diagrams belong on separate page tabs versus one canvas?
-- [ ] Can you explain why core groups must finish merging before any secondary feature is touched?
+- [ ] Explain why `.drawio` files are dangerous to merge concurrently, in terms of their file format.
+- [ ] Decide when two diagrams belong on separate page tabs versus one canvas.
+- [ ] Explain why core groups must finish merging before any secondary feature is touched.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you run a merge-sort-style combination for a group of four, naming each intermediate branch?
-- [ ] Can you cherry-pick a significant commit from a teammate's branch into the group's merge branch?
-- [ ] Can you explain why later merge sessions must start from the branch you already merged, and what breaks if you don't?
+- [ ] Run a merge-sort-style combination for a group of four, naming each intermediate branch.
+- [ ] Cherry-pick a significant commit from a teammate's branch into the group's merge branch.
+- [ ] Explain why later merge sessions must start from the branch you already merged, and what breaks if you don't.
 
 ---
 

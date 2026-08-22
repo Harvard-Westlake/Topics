@@ -52,25 +52,25 @@ Full grading grid and submission details are in the [assignment](ASSIGNMENT.md).
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you name the six question areas your presentation must answer?
-- [ ] Can you check whether a cryptocurrency is in the top 100 on coinmarketcap.com?
-- [ ] Can you state the time limit and the two slide rules (minimal text, don't read them)?
+- [ ] Name the six question areas your presentation must answer.
+- [ ] Check whether a cryptocurrency is in the top 100 on coinmarketcap.com.
+- [ ] State the time limit and the two slide rules (minimal text, don't read them).
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you tell whether your chosen project is a coin or a token, and say how you determined it?
-- [ ] Can you define tokenomics and list the three token questions to answer from the code?
-- [ ] Can you locate the open-source repository for your chosen project?
+- [ ] Tell whether your chosen project is a coin or a token, and say how you determined it.
+- [ ] Define tokenomics and list the three token questions to answer from the code.
+- [ ] Locate the open-source repository for your chosen project.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you select a code snippet that genuinely shows your project's novelty, and explain each line?
-- [ ] Can you compare your project against its closest competitor using module vocabulary?
-- [ ] Can you make a defensible argument about your project's future prospects or biggest technical challenge?
+- [ ] Select a code snippet that genuinely shows your project's novelty, and explain each line.
+- [ ] Compare your project against its closest competitor using module vocabulary.
+- [ ] Make a defensible argument about your project's future prospects or biggest technical challenge.
 
 ---
 

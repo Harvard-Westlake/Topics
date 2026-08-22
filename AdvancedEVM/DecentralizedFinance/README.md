@@ -96,25 +96,25 @@ DeFi removes the banker but not the danger — it relocates it:
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you name the intermediary DeFi removes for trading, and say what replaces it?
-- [ ] Can you state the constant-product rule and explain what "k stays the same" means for a trade?
-- [ ] Can you explain what a liquidity provider deposits and what they earn in return?
+- [ ] Name the intermediary DeFi removes for trading, and say what replaces it.
+- [ ] State the constant-product rule and explain what "k stays the same" means for a trade.
+- [ ] Explain what a liquidity provider deposits and what they earn in return.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you compute the payout for a trade of 50 ALPHA into a pool of 100 ALPHA and 10,000 BETA using the constant-product formula?
-- [ ] Can you explain why a bigger trade gets a worse effective price in an AMM?
-- [ ] Can you explain why a Uniswap liquidity position is represented as an NFT instead of a regular token?
+- [ ] Compute the payout for a trade of 50 ALPHA into a pool of 100 ALPHA and 10,000 BETA using the constant-product formula.
+- [ ] Explain why a bigger trade gets a worse effective price in an AMM.
+- [ ] Explain why a Uniswap liquidity position is represented as an NFT instead of a regular token.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you explain impermanent loss — why the pool ends up holding less of whichever token went up in price?
-- [ ] Can you describe how a rug pull works, step by step, from pool creation to the reserves disappearing?
-- [ ] Can you connect yesterday's "contracts can lie" security lesson to a way a malicious token could exploit a liquidity pool?
+- [ ] Explain impermanent loss — why the pool ends up holding less of whichever token went up in price.
+- [ ] Describe how a rug pull works, step by step, from pool creation to the reserves disappearing.
+- [ ] Connect yesterday's "contracts can lie" security lesson to a way a malicious token could exploit a liquidity pool.
 
 ---
 

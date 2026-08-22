@@ -239,25 +239,25 @@ The studied example includes the balance-delta check. Depending on what your wra
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you explain the difference between an externally owned account and a contract account, given that both are just addresses?
-- [ ] Can you describe what happens to the original tokens and the wrapped tokens during a wrap, and during an unwrap?
-- [ ] Can you state why 1000 tickets in must always equal exactly 1 wrapped ticket out in this lesson's design?
+- [ ] Explain the difference between an externally owned account and a contract account, given that both are just addresses.
+- [ ] Describe what happens to the original tokens and the wrapped tokens during a wrap, and during an unwrap.
+- [ ] State why 1000 tickets in must always equal exactly 1 wrapped ticket out in this lesson's design.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you explain why wrapping requires calling `approve` on the original token before calling `wrapToken` on the wrapper?
-- [ ] Can you compare optimistic and ZK rollups — how each one convinces Ethereum a batch is honest, and what that costs in withdrawal time?
-- [ ] Can you trace a token bridging from L1 to L2 and back, naming the lock, mint, burn, and release steps in order?
+- [ ] Explain why wrapping requires calling `approve` on the original token before calling `wrapToken` on the wrapper.
+- [ ] Compare optimistic and ZK rollups — how each one convinces Ethereum a batch is honest, and what that costs in withdrawal time.
+- [ ] Trace a token bridging from L1 to L2 and back, naming the lock, mint, burn, and release steps in order.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you explain why `staticcall` does not make `balanceOf` trustworthy, and what the balance-delta check catches that the assert alone does not?
-- [ ] Can you identify what goes wrong in `wrapToken` when someone deposits 1,500 tickets, and how your own contract should handle it?
-- [ ] Can you explain why every wrapped token in existence must be backed by locked originals, and describe one attack that becomes possible the moment that invariant breaks?
+- [ ] Explain why `staticcall` does not make `balanceOf` trustworthy, and what the balance-delta check catches that the assert alone does not.
+- [ ] Identify what goes wrong in `wrapToken` when someone deposits 1,500 tickets, and how your own contract should handle it.
+- [ ] Explain why every wrapped token in existence must be backed by locked originals, and describe one attack that becomes possible the moment that invariant breaks.
 
 ---
 

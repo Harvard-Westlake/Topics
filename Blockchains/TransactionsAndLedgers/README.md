@@ -122,25 +122,25 @@ Today we stayed consciously on blockchain technology itself — the ledger, the 
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you define a ledger and a transaction in your own words?
-- [ ] Can you list the four steps a card reader walks through, and say which step means "announced but not yet recorded"?
-- [ ] Can you take the SHA-256 hash of a small text file and confirm a classmate gets the same hash from the same text?
+- [ ] Define a ledger and a transaction in your own words.
+- [ ] List the four steps a card reader walks through, and say which step means "announced but not yet recorded".
+- [ ] Take the SHA-256 hash of a small text file and confirm a classmate gets the same hash from the same text.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you explain why every participant in the class ledger activity must hold an identical copy of the file?
-- [ ] Can you describe, step by step, how linking each new file to the previous file's hash is done?
-- [ ] Can you find the block reward and block creation time in a `chainparams.cpp` file on GitHub?
+- [ ] Explain why every participant in the class ledger activity must hold an identical copy of the file.
+- [ ] Describe, step by step, how linking each new file to the previous file's hash is done.
+- [ ] Find the block reward and block creation time in a `chainparams.cpp` file on GitHub.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you explain exactly which hashes break, and in what order, if someone edits a transaction three files back?
-- [ ] Can you explain why the words "link" and "file" describe the same thing as "chain" and "block"?
-- [ ] Can you argue why an attacker would need to out-edit the entire room to rewrite history in a P2P ledger?
+- [ ] Explain exactly which hashes break, and in what order, if someone edits a transaction three files back.
+- [ ] Explain why the words "link" and "file" describe the same thing as "chain" and "block".
+- [ ] Argue why an attacker would need to out-edit the entire room to rewrite history in a P2P ledger.
 
 ---
 

@@ -152,25 +152,25 @@ The original maintainer will review your PR and may ask for changes, approve it,
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you fork a repository on GitHub and identify that it now exists under your account?
-- [ ] Can you clone your fork and confirm that `origin` points to your copy, not the original?
-- [ ] Can you explain the difference between a fork and a branch in one sentence each?
+- [ ] Fork a repository on GitHub and identify that it now exists under your account.
+- [ ] Clone your fork and confirm that `origin` points to your copy, not the original.
+- [ ] Explain the difference between a fork and a branch in one sentence each.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you add an `upstream` remote and verify it with `git remote -v`?
-- [ ] Can you sync your fork with upstream changes and push the updated `main` to your fork?
-- [ ] Can you push a feature branch to your fork and open a pull request to the original repository?
+- [ ] Add an `upstream` remote and verify it with `git remote -v`.
+- [ ] Sync your fork with upstream changes and push the updated `main` to your fork.
+- [ ] Push a feature branch to your fork and open a pull request to the original repository.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you walk through the entire open source contribution cycle — fork, clone, branch, commit, push, PR — without referring to notes?
-- [ ] Can you explain what happens if you open a PR from a fork while the original repo has diverged from your fork's `main`?
-- [ ] Can you describe two scenarios where a PR would be rejected and what you would do in each case?
+- [ ] Walk through the entire open source contribution cycle — fork, clone, branch, commit, push, PR — without referring to notes.
+- [ ] Explain what happens if you open a PR from a fork while the original repo has diverged from your fork's `main`.
+- [ ] Describe two scenarios where a PR would be rejected and what you would do in each case.
 
 ---
 

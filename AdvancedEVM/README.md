@@ -29,22 +29,22 @@ Everything in this module runs on the **Sepolia testnet**.
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you name the four lessons in this module and say in one sentence what each one builds?
-- [ ] Can you explain why every exercise in this module uses the Sepolia testnet instead of Ethereum mainnet?
-- [ ] Can you state the one rule about private keys and seed phrases that applies to every lesson here?
+- [ ] Name the four lessons in this module and say in one sentence what each one builds.
+- [ ] Explain why every exercise in this module uses the Sepolia testnet instead of Ethereum mainnet.
+- [ ] State the one rule about private keys and seed phrases that applies to every lesson here.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you explain how this module differs from the token you deployed in Blockchains and Bitcoin — what does "the EVM as an application platform" add?
-- [ ] Can you describe one way two of these lessons connect (for example, how liquidity pools in Day 2 produce the NFT you study in Day 3)?
-- [ ] Can you explain why a contract holding another contract's tokens is a bigger idea than a contract holding only its own?
+- [ ] Explain how this module differs from the token you deployed in Blockchains and Bitcoin — what does "the EVM as an application platform" add.
+- [ ] Describe one way two of these lessons connect (for example, how liquidity pools in Day 2 produce the NFT you study in Day 3).
+- [ ] Explain why a contract holding another contract's tokens is a bigger idea than a contract holding only its own.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you sketch the full arc of the module — from wrapping a classmate's token to a public web app — and say what new capability each day unlocks?
-- [ ] Can you explain what it means for a web app's "backend" to be a blockchain instead of a server you administer?
-- [ ] Can you argue for or against the claim that everything in this module could be built with a normal database and web server — what, exactly, does the EVM buy you?
+- [ ] Sketch the full arc of the module — from wrapping a classmate's token to a public web app — and say what new capability each day unlocks.
+- [ ] Explain what it means for a web app's "backend" to be a blockchain instead of a server you administer.
+- [ ] Argue for or against the claim that everything in this module could be built with a normal database and web server — what, exactly, does the EVM buy you.

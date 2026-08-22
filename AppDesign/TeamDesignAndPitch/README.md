@@ -78,25 +78,25 @@ We close with a brief reflection where students share what they learned from the
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you name the two things a presenter is allowed to do during individual presentations (present, and answer questions about the design)?
-- [ ] Can you list the three kinds of ideas a team discussion should surface (altered behaviors, new behaviors, feature additions)?
-- [ ] Can you say whose repository receives the team's integrated design?
+- [ ] Name the two things a presenter is allowed to do during individual presentations (present, and answer questions about the design).
+- [ ] List the three kinds of ideas a team discussion should surface (altered behaviors, new behaviors, feature additions).
+- [ ] Say whose repository receives the team's integrated design.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you take notes during a presentation that identify *why* a feature is effective, not just that you liked it?
-- [ ] Can you explain what the team must steer away from during discussion, and why?
-- [ ] Can you write a commit message for an integration commit that makes clear which ideas were merged in?
+- [ ] Take notes during a presentation that identify *why* a feature is effective, not just that you liked it.
+- [ ] Explain what the team must steer away from during discussion, and why.
+- [ ] Write a commit message for an integration commit that makes clear which ideas were merged in.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you combine two overlapping features from different designs into one coherent behavior, rather than keeping both?
-- [ ] Can you explain what makes an integrated design "cohesive" instead of a list of everyone's favorite ideas?
-- [ ] Can you divide presentation roles so every team member presents the part they know best?
+- [ ] Combine two overlapping features from different designs into one coherent behavior, rather than keeping both.
+- [ ] Explain what makes an integrated design "cohesive" instead of a list of everyone's favorite ideas.
+- [ ] Divide presentation roles so every team member presents the part they know best.
 
 ---
 

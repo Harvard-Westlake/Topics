@@ -20,6 +20,13 @@ function init() {
   loadTopics().then(loadSavedList);
 }
 
+// Called every time the tab is re-shown — picks up topics/lessons created in
+// the Module Editor (or on disk) since the tab was first initialized.
+function onShow() {
+  loadTopics();
+  loadSavedList();
+}
+
 // ── Saved modules sidebar ─────────────────────────────────────────────────────
 
 async function loadSavedList() {
@@ -134,40 +141,41 @@ async function loadSaved(slug) {
 
   selectedTopics = (m.topic_names || []).slice();
   renderTopicChips();
+  assignments = []; reviewSelections = {};
   await reloadAllLessons();   // fresh rows from the repo (source of truth)
 
-  // Placeholder ("Additional Day") entries don't come from the repo, so
-  // reloadAllLessons() never recreates them — reinsert each at the position
-  // matching its saved day, and remember any review it had attached.
-  const savedPlaceholders = (m.assignments || []).filter(a => a.placeholder);
-  savedPlaceholders.forEach(p => {
-    let at = assignments.findIndex(a => a.day >= p.day);
-    if (at === -1) at = assignments.length;
-    assignments.splice(at, 0, {day: p.day, duration: p.duration || 1,
-                               title: p.title, path: '', _module: '', placeholder: true});
-    if (p.review) reviewSelections[at] = p.review;
-  });
-  if (savedPlaceholders.length) renderLessonTable();
-
-  // Re-apply the saved selection: check only saved lessons, restore reviews
-  const savedKey = a => a._module + '/' + a.path;
-  const savedReal = (m.assignments || []).filter(a => !a.placeholder);
-  const savedMap = new Map(savedReal.map(a => [savedKey(a), a]));
-  const freshKeys = new Set(assignments.filter(a => !a.placeholder).map(savedKey));
-  for (let i = 0; i < assignments.length; i++) {
-    if (assignments[i].placeholder) {
-      $('plcheck_' + i).checked = true;
-      if (reviewSelections[i]) await applyReview(i, reviewSelections[i]);
-      continue;
+  // Rebuild the SAVED row order — lessons may be interleaved across topics,
+  // with placeholders anywhere. Repo lessons not in the save are appended
+  // unchecked; saved lessons gone from the repo are reported stale.
+  const fresh = assignments;
+  const freshMap = new Map(fresh.map(a => [a._module + '/' + a.path, a]));
+  const ordered = [], orderedChecked = [], missing = [];
+  reviewSelections = {};
+  (m.assignments || []).forEach(p => {
+    if (p.placeholder) {
+      const entry = {day: p.day, duration: p.duration || 1,
+                     title: p.title, path: '', _module: '', placeholder: true};
+      if (p.kind) entry.kind = p.kind;
+      if (p.review) reviewSelections[ordered.length] = p.review;
+      ordered.push(entry); orderedChecked.push(true);
+      return;
     }
-    const saved = savedMap.get(savedKey(assignments[i]));
-    $('plcheck_' + i).checked = !!saved;
-    if (saved && saved.review) await applyReview(i, saved.review);
-  }
-  onLessonCheck();
-
-  // Anything saved that no longer exists in the repo
-  const missing = [...savedMap.keys()].filter(k => !freshKeys.has(k));
+    const key = p._module + '/' + p.path;
+    const row = freshMap.get(key);
+    if (!row) { missing.push(key); return; }
+    freshMap.delete(key);
+    if (p.duration_override) {           // teacher-set length wins over LESSONS.md
+      row.duration = p.duration || 1;
+      row.duration_override = true;
+    }
+    if (p.review) reviewSelections[ordered.length] = p.review;
+    ordered.push(row); orderedChecked.push(true);
+  });
+  freshMap.forEach(row => { ordered.push(row); orderedChecked.push(false); });
+  assignments = ordered;
+  renumberDays();
+  renderLessonTable();
+  await reapplyRowState(orderedChecked);
   $('plStaleNote').style.display = missing.length ? 'block' : 'none';
   $('plStaleNote').textContent = missing.length
     ? 'Saved lessons no longer found in the repo (removed on next save): ' + missing.join(', ')
@@ -244,15 +252,37 @@ async function reloadAllLessons() {
     renderLessonTable(); refreshAll();
     return;
   }
+  const checkedArr = snapshotChecked();
   const results = await Promise.all(
     selectedTopics.map(name => fetch('/api/topics/' + encodeURIComponent(name)).then(r => r.json()))
   );
-  assignments = results.flatMap((r, idx) =>
-    (r.assignments || []).map(a => Object.assign({}, a, {_module: selectedTopics[idx]}))
-  );
-  reviewSelections = {};
+  const freshByKey = new Map();
+  results.forEach((r, idx) => (r.assignments || []).forEach(a =>
+    freshByKey.set(selectedTopics[idx] + '/' + a.path,
+                   Object.assign({}, a, {_module: selectedTopics[idx],
+                                         durationDefault: a.duration || 1}))));
+  // Preserve the current row order (lessons may be interleaved across topics,
+  // placeholders anywhere): keep existing rows in place, drop rows whose topic
+  // was removed, append lessons from newly added topics at the end.
+  const keep = [], keepChecked = [], nextReviews = {};
+  assignments.forEach((a, i) => {
+    let row = a;
+    if (!a.placeholder) {
+      const key = a._module + '/' + a.path;
+      if (!freshByKey.has(key)) return;
+      row = freshByKey.get(key);
+      freshByKey.delete(key);
+    }
+    if (reviewSelections[i]) nextReviews[keep.length] = reviewSelections[i];
+    keep.push(row);
+    keepChecked.push(checkedArr[i] !== false);
+  });
+  freshByKey.forEach(row => { keep.push(row); keepChecked.push(true); });
+  assignments = keep;
+  reviewSelections = nextReviews;
+  renumberDays();
   renderLessonTable();
-  refreshAll();
+  await reapplyRowState(keepChecked);
 }
 
 // "Additional Day" placeholders — a stub lesson (no real path/_module yet) the
@@ -332,6 +362,69 @@ function onPlaceholderTitleInput(i, value) {
   if (assignments[i]) assignments[i].title = value;
 }
 
+// Placeholder kinds: '' = ordinary Additional Day (fill in later, nothing syncs),
+// 'page' = Canvas Page instead of an assignment (no homework that day),
+// 'test' = reserved day number for manual test placement (nothing syncs).
+function onPlaceholderKind(i, value) {
+  const a = assignments[i];
+  if (!a || !a.placeholder) return;
+  const wasDefault = a.title === 'Additional Day' || a.title === 'Test Day' || a.title === 'In-Class Page';
+  if (value) a.kind = value; else delete a.kind;
+  if (wasDefault) {
+    a.title = value === 'test' ? 'Test Day' : (value === 'page' ? 'In-Class Page' : 'Additional Day');
+    const input = $('pltitle_' + i);
+    if (input) input.value = a.title;
+  }
+}
+
+// ── Row drag: interleave lessons from any selected topic in any order ─────────
+// The table order IS the module order — saved as-is, so lessons from different
+// topics can be intermixed day by day.
+
+let rowDragIdx = null;
+
+function rowDragStart(e, i) {
+  rowDragIdx = i;
+  e.dataTransfer.effectAllowed = 'move';
+}
+
+function rowDragOver(e) {
+  if (rowDragIdx == null) return;
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  e.currentTarget.classList.add('drag-over');
+}
+
+function rowDragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
+
+function rowDragEnd() {
+  rowDragIdx = null;
+  document.querySelectorAll('.lesson-row-wrap.drag-over').forEach(el => el.classList.remove('drag-over'));
+}
+
+// Move the dragged row so it sits where the drop target row was (insert-before).
+async function rowDrop(e, i) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  const from = rowDragIdx;
+  rowDragIdx = null;
+  if (from == null || from === i) return;
+  const checkedArr = snapshotChecked();
+  const reviews = assignments.map((_, idx) => reviewSelections[idx] || null);
+  const [row] = assignments.splice(from, 1);
+  const [chk] = checkedArr.splice(from, 1);
+  const [rev] = reviews.splice(from, 1);
+  const to = i > from ? i - 1 : i;
+  assignments.splice(to, 0, row);
+  checkedArr.splice(to, 0, chk);
+  reviews.splice(to, 0, rev);
+  reviewSelections = {};
+  reviews.forEach((r, idx) => { if (r) reviewSelections[idx] = r; });
+  renumberDays();
+  renderLessonTable();
+  await reapplyRowState(checkedArr);
+}
+
 function renderLessonTable() {
   const unitNum = parseInt($('fUnit').value) || 0;
   $('plLessonsBlock').style.display = assignments.length ? 'block' : 'none';
@@ -346,21 +439,62 @@ function renderInsertStrip(at) {
          '</div>';
 }
 
+// Inline day-count control: reads "1 Day" like a button, opens a dropdown on
+// click. Picking a value other than the LESSONS.md default marks the row
+// duration_override so the teacher's length survives reloads; picking the
+// default clears the override and the row follows the repo again.
+function durationCell(a, i) {
+  const def = a.placeholder ? null : (a.durationDefault || 1);
+  let opts = '';
+  for (let n = 1; n <= 10; n++) {
+    const label = n + (n === 1 ? ' Day' : ' Days') + (def === n ? ' (default)' : '');
+    opts += '<option value="' + n + '"' + ((a.duration || 1) === n ? ' selected' : '') + '>' + label + '</option>';
+  }
+  return '<select class="dur-select' + (a.duration_override ? ' overridden' : '') + '" id="pldur_' + i + '"' +
+         ' title="Class periods this assignment spans — override the lesson\'s default length"' +
+         ' onchange="Planner.onDurationChange(' + i + ', this.value)">' + opts + '</select>';
+}
+
+function onDurationChange(i, value) {
+  const a = assignments[i];
+  if (!a) return;
+  a.duration = parseInt(value) || 1;
+  if (!a.placeholder) {
+    if (a.duration === (a.durationDefault || 1)) delete a.duration_override;
+    else a.duration_override = true;
+  }
+  $('pldur_' + i).classList.toggle('overridden', !!a.duration_override);
+  renumberDays();
+  refreshAll();   // re-labels every row's unit.day (ranges shift below this row)
+}
+
 function renderLessonRow(a, i, unitNum) {
   const titleCell = a.placeholder
     ? '<div class="lesson-title-cell">' +
         '<input class="lesson-title-input" id="pltitle_' + i + '" value="' + esc(a.title) +
           '" placeholder="Additional Day" oninput="Planner.onPlaceholderTitleInput(' + i + ', this.value)">' +
+        '<select class="ph-kind" id="plkind_' + i + '" title="What this day becomes on Canvas sync" ' +
+          'onchange="Planner.onPlaceholderKind(' + i + ', this.value)">' +
+          '<option value=""' + (!a.kind ? ' selected' : '') + '>Assignment (fill in later)</option>' +
+          '<option value="page"' + (a.kind === 'page' ? ' selected' : '') + '>Page — no homework</option>' +
+          '<option value="test"' + (a.kind === 'test' ? ' selected' : '') + '>Test day — reserve number</option>' +
+        '</select>' +
         '<button type="button" class="lesson-remove-btn" title="Remove this day" ' +
           'onclick="Planner.removePlaceholder(' + i + ')">&#x2715;</button>' +
       '</div>'
     : '<div class="lesson-title" title="View / edit lesson files" onclick="Planner.openEditor(' + i + ')">' + esc(a.title) + '</div>';
   return (
-    '<div class="lesson-row-wrap">' +
+    '<div class="lesson-row-wrap"' +
+      ' ondragover="Planner.rowDragOver(event)"' +
+      ' ondragleave="Planner.rowDragLeave(event)"' +
+      ' ondrop="Planner.rowDrop(event,' + i + ')">' +
       '<div class="lesson-row' + (a.placeholder ? ' placeholder-row' : '') + '" id="plrow_' + i + '">' +
+        '<span class="row-drag" draggable="true" title="Drag to reorder — lessons from different topics can be intermixed"' +
+          ' ondragstart="Planner.rowDragStart(event,' + i + ')" ondragend="Planner.rowDragEnd()">&#8942;&#8942;</span>' +
         '<input type="checkbox" checked id="plcheck_' + i + '" onchange="Planner.onLessonCheck()">' +
         '<div class="lesson-day" id="plday_' + i + '">' + fmtDayLabel(unitNum, a) + '</div>' +
         titleCell +
+        durationCell(a, i) +
         '<label class="review-toggle" id="plrevlabel_' + i + '">' +
           '<input type="checkbox" id="plreview_' + i + '" onchange="Planner.toggleReview(' + i + ')">' +
           '<span>+ Review</span>' +
@@ -546,7 +680,12 @@ function checkedAssignments() {
       const out = {day: day, duration: dur, title: a.title,
                    path: a.path, _module: a._module,
                    review: reviewSelections[i] || null};
-      if (a.placeholder) out.placeholder = true;
+      if (a.placeholder) {
+        out.placeholder = true;
+        if (a.kind) out.kind = a.kind;
+      } else if (a.duration_override) {
+        out.duration_override = true;
+      }
       day += dur;
       return out;
     });
@@ -732,5 +871,7 @@ return {init, newModule, loadSaved, deleteModule, onNameInput, touchSlug,
         onReviewLessonChange, onReviewFileChange, saveModule, openEditor,
         openEditorTab, setEditorMode, saveFile, markDirty, closeEditor,
         savedDragStart, savedDragOver, savedDragLeave, savedDrop, savedDragEnd,
-        insertPlaceholder, removePlaceholder, onPlaceholderTitleInput};
+        insertPlaceholder, removePlaceholder, onPlaceholderTitleInput, onPlaceholderKind,
+        rowDragStart, rowDragOver, rowDragLeave, rowDrop, rowDragEnd, onShow,
+        onDurationChange};
 })();

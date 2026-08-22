@@ -20,25 +20,25 @@
 - How commits advance the active branch pointer
 - How this connects to the `checkout` functionality from Part 4
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you explain what a branch pointer is and what it stores?
-- [ ] Can you describe how HEAD changes meaning when branches are introduced?
-- [ ] Can you explain why creating a branch does not copy any files or commit objects?
+- [ ] Explain what a branch pointer is and what it stores.
+- [ ] Describe how HEAD changes meaning when branches are introduced.
+- [ ] Explain why creating a branch does not copy any files or commit objects.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you implement branch creation so that the branch file stores the current HEAD commit hash?
-- [ ] Can you implement HEAD so it stores a branch name (e.g. `ref: refs/heads/main`) rather than a commit hash directly?
-- [ ] Can you switch branches and verify that HEAD now points to the new branch?
+- [ ] Implement branch creation so that the branch file stores the current HEAD commit hash.
+- [ ] Implement HEAD so it stores a branch name (e.g. `ref: refs/heads/main`) rather than a commit hash directly.
+- [ ] Switch branches and verify that HEAD now points to the new branch.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you commit on two different branches and show that each branch pointer advances independently?
-- [ ] Can you explain what "detached HEAD" means in the context of your implementation?
-- [ ] Can you describe what would need to change in `commit()` to support the branch pointer update pattern?
+- [ ] Commit on two different branches and show that each branch pointer advances independently.
+- [ ] Explain what "detached HEAD" means in the context of your implementation.
+- [ ] Describe what would need to change in `commit()` to support the branch pointer update pattern.
 
 ---
 

@@ -122,25 +122,25 @@ Write code which meets all four objectives and is **unique from the example code
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you tell an `@external` method from an `@internal` one and say who can call each?
-- [ ] Can you write a one-line Vyper assert with an error message?
-- [ ] Can you name the four requirements your homework contract must meet?
+- [ ] Tell an `@external` method from an `@internal` one and say who can call each.
+- [ ] Write a one-line Vyper assert with an error message.
+- [ ] Name the four requirements your homework contract must meet.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you translate a Java if-throw guard into a Vyper assert, flipping the condition correctly?
-- [ ] Can you explain what `msg.sender` is and why a caller cannot fake it?
-- [ ] Can you walk through the gamble example and state the win case, the lose case, and what the assert protects?
+- [ ] Translate a Java if-throw guard into a Vyper assert, flipping the condition correctly.
+- [ ] Explain what `msg.sender` is and why a caller cannot fake it.
+- [ ] Walk through the gamble example and state the win case, the lose case, and what the assert protects.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you explain what happens to state changes made before an assert that fails?
-- [ ] Can you explain why the gamble example's odds come from `tx.gasprice`, and why that is a questionable source of randomness?
-- [ ] Can you design a method where forgetting a `msg.sender` check would let a stranger drain balances — and add the check?
+- [ ] Explain what happens to state changes made before an assert that fails.
+- [ ] Explain why the gamble example's odds come from `tx.gasprice`, and why that is a questionable source of randomness.
+- [ ] Design a method where forgetting a `msg.sender` check would let a stranger drain balances — and add the check.
 
 ---
 

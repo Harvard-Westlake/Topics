@@ -75,25 +75,25 @@ Your design must live in your repository as clean Markdown — headings, lists, 
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you explain why review work happens in a branch other than `main`?
-- [ ] Can you name the four steps of the in-class review (collaborator, design review, honor-code check, constructive ideas)?
-- [ ] Can you give one example of a review comment whose subject is the design, not the designer?
+- [ ] Explain why review work happens in a branch other than `main`.
+- [ ] Name the four steps of the in-class review (collaborator, design review, honor-code check, constructive ideas).
+- [ ] Give one example of a review comment whose subject is the design, not the designer.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you spot a sentence in a design that has drifted into implementation, and explain why it belongs in a spec?
-- [ ] Can you write a piece of specific, earned praise — and explain why unspecific praise is worthless in a review?
-- [ ] Can you name two kinds of Honor Code or legal problems a design could contain?
+- [ ] Spot a sentence in a design that has drifted into implementation, and explain why it belongs in a spec.
+- [ ] Write a piece of specific, earned praise — and explain why unspecific praise is worthless in a review.
+- [ ] Name two kinds of Honor Code or legal problems a design could contain.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you integrate a critical review into your design so the final document reads as one coherent idea, not a patchwork?
-- [ ] Can you run the full workflow — branch, comment, commit, pull request — without notes?
-- [ ] Can you explain the difference between reviewing an idea's value and reviewing its feasibility, and why today is only about the former?
+- [ ] Integrate a critical review into your design so the final document reads as one coherent idea, not a patchwork.
+- [ ] Run the full workflow — branch, comment, commit, pull request — without notes.
+- [ ] Explain the difference between reviewing an idea's value and reviewing its feasibility, and why today is only about the former.
 
 ---
 

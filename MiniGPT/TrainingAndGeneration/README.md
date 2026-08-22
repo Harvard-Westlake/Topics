@@ -230,25 +230,25 @@ You must:
 
 The machine can now write. The final chapter asks the more important scientific question: does it make better predictions than simpler systems, and what exactly has it learned from the selected archive?
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you construct the shifted input-target pair for a five-token sequence by hand?
-- [ ] Can you explain what a checkpoint must contain for generation to be exactly reproducible after reload?
-- [ ] Can you describe how temperature changes the sampling distribution at values below and above one?
+- [ ] Construct the shifted input-target pair for a five-token sequence by hand.
+- [ ] Explain what a checkpoint must contain for generation to be exactly reproducible after reload.
+- [ ] Describe how temperature changes the sampling distribution at values below and above one.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you implement one Adam update and verify it against a hand-calculated known result?
-- [ ] Can you prevent a sequence window from silently crossing a document boundary and test for it?
-- [ ] Can you demonstrate that the same seed reproduces identical generated output across two program runs?
+- [ ] Implement one Adam update and verify it against a hand-calculated known result.
+- [ ] Prevent a sequence window from silently crossing a document boundary and test for it.
+- [ ] Demonstrate that the same seed reproduces identical generated output across two program runs.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you explain why gradient clipping uses the global norm across all parameters rather than clipping each value independently?
-- [ ] Can you explain bias correction in Adam and what would happen in early steps without it?
-- [ ] Can you design a check that detects memorized training passages in generated output?
+- [ ] Explain why gradient clipping uses the global norm across all parameters rather than clipping each value independently.
+- [ ] Explain bias correction in Adam and what would happen in early steps without it.
+- [ ] Design a check that detects memorized training passages in generated output.
 
 ---
 

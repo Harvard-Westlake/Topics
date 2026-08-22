@@ -104,25 +104,25 @@ The chain stores the *pointer*; IPFS stores the *content*. That is the whole par
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you explain the difference between location addressing and content addressing in one sentence each?
-- [ ] Can you explain what "non-fungible" means using the ticket metaphor from your earlier token work?
-- [ ] Can you find the tokenURI function on an Etherscan Read Contract page and query it with a token ID?
+- [ ] Explain the difference between location addressing and content addressing in one sentence each.
+- [ ] Explain what "non-fungible" means using the ticket metaphor from your earlier token work.
+- [ ] Find the tokenURI function on an Etherscan Read Contract page and query it with a token ID.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you explain why NFT images are stored on IPFS instead of inside Ethereum blocks?
-- [ ] Can you explain how IPFS gets caching and deduplication for free from content addressing?
-- [ ] Can you name two things ERC-721 standardizes and explain why standardization lets an NFT move between platforms?
+- [ ] Explain why NFT images are stored on IPFS instead of inside Ethereum blocks.
+- [ ] Explain how IPFS gets caching and deduplication for free from content addressing.
+- [ ] Name two things ERC-721 standardizes and explain why standardization lets an NFT move between platforms.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you explain what property of a cryptographic hash makes a content address trustworthy, and what would break if two files could share a hash?
-- [ ] Can you compare the three kinds of tokenURI (ipfs://, https://, inline data) and rank them by how much the owner must be trusted?
-- [ ] Can you trace the complete path from owning a token ID on Ethereum to displaying its image, naming every system involved?
+- [ ] Explain what property of a cryptographic hash makes a content address trustworthy, and what would break if two files could share a hash.
+- [ ] Compare the three kinds of tokenURI (ipfs://, https://, inline data) and rank them by how much the owner must be trusted.
+- [ ] Trace the complete path from owning a token ID on Ethereum to displaying its image, naming every system involved.
 
 ---
 

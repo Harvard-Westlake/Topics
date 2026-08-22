@@ -97,25 +97,25 @@ You are evaluated on sticking to the time limit and the clarity of your communic
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you name the three things a good stand-up update contains?
-- [ ] Can you state the stand-up time limit and how it is enforced?
-- [ ] Can you recite the going-forward grading split between the SCRUM update and in-class work?
+- [ ] Name the three things a good stand-up update contains.
+- [ ] State the stand-up time limit and how it is enforced.
+- [ ] Recite the going-forward grading split between the SCRUM update and in-class work.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you give a 90-second stand-up update about your current design work without rambling?
-- [ ] Can you take the clothing-rarity example and explain what specifically turned it from vague to detailed?
-- [ ] Can you phrase a blocker so the person who can unblock you knows exactly what you need?
+- [ ] Give a 90-second stand-up update about your current design work without rambling.
+- [ ] Take the clothing-rarity example and explain what specifically turned it from vague to detailed.
+- [ ] Phrase a blocker so the person who can unblock you knows exactly what you need.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you find the vaguest sentence in the class design and produce a detailed-design solution in the style of the worked examples?
-- [ ] Can you prioritize three underspecified design elements by their impact on the product, and defend the order?
-- [ ] Can you explain why stand-ups are timed, in terms of what long updates cost a team?
+- [ ] Find the vaguest sentence in the class design and produce a detailed-design solution in the style of the worked examples.
+- [ ] Prioritize three underspecified design elements by their impact on the product, and defend the order.
+- [ ] Explain why stand-ups are timed, in terms of what long updates cost a team.
 
 ---
 

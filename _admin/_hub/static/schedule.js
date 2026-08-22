@@ -1020,7 +1020,7 @@ async function deleteFinal() {
   loadPalette();
 }
 
-return {init, pickSchedule, newSchedule, loadPalette, toggleDow, toggleDay0, toggleNoSchool,
+return {init, onShow: loadPalette, pickSchedule, newSchedule, loadPalette, toggleDow, toggleDay0, toggleNoSchool,
         pickCalClass, importIcs,
         addNoSchool, removeNoSchool, toggleTopic, toggleBlock, removeBlock,
         stepBlock, setBlockPoints, removeInsert, stepInsert, setInsertPoints,

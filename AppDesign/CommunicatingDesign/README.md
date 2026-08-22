@@ -81,25 +81,25 @@ The full deliverables, point breakdown, and grading rubric are in the [assignmen
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you define design as a process, in one sentence, without mentioning computers?
-- [ ] Can you explain what reverse brainstorming is and give one example of inverting a "terrible" item?
-- [ ] Can you say what three things a design communicates about a product (value, behavior, experience)?
+- [ ] Define design as a process, in one sentence, without mentioning computers.
+- [ ] Explain what reverse brainstorming is and give one example of inverting a "terrible" item.
+- [ ] Say what three things a design communicates about a product (value, behavior, experience).
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you sort "scalability" and "user experience" into design or technical specification, and defend your choices?
-- [ ] Can you explain why implementation and feasibility are deliberately excluded from today's brainstorm?
-- [ ] Can you explain, for any single element of your design, why you chose it and what purpose it serves?
+- [ ] Sort "scalability" and "user experience" into design or technical specification, and defend your choices.
+- [ ] Explain why implementation and feasibility are deliberately excluded from today's brainstorm.
+- [ ] Explain, for any single element of your design, why you chose it and what purpose it serves.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you pitch your idea in one sentence that names the user and the value, with zero technical words?
-- [ ] Can you take a competitor product and articulate the *feeling* it delivers, separate from its features?
-- [ ] Can you argue why "each part curated intentionally by you" produces a better product than an AI-generated design?
+- [ ] Pitch your idea in one sentence that names the user and the value, with zero technical words.
+- [ ] Take a competitor product and articulate the *feeling* it delivers, separate from its features.
+- [ ] Argue why "each part curated intentionally by you" produces a better product than an AI-generated design.
 
 ---
 

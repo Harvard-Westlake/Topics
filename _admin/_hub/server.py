@@ -5,6 +5,9 @@ Serves a tabbed UI at http://127.0.0.1:5050 :
   Courses        — Canvas course list, grades, and the Create Module drawer
   Year Schedule  — per-teacher drag-and-drop year plans (_admin/_schedules/<name>.json)
   Module Planner — create/edit curated modules (_modules/<slug>.json) with file editor
+  Module Editor  — edit the topic folders themselves (lessons, activities, reviews,
+                   uploads) with structural ops that keep every index file in step
+  Syllabus       — renders the repo's live SYLLABUS.md
 
 The Topics repo (this repo) is the source of truth for all content. The private
 sibling Admin repo holds final exams; syncing a test/final day to Canvas creates a
@@ -23,7 +26,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
-import requests, os, sys, json, time, re, html
+import requests, os, sys, json, time, re, html, shutil
 import markdown as md_lib
 from icsimport import compress_calendar
 
@@ -65,7 +68,7 @@ from mdrender import (md_to_html as planner_md_to_html,                 # noqa: 
 
 SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 NAME_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9 _\-]*$")
-FILE_RE = re.compile(r"^(review/)?[A-Za-z0-9._-]+\.md$|^demos/[A-Za-z0-9._-]+\.html$")
+FILE_RE = re.compile(r"^(review/|activities/|milestones/)?[A-Za-z0-9._-]+\.md$|^demos/[A-Za-z0-9._-]+\.html$")
 
 # ── Markdown helpers (Canvas upload rendering) ─────────────────────────────────
 
@@ -217,6 +220,23 @@ def _lesson_readme_html(module_dir, lesson_path):
             + '</div></details>')
 
 # ── Canvas helpers ─────────────────────────────────────────────────────────────
+
+def create_canvas_page(course_id, module_id, name, body_html):
+    """Create an unpublished Canvas wiki page and link it into a module. Used by
+    'page' placeholders — an in-class day with content but no assignment/homework."""
+    pr = requests.post(f"{BASE}/courses/{course_id}/pages", headers=hdrs(),
+                       json={"wiki_page": {"title": name, "body": body_html,
+                                           "published": False}})
+    if not pr.ok:
+        return None, pr.text
+    page_url = pr.json().get("url")
+    linked = False
+    if module_id:
+        mr = requests.post(f"{BASE}/courses/{course_id}/modules/{module_id}/items", headers=hdrs(),
+                           json={"module_item": {"title": name, "type": "Page",
+                                                 "page_url": page_url}})
+        linked = mr.ok
+    return {"name": name, "page_url": page_url, "linked": linked, "page": True}, None
 
 def no_token():
     """503 response when a Canvas route is hit without a configured token."""
@@ -433,7 +453,21 @@ def api_create_module(course_id):
     results, errors = [], []
     for a in assignments:
         if a.get("placeholder"):
-            continue  # not yet filled in — nothing to sync to Canvas
+            # 'page' → Canvas Page (content, no assignment/homework);
+            # 'test' → reserved day number for manual test placement;
+            # plain  → not yet filled in. Only 'page' creates anything.
+            if a.get("kind") == "page":
+                pname = f"{unit_num}.{a['day']}: {a['title']}"
+                parts = []
+                if a.get("review_markdown"):
+                    parts.append(review_block_html(md_to_html(a["review_markdown"])))
+                parts.append("<p>In-class day — no assignment due.</p>")
+                page, perr = create_canvas_page(course_id, module_id, pname, "\n".join(parts))
+                if perr:
+                    errors.append({"name": pname, "error": perr})
+                else:
+                    results.append(page)
+            continue
         day      = a["day"]
         duration = a.get("duration", 1)
         name     = f"{unit_num}.{day}: {a['title']}"
@@ -652,6 +686,19 @@ def resolve_lesson_file(module, path, file):
         return None, None
     return lesson_dir, target
 
+def _sub_md_files(module, path, sub):
+    d = TOPICS / module / path / sub if path else TOPICS / module / sub
+    if not d.exists():
+        return []
+    return sorted(f.name for f in d.iterdir() if f.is_file() and f.suffix == ".md")
+
+def asset_files(module, path):
+    d = TOPICS / module / path / "assets" if path else TOPICS / module / "assets"
+    if not d.exists():
+        return []
+    return [{"name": f.name, "size": f.stat().st_size}
+            for f in sorted(d.iterdir()) if f.is_file() and not f.name.startswith(".")]
+
 def lesson_file_listing(module, path):
     lesson_dir = TOPICS / module / path if path else TOPICS / module
     files = sorted(f.name for f in lesson_dir.iterdir()
@@ -661,7 +708,10 @@ def lesson_file_listing(module, path):
     return {
         "files": files,
         "review": [f"review/{f}" for f in review_files(module, path)],
+        "activities": [f"activities/{f}" for f in _sub_md_files(module, path, "activities")],
+        "milestones": [f"milestones/{f}" for f in _sub_md_files(module, path, "milestones")],
         "demos": [f"demos/{f}" for f in demo_files(module, path)],
+        "assets": asset_files(module, path),
         "can_create": [] if "ASSIGNMENT.md" in files else ["ASSIGNMENT.md"],
     }
 
@@ -706,7 +756,12 @@ def validate_module(mod):
 
 @app.route("/api/topics")
 def api_topics():
-    return jsonify({"topics": list_topics()})
+    topics = list_topics()
+    # ?with_lessons=1 → only real topic folders (the Module Editor's browse list);
+    # folders like attachments/ or embed/ have no LESSONS.md and aren't topics
+    if request.args.get("with_lessons"):
+        topics = [t for t in topics if (TOPICS / t / "LESSONS.md").exists()]
+    return jsonify({"topics": topics})
 
 @app.route("/api/topics/<name>")
 def api_topic_lessons(name):
@@ -1415,7 +1470,18 @@ def api_schedule_sync_block(name):
             if kind == "lesson" and s.get("lesson"):
                 a = s["lesson"]
                 if not (a.get("_module") and a.get("path")):
-                    continue  # placeholder ("Additional Day") — not yet filled in, nothing to sync
+                    # placeholder: 'page' syncs a Canvas Page (no assignment);
+                    # 'test' / plain reserve the day number and create nothing
+                    if a.get("kind") == "page":
+                        pname = f"{unit}.{day_num}: {a['title']}"
+                        desc = (_lesson_description("", "", a.get("review"))
+                                or "<p>In-class day — no assignment due.</p>")
+                        page, perr = create_canvas_page(course_id, module_id, pname, desc)
+                        if perr:
+                            errors.append({"name": pname, "error": perr})
+                        else:
+                            results.append(page)
+                    continue
                 create_assignment(f"{unit}.{day_num}: {a['title']}", points,
                                   _lesson_description(a.get("_module"), a.get("path"),
                                                       a.get("review")),
@@ -1457,6 +1523,695 @@ def api_schedule_sync_block(name):
         if p.exists():
             p.unlink()
     return jsonify(payload_out)
+
+# ── Module Editor ──────────────────────────────────────────────────────────────
+# Edits the repo topic folders (the content source of truth). Strict one-way
+# flow: content -> curated modules (references) -> schedules (references).
+# Structural changes here keep every index file in step (LESSONS.md, topic
+# README table, root README bullets, CLAUDE.md topics line, prev/next navs)
+# and rewrite _modules/*.json references on rename. Deleting anything a
+# curated module still references is refused — unhook it in the Planner first.
+
+FOLDER_RE = re.compile(r"^[A-Za-z][A-Za-z0-9]*$")   # lesson/topic folder names
+ASSET_EXTS = {".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp", ".pdf",
+              ".doc", ".docx", ".ppt", ".pptx", ".xls", ".xlsx",
+              ".csv", ".txt", ".zip"}
+TYPE_COLORS = {"Environment Configuration": "#3fb950", "Learning": "#a371f7",
+               "Reinforce": "#a371f7", "Review": "#e3b341"}
+
+def _kebab(s):
+    return re.sub(r"-+", "-", re.sub(r"[^a-z0-9]+", "-", s.lower())).strip("-")
+
+def _first_h1(md_path, fallback):
+    if md_path.exists():
+        m = re.search(r"^# (.+)$", md_path.read_text(), re.MULTILINE)
+        if m:
+            return m.group(1).strip()
+    return fallback
+
+def _topic_title(topic):
+    return _first_h1(TOPICS / topic / "README.md", topic)
+
+def _lesson_title(topic, path):
+    return _first_h1(TOPICS / topic / path / "README.md", path)
+
+def _scan_usage(topic, path=None, review_file=None):
+    """Which curated modules (and, through them, teacher schedules) reference
+    this topic / lesson / review file. Powers the impact banner and delete guards."""
+    mods = []
+    for jf in sorted(MODULES_DIR.glob("*.json")) if MODULES_DIR.exists() else []:
+        try:
+            mod = json.loads(jf.read_text())
+        except json.JSONDecodeError:
+            continue
+        hit = False
+        for a in mod.get("assignments", []):
+            rev = a.get("review") or {}
+            if review_file:
+                hit = hit or (rev.get("module") == topic and rev.get("path") == path
+                              and rev.get("file") == review_file)
+            elif path:
+                hit = hit or (a.get("_module") == topic and a.get("path") == path) \
+                          or (rev.get("module") == topic and rev.get("path") == path)
+            else:
+                hit = hit or a.get("_module") == topic
+        if not path and not review_file and topic in (mod.get("topic_names") or []):
+            hit = True
+        if hit:
+            mods.append({"slug": jf.stem, "name": mod.get("name", jf.stem),
+                         "unit_number": mod.get("unit_number")})
+    slugs = {m["slug"] for m in mods}
+    scheds = []
+    if SCHEDULES_DIR.exists():
+        for sf in sorted(SCHEDULES_DIR.glob("*.json")):
+            try:
+                sched = json.loads(sf.read_text())
+            except json.JSONDecodeError:
+                continue
+            for b in sched.get("sequence", []):
+                if b.get("type") != "module":
+                    continue
+                if (b.get("source") == "saved" and b.get("ref") in slugs) or \
+                   (b.get("source") != "saved" and b.get("ref") == topic):
+                    scheds.append({"name": sf.stem, "year": sched.get("year")})
+                    break
+    return {"modules": mods, "schedules": scheds}
+
+# ── index-file rewriters (LESSONS.md, READMEs, CLAUDE.md, navs) ────────────────
+
+def _day_cell(a):
+    dur = a.get("duration") or 1
+    return f"{a['day']}–{a['day'] + dur - 1}" if dur > 1 else str(a["day"])
+
+def _renumber(assignments):
+    day = 1
+    for a in assignments:
+        a["day"] = day
+        day += a.get("duration") or 1
+    return assignments
+
+def _write_lessons_md(topic, assignments):
+    lines = [f"# {topic} — Lesson Plan", "", "| Day | Lesson | Path |", "|---|---|---|"]
+    for a in assignments:
+        lines.append(f"| {_day_cell(a)} | {a['title']} | [{a['path']}/]({a['path']}/) |")
+    (TOPICS / topic / "LESSONS.md").write_text("\n".join(lines) + "\n")
+
+def _rewrite_topic_readme_table(topic, assignments):
+    """Regenerate the data rows of the topic README's Lessons table, preserving
+    each lesson's 'What you'll learn' cell by path."""
+    rf = TOPICS / topic / "README.md"
+    if not rf.exists():
+        return
+    lines = rf.read_text().split("\n")
+    head = next((i for i, l in enumerate(lines)
+                 if re.match(r"\|\s*(Day|#)\s*\|\s*Lesson\s*\|", l)), None)
+    if head is None:
+        return
+    start = head + 2                                   # skip header + separator
+    end = start
+    while end < len(lines) and lines[end].startswith("|"):
+        end += 1
+    learn = {}
+    for l in lines[start:end]:
+        m = re.match(r"\|[^|]*\|\s*\[[^\]]*\]\(([^)]+?)/?\)\s*\|\s*(.*?)\s*\|?\s*$", l)
+        if m:
+            learn[m.group(1)] = m.group(2)
+    rows = [f"| {_day_cell(a)} | [{a['title']}]({a['path']}/) | "
+            f"{learn.get(a['path'], 'TODO: one-line description')} |" for a in assignments]
+    lines[start:end] = rows
+    rf.write_text("\n".join(lines))
+
+def _rewrite_root_readme_bullets(topic, assignments):
+    """Regenerate the topic's subtopic bullet list in the root README,
+    preserving each bullet's one-line summary by path."""
+    rf = ROOT / "README.md"
+    lines = rf.read_text().split("\n")
+    bullet_re = re.compile(r"^- \[(.+?)\]\(%s/([^)]+?)/?\)(?:\s*—\s*(.*))?\s*$" % re.escape(topic))
+    idxs = [i for i, l in enumerate(lines) if bullet_re.match(l)]
+    if not idxs:
+        return
+    summaries = {}
+    for i in idxs:
+        m = bullet_re.match(lines[i])
+        summaries[m.group(2)] = m.group(3) or ""
+    new = [f"- [{a['title']}]({topic}/{a['path']}/) — "
+           f"{summaries.get(a['path']) or 'TODO: one-line summary'}" for a in assignments]
+    lines[idxs[0]:idxs[-1] + 1] = new
+    rf.write_text("\n".join(lines))
+
+def _rewrite_claude_topics_line(topic, assignments):
+    cf = ROOT / "CLAUDE.md"
+    if not cf.exists():
+        return
+    text = cf.read_text()
+    lesson_list = ", ".join(a["path"] for a in assignments)
+    entry_re = re.compile(r"`%s/` \([^)]*\)" % re.escape(topic))
+    if entry_re.search(text):
+        text = entry_re.sub(f"`{topic}/` ({lesson_list})", text, count=1)
+    else:
+        text = re.sub(r"^(Current topics: .*?)$",
+                      lambda m: f"{m.group(1)}, `{topic}/` ({lesson_list})",
+                      text, count=1, flags=re.MULTILINE)
+    cf.write_text(text)
+
+def _nav_line(topic_title, prev_a, next_a):
+    if prev_a and next_a:
+        return (f"← [{prev_a['title']}](../{prev_a['path']}/) — "
+                f"Next: [{next_a['title']}](../{next_a['path']}/)")
+    if next_a:
+        return f"← Back to [{topic_title}](../) — Next: [{next_a['title']}](../{next_a['path']}/)"
+    if prev_a:
+        return f"← [{prev_a['title']}](../{prev_a['path']}/) — Back to [{topic_title}](../)"
+    return f"← Back to [{topic_title}](../)"
+
+def _rewrite_navs(topic, assignments):
+    """Rewrite the bottom nav line of every lesson README to match the current
+    order (first/middle/last patterns per CLAUDE.md)."""
+    title = _topic_title(topic)
+    for i, a in enumerate(assignments):
+        rf = TOPICS / topic / a["path"] / "README.md"
+        if not rf.exists():
+            continue
+        nav = _nav_line(title, assignments[i - 1] if i > 0 else None,
+                        assignments[i + 1] if i + 1 < len(assignments) else None)
+        lines = rf.read_text().split("\n")
+        for j in range(len(lines) - 1, -1, -1):
+            if lines[j].startswith("←"):
+                lines[j] = nav
+                break
+        else:
+            while lines and not lines[-1].strip():
+                lines.pop()
+            lines += ["", nav, ""]
+        rf.write_text("\n".join(lines))
+
+def _rewrite_module_refs(topic, old_path, new_path):
+    """Point _modules/*.json references at a renamed lesson folder and refresh
+    the generated lesson plans. Returns the changed slugs."""
+    changed = []
+    for jf in sorted(MODULES_DIR.glob("*.json")) if MODULES_DIR.exists() else []:
+        try:
+            mod = json.loads(jf.read_text())
+        except json.JSONDecodeError:
+            continue
+        hit = False
+        for a in mod.get("assignments", []):
+            if a.get("_module") == topic and a.get("path") == old_path:
+                a["path"] = new_path
+                hit = True
+            rev = a.get("review")
+            if rev and rev.get("module") == topic and rev.get("path") == old_path:
+                rev["path"] = new_path
+                hit = True
+        if hit:
+            jf.write_text(json.dumps(mod, indent=2) + "\n")
+            LESSONPLANS_DIR.mkdir(parents=True, exist_ok=True)
+            (LESSONPLANS_DIR / f"{jf.stem}.md").write_text(generate_lessonplan(mod))
+            changed.append(jf.stem)
+    return changed
+
+def _rewrite_md_links(topic, old_path, new_path):
+    """Repo-wide link fixup after a lesson rename: 'Topic/Old/' anywhere, and
+    sibling-relative '../Old/' inside the same topic."""
+    for mf in ROOT.rglob("*.md"):
+        if any(part.startswith(("_", ".")) for part in mf.relative_to(ROOT).parts):
+            continue
+        text = mf.read_text()
+        out = text.replace(f"{topic}/{old_path}/", f"{topic}/{new_path}/")
+        if mf.is_relative_to(TOPICS / topic) and not mf.is_relative_to(TOPICS / topic / new_path):
+            out = out.replace(f"../{old_path}/", f"../{new_path}/")
+        if out != text:
+            mf.write_text(out)
+
+def _sync_all_indexes(topic, assignments):
+    _renumber(assignments)
+    _write_lessons_md(topic, assignments)
+    _rewrite_topic_readme_table(topic, assignments)
+    _rewrite_root_readme_bullets(topic, assignments)
+    _rewrite_claude_topics_line(topic, assignments)
+    _rewrite_navs(topic, assignments)
+
+# ── activity toggle sync (README <details> embeds) ─────────────────────────────
+
+def _parse_activity(content):
+    m = re.match(r"# Activity — (.+?)\n(.*)", content, re.DOTALL)
+    if not m:
+        return None, content.strip()
+    return m.group(1).strip(), m.group(2).strip()
+
+def _activity_toggle(file, title, body):
+    # <h3> in the summary so activity headers render larger than body text
+    return ("👉 <details>\n"
+            f"<summary><h3>Activity: {title} — click to expand</h3></summary>\n\n"
+            f"{body}\n\n"
+            f"*(Standalone file: [activities/{file}](activities/{file}))*\n\n"
+            "</details>")
+
+def _find_activity_toggle(text, file):
+    """(start, end) of the <details> block that embeds activities/<file>, or None."""
+    marker = f"(activities/{file})"
+    for m in re.finditer(r"👉 <details>", text):
+        end = text.find("</details>", m.start())
+        if end == -1:
+            continue
+        end += len("</details>")
+        if marker in text[m.start():end]:
+            return m.start(), end
+    return None
+
+def _sync_activity_toggle(topic, path, file, title, body):
+    """Regenerate (or insert) the README's embedded toggle for one activity.
+    The standalone file and the embed are duplicates by convention — this keeps
+    them from drifting. Returns True if the README changed."""
+    rf = TOPICS / topic / path / "README.md"
+    if not rf.exists():
+        return False
+    text = rf.read_text()
+    block = _activity_toggle(file, title, body)
+    span = _find_activity_toggle(text, file)
+    if span:
+        new = text[:span[0]] + block + text[span[1]:]
+    else:
+        # default insertion point: just above Check for Understanding, else nav
+        anchor = re.search(r"^## <font[^>]*>☑️ Check for Understanding</font>", text, re.MULTILINE)
+        if anchor:
+            new = text[:anchor.start()] + block + "\n\n" + text[anchor.start():]
+        else:
+            nav = None
+            for m in re.finditer(r"^←", text, re.MULTILINE):
+                nav = m
+            if nav:
+                new = text[:nav.start()] + block + "\n\n" + text[nav.start():]
+            else:
+                new = text.rstrip() + "\n\n" + block + "\n"
+    if new != text:
+        rf.write_text(new)
+        return True
+    return False
+
+def _remove_activity_toggle(topic, path, file):
+    rf = TOPICS / topic / path / "README.md"
+    if not rf.exists():
+        return False
+    text = rf.read_text()
+    span = _find_activity_toggle(text, file)
+    if not span:
+        return False
+    start, end = span
+    while start > 0 and text[start - 1] == "\n":
+        start -= 1
+    rf.write_text(text[:start] + text[end:])
+    return True
+
+# ── editor routes ───────────────────────────────────────────────────────────────
+
+@app.route("/api/editor/bundle")
+def api_editor_bundle():
+    """Everything written for one lesson as a single labeled text blob — the
+    raw material pasted into an AI chat when drafting a new review/activity."""
+    topic = request.args.get("module", "")
+    path = request.args.get("path", "")
+    if topic not in list_topics() or not (TOPICS / topic / path).is_dir():
+        return jsonify({"error": "unknown lesson"}), 404
+    lesson_dir = TOPICS / topic / path
+    parts = []
+
+    def add(label, p):
+        if p.exists():
+            parts.append(f"===== {label} =====\n{p.read_text().strip()}")
+
+    add("LESSON README", lesson_dir / "README.md")
+    add("ASSIGNMENT", lesson_dir / "ASSIGNMENT.md")
+    for f in _sub_md_files(topic, path, "milestones"):
+        add(f"MILESTONE: {f}", lesson_dir / "milestones" / f)
+    for f in _sub_md_files(topic, path, "review"):
+        add(f"REVIEW: {f}", lesson_dir / "review" / f)
+    for f in _sub_md_files(topic, path, "activities"):
+        add(f"ACTIVITY: {f}", lesson_dir / "activities" / f)
+    return jsonify({"text": "\n\n".join(parts)})
+
+@app.route("/api/editor/impact")
+def api_editor_impact():
+    topic = request.args.get("module", "")
+    path = request.args.get("path", "") or None
+    review_file = request.args.get("review_file", "") or None
+    if topic not in list_topics():
+        return jsonify({"error": "unknown topic"}), 404
+    return jsonify(_scan_usage(topic, path, review_file))
+
+def _scaffold_readme(title, subtitle, type_label, topic_title, prev_a):
+    color = TYPE_COLORS.get(type_label, "#a371f7")
+    nav = _nav_line(topic_title, prev_a, None)
+    return f"""<div align="center">
+
+# {title}
+*<font color="#8b949e">{subtitle}</font>*
+
+<font color="{color}">{type_label}</font>
+
+</div>
+
+---
+
+TODO: introduce the lesson here.
+
+## <font color="#388bfd">☑️ Check for Understanding</font>
+
+- [ ] I can ...
+
+## <font color="#388bfd">🚀 Stretch Goals</font>
+
+- [ ] ...
+
+---
+
+{nav}
+"""
+
+@app.route("/api/editor/topics", methods=["POST"])
+def api_editor_topics():
+    """Create a new topic folder with its first lesson, keeping every index in
+    step (root README group entry, CLAUDE.md topics line)."""
+    body = request.get_json(force=True) or {}
+    folder = (body.get("folder") or "").strip()
+    title = (body.get("title") or "").strip()
+    summary = (body.get("summary") or "").strip() or "TODO: one-sentence topic summary."
+    type_label = body.get("type_label") or "Learning"
+    lesson = body.get("lesson") or {}
+    lfolder = (lesson.get("folder") or "").strip()
+    ltitle = (lesson.get("title") or "").strip()
+    if not FOLDER_RE.match(folder):
+        return jsonify({"error": "topic folder must be CamelCase letters/digits"}), 400
+    if (TOPICS / folder).exists():
+        return jsonify({"error": f"'{folder}' already exists"}), 409
+    if not FOLDER_RE.match(lfolder) or not ltitle:
+        return jsonify({"error": "a first lesson (folder + title) is required"}), 400
+    if type_label not in TYPE_COLORS:
+        return jsonify({"error": "unknown lesson type"}), 400
+    # topic README
+    (TOPICS / folder).mkdir()
+    color = TYPE_COLORS[type_label]
+    (TOPICS / folder / "README.md").write_text(f"""<div align="center">
+
+# {title or folder}
+*<font color="#8b949e">{summary}</font>*
+
+<font color="{color}">{type_label}</font>
+
+</div>
+
+---
+
+{summary}
+
+## <font color="#388bfd">Lessons</font>
+
+| Day | Lesson | What you'll learn |
+|---|---|---|
+| 1 | [{ltitle}]({lfolder}/) | TODO: one-line description |
+""")
+    # first lesson
+    (TOPICS / folder / lfolder).mkdir()
+    (TOPICS / folder / lfolder / "README.md").write_text(
+        _scaffold_readme(ltitle, lesson.get("subtitle") or "TODO: short italic subtitle",
+                         type_label, title or folder, None))
+    assignments = [{"day": 1, "duration": 1, "title": ltitle, "path": lfolder}]
+    _write_lessons_md(folder, assignments)
+    # root README: append entry to the matching ■-type group
+    rf = ROOT / "README.md"
+    lines = rf.read_text().split("\n")
+    group_label = "Learning" if type_label == "Reinforce" else type_label
+    gi = next((i for i, l in enumerate(lines) if f"■ {group_label}" in l), None)
+    entry = [f"**[{title or folder}]({folder}/)**  ", summary, "",
+             f"- [{ltitle}]({folder}/{lfolder}/) — TODO: one-line summary", ""]
+    if gi is None:
+        lines += ["", f'<font color="{color}">■ {group_label}</font>', ""] + entry
+    else:
+        end = gi + 1
+        while end < len(lines) and "■ " not in lines[end]:
+            end += 1
+        while end > gi + 1 and not lines[end - 1].strip():
+            end -= 1
+        lines[end:end] = [""] + entry
+    rf.write_text("\n".join(lines))
+    _rewrite_claude_topics_line(folder, assignments)
+    return jsonify({"created": folder, "lesson": lfolder})
+
+@app.route("/api/editor/lessons", methods=["POST"])
+def api_editor_lessons():
+    """Structural lesson operations on a topic: create / rename / delete / reorder.
+    Every op regenerates LESSONS.md, the topic README table, root README bullets,
+    the CLAUDE.md topics line, and all prev/next navs."""
+    body = request.get_json(force=True) or {}
+    topic = body.get("topic", "")
+    op = body.get("op", "")
+    if topic not in list_topics():
+        return jsonify({"error": "unknown topic"}), 404
+    assignments = parse_topic_lessons(topic) or []
+
+    if op == "create":
+        folder = (body.get("folder") or "").strip()
+        title = (body.get("title") or "").strip()
+        if not FOLDER_RE.match(folder):
+            return jsonify({"error": "lesson folder must be CamelCase letters/digits"}), 400
+        if (TOPICS / topic / folder).exists():
+            return jsonify({"error": f"'{topic}/{folder}' already exists"}), 409
+        if not title:
+            return jsonify({"error": "a lesson title is required"}), 400
+        type_label = body.get("type_label") or "Learning"
+        if type_label not in TYPE_COLORS:
+            return jsonify({"error": "unknown lesson type"}), 400
+        pos = body.get("position")
+        pos = len(assignments) if not isinstance(pos, int) or not (0 <= pos <= len(assignments)) else pos
+        (TOPICS / topic / folder).mkdir()
+        prev_a = assignments[pos - 1] if pos > 0 else None
+        (TOPICS / topic / folder / "README.md").write_text(
+            _scaffold_readme(title, body.get("subtitle") or "TODO: short italic subtitle",
+                             type_label, _topic_title(topic), prev_a))
+        assignments.insert(pos, {"day": 0, "duration": int(body.get("duration") or 1),
+                                 "title": title, "path": folder})
+        _sync_all_indexes(topic, assignments)
+        return jsonify({"created": f"{topic}/{folder}"})
+
+    if op == "rename":
+        old = body.get("path", "")
+        new = (body.get("new_folder") or "").strip()
+        new_title = (body.get("new_title") or "").strip()
+        cur = next((a for a in assignments if a["path"] == old), None)
+        if not cur or not (TOPICS / topic / old).is_dir():
+            return jsonify({"error": f"unknown lesson '{old}'"}), 404
+        if not FOLDER_RE.match(new):
+            return jsonify({"error": "new folder must be CamelCase letters/digits"}), 400
+        if new != old and (TOPICS / topic / new).exists():
+            return jsonify({"error": f"'{topic}/{new}' already exists"}), 409
+        if new != old:
+            shutil.move(str(TOPICS / topic / old), str(TOPICS / topic / new))
+            _rewrite_md_links(topic, old, new)
+            changed = _rewrite_module_refs(topic, old, new)
+        else:
+            changed = []
+        cur["path"] = new
+        if new_title:
+            cur["title"] = new_title
+            rf = TOPICS / topic / new / "README.md"
+            if rf.exists():
+                rf.write_text(re.sub(r"^# .+$", f"# {new_title}", rf.read_text(),
+                                     count=1, flags=re.MULTILINE))
+        _sync_all_indexes(topic, assignments)
+        return jsonify({"renamed": f"{topic}/{new}", "modules_updated": changed})
+
+    if op == "delete":
+        path = body.get("path", "")
+        cur = next((a for a in assignments if a["path"] == path), None)
+        if not cur or not (TOPICS / topic / path).is_dir():
+            return jsonify({"error": f"unknown lesson '{path}'"}), 404
+        usage = _scan_usage(topic, path)
+        if usage["modules"]:
+            return jsonify({"error": "lesson is referenced by curated module(s) — remove it "
+                                     "there first (Module Planner)",
+                            "modules": usage["modules"]}), 409
+        if body.get("confirm") != path:
+            return jsonify({"error": "confirmation mismatch — type the folder name to confirm"}), 400
+        shutil.rmtree(TOPICS / topic / path)
+        assignments = [a for a in assignments if a["path"] != path]
+        _sync_all_indexes(topic, assignments)
+        return jsonify({"deleted": f"{topic}/{path}"})
+
+    if op == "reorder":
+        order = body.get("order") or []
+        if sorted(order) != sorted(a["path"] for a in assignments):
+            return jsonify({"error": "'order' must be a permutation of the topic's lessons"}), 400
+        by_path = {a["path"]: a for a in assignments}
+        assignments = [by_path[p] for p in order]
+        _sync_all_indexes(topic, assignments)
+        return jsonify({"reordered": order})
+
+    return jsonify({"error": f"unknown op '{op}'"}), 400
+
+@app.route("/api/editor/review", methods=["POST"])
+def api_editor_review():
+    body = request.get_json(force=True) or {}
+    topic, path, op = body.get("topic", ""), body.get("path", ""), body.get("op", "")
+    if topic not in list_topics() or not (TOPICS / topic / path).is_dir():
+        return jsonify({"error": "unknown lesson"}), 404
+
+    if op == "create":
+        concept = (body.get("concept") or "").strip()
+        if not concept:
+            return jsonify({"error": "a concept name is required"}), 400
+        file = _kebab(concept) + ".md"
+        target = TOPICS / topic / path / "review" / file
+        if target.exists():
+            return jsonify({"error": f"review/{file} already exists"}), 409
+        target.parent.mkdir(exist_ok=True)
+        target.write_text(f"""# Review — {concept}
+
+*Originally covered in [{_lesson_title(topic, path)}](../README.md)*
+
+---
+
+| Command | What it does |
+|---|---|
+| `TODO` | TODO |
+
+---
+
+## Tasks
+
+1. TODO: concrete action the student performs
+""")
+        return jsonify({"created": f"review/{file}"})
+
+    if op == "delete":
+        file = body.get("file", "")
+        target = TOPICS / topic / path / "review" / file
+        if not FILE_RE.match(f"review/{file}") or not target.exists():
+            return jsonify({"error": "unknown review file"}), 404
+        usage = _scan_usage(topic, path, review_file=file)
+        if usage["modules"]:
+            return jsonify({"error": "review file is attached to curated module(s) — detach it "
+                                     "there first (Module Planner)",
+                            "modules": usage["modules"]}), 409
+        if not body.get("confirm"):
+            return jsonify({"error": "missing confirmation"}), 400
+        target.unlink()
+        return jsonify({"deleted": f"review/{file}"})
+
+    return jsonify({"error": f"unknown op '{op}'"}), 400
+
+@app.route("/api/editor/activity", methods=["POST"])
+def api_editor_activity():
+    """Create / save / delete an activity. Save and create keep the README's
+    embedded <details> toggle in lockstep with the standalone file (the two are
+    intentional duplicates — see CLAUDE.md 'activities/ folders')."""
+    body = request.get_json(force=True) or {}
+    topic, path, op = body.get("topic", ""), body.get("path", ""), body.get("op", "")
+    if topic not in list_topics() or not (TOPICS / topic / path).is_dir():
+        return jsonify({"error": "unknown lesson"}), 404
+    act_dir = TOPICS / topic / path / "activities"
+
+    if op == "create":
+        title = (body.get("title") or "").strip()
+        concept = (body.get("concept") or "").strip() or "TODO: one sentence naming the idea this activity proves"
+        if not title:
+            return jsonify({"error": "an activity title is required"}), 400
+        existing = _sub_md_files(topic, path, "activities")
+        file = f"{len(existing) + 1:02d}-{_kebab(title)}.md"
+        target = act_dir / file
+        if target.exists():
+            return jsonify({"error": f"activities/{file} already exists"}), 409
+        content = f"""# Activity — {title}
+
+*Concept: {concept}*
+
+## Task
+
+1. TODO: concrete, numbered step
+"""
+        act_dir.mkdir(exist_ok=True)
+        target.write_text(content)
+        _, act_body = _parse_activity(content)
+        synced = _sync_activity_toggle(topic, path, file, title, act_body)
+        return jsonify({"created": f"activities/{file}", "readme_synced": synced})
+
+    if op == "save":
+        file = body.get("file", "")
+        content = body.get("content", "")
+        if not FILE_RE.match(f"activities/{file}"):
+            return jsonify({"error": "invalid activity file"}), 400
+        if content and not content.endswith("\n"):
+            content += "\n"
+        title, act_body = _parse_activity(content)
+        if not title:
+            return jsonify({"error": "activity must start with '# Activity — [Title]'"}), 400
+        act_dir.mkdir(exist_ok=True)
+        (act_dir / file).write_text(content)
+        synced = _sync_activity_toggle(topic, path, file, title, act_body)
+        broken = scan_file_links(act_dir / file)
+        return jsonify({"saved": f"activities/{file}", "readme_synced": synced,
+                        "broken_links": broken})
+
+    if op == "delete":
+        file = body.get("file", "")
+        target = act_dir / file
+        if not FILE_RE.match(f"activities/{file}") or not target.exists():
+            return jsonify({"error": "unknown activity file"}), 404
+        if not body.get("confirm"):
+            return jsonify({"error": "missing confirmation"}), 400
+        target.unlink()
+        removed = _remove_activity_toggle(topic, path, file)
+        return jsonify({"deleted": f"activities/{file}", "readme_synced": removed})
+
+    return jsonify({"error": f"unknown op '{op}'"}), 400
+
+@app.route("/api/editor/upload", methods=["POST"])
+def api_editor_upload():
+    """Upload a packet/worksheet/image into the lesson's assets/ folder.
+    Filenames are normalized to kebab-case; returns a ready-to-paste snippet."""
+    topic = request.form.get("module", "")
+    path = request.form.get("path", "")
+    f = request.files.get("file")
+    if topic not in list_topics() or not (TOPICS / topic / path).is_dir():
+        return jsonify({"error": "unknown lesson"}), 404
+    if not f or not f.filename:
+        return jsonify({"error": "no file uploaded"}), 400
+    stem, ext = os.path.splitext(f.filename)
+    ext = ext.lower()
+    if ext not in ASSET_EXTS:
+        return jsonify({"error": f"file type '{ext}' not allowed "
+                                 f"({', '.join(sorted(ASSET_EXTS))})"}), 400
+    name = (_kebab(stem) or "file") + ext
+    assets = TOPICS / topic / path / "assets"
+    assets.mkdir(exist_ok=True)
+    if (assets / name).exists():
+        return jsonify({"error": f"assets/{name} already exists — delete it first "
+                                 "or rename your file"}), 409
+    f.save(assets / name)
+    label = stem.replace("-", " ").replace("_", " ").strip().title()
+    snippet = (f"![{label}](assets/{name})"
+               if ext in {".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp"}
+               else f"[{label}](assets/{name})")
+    return jsonify({"uploaded": f"assets/{name}", "snippet": snippet,
+                    "assets": asset_files(topic, path)})
+
+@app.route("/api/editor/asset-delete", methods=["POST"])
+def api_editor_asset_delete():
+    body = request.get_json(force=True) or {}
+    topic, path, name = body.get("topic", ""), body.get("path", ""), body.get("file", "")
+    target = TOPICS / topic / path / "assets" / name
+    if topic not in list_topics() or not re.match(r"^[A-Za-z0-9._-]+$", name or "") \
+            or not target.is_file():
+        return jsonify({"error": "unknown asset"}), 404
+    # refuse while any markdown in the topic still links to it
+    refs = [str(mf.relative_to(ROOT)) for mf in (TOPICS / topic).rglob("*.md")
+            if f"assets/{name}" in mf.read_text()]
+    if refs:
+        return jsonify({"error": "asset is still referenced — remove the links first",
+                        "referenced_by": refs}), 409
+    if not body.get("confirm"):
+        return jsonify({"error": "missing confirmation"}), 400
+    target.unlink()
+    return jsonify({"deleted": f"assets/{name}", "assets": asset_files(topic, path)})
 
 # ── Frontend ───────────────────────────────────────────────────────────────────
 

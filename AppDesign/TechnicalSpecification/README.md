@@ -93,25 +93,25 @@ For **each** feature, call out **which lines of the design** you are laying out,
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you name the three key components of a technical specification?
-- [ ] Can you recreate the `documentation/TechSpecs/` folder layout and its two file-naming suffixes from memory?
-- [ ] Can you state what three things every Spec.md describes (variables, methods, related objects)?
+- [ ] Name the three key components of a technical specification.
+- [ ] Recreate the `documentation/TechSpecs/` folder layout and its two file-naming suffixes from memory.
+- [ ] State what three things every Spec.md describes (variables, methods, related objects).
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you draw a process flow for one feature of the class design, decision points included?
-- [ ] Can you explain what "comprehensive class diagram with dependencies" means, and why the dependencies matter?
-- [ ] Can you distinguish a core feature from a non-essential one in the class design, with reasons?
+- [ ] Draw a process flow for one feature of the class design, decision points included.
+- [ ] Explain what "comprehensive class diagram with dependencies" means, and why the dependencies matter.
+- [ ] Distinguish a core feature from a non-essential one in the class design, with reasons.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you take one refined design section and produce its full spec — variables, methods, and relationships — so two programmers would build the same class?
-- [ ] Can you decide what belongs in the class-wide TechSpec.md versus a per-feature Spec.md?
-- [ ] Can you mark something "out of scope" in a spec and justify why it should not be programmed now?
+- [ ] Take one refined design section and produce its full spec — variables, methods, and relationships — so two programmers would build the same class.
+- [ ] Decide what belongs in the class-wide TechSpec.md versus a per-feature Spec.md.
+- [ ] Mark something "out of scope" in a spec and justify why it should not be programmed now.
 
 ---
 

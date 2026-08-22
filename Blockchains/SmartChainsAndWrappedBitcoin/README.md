@@ -118,25 +118,25 @@ An example of what a real Ethereum account looks like from the outside — a tea
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you explain what a smart contract is using the vending machine analogy?
-- [ ] Can you name the one capability Ethereum blocks have that Bitcoin blocks do not?
-- [ ] Can you get Sepolia test ETH from the faucet into your own wallet?
+- [ ] Explain what a smart contract is using the vending machine analogy.
+- [ ] Name the one capability Ethereum blocks have that Bitcoin blocks do not.
+- [ ] Get Sepolia test ETH from the faucet into your own wallet.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you walk through the four steps that turn 1 BTC into 1 WBTC, naming who holds what at each step?
-- [ ] Can you explain why sending ETH from a wallet proves you own that wallet's address?
-- [ ] Can you find your own transaction on sepolia.etherscan.io and read off its block number?
+- [ ] Walk through the four steps that turn 1 BTC into 1 WBTC, naming who holds what at each step.
+- [ ] Explain why sending ETH from a wallet proves you own that wallet's address.
+- [ ] Find your own transaction on sepolia.etherscan.io and read off its block number.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you explain what trust WBTC reintroduces that plain Bitcoin was designed to remove?
-- [ ] Can you compare the Bitcoin and Wrapped Bitcoin market prices and explain why they track each other?
-- [ ] Can you connect "wrapping" to the Java wallet you wrote — what does it mean that code on one chain can represent value from another?
+- [ ] Explain what trust WBTC reintroduces that plain Bitcoin was designed to remove.
+- [ ] Compare the Bitcoin and Wrapped Bitcoin market prices and explain why they track each other.
+- [ ] Connect "wrapping" to the Java wallet you wrote — what does it mean that code on one chain can represent value from another.
 
 ---
 

@@ -62,25 +62,25 @@ Create a ticketing program in Java which creates virtual tickets you give out to
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you run TicketToken, mint tickets to a new person, and read the resulting balances?
-- [ ] Can you point to the line that stores the ledger, the line that mints, and the line that blocks overspending?
-- [ ] Can you rename the token and change the initial supply so the program is your own?
+- [ ] Run TicketToken, mint tickets to a new person, and read the resulting balances.
+- [ ] Point to the line that stores the ledger, the line that mints, and the line that blocks overspending.
+- [ ] Rename the token and change the initial supply so the program is your own.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you explain why `transfer` leaves `totalSupply` unchanged while `giveTickets` grows it?
-- [ ] Can you trigger the insufficient-balance rejection on purpose and explain what it prevents?
-- [ ] Can you explain `transfer` and `giveTickets` to a classmate without looking at your notes?
+- [ ] Explain why `transfer` leaves `totalSupply` unchanged while `giveTickets` grows it.
+- [ ] Trigger the insufficient-balance rejection on purpose and explain what it prevents.
+- [ ] Explain `transfer` and `giveTickets` to a classmate without looking at your notes.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you list what this program lacks compared with a real on-chain token, and which lesson supplies each missing piece?
-- [ ] Can you predict what would break if `transfer` did its subtraction *after* its addition and the program crashed in between?
-- [ ] Can you sketch how you would add a "burn" method, and state what it should do to `totalSupply`?
+- [ ] List what this program lacks compared with a real on-chain token, and which lesson supplies each missing piece.
+- [ ] Predict what would break if `transfer` did its subtraction *after* its addition and the program crashed in between.
+- [ ] Sketch how you would add a "burn" method, and state what it should do to `totalSupply`.
 
 ---
 

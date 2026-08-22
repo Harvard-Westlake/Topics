@@ -50,25 +50,25 @@ Get the refined sections back into the design repository as you go — the share
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you state the detail test from memory?
-- [ ] Can you name the three verbs your group applies to every contribution (discuss, add, remove)?
-- [ ] Can you explain why every idea gets reviewed, not just the popular ones?
+- [ ] State the detail test from memory.
+- [ ] Name the three verbs your group applies to every contribution (discuss, add, remove).
+- [ ] Explain why every idea gets reviewed, not just the popular ones.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you take a one-line feature idea and expand it until it passes the detail test?
-- [ ] Can you explain what "tie it into the overall design" means, with an example of a feature that conflicts until tied in?
-- [ ] Can you make the case for removing a feature using only user-value arguments?
+- [ ] Take a one-line feature idea and expand it until it passes the detail test.
+- [ ] Explain what "tie it into the overall design" means, with an example of a feature that conflicts until tied in.
+- [ ] Make the case for removing a feature using only user-value arguments.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you referee a group disagreement about a feature using the design-communication rules?
-- [ ] Can you identify a section that *seems* detailed but would still produce two different implementations?
-- [ ] Can you keep a three-day refinement organized so no contribution is silently dropped?
+- [ ] Referee a group disagreement about a feature using the design-communication rules.
+- [ ] Identify a section that *seems* detailed but would still produce two different implementations.
+- [ ] Keep a three-day refinement organized so no contribution is silently dropped.
 
 ---
 

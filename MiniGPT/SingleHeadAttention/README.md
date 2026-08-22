@@ -160,25 +160,25 @@ $$dQ = \frac{dS\,K}{\sqrt{d}} \qquad dK = \frac{dS^\top Q}{\sqrt{d}}$$
 
 One attention head can learn one style of retrieval. Language contains many simultaneous relationships: nearby spelling patterns, punctuation structure, topic references, repeated labels, and longer-range dependencies. The next model uses several attention processes in parallel.
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you explain what changed between Chapter 3's fixed attention and this chapter's learned attention?
-- [ ] Can you explain why the model needs position embeddings in addition to token embeddings?
-- [ ] Can you describe what each synthetic task (matching marker, delayed copy, paired lookup) proves about the mechanism?
+- [ ] Explain what changed between Chapter 3's fixed attention and this chapter's learned attention.
+- [ ] Explain why the model needs position embeddings in addition to token embeddings.
+- [ ] Describe what each synthetic task (matching marker, delayed copy, paired lookup) proves about the mechanism.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you implement the $Q$, $K$, $V$ projections and verify each with a numerical gradient check?
-- [ ] Can you overfit the paired order lookup task and show the attention matrix retrieving the correct position?
-- [ ] Can you verify that masked positions receive zero attention weight and zero score gradient?
+- [ ] Implement the $Q$, $K$, $V$ projections and verify each with a numerical gradient check.
+- [ ] Overfit the paired order lookup task and show the attention matrix retrieving the correct position.
+- [ ] Verify that masked positions receive zero attention weight and zero score gradient.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you implement the softmax-row backward equation and explain the role of the $\operatorname{dot}(dA_i, A_i)$ term?
-- [ ] Can you show that the residual connection's gradient contains contributions from both paths?
-- [ ] Can you explain a training failure mode a synthetic task would expose that natural-text loss would hide?
+- [ ] Implement the softmax-row backward equation and explain the role of the $\operatorname{dot}(dA_i, A_i)$ term.
+- [ ] Show that the residual connection's gradient contains contributions from both paths.
+- [ ] Explain a training failure mode a synthetic task would expose that natural-text loss would hide.
 
 ---
 

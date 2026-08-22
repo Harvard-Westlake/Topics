@@ -58,22 +58,22 @@ These are standalone reference pages — consult them throughout the unit whenev
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you describe the roles of HTML, CSS, and JavaScript in one sentence each?
-- [ ] Can you explain what it means for a website to be "hosted" and name the service this unit uses for it?
-- [ ] Can you state the three phases every Learning Widget must go through before it is coded?
+- [ ] Describe the roles of HTML, CSS, and JavaScript in one sentence each.
+- [ ] Explain what it means for a website to be "hosted" and name the service this unit uses for it.
+- [ ] State the three phases every Learning Widget must go through before it is coded.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you explain why a prompt with unstated assumptions produces different results for different people?
-- [ ] Can you name the three ways this unit stores data that survives a page refresh, and where each one lives?
-- [ ] Can you describe the fork-branch-pull-request path a Learning Widget takes from idea to review?
+- [ ] Explain why a prompt with unstated assumptions produces different results for different people.
+- [ ] Name the three ways this unit stores data that survives a page refresh, and where each one lives.
+- [ ] Describe the fork-branch-pull-request path a Learning Widget takes from idea to review.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you explain why a peer reviewer's grade depends on the quality of the code they approve?
-- [ ] Can you argue why "the AI said it works" is never sufficient evidence that code works?
-- [ ] Can you trace the full lifecycle of this unit's final product, from topic approval to an approved pull request?
+- [ ] Explain why a peer reviewer's grade depends on the quality of the code they approve.
+- [ ] Argue why "the AI said it works" is never sufficient evidence that code works.
+- [ ] Trace the full lifecycle of this unit's final product, from topic approval to an approved pull request.

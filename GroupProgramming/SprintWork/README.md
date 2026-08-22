@@ -68,25 +68,25 @@ A sprint deliverable is not just your own code. Starting with the second sprint,
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you list the three steps of project planning in order?
-- [ ] Can you state the deadline rule for sprint commitments (how long before next class must work be done)?
-- [ ] Can you say what the maximum grade is for untested AI-generated code that does not work?
+- [ ] List the three steps of project planning in order.
+- [ ] State the deadline rule for sprint commitments (how long before next class must work be done).
+- [ ] Say what the maximum grade is for untested AI-generated code that does not work.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you explain what to do when a task is too complex to estimate confidently?
-- [ ] Can you describe the two paths available when you cannot finish committed work, and which one avoids a downgrade?
-- [ ] Can you name at least two forms of proof that your sprint work actually runs?
+- [ ] Explain what to do when a task is too complex to estimate confidently.
+- [ ] Describe the two paths available when you cannot finish committed work, and which one avoids a downgrade.
+- [ ] Name at least two forms of proof that your sprint work actually runs.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you plan a full sprint for your team — prioritized tasks, time estimates, breakdowns, and per-person assignments recorded as issues?
-- [ ] Can you split a slipping task into a deliverable part and a deferred part, and update the issues to match?
-- [ ] Can you complete a sprint that includes both your own delivered branch and a meaningful review of a teammate's pull request?
+- [ ] Plan a full sprint for your team — prioritized tasks, time estimates, breakdowns, and per-person assignments recorded as issues.
+- [ ] Split a slipping task into a deliverable part and a deferred part, and update the issues to match.
+- [ ] Complete a sprint that includes both your own delivered branch and a meaningful review of a teammate's pull request.
 
 ---
 

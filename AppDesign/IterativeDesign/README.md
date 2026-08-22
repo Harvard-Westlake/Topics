@@ -59,25 +59,25 @@ You will present your improvements next class. You must have something to show �
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you state your personal definition of "better" for interactive design in two sentences?
-- [ ] Can you clone a repository, create a branch, and push a commit to it?
-- [ ] Can you name the three GitHub actions this lesson requires (clone as collaborator, branch, three commits)?
+- [ ] State your personal definition of "better" for interactive design in two sentences.
+- [ ] Clone a repository, create a branch, and push a commit to it.
+- [ ] Name the three GitHub actions this lesson requires (clone as collaborator, branch, three commits).
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you explain, for one of your enhancements, both why it improves the design and how it works for the user?
-- [ ] Can you explain what makes a commit "meaningful" versus padding to hit a count?
-- [ ] Can you present one of your improvements out loud without looking at your notes?
+- [ ] Explain, for one of your enhancements, both why it improves the design and how it works for the user.
+- [ ] Explain what makes a commit "meaningful" versus padding to hit a count.
+- [ ] Present one of your improvements out loud without looking at your notes.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you distinguish *adding to* a design from *enhancing* it, with an example of each from your own work?
-- [ ] Can you critique your own definition of "better" — what does it prioritize, and what does it ignore?
-- [ ] Can you trace how your three commits tell the story of your improvement plan in order?
+- [ ] Distinguish *adding to* a design from *enhancing* it, with an example of each from your own work.
+- [ ] Critique your own definition of "better" — what does it prioritize, and what does it ignore.
+- [ ] Trace how your three commits tell the story of your improvement plan in order.
 
 ---
 

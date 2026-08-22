@@ -75,25 +75,25 @@ This file is the bridge into [Group Programming](../../GroupProgramming/), where
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you define an MVP in one sentence, hitting all three requirements?
-- [ ] Can you state which spec colors fall inside the MVP line and which fall outside?
-- [ ] Can you say what file the MVP plan lives in and where in the repository it goes?
+- [ ] Define an MVP in one sentence, hitting all three requirements.
+- [ ] State which spec colors fall inside the MVP line and which fall outside.
+- [ ] Say what file the MVP plan lives in and where in the repository it goes.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you apply the "if this were missing, does the demo still deliver core value?" test to a green item and defend the verdict?
-- [ ] Can you order five MVP items by dependency and name what each one needs first?
-- [ ] Can you rewrite a vague item like "resource system" as a demonstrable checklist entry?
+- [ ] Apply the "if this were missing, does the demo still deliver core value?" test to a green item and defend the verdict.
+- [ ] Order five MVP items by dependency and name what each one needs first.
+- [ ] Rewrite a vague item like "resource system" as a demonstrable checklist entry.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you explain why an MVP that feels uncomfortably small is usually the right size?
-- [ ] Can you spot a dependency cycle in an ordering (A needs B, B needs A) and break it by splitting an item?
-- [ ] Can you explain how MVP.md will drive sprint work in the Group Programming unit?
+- [ ] Explain why an MVP that feels uncomfortably small is usually the right size.
+- [ ] Spot a dependency cycle in an ordering (A needs B, B needs A) and break it by splitting an item.
+- [ ] Explain how MVP.md will drive sprint work in the Group Programming unit.
 
 ---
 

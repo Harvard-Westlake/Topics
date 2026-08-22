@@ -69,25 +69,25 @@ Understanding your code is not just about passing this class — it is about bui
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you name the four refactoring requirements (classes/methods, match the spec, consistent formatting, never one file)?
-- [ ] Can you list what a project README.md must explain?
-- [ ] Can you list what MVP.md must contain?
+- [ ] Name the four refactoring requirements (classes/methods, match the spec, consistent formatting, never one file).
+- [ ] List what a project README.md must explain.
+- [ ] List what MVP.md must contain.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you explain each function in your project in plain English, and identify the ones you cannot?
-- [ ] Can you find one place where your code no longer matches your tech spec, and fix the mismatch?
-- [ ] Can you identify a piece of AI-generated code in your project and explain how it actually works?
+- [ ] Explain each function in your project in plain English, and identify the ones you cannot.
+- [ ] Find one place where your code no longer matches your tech spec, and fix the mismatch.
+- [ ] Identify a piece of AI-generated code in your project and explain how it actually works.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you write setup instructions precise enough that a classmate gets your project running without asking you anything?
-- [ ] Can you split a too-large file into sensible classes and methods without changing behavior?
-- [ ] Can you prioritize the next steps in MVP.md so a stranger would pick the right feature to build first?
+- [ ] Write setup instructions precise enough that a classmate gets your project running without asking you anything.
+- [ ] Split a too-large file into sensible classes and methods without changing behavior.
+- [ ] Prioritize the next steps in MVP.md so a stranger would pick the right feature to build first.
 
 ---
 

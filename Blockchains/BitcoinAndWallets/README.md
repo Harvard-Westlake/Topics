@@ -114,25 +114,25 @@ Compare your answers with what a bank account would require. That contrast *is* 
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you explain what hash difficulty is and how a confirmed block's hash shows it?
-- [ ] Can you state where new bitcoin comes from and what the total supply cap is?
-- [ ] Can you name two things the wallet setup never asked you for that a bank would require?
+- [ ] Explain what hash difficulty is and how a confirmed block's hash shows it.
+- [ ] State where new bitcoin comes from and what the total supply cap is.
+- [ ] Name two things the wallet setup never asked you for that a bank would require.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you explain why offering a higher transaction fee gets you confirmed faster?
-- [ ] Can you estimate Bitcoin's start date from a current block height and the 10-minute block time?
-- [ ] Can you explain what the BIP-39 wordlist is and why a seed phrase must stay secret?
+- [ ] Explain why offering a higher transaction fee gets you confirmed faster.
+- [ ] Estimate Bitcoin's start date from a current block height and the 10-minute block time.
+- [ ] Explain what the BIP-39 wordlist is and why a seed phrase must stay secret.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you compute the maximum possible chain size at block 1,000,000 and explain why keeping it small matters?
-- [ ] Can you explain "code is law" using the two `chainparams.cpp` files as evidence?
-- [ ] Can you argue both a benefit and a danger of a financial system with no identity checks and no support line?
+- [ ] Compute the maximum possible chain size at block 1,000,000 and explain why keeping it small matters.
+- [ ] Explain "code is law" using the two `chainparams.cpp` files as evidence.
+- [ ] Argue both a benefit and a danger of a financial system with no identity checks and no support line.
 
 ---
 

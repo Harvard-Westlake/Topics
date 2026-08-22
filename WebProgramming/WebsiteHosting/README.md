@@ -217,25 +217,25 @@ Your website is now a real project — it deserves a repository. In GitKraken:
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you state what HTML, CSS, and JavaScript each do, using the building metaphor?
-- [ ] Can you explain the difference between a file on your laptop and a hosted website?
-- [ ] Can you run `firebase deploy` and find the Hosting URL in its output?
+- [ ] State what HTML, CSS, and JavaScript each do, using the building metaphor.
+- [ ] Explain the difference between a file on your laptop and a hosted website.
+- [ ] Run `firebase deploy` and find the Hosting URL in its output.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you explain what each prompt in `firebase init hosting` is asking and how you answered it?
-- [ ] Can you describe what `firebase.json`, `.firebaserc`, and `public/` each contain?
-- [ ] Can you modify the template's CSS, verify the change locally, and push the update live?
+- [ ] Explain what each prompt in `firebase init hosting` is asking and how you answered it.
+- [ ] Describe what `firebase.json`, `.firebaserc`, and `public/` each contain.
+- [ ] Modify the template's CSS, verify the change locally, and push the update live.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you explain when to use `firebase serve` versus `firebase deploy`, and what could go wrong if you confused them?
-- [ ] Can you trace the full path of a file from your `public/` folder to a stranger's browser?
-- [ ] Can you take AI-generated CSS and explain what every rule in it does before deploying it?
+- [ ] Explain when to use `firebase serve` versus `firebase deploy`, and what could go wrong if you confused them.
+- [ ] Trace the full path of a file from your `public/` folder to a stranger's browser.
+- [ ] Take AI-generated CSS and explain what every rule in it does before deploying it.
 
 ---
 

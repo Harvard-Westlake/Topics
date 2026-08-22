@@ -73,22 +73,22 @@ Consult these throughout the unit:
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you name the three acts of this unit — design for users, translate to a tech spec, plan the build?
-- [ ] Can you state who the audience of a design document is, and who the audience of a technical specification is?
-- [ ] Can you give one example sentence of design language and one of specification language?
+- [ ] Name the three acts of this unit — design for users, translate to a tech spec, plan the build.
+- [ ] State who the audience of a design document is, and who the audience of a technical specification is.
+- [ ] Give one example sentence of design language and one of specification language.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you explain why the design phase deliberately excludes implementation, feasibility, and technical requirements?
-- [ ] Can you describe how the class's many individual designs become one shared design over the course of the unit?
-- [ ] Can you explain what happens to this unit's final design in the Group Programming unit?
+- [ ] Explain why the design phase deliberately excludes implementation, feasibility, and technical requirements.
+- [ ] Describe how the class's many individual designs become one shared design over the course of the unit.
+- [ ] Explain what happens to this unit's final design in the Group Programming unit.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you take any product feature you know and describe it twice — once purely as design, once purely as specification?
-- [ ] Can you explain why a tech spec must be unambiguous enough that two strangers would build the same feature from it?
-- [ ] Can you argue why an hour spent on design clarity saves more than an hour of programming time later?
+- [ ] Take any product feature you know and describe it twice — once purely as design, once purely as specification.
+- [ ] Explain why a tech spec must be unambiguous enough that two strangers would build the same feature from it.
+- [ ] Argue why an hour spent on design clarity saves more than an hour of programming time later.

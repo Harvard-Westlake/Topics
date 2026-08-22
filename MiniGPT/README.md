@@ -181,22 +181,22 @@ Most importantly, the story remains focused from the first page to the last:
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you state the one precise question the archive machine is built to answer?
-- [ ] Can you name the eleven capabilities the machine acquires, in order, and say which chapter delivers each one?
-- [ ] Can you explain why the diagnostic "Order A" passage defeats a one-token Markov model?
+- [ ] State the one precise question the archive machine is built to answer.
+- [ ] Name the eleven capabilities the machine acquires, in order, and say which chapter delivers each one.
+- [ ] Explain why the diagnostic "Order A" passage defeats a one-token Markov model.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you explain what "decoder-only" means and why this course's final model qualifies?
-- [ ] Can you state the final success criterion as a comparison between two measured quantities?
-- [ ] Can you explain why the course forbids matrix, tokenizer, and automatic-differentiation packages?
+- [ ] Explain what "decoder-only" means and why this course's final model qualifies.
+- [ ] State the final success criterion as a comparison between two measured quantities.
+- [ ] Explain why the course forbids matrix, tokenizer, and automatic-differentiation packages.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you explain why attention is introduced in Chapter 3, before any training machinery exists?
-- [ ] Can you estimate the parameter count of the standard configuration from its settings table?
-- [ ] Can you defend why beating the bigram baseline is the engineering target but not the entire grade?
+- [ ] Explain why attention is introduced in Chapter 3, before any training machinery exists.
+- [ ] Estimate the parameter count of the standard configuration from its settings table.
+- [ ] Defend why beating the bigram baseline is the engineering target but not the entire grade.

@@ -11,4 +11,6 @@ Environment setup followed by core Git workflows: install the toolchain, then le
 | 1.1 | Initial Install | [ComputerSetup/InitialInstall](../../ComputerSetup/InitialInstall/) | — |
 | 1.2 | Repositories and Commits | [GitUsage/RepositoriesAndCommits](../../GitUsage/RepositoriesAndCommits/) | — |
 | 1.3 | Branching and Merging | [GitUsage/BranchingAndMerging](../../GitUsage/BranchingAndMerging/) | — |
-| 1.4 | Forks and Collaboration | [GitUsage/ForksAndCollaboration](../../GitUsage/ForksAndCollaboration/) | — |
+| 1.4 | DND Review | [DNDReview/DNDReview](../../DNDReview/DNDReview/) | — |
+| 1.5 | DND Review Test | *placeholder — not yet filled in* | — |
+| 1.6 | Forks and Collaboration | [GitUsage/ForksAndCollaboration](../../GitUsage/ForksAndCollaboration/) | — |

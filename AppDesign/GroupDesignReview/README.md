@@ -50,25 +50,25 @@ This round is not just critique — it is contribution. Each of your three revie
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you explain which three projects you review today, and why those three?
-- [ ] Can you name the fallback when a repository owner is absent?
-- [ ] Can you state how many pull requests you must have open by the end, and in how many branches?
+- [ ] Explain which three projects you review today, and why those three.
+- [ ] Name the fallback when a repository owner is absent.
+- [ ] State how many pull requests you must have open by the end, and in how many branches.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you run the complete review process — branch, review, honor-code check, constructive ideas, PR — from memory?
-- [ ] Can you write a user-experience feature addition that names the user benefit, not the mechanism?
-- [ ] Can you explain the difference between this review round and the first Design Review lesson?
+- [ ] Run the complete review process — branch, review, honor-code check, constructive ideas, PR — from memory.
+- [ ] Write a user-experience feature addition that names the user benefit, not the mechanism.
+- [ ] Explain the difference between this review round and the first Design Review lesson.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you keep three parallel reviews distinct — each tailored to its design rather than copy-pasted feedback?
-- [ ] Can you propose a feature addition that strengthens a design's *existing* identity instead of pulling it sideways?
-- [ ] Can you argue why reviewing designs you invested in produces better feedback than reviewing at random?
+- [ ] Keep three parallel reviews distinct — each tailored to its design rather than copy-pasted feedback.
+- [ ] Propose a feature addition that strengthens a design's *existing* identity instead of pulling it sideways.
+- [ ] Argue why reviewing designs you invested in produces better feedback than reviewing at random.
 
 ---
 

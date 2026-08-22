@@ -95,25 +95,25 @@ Next lesson, a peer reviewer puts their own grade on the line by reviewing this 
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you explain the curse of knowledge and why it makes self-review unreliable?
-- [ ] Can you describe the feedback.md workflow from first commit to deletion?
-- [ ] Can you state the two zero-error conditions your widget must meet?
+- [ ] Explain the curse of knowledge and why it makes self-review unreliable.
+- [ ] Describe the feedback.md workflow from first commit to deletion.
+- [ ] State the two zero-error conditions your widget must meet.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you record a tester's feedback verbatim without softening or interpreting it?
-- [ ] Can you verify a widget produces no console errors during every interaction, not just on load?
-- [ ] Can you update a pull request with new commits and a summary comment?
+- [ ] Record a tester's feedback verbatim without softening or interpreting it.
+- [ ] Verify a widget produces no console errors during every interaction, not just on load.
+- [ ] Update a pull request with new commits and a summary comment.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you use your Git history to prove every feedback item was implemented?
-- [ ] Can you distinguish an error caused by your code from one caused by the browser or an extension?
-- [ ] Can you prioritize conflicting feedback from two testers and justify which you implemented?
+- [ ] Use your Git history to prove every feedback item was implemented.
+- [ ] Distinguish an error caused by your code from one caused by the browser or an extension.
+- [ ] Prioritize conflicting feedback from two testers and justify which you implemented.
 
 ---
 

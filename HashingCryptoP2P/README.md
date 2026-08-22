@@ -31,22 +31,22 @@ These three ideas are worth learning on their own — and they are also the exac
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you name the three ideas this unit covers and give a one-sentence description of each?
-- [ ] Can you explain what it means for a hash to "fingerprint" a file?
-- [ ] Can you state which of the two keys in a key pair must stay secret?
+- [ ] Name the three ideas this unit covers and give a one-sentence description of each.
+- [ ] Explain what it means for a hash to "fingerprint" a file.
+- [ ] State which of the two keys in a key pair must stay secret.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you explain why a signature made with a private key can be checked by anyone, but forged by no one?
-- [ ] Can you describe one thing a peer-to-peer network can do that a single central server cannot?
-- [ ] Can you explain how hashing lets a downloader detect a tampered file without seeing the original?
+- [ ] Explain why a signature made with a private key can be checked by anyone, but forged by no one.
+- [ ] Describe one thing a peer-to-peer network can do that a single central server cannot.
+- [ ] Explain how hashing lets a downloader detect a tampered file without seeing the original.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you predict which of the three ideas a cryptocurrency needs, and what job each one would do?
-- [ ] Can you explain why "trust the math" can replace "trust the company in the middle"?
-- [ ] Can you argue which of the three ideas would be hardest to remove from a blockchain and still have it work?
+- [ ] Predict which of the three ideas a cryptocurrency needs, and what job each one would do.
+- [ ] Explain why "trust the math" can replace "trust the company in the middle".
+- [ ] Argue which of the three ideas would be hardest to remove from a blockchain and still have it work.

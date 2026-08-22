@@ -147,25 +147,25 @@ For this error, line 12 of `game.js` called `.addEventListener` on the result of
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you open DevTools with the keyboard shortcut and find the Console tab?
-- [ ] Can you use `console.log()` to print a variable's value while a page runs?
-- [ ] Can you state the difference between `console.log()`, `console.warn()`, and `console.error()`?
+- [ ] Open DevTools with the keyboard shortcut and find the Console tab.
+- [ ] Use `console.log()` to print a variable's value while a page runs.
+- [ ] State the difference between `console.log()`, `console.warn()`, and `console.error()`.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you use `console.dir()` to explore the properties of an HTML element?
-- [ ] Can you read a stack trace and identify the error type, the file, and the line where it broke?
-- [ ] Can you use a top-of-function `console.log()` to prove whether a function was ever called?
+- [ ] Use `console.dir()` to explore the properties of an HTML element.
+- [ ] Read a stack trace and identify the error type, the file, and the line where it broke.
+- [ ] Use a top-of-function `console.log()` to prove whether a function was ever called.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you explain why `getElementById` returning `null` leads to the exact TypeError shown in this lesson?
-- [ ] Can you follow a stack trace downward to explain the full chain of calls that led to a crash?
-- [ ] Can you diagnose a bug yourself from the trace, then use AI only to verify your hypothesis?
+- [ ] Explain why `getElementById` returning `null` leads to the exact TypeError shown in this lesson.
+- [ ] Follow a stack trace downward to explain the full chain of calls that led to a crash.
+- [ ] Diagnose a bug yourself from the trace, then use AI only to verify your hypothesis.
 
 ---
 

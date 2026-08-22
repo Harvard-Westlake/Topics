@@ -659,25 +659,25 @@ More traps worth defusing now:
 
 The network can calculate sophisticated scores, but its weights are frozen. When it makes a poor prediction, nothing yet identifies which connections should change. The loss for `pizza pineapple pizza` flowed through two fetched cards — one of them used twice — seven weighted sums, a gate that silenced half the hidden layer, and a softmax; somewhere in those 49 numbers sit the ones most responsible, and this chapter can only stare at them. The machine needs a way to follow its own error backward.
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you compute one unit's weighted sum and gated output by hand from its weights, bias, and inputs?
-- [ ] Can you explain what the binder stores, what look-up does, and why look-up is not multiplication by the token number?
-- [ ] Can you state what `rectify` does to a negative, zero, and positive weighted sum — and what a silenced unit contributes downstream?
+- [ ] Compute one unit's weighted sum and gated output by hand from its weights, bias, and inputs.
+- [ ] Explain what the binder stores, what look-up does, and why look-up is not multiplication by the token number.
+- [ ] State what `rectify` does to a negative, zero, and positive weighted sum — and what a silenced unit contributes downstream.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you build the practice network from `Neuron` objects and match the $[-4, 6]$ trace exactly?
-- [ ] Can you run all six pipeline steps by hand on the Set C miniature and land on $[0.9526, 0.0474]$?
-- [ ] Can you say, for every array a forecast touches, whether it is read, created, or overwritten — and why calling `forecast` twice must return identical answers?
+- [ ] Build the practice network from `Neuron` objects and match the $[-4, 6]$ trace exactly.
+- [ ] Run all six pipeline steps by hand on the Set C miniature and land on $[0.9526, 0.0474]$.
+- [ ] Say, for every array a forecast touches, whether it is read, created, or overwritten — and why calling `forecast` twice must return identical answers.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you demonstrate that object traversal and `weighAndAdd` compute the same numbers, and prove with algebra why a gateless stack collapses into one weighted sum?
-- [ ] Can you explain the sharing mechanism precisely — which arrays are per-token, which are shared, and why Chapter 4's lonely rows had no equivalent?
-- [ ] Can you use the parameter formula to compare this architecture against a $V^2$ table at archive scale, and give the two-part correction to "networks are worse than tables"?
+- [ ] Demonstrate that object traversal and `weighAndAdd` compute the same numbers, and prove with algebra why a gateless stack collapses into one weighted sum.
+- [ ] Explain the sharing mechanism precisely — which arrays are per-token, which are shared, and why Chapter 4's lonely rows had no equivalent.
+- [ ] Use the parameter formula to compare this architecture against a $V^2$ table at archive scale, and give the two-part correction to "networks are worse than tables".
 
 ---
 

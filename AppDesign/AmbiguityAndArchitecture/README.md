@@ -57,25 +57,25 @@ Use the actual line numbers of your section in the design document. Two sections
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you state the two-random-programmers standard from memory?
-- [ ] Can you explain what the branch name `Design_Lines_050-104` communicates?
-- [ ] Can you name the three things your engine/platform research must contain (options, pros/cons, what the solution looks like)?
+- [ ] State the two-random-programmers standard from memory.
+- [ ] Explain what the branch name `Design_Lines_050-104` communicates.
+- [ ] Name the three things your engine/platform research must contain (options, pros/cons, what the solution looks like).
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you find an ambiguous sentence in a design and list two different features a programmer could build from it?
-- [ ] Can you compare two engine or platform options with at least two pros and two cons each?
-- [ ] Can you explain why AI-generated graphics are banned as final UI submissions, in terms of design intentionality?
+- [ ] Find an ambiguous sentence in a design and list two different features a programmer could build from it.
+- [ ] Compare two engine or platform options with at least two pros and two cons each.
+- [ ] Explain why AI-generated graphics are banned as final UI submissions, in terms of design intentionality.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you rewrite an ambiguous section so only one interpretation survives — and prove it by asking two classmates independently?
-- [ ] Can you recommend an engine for the class project and defend the choice against the strongest alternative?
-- [ ] Can you produce a HUD or UI mock that matches your imagination exactly, editing until it does?
+- [ ] Rewrite an ambiguous section so only one interpretation survives — and prove it by asking two classmates independently.
+- [ ] Recommend an engine for the class project and defend the choice against the strongest alternative.
+- [ ] Produce a HUD or UI mock that matches your imagination exactly, editing until it does.
 
 ---
 

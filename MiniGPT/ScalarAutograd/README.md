@@ -537,25 +537,25 @@ More traps worth defusing now:
 
 The model now learns — genuinely, end to end, from its own mistakes. `Value` earned that: every hand trace agreed with the wiggle referee, the shortcut from Chapter 4 fell out of six local rules for free, and the training run walked straight past the table onto the data's own floor. But look at what one training step actually cost to get there: every add, every multiply, every gate mints a Java object, and a single full-batch step over 119 flashcards writes tens of thousands of receipts that a garbage collector must then sweep up before the next step can begin. On the pizzeria this is invisible. On an archive of millions of token positions and the final course model's roughly 34,000 parameters, it is a computational catastrophe — the machine would choke to death on its own paperwork long before it finished learning anything. The glass-box engine does not get thrown away; it becomes the correctness reference. The next chapter performs this exact same mathematics on flat primitive arrays, with explicit backward formulas standing in for the receipts, and proves the fast engine right by checking it, number for number, against this one.
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you write the receipt for a multiply — result, ingredients, both sensitivities — and explain the crossover rule?
-- [ ] Can you state what a topological order guarantees, and why the audit must walk it in reverse?
-- [ ] Can you explain why the loss's own gradient seeds to exactly 1, and why blame is delivered with `+=` rather than `=`?
+- [ ] Write the receipt for a multiply — result, ingredients, both sensitivities — and explain the crossover rule.
+- [ ] State what a topological order guarantees, and why the audit must walk it in reverse.
+- [ ] Explain why the loss's own gradient seeds to exactly 1, and why blame is delivered with `+=` rather than `=`.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you produce the full trace table for the practice graph — forward numbers, local derivatives, accumulated blame — landing on $6 / 4 / 2$?
-- [ ] Can you hand-audit the Set C miniature from score blames to card blames, starting from forecast minus one-hot?
-- [ ] Can you explain the two-envelope resolution: why a card used twice in one context receives added blame, and why an unconsulted card receives exactly zero?
+- [ ] Produce the full trace table for the practice graph — forward numbers, local derivatives, accumulated blame — landing on $6 / 4 / 2$.
+- [ ] Hand-audit the Set C miniature from score blames to card blames, starting from forecast minus one-hot.
+- [ ] Explain the two-envelope resolution: why a card used twice in one context receives added blame, and why an unconsulted card receives exactly zero.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you derive the loss's $\ln \sum e^{z_j - m} - (z_t - m)$ form from $-\ln(p_{\text{target}})$, and justify treating $m$ as a constant leaf?
-- [ ] Can you run the training experiments and read the leaderboard: what closed the gap to the table, and why the floor stops everyone at $0.3174$?
-- [ ] Can you argue the cost case: why the wiggle needs two evaluations per parameter while one backward pass blames every parameter at once — and verify both agree to six decimals?
+- [ ] Derive the loss's $\ln \sum e^{z_j - m} - (z_t - m)$ form from $-\ln(p_{\text{target}})$, and justify treating $m$ as a constant leaf.
+- [ ] Run the training experiments and read the leaderboard: what closed the gap to the table, and why the floor stops everyone at $0.3174$.
+- [ ] Argue the cost case: why the wiggle needs two evaluations per parameter while one backward pass blames every parameter at once — and verify both agree to six decimals.
 
 ---
 

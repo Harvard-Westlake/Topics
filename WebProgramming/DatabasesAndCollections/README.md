@@ -229,25 +229,25 @@ service cloud.firestore {
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you state two differences between local storage and cookies and one job each is best at?
-- [ ] Can you explain what a collection and a document are in Firestore?
-- [ ] Can you name the four CRUD operations and identify which two this lesson implements?
+- [ ] State two differences between local storage and cookies and one job each is best at.
+- [ ] Explain what a collection and a document are in Firestore.
+- [ ] Name the four CRUD operations and identify which two this lesson implements.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you connect a page to Firestore with the SDK and prove the connection with `console.log()`?
-- [ ] Can you write a document with `setDoc`, read it back with `getDoc`, and see it in the Firebase console?
-- [ ] Can you explain why your Firebase config being public is safe only if your rules are right?
+- [ ] Connect a page to Firestore with the SDK and prove the connection with `console.log()`.
+- [ ] Write a document with `setDoc`, read it back with `getDoc`, and see it in the Firebase console.
+- [ ] Explain why your Firebase config being public is safe only if your rules are right.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you combine browser storage and Firestore in one feature and justify which data went where?
-- [ ] Can you write a rule set that allows public reads of one collection and blocks everything else?
-- [ ] Can you explain what `await` does in a database call and what you would see without it?
+- [ ] Combine browser storage and Firestore in one feature and justify which data went where.
+- [ ] Write a rule set that allows public reads of one collection and blocks everything else.
+- [ ] Explain what `await` does in a database call and what you would see without it.
 
 ---
 

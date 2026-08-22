@@ -113,25 +113,25 @@ Then close the loop — do not stop at criticism:
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you add a collaborator with Write access to a repository and accept such an invite?
-- [ ] Can you name the six required sections of the PR write-up?
-- [ ] Can you explain what clicking Approve on a pull request commits you to?
+- [ ] Add a collaborator with Write access to a repository and accept such an invite.
+- [ ] Name the six required sections of the PR write-up.
+- [ ] Explain what clicking Approve on a pull request commits you to.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you run the full testing checklist — functional and behavioral — on someone else's widget?
-- [ ] Can you write a bug report with repro steps that a stranger could follow?
-- [ ] Can you verify a widget's content is factually correct, not just that its code runs?
+- [ ] Run the full testing checklist — functional and behavioral — on someone else's widget.
+- [ ] Write a bug report with repro steps that a stranger could follow.
+- [ ] Verify a widget's content is factually correct, not just that its code runs.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you explain why reviewer accountability changes how carefully people review?
-- [ ] Can you commit a fix to your partner's branch and re-test without breaking their work?
-- [ ] Can you judge when a PR has crossed from "needs changes" to genuinely approvable, and defend the call?
+- [ ] Explain why reviewer accountability changes how carefully people review.
+- [ ] Commit a fix to your partner's branch and re-test without breaking their work.
+- [ ] Judge when a PR has crossed from "needs changes" to genuinely approvable, and defend the call.
 
 ---
 

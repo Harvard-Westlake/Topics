@@ -185,25 +185,25 @@ Beating the bigram baseline is the engineering target, but it does not determine
 
 Graphics Processing Unit integration and FlashAttention are advanced systems extensions, not required course components. They may require optional dependencies or hardware unavailable to all students.
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you state the required hypothesis precisely, naming its independent and dependent variables?
-- [ ] Can you explain why held-out evaluation requires a test set no experiment touched during development?
-- [ ] Can you list what a corpus report must document and why provenance and license matter?
+- [ ] State the required hypothesis precisely, naming its independent and dependent variables.
+- [ ] Explain why held-out evaluation requires a test set no experiment touched during development.
+- [ ] List what a corpus report must document and why provenance and license matter.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you design an ablation that isolates one component's contribution while holding everything else constant?
-- [ ] Can you fill in the full experimental table for all required models on the same corpus?
-- [ ] Can you find and document one generated passage that resembles memorized training material?
+- [ ] Design an ablation that isolates one component's contribution while holding everything else constant.
+- [ ] Fill in the full experimental table for all required models on the same corpus.
+- [ ] Find and document one generated passage that resembles memorized training material.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you explain why at least three random seeds are required before trusting a small loss difference?
-- [ ] Can you write an error analysis identifying which kinds of context the transformer still fails to use?
-- [ ] Can you argue, with evidence from your own results, what would be required before treating model output as factual?
+- [ ] Explain why at least three random seeds are required before trusting a small loss difference.
+- [ ] Write an error analysis identifying which kinds of context the transformer still fails to use.
+- [ ] Argue, with evidence from your own results, what would be required before treating model output as factual.
 
 ---
 

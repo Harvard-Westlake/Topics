@@ -47,25 +47,25 @@ In the commit sequence, `git/HEAD` must be updated as the very last step. Writin
 
 See [Docs/commits.md](../Docs/commits.md) for the full ordered sequence.
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you clone a classmate's repository, read their README, and run their tester successfully?
-- [ ] Can you identify the root tree in their `objects/` folder and trace its contents manually?
-- [ ] Can you explain the structure of a commit file and what each field stores?
+- [ ] Clone a classmate's repository, read their README, and run their tester successfully.
+- [ ] Identify the root tree in their `objects/` folder and trace its contents manually.
+- [ ] Explain the structure of a commit file and what each field stores.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you implement `commit()` so that the first commit has no parent field and all subsequent commits reference the previous HEAD?
-- [ ] Can you verify that calling `commit()` twice produces two commit files where the second's parent field matches the first's hash?
-- [ ] Can you implement `GitWrapper` without changing the method signatures?
+- [ ] Implement `commit()` so that the first commit has no parent field and all subsequent commits reference the previous HEAD.
+- [ ] Verify that calling `commit()` twice produces two commit files where the second's parent field matches the first's hash.
+- [ ] Implement `GitWrapper` without changing the method signatures.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you implement `checkout(commitHash)` — restoring all files to the state of a specific prior commit?
-- [ ] Can you explain why HEAD is updated last in the commit sequence?
-- [ ] Can you describe what would happen to the commit chain if two commits had the same content, author, and timestamp?
+- [ ] Implement `checkout(commitHash)` — restoring all files to the state of a specific prior commit.
+- [ ] Explain why HEAD is updated last in the commit sequence.
+- [ ] Describe what would happen to the commit chain if two commits had the same content, author, and timestamp.
 
 ---
 

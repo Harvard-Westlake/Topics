@@ -540,25 +540,25 @@ More traps worth defusing now:
 
 The table can learn, but every current token owns an isolated row. `pineapple` and `pepperoni` both demand `pizza` next, yet each row had to discover that separately, and the one with fewer flashcards will always know it less well. In the archive's full vocabulary the same isolation strikes `mushroom` and `olive` — twins that appear in near-identical sentences ("extra mushroom, light sauce" / "extra olive, light sauce") and can share nothing. The machine needs shared internal features.
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you explain the difference between a logit and a probability, and why the table stores the unrestricted one?
-- [ ] Can you compute the worked example by hand — softmax of `[1.2, 0.1, -0.4]`, then the loss for target `pineapple` — and land on 1.5284?
-- [ ] Can you state what the learning rate controls, and describe what the loss trace looks like when it is far too small and far too large?
+- [ ] Explain the difference between a logit and a probability, and why the table stores the unrestricted one.
+- [ ] Compute the worked example by hand — softmax of `[1.2, 0.1, -0.4]`, then the loss for target `pineapple` — and land on 1.5284.
+- [ ] State what the learning rate controls, and describe what the loss trace looks like when it is far too small and far too large.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you write the gradient $p_i - \mathbf{1}[i=y]$ for any row and target, explain each entry's sign, and say why the entries always sum to zero?
-- [ ] Can you verify an analytical gradient with a finite-difference wiggle — and state precisely what a passing gradient check does and does not certify?
-- [ ] Can you execute one full training step by hand (Set C) and show the loss fell?
+- [ ] Write the gradient $p_i - \mathbf{1}[i=y]$ for any row and target, explain each entry's sign, and say why the entries always sum to zero.
+- [ ] Verify an analytical gradient with a finite-difference wiggle — and state precisely what a passing gradient check does and does not certify.
+- [ ] Execute one full training step by hand (Set C) and show the loss fell.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you explain why only the current token's row receives gradient, and what that means for rare tokens in a 50,000-word vocabulary?
-- [ ] Can you explain the relationship between the converged table and the count-based table — including why the learned one can never contain an exact zero, and which Chapter 2 and Chapter 3 facts that echoes?
-- [ ] Can you explain why a fresh random table's loss must be $\ln V$, and use the loss-floor argument to debunk an impossibly good loss report?
+- [ ] Explain why only the current token's row receives gradient, and what that means for rare tokens in a 50,000-word vocabulary.
+- [ ] Explain the relationship between the converged table and the count-based table — including why the learned one can never contain an exact zero, and which Chapter 2 and Chapter 3 facts that echoes.
+- [ ] Explain why a fresh random table's loss must be $\ln V$, and use the loss-floor argument to debunk an impossibly good loss report.
 
 ---
 

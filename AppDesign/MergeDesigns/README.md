@@ -79,25 +79,25 @@ The full phrasebook lives in [Design Communication](../Docs/design-communication
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you explain why the class clones the chosen repository instead of forking it?
-- [ ] Can you recite the P1/P2 protocol steps for a major idea?
-- [ ] Can you state what your individual branch must contain (2 meaningful features, 2 lesser modifications)?
+- [ ] Explain why the class clones the chosen repository instead of forking it.
+- [ ] Recite the P1/P2 protocol steps for a major idea.
+- [ ] State what your individual branch must contain (2 meaningful features, 2 lesser modifications).
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you respond to a partner's idea with a benefit the designer did not think of?
-- [ ] Can you raise a critical issue phrased so the subject is the design, not the designer?
-- [ ] Can you merge two branches into a joint branch that keeps only the revised ideas?
+- [ ] Respond to a partner's idea with a benefit the designer did not think of.
+- [ ] Raise a critical issue phrased so the subject is the design, not the designer.
+- [ ] Merge two branches into a joint branch that keeps only the revised ideas.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you explain how the pairwise merging process resembles merge sort — and where the analogy breaks?
-- [ ] Can you defend one of your features against a valid critique without dismissing the critique?
-- [ ] Can you decide, in a merge, which of two overlapping features to drop — and justify it purely on user value?
+- [ ] Explain how the pairwise merging process resembles merge sort — and where the analogy breaks.
+- [ ] Defend one of your features against a valid critique without dismissing the critique.
+- [ ] Decide, in a merge, which of two overlapping features to drop — and justify it purely on user value.
 
 ---
 

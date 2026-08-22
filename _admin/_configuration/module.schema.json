@@ -62,6 +62,10 @@
             "minimum": 1,
             "description": "Number of class periods this assignment spans (default 1)"
           },
+          "duration_override": {
+            "type": "boolean",
+            "description": "True when the teacher set this assignment's length in the Module Planner (the inline day-count dropdown), overriding the lesson's LESSONS.md duration. When absent, loading the module re-reads the duration from the repo."
+          },
           "title": { "type": "string" },
           "path": {
             "type": "string",
@@ -74,6 +78,11 @@
           "placeholder": {
             "type": "boolean",
             "description": "True for an \"Additional Day\" stub inserted from the Module Planner that doesn't reference a real lesson yet (path/_module are empty strings). Skipped by lesson-existence checks; excluded from Canvas assignment creation until it references a real lesson and this flag is removed."
+          },
+          "kind": {
+            "type": "string",
+            "enum": ["page", "test"],
+            "description": "Optional flag on a placeholder entry. \"page\": Canvas sync creates an unpublished Page (linked into the module) instead of an assignment — an in-class day with no homework. \"test\": the day number is reserved for a manually placed test; nothing is created on sync. Absent: plain Additional Day (fill in later, nothing syncs)."
           },
           "review": {
             "type": ["object", "null"],

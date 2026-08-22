@@ -89,25 +89,25 @@ What just happened: you formed a mini network and contributed capital ($5) to pa
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you define validator, stake, reward, and slashing in your own words?
-- [ ] Can you state the main resource PoW consumes and the main resource PoS commits instead?
-- [ ] Can you name three blockchains that use Proof of Stake?
+- [ ] Define validator, stake, reward, and slashing in your own words.
+- [ ] State the main resource PoW consumes and the main resource PoS commits instead.
+- [ ] Name three blockchains that use Proof of Stake.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you map each step of the classroom simulation to its PoS vocabulary term?
-- [ ] Can you explain why slashing makes validators careful even when nobody is watching them?
-- [ ] Can you explain why an attacker finds a PoS network expensive to attack?
+- [ ] Map each step of the classroom simulation to its PoS vocabulary term.
+- [ ] Explain why slashing makes validators careful even when nobody is watching them.
+- [ ] Explain why an attacker finds a PoS network expensive to attack.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you argue the strongest criticism of PoS (who ends up with the power?) and a response to it?
-- [ ] Can you explain the difference between consensus and finality using the simulation as your example?
-- [ ] Can you compare the energy story of the block confirmations in Bitcoin and post-merge Ethereum?
+- [ ] Argue the strongest criticism of PoS (who ends up with the power?) and a response to it.
+- [ ] Explain the difference between consensus and finality using the simulation as your example.
+- [ ] Compare the energy story of the block confirmations in Bitcoin and post-merge Ethereum.
 
 ---
 

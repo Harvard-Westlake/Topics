@@ -8,7 +8,8 @@
   "start_date": null,
   "topic_names": [
     "ComputerSetup",
-    "GitUsage"
+    "GitUsage",
+    "DNDReview"
   ],
   "assignments": [
     {
@@ -37,6 +38,24 @@
     },
     {
       "day": 4,
+      "duration": 1,
+      "title": "DND Review",
+      "path": "DNDReview",
+      "_module": "DNDReview",
+      "review": null
+    },
+    {
+      "day": 5,
+      "duration": 1,
+      "title": "DND Review Test",
+      "path": "",
+      "_module": "",
+      "review": null,
+      "placeholder": true,
+      "kind": "page"
+    },
+    {
+      "day": 6,
       "duration": 1,
       "title": "Forks and Collaboration",
       "path": "ForksAndCollaboration",

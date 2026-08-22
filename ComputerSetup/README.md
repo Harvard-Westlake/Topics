@@ -46,21 +46,21 @@ By the end of the install, your terminal accepts the same Unix commands used thr
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you open a terminal on your computer?
-- [ ] Can you log in to your GitHub account?
-- [ ] Can you confirm Git is installed by running `git --version`?
+- [ ] Open a terminal on your computer.
+- [ ] Log in to your GitHub account.
+- [ ] Confirm Git is installed by running `git --version`.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you open GitKraken and confirm it shows your GitHub account?
-- [ ] Can you create and run a Java program in VS Code?
-- [ ] Can you find your GitHub profile URL and open it in an incognito window?
+- [ ] Open GitKraken and confirm it shows your GitHub account.
+- [ ] Create and run a Java program in VS Code.
+- [ ] Find your GitHub profile URL and open it in an incognito window.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you configure Git with your name and email from the terminal?
-- [ ] Can you clone a public repository from GitHub to your local machine?
+- [ ] Configure Git with your name and email from the terminal.
+- [ ] Clone a public repository from GitHub to your local machine.

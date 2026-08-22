@@ -174,25 +174,25 @@ Mixed precision should remain an engineering experiment, not a core requirement.
 
 You now possess a trainable and sufficiently efficient neural engine. Next you return to the attention mechanism from Chapter 3, replacing programmer-written similarity rules with learned projections.
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Can you convert a (row, column) pair into a flat row-major array index and back?
-- [ ] Can you explain why $y = Wx$ is the same calculation as the Chapter 5 connection-traversal loop?
-- [ ] Can you explain what a forward cache stores and why the backward pass needs it?
+- [ ] Convert a (row, column) pair into a flat row-major array index and back.
+- [ ] Explain why $y = Wx$ is the same calculation as the Chapter 5 connection-traversal loop.
+- [ ] Explain what a forward cache stores and why the backward pass needs it.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Can you implement `Linear` forward and backward and pass a known-value test for both?
-- [ ] Can you show that embedding rows accumulate gradients correctly when the same token appears twice in one context?
-- [ ] Can you run the reference-equivalence comparison and get scalar and dense models to agree within tolerance?
+- [ ] Implement `Linear` forward and backward and pass a known-value test for both.
+- [ ] Show that embedding rows accumulate gradients correctly when the same token appears twice in one context.
+- [ ] Run the reference-equivalence comparison and get scalar and dense models to agree within tolerance.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Can you find and eliminate a hidden object allocation inside an innermost numeric loop?
-- [ ] Can you benchmark the dense model against the scalar reference and explain where the speedup comes from?
-- [ ] Can you explain the aliasing bug class and construct a test that would catch one in your `Matrix` class?
+- [ ] Find and eliminate a hidden object allocation inside an innermost numeric loop.
+- [ ] Benchmark the dense model against the scalar reference and explain where the speedup comes from.
+- [ ] Explain the aliasing bug class and construct a test that would catch one in your `Matrix` class.
 
 ---
 
