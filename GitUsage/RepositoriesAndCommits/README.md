@@ -36,6 +36,47 @@ ls .git                 # peek inside: branches, commits, config, objects
 > **Tip:**
 > A name that starts with a dot, like `.git`, is the Unix convention for a **hidden file or folder** — a plain `ls` (and your file manager) skips over anything named this way by default, since it's meant for tools to read, not for you to browse. That's the whole reason `.git` doesn't clutter your project folder even though it's quietly holding your entire history. `ls -a` — the `a` is for "all" — overrides that and shows hidden names too.
 
+👉 <details>
+<summary><strong>Activity: The Hidden Detective</strong> — click to expand</summary>
+
+*Concept: Proving that a repository's history lives locally, inside the hidden `.git` folder.*
+
+## Task
+
+1. Open your terminal and create a new folder anywhere convenient, then move into it:
+   ```bash
+   mkdir git-detective
+   cd git-detective
+   ```
+2. Turn it into a repository:
+   ```bash
+   git init
+   ```
+3. List the folder's contents normally:
+   ```bash
+   ls
+   ```
+   Nothing prints — the folder looks empty.
+4. Now list *all* files, including hidden ones:
+   ```bash
+   ls -a
+   ```
+   You should see `.git` in the output. That's the folder `git init` just created.
+5. Move inside it and look around:
+   ```bash
+   cd .git
+   ls
+   ```
+   You're looking at Git's raw machinery: `objects/` (where every version of every file is actually stored), `refs/` (where branch names point to), and `HEAD` (a plain text file naming your current branch).
+6. Return to your project root before you finish:
+   ```bash
+   cd ..
+   ```
+
+*(Standalone file: [activities/01-the-hidden-detective.md](activities/01-the-hidden-detective.md))*
+
+</details>
+
 ---
 
 ## <font color="#388bfd">Where is a Repository?</font>
@@ -121,6 +162,37 @@ Always clone. Downloading a ZIP gives you the files but none of the Git machiner
 
 **In GitKraken:** click **Clone a Repo** on the home screen → paste the repository URL → choose a destination folder → click **Clone the repo!**
 
+👉 <details>
+<summary><strong>Activity: Clone vs. ZIP Challenge</strong> — click to expand</summary>
+
+*Concept: A cloned repository is a living thing with history attached; a downloaded ZIP is a dead snapshot with none.*
+
+## Task
+
+1. Go to [github.com/octocat/Hello-World](https://github.com/octocat/Hello-World) — GitHub's own tiny demo repository.
+2. Click **Code → Download ZIP**. Extract the ZIP into a folder named `dead-repo`.
+3. In your terminal, clone the same repository into a folder named `live-repo`:
+   ```bash
+   git clone https://github.com/octocat/Hello-World.git live-repo
+   ```
+4. Open a terminal inside `dead-repo` and run:
+   ```bash
+   git status
+   git log
+   ```
+   Write down the exact error each command gives you.
+5. Now open a terminal inside `live-repo` and run the same two commands:
+   ```bash
+   git status
+   git log
+   ```
+   Write down what each one shows you this time.
+6. Compare your two write-ups. `dead-repo` has no `.git` folder at all — it's just files, disconnected from GitHub, with none of its own history. `live-repo` carries the entire project history and already knows where it came from.
+
+*(Standalone file: [activities/02-clone-vs-zip-challenge.md](activities/02-clone-vs-zip-challenge.md))*
+
+</details>
+
 ---
 
 ## <font color="#388bfd">The GitKraken Interface</font>
@@ -182,6 +254,27 @@ git commit -m "Short present-tense description of what changed"
 
 **In GitKraken:** fill in the **Summary** field and optionally a **Description**, then click **Commit Changes**.
 
+👉 <details>
+<summary><strong>Activity: The Split Commit</strong> — click to expand</summary>
+
+*Concept: The staging area gives you granular control over exactly what gets saved in a commit.*
+
+## Task
+
+1. Inside the `live-repo` folder you cloned in the previous activity, create two new files:
+   ```bash
+   echo "Feature A" > feature-a.txt
+   echo "Feature B" > feature-b.txt
+   ```
+2. Using GitKraken (or `git add feature-a.txt` in the terminal), stage **only** `feature-a.txt` — leave `feature-b.txt` untouched.
+3. Commit just the staged file with a descriptive message, e.g. `Add feature A`.
+4. Run `git status` and confirm `feature-b.txt` still shows up as an untracked/unstaged change — it was deliberately left behind.
+5. In your own words, write one sentence explaining what would have happened to `feature-b.txt` if you had run `git add .` instead of `git add feature-a.txt`.
+
+*(Standalone file: [activities/03-the-split-commit.md](activities/03-the-split-commit.md))*
+
+</details>
+
 ---
 
 ## <font color="#388bfd">Pushing and Pulling</font>
@@ -207,25 +300,20 @@ git pull
 
 ---
 
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
-### <font color="#79c0ff">Introductory</font>
+- [ ] I can explain the difference between a local repository on my machine and a remote repository on GitHub.
+- [ ] I can successfully clone a repository using its URL rather than downloading it as a ZIP file.
+- [ ] I understand that the `.git` folder is hidden, starts with a dot, and contains my project's entire history.
+- [ ] I can explain the difference between staging (preparing) a file and committing (saving) it.
+- [ ] I can write a clear, present-tense commit message that explains what changed and why.
+- [ ] I can push my local commits to GitHub and verify they appear online.
 
-- [ ] Can you explain the difference between a local and a remote repository?
-- [ ] Can you clone a repository from GitHub and identify what `origin` is set to?
-- [ ] Can you stage a file using `git add` and confirm it is staged with `git status`?
+## <font color="#388bfd">🚀 Stretch Goals</font>
 
-### <font color="#79c0ff">Intermediate</font>
-
-- [ ] Can you explain what the `.git` folder is, why its name starts with a dot, and why you should never edit it directly?
-- [ ] Can you explain the difference between `git clone` and downloading a ZIP?
-- [ ] Can you push commits to GitHub and verify they appear on the repository page?
-
-### <font color="#79c0ff">Advanced</font>
-
-- [ ] Can you walk through the full workflow — clone, edit, stage, commit, push — without referring to notes?
-- [ ] Can you explain why `git add .` and `git add filename` produce different results and when each is appropriate?
-- [ ] Can you write a commit message that someone reading the history in six months would find genuinely useful?
+- [ ] **The "Undo" Preview:** Research what the `git restore --staged <file>` command does and test it on a file you accidentally staged.
+- [ ] **Terminal Mastery:** Try completing the entire workflow (clone, create file, add, commit, push) entirely in the command line without opening GitKraken.
+- [ ] **Investigate the Config:** Open the `.git` folder you created in Activity 1 and read the `config` file in a text editor to see how Git tracks your remote URLs.
 
 ---
 

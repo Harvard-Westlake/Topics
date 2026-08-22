@@ -49,27 +49,26 @@ One-sentence description of the topic.
 - [Subtopic](TopicFolder/Subtopic/) — one-line summary
 ```
 
-## Skill Building section
+## Check for Understanding and Stretch Goals
 
-Every README (both topic indexes and individual lesson pages) must end with a Skill Building section placed just above the bottom navigation link. It has three `###` sub-sections — Introductory, Intermediate, Advanced — each with 3 checkbox items (`- [ ]`) phrased as "Can you…" questions that directly test the content on that page.
+**Current standard (use for every new or edited lesson).** Every README (both topic indexes and individual lesson pages) must end with two sections placed just above the bottom navigation link — this replaced the older three-tier "Skill Building" format (Introductory/Intermediate/Advanced), which some not-yet-migrated lessons still carry; don't reintroduce the tiered format anywhere.
 
 ```markdown
-## <font color="#388bfd">Skill Building</font>
+## <font color="#388bfd">☑️ Check for Understanding</font>
 
-### <font color="#79c0ff">Introductory</font>
+- [ ] I can ...
+- [ ] I can ...
+- [ ] I can ...
 
-- [ ] Can you ...
-- [ ] Can you ...
-- [ ] Can you ...
+## <font color="#388bfd">🚀 Stretch Goals</font>
 
-### <font color="#79c0ff">Intermediate</font>
-
-- [ ] Can you ...
-
-### <font color="#79c0ff">Advanced</font>
-
-- [ ] Can you ...
+- [ ] ...
+- [ ] ...
 ```
+
+- **Check for Understanding** — one `- [ ]` item per concept taught on the page, phrased as first-person "I can ..." statements (not "Can you...?" questions). No difficulty tiers — list items in the order the concepts were introduced.
+- **Stretch Goals** — optional exploration just beyond the curriculum: a related command, tool, or idea a curious student can chase on their own. Not required, not tested, no fixed count.
+- Both use plain `- [ ]` checkboxes like every other checklist in this repo (see the `- [ ]` / `- [x]` note under Content Conventions).
 
 ## Topic README (parent folder)
 
@@ -125,7 +124,7 @@ python3 _admin/_verification/verify.py        # exit 1 on errors
 python3 _admin/_verification/verify.py --fix  # also regenerate _admin/_lessonplans/
 ```
 
-It checks every relative link in every `.md`, topic/lesson structure (LESSONS.md ↔ folders, Skill Building sections, ASSIGNMENT.md links), root README coverage, and `_modules/*.json` referential integrity (lessons, review files, title drift, lesson-plan sync). CI runs it on every push via `.github/workflows/verify.yml` — do not leave the repo in a state where it fails.
+It checks every relative link in every `.md`, topic/lesson structure (LESSONS.md ↔ folders, Skill Building / Check for Understanding sections, ASSIGNMENT.md links), root README coverage, and `_modules/*.json` referential integrity (lessons, review files, title drift, lesson-plan sync). CI runs it on every push via `.github/workflows/verify.yml` — do not leave the repo in a state where it fails.
 
 ## Module and day-lesson structure
 
@@ -264,7 +263,7 @@ LessonFolder/
 ```
 
 Rules for review files:
-- **Task-based, not checkbox-based.** Reviews are exercises the student performs, not self-assessments. Use a numbered `## Tasks` list, not "Can you…" checkboxes (those belong in Skill Building sections).
+- **Task-based, not checkbox-based.** Reviews are exercises the student performs, not self-assessments. Use a numbered `## Tasks` list, not "I can…" checkboxes (those belong in Check for Understanding sections).
 - **Terse reference only.** The top section must fit in a table or a few bullet points. If you find yourself writing a sentence of explanation, stop — that belongs in the lesson README.
 - **Self-contained.** Must make sense when inserted into any other assignment with no surrounding context.
 - **Cumulative scope.** Each review file covers content up to and including the current lesson, plus any earlier lessons in the same module.
@@ -327,9 +326,9 @@ The `*Lesson: [Lesson Name](README.md)*` line is required on every ASSIGNMENT.md
 - Use bold-label blockquotes for key asides: `> **Note:** text`, `> **Tip:** text`, `> **Warning:** text`. Do not use the `> [!NOTE]` GitHub alert syntax — it does not render correctly in this repo's context.
 - Use fenced code blocks with `bash` syntax highlighting for all terminal commands.
 - Each subtopic README ends with `← prev — Next: next` navigation links using relative paths.
-- No emojis. No frontmatter. No HTML unless Markdown genuinely can't express it.
+- No emojis in body text, with three fixed exceptions that are structural markers, not decoration: the `👉 **Activity Break:**` callout (see "activities/ folders"), and the `☑️`/`🚀` prefixes on the Check for Understanding / Stretch Goals headers (see above). No frontmatter. No HTML unless Markdown genuinely can't express it.
 - Audience: high school students new to CS. Be precise, not condescending.
-- Keep writing `- [ ]` / `- [x]` for every checkbox (Skill Building, Success Criteria) — GitHub renders these as real checkboxes natively, and the hub/planner renderer rewrites the same markers into actual `<input type="checkbox" disabled>` elements before conversion, so they also render as checkboxes in the Canvas-fidelity preview and on Canvas itself (see `_TASKLIST_RE` in `_admin/_hub/server.py` and `_admin/_coursePlannerUI/mdrender.py`). Never hand-write `<input>` checkboxes in content — the renderer already does it.
+- Keep writing `- [ ]` / `- [x]` for every checkbox (Check for Understanding, Stretch Goals, Success Criteria) — GitHub renders these as real checkboxes natively, and the hub/planner renderer rewrites the same markers into actual `<input type="checkbox" disabled>` elements before conversion, so they also render as checkboxes in the Canvas-fidelity preview and on Canvas itself (see `_TASKLIST_RE` in `_admin/_hub/server.py` and `_admin/_coursePlannerUI/mdrender.py`). Never hand-write `<input>` checkboxes in content — the renderer already does it.
 
 ## Starter-code conventions
 
@@ -439,7 +438,7 @@ Rules:
 - Each milestone file is **self-contained** — it must make sense without the surrounding assignment.
 - Include a **Recall** section only when the student needs a quick pointer to prior content or reference docs.
 - The milestone file nav links follow the same first/middle/last pattern as lesson bottom navs, replacing prev/next with the adjacent milestone files.
-- **No Skill Building section** in milestone files — those belong in the lesson README only.
+- **No Check for Understanding / Stretch Goals section** in milestone files — those belong in the lesson README only.
 
 **When adding milestone files to an existing lesson (Common Operations checklist):**
 1. Create `LessonName/milestones/` folder
@@ -459,7 +458,7 @@ Rules for `Docs/` folders:
 - **Linked from individual lesson READMEs** as relevant
 - The index file inside `Docs/` is named **`README.md`** (GitHub renders it automatically when browsing the folder)
 - Individual doc files use lowercase kebab-case: `blobs.md`, `index-file.md`
-- Doc files follow the standard title format (centered `<div>` block with `#` title and italic subtitle) but have **no lesson type label**, **no Skill Building section**, and **no bottom nav** — only a simple `← Back to [Docs](README.md)` link
+- Doc files follow the standard title format (centered `<div>` block with `#` title and italic subtitle) but have **no lesson type label**, **no Check for Understanding section**, and **no bottom nav** — only a simple `← Back to [Docs](README.md)` link
 - Doc files use the same `##` / `###` color scheme as lesson pages
 
 **When adding a new module with reference documentation:**
@@ -507,6 +506,63 @@ Rules for `assets/` folders:
 
 ---
 
+## activities/ folders (in-lesson engagement exercises)
+
+**Current standard for every new or edited lesson.** Every lesson's `README.md` must weave short, hands-on activities directly into its lecture — right after the section that introduces a concept, not saved up for homework — so students prove each idea to themselves before moving on. The activities themselves live as separate files in an `activities/` subfolder.
+
+```
+LessonFolder/
+  README.md
+  ASSIGNMENT.md        (optional — this is separate from activities; see below)
+  activities/
+    01-descriptive-name.md    (one file per activity, numbered in README order)
+    02-descriptive-name.md
+```
+
+**Activity file format:**
+
+```markdown
+# Activity — [Title]
+
+*Concept: [one sentence naming the idea this activity proves]*
+
+## Task
+
+1. [Concrete, numbered step]
+2. [Next step — builds on the prior one]
+```
+
+**Weaving into the README:** immediately after the section whose concept the activity reinforces, embed the activity as a collapsed, togglable `<details>` block — not just a link — so a student can do it inline without leaving the page:
+
+```markdown
+👉 <details>
+<summary><strong>Activity: [Title]</strong> — click to expand</summary>
+
+*Concept: [one sentence naming the idea this activity proves]*
+
+## Task
+
+1. [Concrete, numbered step]
+2. [Next step — builds on the prior one]
+
+*(Standalone file: [activities/01-descriptive-name.md](activities/01-descriptive-name.md))*
+
+</details>
+```
+
+The `<details>` body is a **full, byte-for-byte duplicate** of the activity file's content (everything below its own `# Activity — [Title]` line) — GitHub markdown has no way to transclude another file, so this is the only way to get an inline toggle. This means every activity's content is intentionally maintained in two places; when you edit one, edit the other to match.
+
+Rules:
+- **Naming:** the activity file is numbered (`01-`, `02-`, ...) matching the order activities appear in the README, then a short kebab-case description, e.g. `activities/02-clone-vs-zip-challenge.md`. The embedded toggle's summary is always `Activity: [Title]`, where `[Title]` is that same activity's title **before** it was turned into the kebab-case filename (e.g. file `02-clone-vs-zip-challenge.md` ↔ summary `Activity: Clone vs. ZIP Challenge`) — this is the fixed, mechanical link between a toggle you see in the README and the file it lives in, so anyone can find one from the other.
+- **One concept per activity.** Keep each one short enough to do in a few minutes without breaking lecture flow.
+- **Self-contained task steps.** A student should be able to follow the numbered steps without leaving the toggle (or the standalone file) for more instructions.
+- **A blank line must follow `<summary>...</summary>`** — GitHub only renders the markdown inside an HTML block (headers, lists, code fences) when a blank line separates it from the opening tag; skip it and the whole body renders as literal text.
+- **Not added to `LESSONS.md`, the root `README.md`, or module JSONs** — like `review/`, `demos/`, and `assets/`, this is lesson support material.
+- **Distinct from `ASSIGNMENT.md`:** activities are in-lecture engagement/comprehension checks completed as you read; `ASSIGNMENT.md` is the graded homework due after class. A lesson can have both, neither, or just one.
+- **Always include the "Standalone file" link** shown in the template above, inside the toggle. It's not just a courtesy — it's the one real markdown link connecting the embed back to `activities/*.md`, so `verify.py`'s link checker still confirms the file exists.
+
+---
+
 ## Common Operations
 
 These checklists are the authoritative source for keeping the repo consistent. Every item is required unless marked optional. **Finish every operation by running `python3 _admin/_verification/verify.py`** — it catches broken links, missing index rows, and stale module references.
@@ -531,17 +587,18 @@ A module is a new top-level folder (e.g. `Python/`, `DataStructures/`).
 A lesson is a new subfolder inside a module (e.g. `Terminal/PipeAndGREP/`).
 
 **Create:**
-1. `ModuleName/LessonName/README.md` — centered title block + type label + all lesson content + Skill Building section + bottom nav
-2. `ModuleName/LessonName/ASSIGNMENT.md` — optional; if present, add `[Assignment](ASSIGNMENT.md)` link above the nav line in the README
-3. `ModuleName/LessonName/review/` — optional; see **Add review files** below
+1. `ModuleName/LessonName/README.md` — centered title block + type label + all lesson content woven with `👉 Activity Break` callouts + Check for Understanding / Stretch Goals sections + bottom nav
+2. `ModuleName/LessonName/activities/` — one numbered file per activity break referenced from the README; see **activities/ folders**
+3. `ModuleName/LessonName/ASSIGNMENT.md` — optional; if present, add `[Assignment](ASSIGNMENT.md)` link above the nav line in the README
+4. `ModuleName/LessonName/review/` — optional; see **Add review files** below
 
 **Update:**
-4. `ModuleName/LESSONS.md` — add a row for the new lesson
-5. `ModuleName/README.md` — add a row to the Lessons table; if the module README has a TOC, add an entry there too
-6. Root `README.md` — add a subtopic bullet under the module's entry
-7. `CLAUDE.md` — add the new lesson name to the module's parenthetical in "Current topics:"
-8. Previous lesson's README — update its bottom nav to add `Next: [NewLesson](../NewLesson/)`
-9. New lesson's README bottom nav — add `← [PrevLesson](../PrevLesson/)` on the left side
+5. `ModuleName/LESSONS.md` — add a row for the new lesson
+6. `ModuleName/README.md` — add a row to the Lessons table; if the module README has a TOC, add an entry there too
+7. Root `README.md` — add a subtopic bullet under the module's entry
+8. `CLAUDE.md` — add the new lesson name to the module's parenthetical in "Current topics:"
+9. Previous lesson's README — update its bottom nav to add `Next: [NewLesson](../NewLesson/)`
+10. New lesson's README bottom nav — add `← [PrevLesson](../PrevLesson/)` on the left side
 
 ---
 
@@ -597,8 +654,8 @@ Review files are composable fragments in `LessonFolder/review/`. The module impo
 
 When updating content inside an existing lesson:
 
-- **New commands or concepts added:** add or update Skill Building questions to test them; add the commands to any existing review files that cover this lesson
-- **Commands or concepts removed:** remove them from Skill Building; update or remove the corresponding review file tasks; update the source link label in any review files that referenced the removed content
+- **New commands or concepts added:** add or update Check for Understanding items to test them, and consider whether a new `activities/` exercise would reinforce it in-lecture; add the commands to any existing review files that cover this lesson
+- **Commands or concepts removed:** remove them from Check for Understanding (and delete any activity that exercised them); update or remove the corresponding review file tasks; update the source link label in any review files that referenced the removed content
 - **ASSIGNMENT.md criteria change:** update the Success Criteria checkboxes; update the submission stencil if new fields are needed
 - **Section renamed within a README:** search for anchor links (`#section-name`) in the same file's TOC and in any review files — update them
 

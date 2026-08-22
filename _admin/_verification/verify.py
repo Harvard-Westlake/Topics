@@ -7,7 +7,7 @@ that exist:
   1. Every relative link in every .md file resolves to a real file/folder
   2. Every topic folder has LESSONS.md + README.md, LESSONS.md paths exist,
      and every lesson folder is listed in LESSONS.md
-  3. Lesson READMEs contain a Skill Building section and link ASSIGNMENT.md
+  3. Lesson READMEs contain a Skill Building / Check for Understanding section and link ASSIGNMENT.md
      when one exists; every ASSIGNMENT.md links back to its lesson README
   4. Every topic is listed in the root README
   5. Every _modules/*.json is valid: slug matches filename, lessons and
@@ -134,8 +134,8 @@ def check_structure():
         for lesson in lesson_folders(topic):
             readme = (lesson / "README.md").read_text()
             rel = lesson.relative_to(ROOT)
-            if "Skill Building" not in readme:
-                err(f"{rel}/README.md: missing Skill Building section")
+            if "Skill Building" not in readme and "Check for Understanding" not in readme:
+                err(f"{rel}/README.md: missing Skill Building / Check for Understanding section")
             has_assignment = (lesson / "ASSIGNMENT.md").exists()
             links_assignment = "](ASSIGNMENT.md)" in readme
             if has_assignment and not links_assignment:

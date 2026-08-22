@@ -28,6 +28,14 @@
       "review": null
     },
     {
+      "day": 3,
+      "duration": 1,
+      "title": "Branching and Merging",
+      "path": "BranchingAndMerging",
+      "_module": "GitUsage",
+      "review": null
+    },
+    {
       "day": 4,
       "duration": 1,
       "title": "Forks and Collaboration",
@@ -36,5 +44,5 @@
       "review": null
     }
   ],
-  "updated": "2026-08-21"
+  "updated": "2026-08-22"
 }
