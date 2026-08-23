@@ -9,7 +9,8 @@
   "topic_names": [
     "ComputerSetup",
     "GitUsage",
-    "DNDReview"
+    "DNDReview",
+    "Terminal"
   ],
   "assignments": [
     {
@@ -22,11 +23,23 @@
     },
     {
       "day": 2,
-      "duration": 1,
+      "duration": 0.5,
       "title": "Repositories and Commits",
       "path": "RepositoriesAndCommits",
       "_module": "GitUsage",
-      "review": null
+      "review": null,
+      "sub": 0,
+      "duration_override": true
+    },
+    {
+      "day": 2,
+      "duration": 0.5,
+      "title": "Terminal Basics",
+      "path": "Basics",
+      "_module": "Terminal",
+      "review": null,
+      "sub": 1,
+      "duration_override": true
     },
     {
       "day": 3,
@@ -34,7 +47,12 @@
       "title": "Branching and Merging",
       "path": "BranchingAndMerging",
       "_module": "GitUsage",
-      "review": null
+      "review": {
+        "module": "Terminal",
+        "path": "Basics",
+        "file": "four-command-round-trip.md",
+        "label": "The Four-Command Round Trip"
+      }
     },
     {
       "day": 4,
@@ -42,7 +60,12 @@
       "title": "DND Review",
       "path": "DNDReview",
       "_module": "DNDReview",
-      "review": null
+      "review": {
+        "module": "Terminal",
+        "path": "Basics",
+        "file": "navigation-and-basic-files.md",
+        "label": "Navigation and Basic Files"
+      }
     },
     {
       "day": 5,
@@ -71,5 +94,5 @@
       "review": null
     }
   ],
-  "updated": "2026-08-22"
+  "updated": "2026-08-23"
 }

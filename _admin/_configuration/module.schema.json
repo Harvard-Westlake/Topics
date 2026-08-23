@@ -58,9 +58,16 @@
             "description": "1-indexed day within the unit (from the topic's LESSONS.md)"
           },
           "duration": {
+            "type": "number",
+            "minimum": 0.5,
+            "multipleOf": 0.5,
+            "description": "Number of class periods this assignment spans (default 1). 0.5 pairs two assignments onto one class day — each carries a \"sub\" index and is named unit.day.0 / unit.day.1."
+          },
+          "sub": {
             "type": "integer",
-            "minimum": 1,
-            "description": "Number of class periods this assignment spans (default 1)"
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Sub-index within a shared half-day (duration 0.5 only): 0 for the first assignment of the day, 1 for the second. Assigned automatically by the Module Planner's renumbering."
           },
           "duration_override": {
             "type": "boolean",

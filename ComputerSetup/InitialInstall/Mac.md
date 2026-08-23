@@ -16,11 +16,12 @@
 3. [Create your GitHub account and enable two-factor authentication](#3-github-account)
 4. [Install Homebrew, the macOS package manager](#4-homebrew)
 5. [Install Git with Homebrew](#5-git)
-6. [Install GitKraken and sign in with your GitHub account](#6-gitkraken)
-7. [Install VS Code and the Java extension pack](#7-visual-studio-code)
-8. [Check your chip type and install Java 25 LTS](#8-java-25-lts)
-9. [Verify that Git, Java, and Homebrew all work](#9-verify-your-setup)
-10. [Add a photo and submit your GitHub profile URL](#10-update-your-github-profile)
+6. [Generate an SSH key, load it into ssh-agent, and connect it to GitHub](#6-ssh-keys-for-github)
+7. [Install GitKraken and sign in with your GitHub account](#7-gitkraken)
+8. [Install VS Code and the Java extension pack](#8-visual-studio-code)
+9. [Check your chip type and install Java 25 LTS](#9-java-25-lts)
+10. [Verify that Git, Java, Homebrew, and your SSH key all work](#10-verify-your-setup)
+11. [Add a photo and submit your GitHub profile URL](#11-update-your-github-profile)
 
 ---
 
@@ -105,7 +106,84 @@ git --version
 
 ---
 
-## <font color="#388bfd">6. GitKraken</font>
+## <font color="#388bfd">6. SSH Keys for GitHub</font>
+
+GitHub does not accept account passwords from the command line. Instead, your Mac proves its identity with an **SSH key pair**: a **private key** that never leaves your computer, and a **public key** you hand to GitHub. Set this up once and every clone, pull, and push authenticates automatically.
+
+### <font color="#79c0ff">Generate your key pair</font>
+
+In Terminal, generate a modern **ed25519** key using the email on your GitHub account:
+
+```bash
+ssh-keygen -t ed25519 -C "you@example.com"
+```
+
+1. Press **Return** to accept the default location (`~/.ssh/id_ed25519`)
+2. Choose a passphrase, or press **Return** twice for none — either is fine for this course
+
+### <font color="#79c0ff">Start ssh-agent and add your key</font>
+
+The **ssh-agent** is a small background program that holds your unlocked key in memory, so you authenticate once per login instead of on every push. Start it:
+
+```bash
+eval "$(ssh-agent -s)"
+# Agent pid 12345
+```
+
+Next, tell macOS to load the key automatically in every future Terminal session. Create and open the SSH config file:
+
+```bash
+touch ~/.ssh/config
+open -e ~/.ssh/config
+```
+
+Paste in exactly this, then save and close:
+
+```
+Host github.com
+  AddKeysToAgent yes
+  UseKeychain yes
+  IdentityFile ~/.ssh/id_ed25519
+```
+
+Finally, add your key to the agent and store its passphrase in the macOS keychain:
+
+```bash
+ssh-add --apple-use-keychain ~/.ssh/id_ed25519
+```
+
+### <font color="#79c0ff">Give GitHub your public key</font>
+
+Copy the **public** half to your clipboard — note the `.pub`:
+
+```bash
+pbcopy < ~/.ssh/id_ed25519.pub
+```
+
+Then on GitHub:
+
+1. Go to **Settings → SSH and GPG keys → New SSH key**
+2. Title: something that names this machine, e.g. `School MacBook`
+3. Paste into the Key field and click **Add SSH key**
+
+### <font color="#79c0ff">Test the connection</font>
+
+```bash
+ssh -T git@github.com
+```
+
+Type `yes` if asked whether to trust GitHub's fingerprint. Success looks like:
+
+```
+Hi your-username! You've successfully authenticated, but GitHub does not provide shell access.
+```
+
+> **Warning:**
+> The private key (`id_ed25519`, no extension) must never be shared, uploaded, or committed. Only the `.pub` file ever leaves your machine — that is the entire point of the pair.
+
+---
+
+## <font color="#388bfd">7. GitKraken</font>
 
 GitKraken is a visual interface for Git that you'll use in class.
 
@@ -117,7 +195,7 @@ GitKraken is a visual interface for Git that you'll use in class.
 
 ---
 
-## <font color="#388bfd">7. Visual Studio Code</font>
+## <font color="#388bfd">8. Visual Studio Code</font>
 
 1. Download and install VS Code from [code.visualstudio.com/download](https://code.visualstudio.com/download)
 2. Open VS Code
@@ -128,7 +206,7 @@ GitKraken is a visual interface for Git that you'll use in class.
 
 ---
 
-## <font color="#388bfd">8. Java 25 LTS</font>
+## <font color="#388bfd">9. Java 25 LTS</font>
 
 ### <font color="#79c0ff">Check your chip type first</font>
 
@@ -156,7 +234,7 @@ Open the `.dmg` file and follow the installation prompts.
 
 ---
 
-## <font color="#388bfd">9. Verify Your Setup</font>
+## <font color="#388bfd">10. Verify Your Setup</font>
 
 ### <font color="#79c0ff">Confirm your terminal environment</font>
 
@@ -174,6 +252,13 @@ brew --version
 ```
 
 All three should print version numbers, not errors.
+
+Then confirm your SSH key still authenticates to GitHub:
+
+```bash
+ssh -T git@github.com
+# Hi your-username! You've successfully authenticated, ...
+```
 
 ### <font color="#79c0ff">Run a Java program in VS Code</font>
 
@@ -196,7 +281,7 @@ Take a screenshot of the output — you may need to submit it.
 
 ---
 
-## <font color="#388bfd">10. Update Your GitHub Profile</font>
+## <font color="#388bfd">11. Update Your GitHub Profile</font>
 
 On your GitHub account:
 

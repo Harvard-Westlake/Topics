@@ -20,6 +20,7 @@ Confirm each of the following before submitting:
 - [ ] **Run Java code in Visual Studio Code** — open a `.java` file and run it; the output panel should print your result without errors
 - [ ] **Open a terminal and type `git`** — you should see a list of git commands, not the error `git: command not found`
   - If you just installed Git, restart your terminal or WSL window first
+- [ ] **SSH key authenticates to GitHub** — `ssh -T git@github.com` greets you with `Hi your-username!`, proving your key pair is generated, loaded into ssh-agent, and added to GitHub
 - [ ] **GitKraken is installed and signed in** — the account area in the bottom toolbar shows your name or email, on the **FREE** plan
 
   ![GitKraken bottom toolbar showing a FREE badge next to the account icon — signed in on the free plan](assets/gitkraken-free-badge.png)
@@ -40,6 +41,7 @@ Copy the stencil below, fill in each line, and paste it into the Canvas text box
 GitHub Profile URL:     https://github.com/
 GitKraken Sign-in:      Confirmed signed in on MM/DD/YY
 Terminal git check:     Type `git` in your terminal — paste the first line of output here
+SSH key check:          Run `ssh -T git@github.com` — paste the greeting line here
 Java in VS Code:        Confirmed — ran Hello.java successfully on MM/DD/YY
 ```
 
@@ -49,6 +51,7 @@ Example of a complete submission:
 GitHub Profile URL:     https://github.com/andrewtheiss
 GitKraken Sign-in:      Confirmed signed in on 5/17/26
 Terminal git check:     usage: git [-v | --version] [-h | --help] ...
+SSH key check:          Hi andrewtheiss! You've successfully authenticated, ...
 Java in VS Code:        Confirmed — ran Hello.java successfully on 5/17/26
 ```
 

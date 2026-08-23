@@ -552,6 +552,8 @@ function findAfterDay(r, i) {
 function slotRow(blk, s, num) {
   const isInsert = !!s.insert_id;
   const later = (s.part || 1) > 1;
+  // ½-day lessons share the class day — show the .0/.1 sub-index in the number
+  if (s.lesson && s.lesson.duration === 0.5) num = num + '.' + (s.lesson.sub || 0);
   let controls = '';
   if (isInsert && !later) {
     const ins = (blk.inserts || []).find(x => x.id === s.insert_id) || {};

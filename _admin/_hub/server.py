@@ -221,6 +221,13 @@ def _lesson_readme_html(module_dir, lesson_path):
 
 # ── Canvas helpers ─────────────────────────────────────────────────────────────
 
+def _day_sub_suffix(a):
+    """'.0' / '.1' sub-index for a ½-day assignment sharing its class day —
+    Canvas names become unit.day.0 / unit.day.1. Empty for full-day items."""
+    if a and (a.get("duration") == 0.5 or a.get("sub") is not None):
+        return f".{a.get('sub') or 0}"
+    return ""
+
 def create_canvas_page(course_id, module_id, name, body_html):
     """Create an unpublished Canvas wiki page and link it into a module. Used by
     'page' placeholders — an in-class day with content but no assignment/homework."""
@@ -430,7 +437,8 @@ def api_create_module(course_id):
             return None
         # day is 1-indexed; assignment spans day..day+duration-1
         # due at 23:59 on the last day → offset = (day-1) + (duration-1)
-        offset = int(day) - 1 + int(duration) - 1
+        # (a ½-day item is due on its own day: max() keeps the offset at day-1)
+        offset = int(day) - 1 + max(int(duration) - 1, 0)
         d = datetime.strptime(start_date, "%Y-%m-%d") + timedelta(days=offset)
         return d.replace(hour=23, minute=59, second=0, tzinfo=timezone.utc).isoformat()
 
@@ -457,7 +465,7 @@ def api_create_module(course_id):
             # 'test' → reserved day number for manual test placement;
             # plain  → not yet filled in. Only 'page' creates anything.
             if a.get("kind") == "page":
-                pname = f"{unit_num}.{a['day']}: {a['title']}"
+                pname = f"{unit_num}.{a['day']}{_day_sub_suffix(a)}: {a['title']}"
                 parts = []
                 if a.get("review_markdown"):
                     parts.append(review_block_html(md_to_html(a["review_markdown"])))
@@ -470,7 +478,7 @@ def api_create_module(course_id):
             continue
         day      = a["day"]
         duration = a.get("duration", 1)
-        name     = f"{unit_num}.{day}: {a['title']}"
+        name     = f"{unit_num}.{day}{_day_sub_suffix(a)}: {a['title']}"
 
         # Build HTML description
         html_parts = []
@@ -1063,7 +1071,8 @@ def expand_module_block(block):
                 "topic_names": mod.get("topic_names", []),
                 "points": mod.get("points_per_assignment", 10),
                 "scale": mod.get("scale_factor", 1.15)}
-    total = max((a["day"] + a.get("duration", 1) - 1 for a in lessons), default=0)
+    # ceil-style day span: a ½-day item still occupies (part of) its one day
+    total = max((a["day"] + max(int(a.get("duration", 1) or 1) - 1, 0) for a in lessons), default=0)
     inserts = block.get("inserts", [])
     slots = []
 
@@ -1077,15 +1086,18 @@ def expand_module_block(block):
         # several lessons may share one class day — later ones ride along (co_day)
         active = [x for x in lessons if x["day"] <= day < x["day"] + x.get("duration", 1)]
         if active:
+            # two ½-day items pair on one day: order them by sub-index (.0 first)
+            active.sort(key=lambda x: x.get("sub", 0) if x.get("duration", 1) == 0.5 else 0)
             for j, a in enumerate(active):
                 dur, part = a.get("duration", 1), day - a["day"] + 1
                 slots.append({"kind": "lesson",
                               "title": a["title"] + (f" — day {part}/{dur}" if dur > 1 else ""),
                               "module_day": day, "part": part, "parts": dur,
                               "co_day": j > 0,
-                              "group": f"lesson-{a['day']}-{a.get('path', '')}",
+                              "group": f"lesson-{a['day']}-{a.get('sub', '')}-{a.get('path', '')}",
                               "lesson": {"day": a["day"], "duration": dur, "title": a["title"],
                                          "path": a.get("path"), "_module": a.get("_module"),
+                                         "sub": a.get("sub"), "kind": a.get("kind"),
                                          "review": a.get("review")}})
         else:
             slots.append({"kind": "gap", "title": "(open day)", "module_day": day,
@@ -1431,10 +1443,10 @@ def _expected_block_items(block):
             a = s["lesson"]
             if not (a.get("_module") and a.get("path")):
                 if a.get("kind") == "page":
-                    expected.append({"title": f"{unit}.{day_num}: {a['title']}",
+                    expected.append({"title": f"{unit}.{day_num}{_day_sub_suffix(a)}: {a['title']}",
                                      "type": "Page", "points": None, "due": None})
                 continue
-            expected.append({"title": f"{unit}.{day_num}: {a['title']}",
+            expected.append({"title": f"{unit}.{day_num}{_day_sub_suffix(a)}: {a['title']}",
                              "type": "Assignment", "points": pts, "due": group_end(s)})
         elif kind == "lesson" and s.get("lesson_ref"):
             expected.append({"title": f"{unit}.{day_num}: {s.get('base_title') or s['title']}",
@@ -1646,7 +1658,7 @@ def api_schedule_sync_block(name):
                     # placeholder: 'page' syncs a Canvas Page (no assignment);
                     # 'test' / plain reserve the day number and create nothing
                     if a.get("kind") == "page":
-                        pname = f"{unit}.{day_num}: {a['title']}"
+                        pname = f"{unit}.{day_num}{_day_sub_suffix(a)}: {a['title']}"
                         desc = (_lesson_description("", "", a.get("review"))
                                 or "<p>In-class day — no assignment due.</p>")
                         page, perr = create_canvas_page(course_id, module_id, pname, desc)
@@ -1655,7 +1667,7 @@ def api_schedule_sync_block(name):
                         else:
                             results.append(page)
                     continue
-                create_assignment(f"{unit}.{day_num}: {a['title']}", points,
+                create_assignment(f"{unit}.{day_num}{_day_sub_suffix(a)}: {a['title']}", points,
                                   _lesson_description(a.get("_module"), a.get("path"),
                                                       a.get("review")),
                                   group_end(s), s.get("date"), module_id)

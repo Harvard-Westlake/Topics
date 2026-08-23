@@ -48,6 +48,7 @@ function smartRound(n) {
 function fmtDayLabel(unitNum, a) {
   const dur = a.duration || 1;
   const base = unitNum + '.' + a.day;
+  if (dur === 0.5) return base + '.' + (a.sub || 0);   // half day: unit.day.sub
   return dur > 1 ? base + ' · ' + dur + 'd' : base;
 }
 

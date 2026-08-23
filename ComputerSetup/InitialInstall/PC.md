@@ -15,11 +15,12 @@
 2. [Download an authenticator app for two-factor authentication](#2-authenticator-app)
 3. [Create your GitHub account and enable two-factor authentication](#3-github-account)
 4. [Install Git inside Ubuntu](#4-git)
-5. [Install GitKraken and sign in with your GitHub account](#5-gitkraken)
-6. [Install VS Code and the Java extension pack](#6-visual-studio-code)
-7. [Install Java 25 LTS for Windows](#7-java-25-lts)
-8. [Verify that Git and Java both work](#8-verify-your-setup)
-9. [Add a photo and submit your GitHub profile URL](#9-update-your-github-profile)
+5. [Generate an SSH key, load it into ssh-agent, and connect it to GitHub](#5-ssh-keys-for-github)
+6. [Install GitKraken and sign in with your GitHub account](#6-gitkraken)
+7. [Install VS Code and the Java extension pack](#7-visual-studio-code)
+8. [Install Java 25 LTS for Windows](#8-java-25-lts)
+9. [Verify that Git, Java, and your SSH key all work](#9-verify-your-setup)
+10. [Add a photo and submit your GitHub profile URL](#10-update-your-github-profile)
 
 ---
 
@@ -131,7 +132,75 @@ git --version
 
 ---
 
-## <font color="#388bfd">5. GitKraken</font>
+## <font color="#388bfd">5. SSH Keys for GitHub</font>
+
+GitHub does not accept account passwords from the command line. Instead, your machine proves its identity with an **SSH key pair**: a **private key** that never leaves your computer, and a **public key** you hand to GitHub. Set this up once and every clone, pull, and push authenticates automatically.
+
+### <font color="#79c0ff">Generate your key pair</font>
+
+In the **Ubuntu app**, generate a modern **ed25519** key using the email on your GitHub account:
+
+```bash
+ssh-keygen -t ed25519 -C "you@example.com"
+```
+
+1. Press **Enter** to accept the default location (`~/.ssh/id_ed25519`)
+2. Choose a passphrase, or press **Enter** twice for none — either is fine for this course
+
+### <font color="#79c0ff">Start ssh-agent and add your key</font>
+
+The **ssh-agent** is a small background program that holds your unlocked key in memory, so you authenticate once per session instead of on every push. Start it and load your key:
+
+```bash
+eval "$(ssh-agent -s)"
+# Agent pid 12345
+
+ssh-add ~/.ssh/id_ed25519
+```
+
+WSL starts a fresh shell each time you open the Ubuntu app, so make the agent start automatically in every future session:
+
+```bash
+echo 'eval "$(ssh-agent -s)" > /dev/null' >> ~/.bashrc
+echo 'ssh-add -q ~/.ssh/id_ed25519 2>/dev/null' >> ~/.bashrc
+source ~/.bashrc
+```
+
+> **Note:**
+> If you set a passphrase, Ubuntu will ask for it once per new session when the agent loads the key. With no passphrase, it loads silently.
+
+### <font color="#79c0ff">Give GitHub your public key</font>
+
+Copy the **public** half to your Windows clipboard — note the `.pub`:
+
+```bash
+cat ~/.ssh/id_ed25519.pub | clip.exe
+```
+
+Then on GitHub:
+
+1. Go to **Settings → SSH and GPG keys → New SSH key**
+2. Title: something that names this machine, e.g. `School PC (WSL)`
+3. Paste into the Key field and click **Add SSH key**
+
+### <font color="#79c0ff">Test the connection</font>
+
+```bash
+ssh -T git@github.com
+```
+
+Type `yes` if asked whether to trust GitHub's fingerprint. Success looks like:
+
+```
+Hi your-username! You've successfully authenticated, but GitHub does not provide shell access.
+```
+
+> **Warning:**
+> The private key (`id_ed25519`, no extension) must never be shared, uploaded, or committed. Only the `.pub` file ever leaves your machine — that is the entire point of the pair.
+
+---
+
+## <font color="#388bfd">6. GitKraken</font>
 
 GitKraken is a visual interface for Git that you'll use in class.
 
@@ -143,7 +212,7 @@ GitKraken is a visual interface for Git that you'll use in class.
 
 ---
 
-## <font color="#388bfd">6. Visual Studio Code</font>
+## <font color="#388bfd">7. Visual Studio Code</font>
 
 1. Download and install VS Code from [code.visualstudio.com/download](https://code.visualstudio.com/download)
 2. Open VS Code
@@ -154,7 +223,7 @@ GitKraken is a visual interface for Git that you'll use in class.
 
 ---
 
-## <font color="#388bfd">7. Java 25 LTS</font>
+## <font color="#388bfd">8. Java 25 LTS</font>
 
 Go to [Windows Java Downloads — Oracle](https://www.oracle.com/java/technologies/downloads/#jdk25-windows) and download the **x64 Installer**.
 
@@ -162,7 +231,7 @@ Run the installer and follow the prompts.
 
 ---
 
-## <font color="#388bfd">8. Verify Your Setup</font>
+## <font color="#388bfd">9. Verify Your Setup</font>
 
 ### <font color="#79c0ff">Confirm your terminal environment</font>
 
@@ -174,6 +243,13 @@ git --version
 ```
 
 You should see a version number, not an error.
+
+Then confirm your SSH key still authenticates to GitHub:
+
+```bash
+ssh -T git@github.com
+# Hi your-username! You've successfully authenticated, ...
+```
 
 ### <font color="#79c0ff">Run a Java program in VS Code</font>
 
@@ -196,7 +272,7 @@ Take a screenshot of the output — you may need to submit it.
 
 ---
 
-## <font color="#388bfd">9. Update Your GitHub Profile</font>
+## <font color="#388bfd">10. Update Your GitHub Profile</font>
 
 On your GitHub account:
 

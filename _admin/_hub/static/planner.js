@@ -295,9 +295,24 @@ function newPlaceholder() {
   return {day: 1, duration: 1, title: 'Additional Day', path: '', _module: '', placeholder: true};
 }
 
+// Half days: two ½-day assignments share one class day and get sub-indices
+// .0 and .1 (named unit.day.0 / unit.day.1 on Canvas). An unpaired ½ day
+// still consumes the whole slot — the next full-day item starts the next day.
 function renumberDays() {
-  let day = 1;
-  assignments.forEach(a => { a.day = day; day += a.duration || 1; });
+  let day = 1, half = false;   // half = current day already holds one ½-day item
+  assignments.forEach(a => {
+    const dur = a.duration || 1;
+    if (dur === 0.5) {
+      a.day = day;
+      a.sub = half ? 1 : 0;
+      if (half) { day += 1; half = false; } else half = true;
+    } else {
+      if (half) { day += 1; half = false; }
+      a.day = day;
+      delete a.sub;
+      day += dur;
+    }
+  });
 }
 
 // idx -> checked state, read from the DOM before a re-render throws it away
@@ -446,19 +461,19 @@ function renderInsertStrip(at) {
 function durationCell(a, i) {
   const def = a.placeholder ? null : (a.durationDefault || 1);
   let opts = '';
-  for (let n = 1; n <= 10; n++) {
-    const label = n + (n === 1 ? ' Day' : ' Days') + (def === n ? ' (default)' : '');
+  [0.5, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].forEach(n => {
+    const label = (n === 0.5 ? '½ Day' : n + (n === 1 ? ' Day' : ' Days')) + (def === n ? ' (default)' : '');
     opts += '<option value="' + n + '"' + ((a.duration || 1) === n ? ' selected' : '') + '>' + label + '</option>';
-  }
+  });
   return '<select class="dur-select' + (a.duration_override ? ' overridden' : '') + '" id="pldur_' + i + '"' +
-         ' title="Class periods this assignment spans — override the lesson\'s default length"' +
+         ' title="Class periods this assignment spans — ½ Day pairs two assignments onto one class day (numbered .0 and .1)"' +
          ' onchange="Planner.onDurationChange(' + i + ', this.value)">' + opts + '</select>';
 }
 
 function onDurationChange(i, value) {
   const a = assignments[i];
   if (!a) return;
-  a.duration = parseInt(value) || 1;
+  a.duration = parseFloat(value) || 1;
   if (!a.placeholder) {
     if (a.duration === (a.durationDefault || 1)) delete a.duration_override;
     else a.duration_override = true;
@@ -671,22 +686,33 @@ function checkedAssignments() {
   // Renumber days sequentially over just the checked subset — an unchecked
   // lesson's original day must not leave a gap in the saved schedule (the
   // Year Schedule board would otherwise render it as an open/gap day).
-  let day = 1;
+  // Two ½-day items pair onto one day with sub-indices .0/.1 (see renumberDays).
+  let day = 1, half = false;
   return assignments
     .map((a, i) => ({a, i}))
     .filter(({i}) => { const cb = $('plcheck_' + i); return cb && cb.checked; })
     .map(({a, i}) => {
       const dur = a.duration || 1;
-      const out = {day: day, duration: dur, title: a.title,
+      let sub = null, itemDay;
+      if (dur === 0.5) {
+        sub = half ? 1 : 0;
+        itemDay = day;
+        if (half) { day += 1; half = false; } else half = true;
+      } else {
+        if (half) { day += 1; half = false; }
+        itemDay = day;
+        day += dur;
+      }
+      const out = {day: itemDay, duration: dur, title: a.title,
                    path: a.path, _module: a._module,
                    review: reviewSelections[i] || null};
+      if (sub !== null) out.sub = sub;
       if (a.placeholder) {
         out.placeholder = true;
         if (a.kind) out.kind = a.kind;
       } else if (a.duration_override) {
         out.duration_override = true;
       }
-      day += dur;
       return out;
     });
 }

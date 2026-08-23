@@ -215,6 +215,8 @@ def review_label_for(review_file_path):
 def day_label(unit, a):
     base = f"{unit}.{a['day']}" if unit is not None else str(a["day"])
     dur = a.get("duration", 1)
+    if dur == 0.5:                      # half day: unit.day.sub (.0 = first of the day)
+        return f"{base}.{a.get('sub') or 0}"
     return f"{base} · {dur}d" if dur > 1 else base
 
 

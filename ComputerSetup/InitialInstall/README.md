@@ -30,8 +30,13 @@ Choose your operating system and follow the steps in order.
    code --version
    ```
 2. Take a screenshot showing all three returning valid version numbers — none of them should say "command not found." (If `code --version` doesn't work, open VS Code, press `Cmd/Ctrl+Shift+P`, and run **Shell Command: Install 'code' command in PATH**, then try again.)
-3. Open GitKraken and confirm your GitHub account is linked — your name or email should show in the bottom toolbar, not a **FREE**-only, signed-out state.
-4. Save your screenshot — you may need to submit it.
+3. In your terminal, prove your SSH key authenticates to GitHub:
+   ```bash
+   ssh -T git@github.com
+   ```
+   You should be greeted with `Hi your-username!` — that means your key pair is generated, loaded into ssh-agent, and registered on GitHub.
+4. Open GitKraken and confirm your GitHub account is linked — your name or email should show in the bottom toolbar, not a **FREE**-only, signed-out state.
+5. Save your screenshot — you may need to submit it.
 
 *(Standalone file: [activities/01-environment-verification.md](activities/01-environment-verification.md))*
 
@@ -43,18 +48,19 @@ Choose your operating system and follow the steps in order.
 
 1. [Pick Mac or PC and follow the matching setup guide](#choose-your-operating-system)
 2. [Understand pwd and the difference between absolute and relative paths](#where-am-i-understanding-pwd-and-paths)
-3. [Compare the finished Mac and PC environments side by side](#what-youll-have-when-youre-done)
-4. [Check your understanding and try the stretch goals](#check-for-understanding)
+3. [Learn the four commands that drive the terminal — pwd, mkdir, cd, and cd ..](#driving-the-terminal-your-first-four-commands)
+4. [Compare the finished Mac and PC environments side by side](#what-youll-have-when-youre-done)
+5. [Check your understanding and try the stretch goals](#check-for-understanding)
 
 ---
 
 ## <font color="#388bfd">Choose your operating system</font>
 
 **[Mac](Mac.md)**  
-Open Terminal, install Homebrew and Git, set up GitKraken and VS Code, and install Java 25.
+Open Terminal, install Homebrew and Git, connect to GitHub with an SSH key, set up GitKraken and VS Code, and install Java 25.
 
 **[PC](PC.md)**  
-Install WSL and Ubuntu to get a Unix terminal, then install Git, GitKraken, VS Code, and Java 25.
+Install WSL and Ubuntu to get a Unix terminal, then install Git, connect to GitHub with an SSH key, and set up GitKraken, VS Code, and Java 25.
 
 ---
 
@@ -154,6 +160,33 @@ public class PathFinder {
 
 ---
 
+## <font color="#388bfd">Driving the Terminal: Your First Four Commands</font>
+
+The terminal you just installed is driven by typed commands instead of clicks. Four commands are your steering wheel — everything else in this course builds on them. These are vocabulary: know each one by name, by what it stands for, and by what it does.
+
+| Command | Stands for | What it does |
+|---|---|---|
+| `pwd` | **p**rint **w**orking **d**irectory | Shows the folder your terminal is standing in right now |
+| `mkdir name` | **m**a**k**e **dir**ectory | Creates a new folder called `name` inside your current location |
+| `cd name` | **c**hange **d**irectory | Steps *into* the folder called `name` |
+| `cd ..` | change directory, up | Steps *out* to the parent folder (`..` always means "one level up") |
+
+Here is a complete round trip — notice how `pwd` is used between every move to confirm where you are, the same way you'd check a map after each turn:
+
+```bash
+pwd                 # /Users/you            ← starting point
+mkdir practice      # a new folder appears here
+cd practice         # step inside it
+pwd                 # /Users/you/practice   ← the path grew by one folder
+cd ..               # step back out
+pwd                 # /Users/you            ← right back where you started
+```
+
+> **Tip:**
+> Make `pwd` a reflex. The single most common terminal mistake is running a command in the wrong folder — and it costs one three-letter command to rule that out. When in doubt, `pwd` it out.
+
+---
+
 ## <font color="#388bfd">What you'll have when you're done</font>
 
 | | Mac | PC |
@@ -162,6 +195,7 @@ public class PathFinder {
 | Shell | zsh | bash |
 | Package manager | Homebrew | apt |
 | Version control | Git | Git |
+| GitHub authentication | SSH key (ed25519) + ssh-agent | SSH key (ed25519) + ssh-agent |
 | Visual Git client | GitKraken | GitKraken |
 | Code editor | VS Code | VS Code |
 | Language runtime | Java 25 LTS | Java 25 LTS |
@@ -173,7 +207,10 @@ public class PathFinder {
 - [ ] I can successfully open a Unix terminal on my computer.
 - [ ] I can run `git --version`, `java -version`, and `code --version` without seeing "command not found" errors.
 - [ ] I have linked GitKraken and my terminal environment to my GitHub account.
+- [ ] I have generated an ed25519 SSH key pair, loaded it into ssh-agent, added the public key to GitHub, and confirmed `ssh -T git@github.com` greets me by username.
+- [ ] I can explain which half of my SSH key pair is allowed to leave my machine, and why.
 - [ ] I can explain what `pwd` stands for and how to use it to orient myself in the terminal.
+- [ ] I can navigate the terminal with the four core commands — `pwd`, `mkdir`, `cd folder`, and `cd ..` — checking my location with `pwd` after each move.
 - [ ] I can articulate why a relative path will break if the terminal is executing a program from the wrong directory.
 
 ## <font color="#388bfd">🚀 Stretch Goals</font>
