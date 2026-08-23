@@ -521,6 +521,8 @@ def api_create_module(course_id):
         p = cache_path(key)
         if p.exists():
             p.unlink()
+    for p in CACHE.glob(f"module_items_{course_id}_*.json"):
+        p.unlink()
 
     return jsonify({"module_id": module_id, "unit_number": unit_num,
                     "created": results, "errors": errors})
@@ -1357,31 +1359,11 @@ def _lesson_description(module_dir, lesson_path, review_ref):
             html_parts.append(md_to_html(af.read_text(), f"{module_dir}/{lesson_path}"))
     return "\n".join(html_parts)
 
-@app.route("/api/schedules/<name>/sync-block", methods=["POST"])
-def api_schedule_sync_block(name):
-    err = no_token()
-    if err:
-        return err
-    if not NAME_RE.match(name):
-        return jsonify({"error": "invalid schedule name"}), 400
-    sched = load_schedule(name)
-    if sched is None:
-        return jsonify({"error": "schedule not found"}), 404
-    body = request.get_json(force=True) or {}
-    course_id = body.get("course_id")
-    block_id = body.get("block_id")
-    if not course_id or not block_id:
-        return jsonify({"error": "course_id and block_id required"}), 400
-    resolved = resolve_schedule(sched)
-    block = next((b for b in resolved["blocks"] if b.get("id") == block_id), None)
-    if block is None:
-        return jsonify({"error": "block not found in schedule"}), 404
-    if block.get("missing"):
-        return jsonify({"error": "block source is missing from the repo"}), 422
-
-    # With a bound class calendar, Canvas gets real local times: an assignment
-    # unlocks when its class period starts and is due at 11:59 PM the night
-    # before the class meets next. Without one, the legacy UTC date stamps hold.
+def _sched_time_fns(sched):
+    """(_due_at, _unlock_at) for a schedule. With a bound class calendar, Canvas
+    gets real local times: an assignment unlocks when its class period starts and
+    is due at 11:59 PM the night before the class meets next. Without one, the
+    legacy UTC date stamps hold."""
     cal, cls = schedule_calendar_class(sched)
     tzname = (cal or {}).get("timezone")
     off = _no_school_dates(sched)
@@ -1412,6 +1394,205 @@ def api_schedule_sync_block(name):
             return d.replace(hour=hour, minute=minute, tzinfo=ZoneInfo(tzname)).isoformat()
         return _canvas_unlock(date_str)
 
+    return _due_at, _unlock_at
+
+def _unit_module_name(block):
+    """The Canvas module name a resolved module block syncs to."""
+    unit = block["unit_number"]
+    topics = block.get("topic_names", [])
+    if len(topics) == 1:
+        return f"Unit {unit}: {topics[0]}"
+    if len(topics) == 2:
+        return f"Unit {unit}: {topics[0]} and {topics[1]}"
+    if len(topics) >= 3:
+        return f"Unit {unit}: {', '.join(topics[:-1])}, and {topics[-1]}"
+    return f"Unit {unit}: {block.get('name', '')}".rstrip(": ")
+
+def _expected_block_items(block):
+    """What syncing this resolved module block would create on Canvas:
+    [{title, type ('Assignment'|'Page'), points, due (date str or None)}].
+    Mirrors the create loop in api_schedule_sync_block exactly."""
+    slots = block.get("slots", [])
+    unit = block["unit_number"]
+    pts = smart_round((block.get("points") or 10) * ((block.get("scale") or 1.15) ** unit))
+
+    def group_end(s):
+        dated = [x.get("date") for x in slots
+                 if x.get("group") == s.get("group") and x.get("date")]
+        return dated[-1] if dated else s.get("date")
+
+    expected = []
+    for i, s in enumerate(slots):
+        if s.get("part", 1) != 1:
+            continue
+        day_num = s.get("day_num", i + 1)
+        kind = s.get("kind")
+        if kind == "lesson" and s.get("lesson"):
+            a = s["lesson"]
+            if not (a.get("_module") and a.get("path")):
+                if a.get("kind") == "page":
+                    expected.append({"title": f"{unit}.{day_num}: {a['title']}",
+                                     "type": "Page", "points": None, "due": None})
+                continue
+            expected.append({"title": f"{unit}.{day_num}: {a['title']}",
+                             "type": "Assignment", "points": pts, "due": group_end(s)})
+        elif kind == "lesson" and s.get("lesson_ref"):
+            expected.append({"title": f"{unit}.{day_num}: {s.get('base_title') or s['title']}",
+                             "type": "Assignment", "points": pts, "due": group_end(s)})
+        elif kind in ("test", "final"):
+            expected.append({"title": f"{unit}.{day_num}: {s.get('base_title') or s['title']}",
+                             "type": "Assignment", "points": s.get("points") or 100,
+                             "due": group_end(s)})
+    return expected
+
+@app.route("/api/schedules/<name>/sync-status")
+def api_schedule_sync_status(name):
+    """Compare every syncable block against what actually exists in a Canvas
+    course: 'synced' (module + all items found, points and due dates match),
+    'partial' (found but incomplete or drifted), or 'unsynced' (nothing there
+    yet). Reads through the normal Canvas caches, so repeat checks are cheap."""
+    err = no_token()
+    if err:
+        return err
+    if not NAME_RE.match(name):
+        return jsonify({"error": "invalid schedule name"}), 400
+    sched = load_schedule(name)
+    if sched is None:
+        return jsonify({"error": "schedule not found"}), 404
+    course_id = request.args.get("course_id", type=int)
+    if not course_id:
+        return jsonify({"error": "course_id required"}), 400
+    ttl = 0 if request.args.get("refresh") == "1" else SUBRESOURCE_TTL
+
+    resolved = resolve_schedule(sched)
+    _due_at, _ = _sched_time_fns(sched)
+
+    try:
+        modules, _, _ = cached(f"modules_{course_id}", ttl, lambda: [
+            {"id": m["id"], "name": m["name"], "items_count": m.get("items_count", 0),
+             "published": m.get("published"), "position": m.get("position")}
+            for m in canvas_paged(f"/courses/{course_id}/modules", {"include[]": "items_count"})])
+        assignments, _, _ = cached(f"assignments_{course_id}", ttl, lambda: [
+            {"id": a["id"], "name": a["name"], "due_at": a.get("due_at"),
+             "points": a.get("points_possible"), "html_url": a.get("html_url")}
+            for a in canvas_paged(f"/courses/{course_id}/assignments", {"order_by": "due_at"})])
+    except Exception as e:
+        return jsonify({"error": f"Canvas fetch failed: {e}"}), 502
+
+    mod_by_name = {m["name"]: m for m in modules}
+    asgn_by_name = {}
+    for a in assignments:
+        asgn_by_name.setdefault(a["name"], a)
+
+    def same_instant(expected_iso, canvas_iso):
+        try:
+            e = datetime.fromisoformat(expected_iso)
+            c = datetime.fromisoformat(canvas_iso.replace("Z", "+00:00"))
+            return abs((e - c).total_seconds()) < 60
+        except (ValueError, TypeError):
+            return False
+
+    def assignment_issues(title, points, due_date):
+        """Points/due-date drift for one Canvas assignment (empty list = match)."""
+        a = asgn_by_name.get(title)
+        if not a:
+            return None   # not in the course's assignment list at all
+        issues = []
+        if points is not None and a.get("points") is not None \
+                and float(a["points"]) != float(points):
+            issues.append(f"“{title}”: {a['points']:g} pts on Canvas, schedule says {points:g}")
+        if due_date:
+            exp = _due_at(due_date)
+            if exp and a.get("due_at") and not same_instant(exp, a["due_at"]):
+                issues.append(f"“{title}”: due dates differ (Canvas {a['due_at'][:10]}, schedule {exp[:10]})")
+            elif exp and not a.get("due_at"):
+                issues.append(f"“{title}”: no due date on Canvas")
+        return issues
+
+    def module_items(mid):
+        data, _, _ = cached(f"module_items_{course_id}_{mid}", ttl, lambda: [
+            {"title": it.get("title"), "type": it.get("type")}
+            for it in canvas_paged(f"/courses/{course_id}/modules/{mid}/items")])
+        return data
+
+    statuses = {}
+    for block in resolved["blocks"]:
+        bid = block.get("id")
+        if not bid or block.get("missing"):
+            continue
+        if block["type"] == "module":
+            expected = _expected_block_items(block)
+            if not expected:
+                continue
+            mod_name = _unit_module_name(block)
+            mod = mod_by_name.get(mod_name)
+            if not mod:
+                statuses[bid] = {"status": "unsynced",
+                                 "detail": f"Ready to sync — no module named “{mod_name}” in the course yet"}
+                continue
+            try:
+                item_keys = {(it["title"], it["type"]) for it in module_items(mod["id"])}
+            except Exception:
+                item_keys = set()
+            missing, drifted = [], []
+            for e in expected:
+                if (e["title"], e["type"]) not in item_keys:
+                    missing.append(e["title"])
+                    continue
+                if e["type"] == "Assignment":
+                    drifted.extend(assignment_issues(e["title"], e["points"], e["due"]) or [])
+            if not missing and not drifted:
+                statuses[bid] = {"status": "synced",
+                                 "detail": f"It seems to be synced — “{mod_name}” has all {len(expected)} "
+                                           "item(s) with matching titles, points, and due dates"}
+            else:
+                bits = []
+                if missing:
+                    bits.append("missing from Canvas: " + ", ".join(f"“{t}”" for t in missing[:4])
+                                + ("…" if len(missing) > 4 else ""))
+                if drifted:
+                    bits.append("; ".join(drifted[:3]) + ("…" if len(drifted) > 3 else ""))
+                statuses[bid] = {"status": "partial",
+                                 "detail": f"Partially synced — “{mod_name}” exists but " + " · ".join(bits)}
+        elif block["type"] in ("test", "final", "lesson"):
+            first = block["slots"][0] if block.get("slots") else {}
+            title = first.get("base_title") or block.get("title") or block["type"].title()
+            points = block.get("points") or (100 if block["type"] in ("test", "final") else 10)
+            if title not in asgn_by_name:
+                statuses[bid] = {"status": "unsynced",
+                                 "detail": f"Ready to sync — no assignment named “{title}” in the course yet"}
+            else:
+                drifted = assignment_issues(title, points, block.get("end")) or []
+                statuses[bid] = ({"status": "synced",
+                                  "detail": f"It seems to be synced — “{title}” found with matching points and due date"}
+                                 if not drifted else
+                                 {"status": "partial", "detail": "Partially synced — " + "; ".join(drifted)})
+    return jsonify({"course_id": course_id, "statuses": statuses})
+
+@app.route("/api/schedules/<name>/sync-block", methods=["POST"])
+def api_schedule_sync_block(name):
+    err = no_token()
+    if err:
+        return err
+    if not NAME_RE.match(name):
+        return jsonify({"error": "invalid schedule name"}), 400
+    sched = load_schedule(name)
+    if sched is None:
+        return jsonify({"error": "schedule not found"}), 404
+    body = request.get_json(force=True) or {}
+    course_id = body.get("course_id")
+    block_id = body.get("block_id")
+    if not course_id or not block_id:
+        return jsonify({"error": "course_id and block_id required"}), 400
+    resolved = resolve_schedule(sched)
+    block = next((b for b in resolved["blocks"] if b.get("id") == block_id), None)
+    if block is None:
+        return jsonify({"error": "block not found in schedule"}), 404
+    if block.get("missing"):
+        return jsonify({"error": "block source is missing from the repo"}), 422
+
+    _due_at, _unlock_at = _sched_time_fns(sched)
+
     results, errors = [], []
 
     def create_assignment(name, points, description, due, unlock, module_id=None):
@@ -1439,15 +1620,7 @@ def api_schedule_sync_block(name):
 
     if block["type"] == "module":
         unit = block["unit_number"]
-        topics = block.get("topic_names", [])
-        if len(topics) == 1:
-            mod_name = f"Unit {unit}: {topics[0]}"
-        elif len(topics) == 2:
-            mod_name = f"Unit {unit}: {topics[0]} and {topics[1]}"
-        elif len(topics) >= 3:
-            mod_name = f"Unit {unit}: {', '.join(topics[:-1])}, and {topics[-1]}"
-        else:
-            mod_name = f"Unit {unit}: {block.get('name', '')}".rstrip(": ")
+        mod_name = _unit_module_name(block)
         points = smart_round((block.get("points") or 10) * ((block.get("scale") or 1.15) ** unit))
         mod_res = requests.post(f"{BASE}/courses/{course_id}/modules", headers=hdrs(),
                                 json={"module": {"name": mod_name, "position": 1}})
@@ -1522,6 +1695,8 @@ def api_schedule_sync_block(name):
         p = cache_path(key)
         if p.exists():
             p.unlink()
+    for p in CACHE.glob(f"module_items_{course_id}_*.json"):
+        p.unlink()
     return jsonify(payload_out)
 
 # ── Module Editor ──────────────────────────────────────────────────────────────
@@ -1786,6 +1961,10 @@ def _sync_activity_toggle(topic, path, file, title, body):
     rf = TOPICS / topic / path / "README.md"
     if not rf.exists():
         return False
+    # the one permitted divergence between the two copies: the activity file
+    # sees the lesson's assets/ from inside activities/, the README from the
+    # lesson root — rewrite the prefix so images resolve in both places
+    body = body.replace("](../assets/", "](assets/").replace('src="../assets/', 'src="assets/')
     text = rf.read_text()
     block = _activity_toggle(file, title, body)
     span = _find_activity_toggle(text, file)

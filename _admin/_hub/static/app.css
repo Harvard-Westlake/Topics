@@ -538,3 +538,9 @@ section.tab.active { display: block; }
 .row-drag:hover { color: var(--accent); }
 .row-drag:active { cursor: grabbing; }
 .lesson-row-wrap.drag-over { box-shadow: inset 0 2px 0 var(--accent); }
+
+/* Year Schedule: per-block Canvas sync-status dot (next to the Sync button) */
+.sync-dot { display: inline-flex; align-items: center; justify-content: center; width: 17px; height: 17px; border-radius: 50%; font-size: 10px; font-weight: 700; cursor: help; flex-shrink: 0; }
+.sync-dot.ok    { background: #0d2d1e; color: var(--green);  border: 1px solid var(--green); }
+.sync-dot.part  { background: #2d230d; color: var(--yellow); border: 1px solid var(--yellow); }
+.sync-dot.ready { background: #1a2035; color: var(--accent); border: 1px solid var(--border); }

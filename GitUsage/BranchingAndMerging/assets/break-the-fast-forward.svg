@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect width="760" height="420" rx="10" fill="#0d1117"/>
+  <text x="30" y="40" fill="#e6edf3" font-size="17" font-weight="700">Why --ff-only refuses: the histories diverged</text>
+
+  <!-- main line -->
+  <text x="30" y="130" fill="#388bfd" font-size="13" font-weight="600">main</text>
+  <line x1="80" y1="150" x2="390" y2="150" stroke="#388bfd" stroke-width="3"/>
+  <circle cx="110" cy="150" r="9" fill="#388bfd"/>
+  <circle cx="210" cy="150" r="9" fill="#388bfd"/>
+  <circle cx="330" cy="150" r="9" fill="#e3b341"/>
+  <text x="110" y="180" fill="#8b949e" font-size="12" text-anchor="middle">A</text>
+  <text x="210" y="180" fill="#8b949e" font-size="12" text-anchor="middle">B</text>
+  <text x="330" y="128" fill="#e3b341" font-size="12" text-anchor="middle">"teammate" commits</text>
+  <text x="330" y="180" fill="#8b949e" font-size="12" text-anchor="middle">F</text>
+
+  <!-- branch line -->
+  <line x1="210" y1="150" x2="330" y2="255" stroke="#a371f7" stroke-width="3"/>
+  <circle cx="330" cy="255" r="9" fill="#a371f7"/>
+  <text x="330" y="287" fill="#8b949e" font-size="12" text-anchor="middle">C</text>
+  <text x="240" y="315" fill="#a371f7" font-size="13" font-weight="600">side-quest — your commit</text>
+
+  <!-- refusal -->
+  <rect x="430" y="95" width="300" height="82" rx="8" fill="#161b22" stroke="#f85149"/>
+  <text x="448" y="122" fill="#f85149" font-size="13" font-family="Consolas, Menlo, monospace">git merge --ff-only side-quest</text>
+  <text x="448" y="145" fill="#f85149" font-size="13" font-weight="700">✖ refused</text>
+  <text x="448" y="165" fill="#8b949e" font-size="12">F is not on side-quest — nothing to slide forward</text>
+
+  <!-- merge commit -->
+  <rect x="430" y="205" width="300" height="120" rx="8" fill="#161b22" stroke="#3fb950"/>
+  <text x="448" y="232" fill="#3fb950" font-size="13" font-family="Consolas, Menlo, monospace">git merge side-quest</text>
+  <circle cx="560" cy="278" r="11" fill="#3fb950"/>
+  <line x1="500" y1="255" x2="553" y2="271" stroke="#e3b341" stroke-width="2.5"/>
+  <line x1="500" y1="300" x2="553" y2="285" stroke="#a371f7" stroke-width="2.5"/>
+  <text x="470" y="259" fill="#e3b341" font-size="11" text-anchor="end">F</text>
+  <text x="470" y="305" fill="#a371f7" font-size="11" text-anchor="end">C</text>
+  <text x="585" y="276" fill="#3fb950" font-size="13" font-weight="600">M — a merge commit</text>
+  <text x="585" y="295" fill="#8b949e" font-size="12">with two parents</text>
+
+  <text x="30" y="392" fill="#8b949e" font-size="13">A fast-forward needs main to hold perfectly still while you work. One commit on main (F) makes a real merge commit necessary.</text>
+</svg>

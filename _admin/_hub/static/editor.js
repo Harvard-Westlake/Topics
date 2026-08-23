@@ -185,7 +185,7 @@ async function openTab(file) {
   const isDemo = file.startsWith('demos/');
   $('meModePreview').textContent = isDemo ? 'Live Preview' : 'Canvas Preview';
   $('meEngine').textContent = isActivity ? 'saving re-syncs the README toggle automatically' : '';
-  setMode(isDemo ? 'preview' : 'edit');
+  setMode('preview');   // preview-first: reading is the common case, Edit is one click away
 }
 
 function setMode(mode) {

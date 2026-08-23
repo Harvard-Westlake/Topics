@@ -20,14 +20,21 @@
     },
     {
       "id": "bmt4whpd3met85",
-      "type": "module",
-      "source": "saved",
+      "inserts": [],
       "ref": "git-project",
+      "source": "saved",
+      "type": "module"
+    },
+    {
+      "id": "bmt5gf0l3zcbyy",
+      "type": "module",
+      "source": "topic",
+      "ref": "WebProgramming",
       "inserts": []
     }
   ],
   "show_day0_syllabus": true,
   "start_date": "2026-08-24",
-  "updated": "2026-08-22T14:38:56",
+  "updated": "2026-08-22T23:56:43",
   "year": "2026-27"
 }

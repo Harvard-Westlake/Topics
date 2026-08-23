@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect width="760" height="420" rx="10" fill="#0d1117"/>
+  <text x="30" y="40" fill="#e6edf3" font-size="17" font-weight="700">The same work can land in history two ways</text>
+
+  <!-- messy branch -->
+  <rect x="30" y="80" width="250" height="200" rx="8" fill="#161b22" stroke="#a371f7"/>
+  <text x="48" y="108" fill="#a371f7" font-size="13" font-weight="600">messy-feature</text>
+  <circle cx="60" cy="140" r="8" fill="#e3b341"/>
+  <text x="80" y="145" fill="#e6edf3" font-size="13" font-family="Consolas, Menlo, monospace">wip</text>
+  <circle cx="60" cy="185" r="8" fill="#e3b341"/>
+  <text x="80" y="190" fill="#e6edf3" font-size="13" font-family="Consolas, Menlo, monospace">still broken</text>
+  <circle cx="60" cy="230" r="8" fill="#e3b341"/>
+  <text x="80" y="235" fill="#e6edf3" font-size="13" font-family="Consolas, Menlo, monospace">actually works now</text>
+  <line x1="60" y1="148" x2="60" y2="177" stroke="#e3b341" stroke-width="2.5"/>
+  <line x1="60" y1="193" x2="60" y2="222" stroke="#e3b341" stroke-width="2.5"/>
+
+  <!-- regular merge -->
+  <line x1="290" y1="140" x2="380" y2="115" stroke="#8b949e" stroke-width="2"/>
+  <rect x="390" y="70" width="340" height="120" rx="8" fill="#161b22" stroke="#79c0ff"/>
+  <text x="408" y="97" fill="#79c0ff" font-size="13" font-weight="600">Regular merge — journey preserved</text>
+  <line x1="415" y1="140" x2="700" y2="140" stroke="#388bfd" stroke-width="3"/>
+  <circle cx="440" cy="140" r="7" fill="#e3b341"/>
+  <circle cx="500" cy="140" r="7" fill="#e3b341"/>
+  <circle cx="560" cy="140" r="7" fill="#e3b341"/>
+  <circle cx="630" cy="140" r="8" fill="#79c0ff"/>
+  <text x="408" y="175" fill="#8b949e" font-size="12">all three commits arrive on main, plus a merge commit</text>
+
+  <!-- squash merge -->
+  <line x1="290" y1="230" x2="380" y2="285" stroke="#8b949e" stroke-width="2"/>
+  <rect x="390" y="240" width="340" height="120" rx="8" fill="#161b22" stroke="#3fb950"/>
+  <text x="408" y="267" fill="#3fb950" font-size="13" font-weight="600">Squash and merge — destination only</text>
+  <line x1="415" y1="310" x2="700" y2="310" stroke="#388bfd" stroke-width="3"/>
+  <circle cx="540" cy="310" r="9" fill="#3fb950"/>
+  <text x="540" y="342" fill="#e6edf3" font-size="13" font-family="Consolas, Menlo, monospace" text-anchor="middle">Add widget feature</text>
+
+  <text x="30" y="330" fill="#8b949e" font-size="13">Either way, the final</text>
+  <text x="30" y="348" fill="#8b949e" font-size="13">content is identical —</text>
+  <text x="30" y="366" fill="#8b949e" font-size="13">only the history differs.</text>
+</svg>

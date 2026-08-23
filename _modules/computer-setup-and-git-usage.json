@@ -61,6 +61,14 @@
       "path": "ForksAndCollaboration",
       "_module": "GitUsage",
       "review": null
+    },
+    {
+      "day": 7,
+      "duration": 1,
+      "title": "File Hashing and Integrity",
+      "path": "FileHashing",
+      "_module": "GitUsage",
+      "review": null
     }
   ],
   "updated": "2026-08-22"

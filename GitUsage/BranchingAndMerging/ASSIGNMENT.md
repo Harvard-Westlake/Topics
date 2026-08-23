@@ -48,7 +48,7 @@ git push origin feature-notes
 1. On GitHub, open a pull request from `feature-notes` into `main`.
 2. Write a descriptive title and a one-paragraph description explaining what is in the PR and why.
 3. Check whether the merge will be a fast-forward merge (has `main` changed since you branched?).
-4. Merge the pull request on GitHub.
+4. Merge the pull request on GitHub — and choose deliberately from the merge dropdown: **squash and merge** if your branch history is scratch work, **regular merge** if each commit stands on its own. You will report which you picked and why.
 5. Delete the `feature-notes` branch on GitHub after merging.
 6. Pull the merged changes back locally and delete the local branch:
 
@@ -104,6 +104,7 @@ Repository URL:          https://github.com/
 Branch name used:        
 Pull request URL:        https://github.com/
 Merge type:              fast-forward / merge commit
+Merge button choice:     squash / regular — and one sentence on why
 .gitignore rules added:  
 ```
 

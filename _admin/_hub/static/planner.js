@@ -786,7 +786,7 @@ async function openEditorTab(file) {
   $('edSub').textContent = isDemo
     ? 'Standalone demo page — previews the current buffer exactly as a browser renders it'
     : 'Files render exactly as the hub uploads them to Canvas';
-  setEditorMode(isDemo ? 'preview' : 'edit');
+  setEditorMode('preview');   // preview-first: reading is the common case, Edit is one click away
 }
 
 function setEditorMode(mode) {

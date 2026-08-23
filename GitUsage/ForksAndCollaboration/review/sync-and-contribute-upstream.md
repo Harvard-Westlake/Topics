@@ -22,4 +22,5 @@ Full collaboration cycle: Fork → Clone → Branch → Commit → Push to fork 
 2. Run `git log --oneline`. Identify which commits came from upstream and which you added.
 3. Create a branch called `contribution-final`. Add a meaningful change — a new file, an improvement to an existing file, or a README update. Commit it with a specific message.
 4. Push the branch to your fork and open a pull request to the **original** repository. Write a title and a full description paragraph as if a real maintainer will read it.
-5. After your PR is open, delete the local branch and then delete it from your fork on GitHub.
+5. Trade PR links with a classmate. Review their PR: read the Files changed tab, then either approve it or request changes with one specific, constructive comment.
+6. After your PR is open and reviewed, delete the local branch and then delete it from your fork on GitHub.

@@ -66,6 +66,7 @@ Core Git concepts and workflows: staging, committing, branching, merging, and co
 - [Repositories and Commits](GitUsage/RepositoriesAndCommits/) — repositories, cloning, staging, committing, pushing, and pulling
 - [Branching and Merging](GitUsage/BranchingAndMerging/) — branches, `git merge`, fast-forward merges, pull requests, and `.gitignore`
 - [Forks and Collaboration](GitUsage/ForksAndCollaboration/) — forking, upstream remotes, syncing forks, and cross-fork pull requests
+- [File Hashing and Integrity](GitUsage/FileHashing/) — hash functions, collision probability, `sha256sum`, Java file I/O, and Git's content addressing
 
 **[MiniGPT](MiniGPT/)**  
 Project Strata: build a tiny decoder-only transformer language model in Java from first principles — tokenization, attention, backpropagation, training, and honest evaluation against a Markov baseline.

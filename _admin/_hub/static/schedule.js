@@ -38,6 +38,35 @@ function setPill(state) {
 function blockById(id)   { return schedule.sequence.find(b => b.id === id); }
 function resolvedById(id){ return ((resolved && resolved.blocks) || []).find(b => b.id === id); }
 
+// ── Canvas sync status (per block, checked against the last-synced course) ────
+
+let syncStatuses = {};   // block id -> {status: synced|partial|unsynced, detail}
+
+function syncDot(blkId) {
+  const st = syncStatuses[blkId];
+  if (!st) return '';
+  const cls  = {synced: 'ok', partial: 'part', unsynced: 'ready'}[st.status] || 'ready';
+  const icon = st.status === 'synced' ? '&#x2713;' : (st.status === 'partial' ? '&#9679;' : '&#8593;');
+  return '<span class="sync-dot ' + cls + '" title="' + esc(st.detail || '') + '">' + icon + '</span>';
+}
+
+// Compares every syncable block against the course this schedule last synced
+// to. Reads through the server's Canvas caches, so quiet re-checks are free;
+// force=true refetches live (used right after a sync).
+async function refreshSyncStatus(force) {
+  syncStatuses = {};
+  if (!schedName) return;
+  const courseId = localStorage.getItem('syncCourseId_' + schedName);
+  if (!courseId) { renderBoard(); return; }
+  try {
+    const d = await fetch('/api/schedules/' + encodeURIComponent(schedName) +
+                          '/sync-status?course_id=' + encodeURIComponent(courseId) +
+                          (force ? '&refresh=1' : '')).then(r => r.json());
+    if (!d.error) syncStatuses = d.statuses || {};
+  } catch (e) { /* no token / offline — just show no dots */ }
+  renderBoard();
+}
+
 // ── Load / save ───────────────────────────────────────────────────────────────
 
 async function init() {
@@ -83,6 +112,7 @@ async function loadSchedule(name) {
   renderWarnings();
   renderCalInfo();
   setPill('saved');
+  refreshSyncStatus();   // async — dots appear when the check completes
 }
 
 async function loadCalendar() {
@@ -152,6 +182,7 @@ async function doSave() {
     renderSummary();
     renderWarnings();
     renderCalInfo();
+    refreshSyncStatus();   // dates/content may have shifted — recheck against cache
   } catch (e) {
     setPill('error');
   }
@@ -479,7 +510,7 @@ function moduleCard(blk, unit) {
         '<span class="src-badge">' + (blk.source === 'topic' ? 'topic' : 'saved') + '</span>' +
         '<span class="block-dates">' + dates + '</span>' +
         '<span class="block-actions">' +
-          (r && !r.missing ? '<button class="mini-btn sync" onclick="Schedule.openSync(\'' + blk.id + '\')">Sync</button>' : '') +
+          (r && !r.missing ? syncDot(blk.id) + '<button class="mini-btn sync" onclick="Schedule.openSync(\'' + blk.id + '\')">Sync</button>' : '') +
           '<button class="x-btn" onclick="Schedule.removeBlock(\'' + blk.id + '\')">&#x2715;</button>' +
         '</span>' +
       '</div>';
@@ -580,7 +611,7 @@ function standaloneCard(blk) {
           ? '<input class="pts-input" type="number" value="' + (blk.points || 100) + '" title="Points"' +
             ' onchange="Schedule.setBlockPoints(\'' + blk.id + '\',this.value)">'
           : '') +
-        (syncable ? '<button class="mini-btn sync" onclick="Schedule.openSync(\'' + blk.id + '\')">Sync</button>' : '') +
+        (syncable ? syncDot(blk.id) + '<button class="mini-btn sync" onclick="Schedule.openSync(\'' + blk.id + '\')">Sync</button>' : '') +
         '<button class="x-btn" onclick="Schedule.removeBlock(\'' + blk.id + '\')">&#x2715;</button>' +
       '</span>' +
     '</div>' +
@@ -969,6 +1000,7 @@ async function doSync() {
     err.map(x => '<div class="result-row"><span class="result-err">&#x2715;</span> ' + esc(x.name) + '</div>').join('') +
     '<div style="margin-top:8px"><a href="' + canvasCourseUrl(courseId, '/modules') +
     '" target="_blank" style="color:var(--accent);font-size:12px">Open in Canvas &rarr;</a></div>';
+  refreshSyncStatus(true);   // live recheck so the board's dots reflect the new state
 }
 
 // ── Finals (stored in the private Admin repo) ─────────────────────────────────
