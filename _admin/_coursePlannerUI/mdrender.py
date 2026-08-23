@@ -154,8 +154,44 @@ def _rewrite_title_divs(text):
     return _TITLE_DIV_RE.sub(render_block, text)
 
 
+# Fenced code blocks nested inside list items (indented fences). GitHub renders
+# them fine, but python-markdown's fenced_code extension only recognizes fences
+# at column 0 — an indented fence collapses into a run-on paragraph, destroying
+# the code's whitespace and swallowing generics like ArrayList<Entry> as HTML
+# tags. Stash each indented fence before conversion and splice the rendered
+# <pre><code> back in afterward. The placeholder keeps at least 4 spaces of
+# indentation so python-markdown leaves it inside the surrounding list item.
+# Must stay in lockstep with ../_hub/server.py.
+_INDENTED_FENCE_RE = re.compile(
+    r"^([ \t]+)```([^\n]*)\n(.*?)\n[ \t]*```[ \t]*$", re.MULTILINE | re.DOTALL)
+
+
+def _stash_indented_fences(text):
+    fences = []
+
+    def stash(m):
+        indent, lang, body = m.group(1), m.group(2).strip(), m.group(3)
+        lines = [ln[len(indent):] if ln.startswith(indent) else ln
+                 for ln in body.split("\n")]
+        escaped = html.escape("\n".join(lines), quote=False)
+        cls = f' class="language-{lang}"' if lang else ""
+        fences.append(f"<pre><code{cls}>{escaped}\n</code></pre>")
+        pad = indent if len(indent.expandtabs()) >= 4 else "    "
+        return f"{pad}«fence{len(fences) - 1}»"
+
+    return _INDENTED_FENCE_RE.sub(stash, text), fences
+
+
+def _restore_fences(rendered, fences):
+    def put(m):
+        return fences[int(m.group(1))]
+    rendered = re.sub(r"<p>«fence(\d+)»</p>", put, rendered)
+    return re.sub(r"«fence(\d+)»", put, rendered)
+
+
 def md_to_html(text, base_path=""):
     """Render markdown the way the hub does. Returns (html, engine)."""
+    text, fences = _stash_indented_fences(text)
     text, math = _extract_math(text)
     text = _TASKLIST_RE.sub(_rewrite_tasklist, text)
     text = _rewrite_github_urls(text, base_path)
@@ -166,7 +202,7 @@ def md_to_html(text, base_path=""):
         rendered = md_lib.markdown(text, extensions=["tables", "fenced_code", "toc"])
     else:
         rendered = _builtin_render(text)
-    return _restore_math(rendered, math), ENGINE
+    return _restore_math(_restore_fences(rendered, fences), math), ENGINE
 
 
 def review_block(review_html):

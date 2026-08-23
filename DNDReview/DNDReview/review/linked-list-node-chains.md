@@ -8,18 +8,21 @@
 |---|---|
 | Node | `data` + a `next` reference to the following node (`null` at the end) |
 | Insert at beginning | Point the new node at the old head, then move `head` — O(1) |
-| Traversal | Walk `current = current.next` until `null` — O(n) |
+| Traversal | Walk `current = current.getNext()` until `null` — O(n) |
 | Access by index | No direct indexing — must traverse from `head` |
 
 ```java
 public class Node {
-    int data;
-    Node next;
+    private int data;
+    private Node next;
 
     public Node(int data) {
         this.data = data;
         this.next = null;
     }
+
+    // Assume proper getters and setters exist for every field:
+    // getData(), setData(int), getNext(), setNext(Node)
 }
 ```
 
@@ -31,17 +34,17 @@ public class Node {
 
    ```java
    Node head = new Node(10);
-   head.next = new Node(20);
-   head.next.next = new Node(30);
+   head.setNext(new Node(20));
+   head.getNext().setNext(new Node(30));
 
    Node newNode = new Node(5);
-   newNode.next = head;
+   newNode.setNext(head);
    head = newNode;
 
    Node current = head;
    while (current != null) {
-       System.out.print(current.data + " -> ");
-       current = current.next;
+       System.out.print(current.getData() + " -> ");
+       current = current.getNext();
    }
    System.out.println("null");
    ```
@@ -56,10 +59,10 @@ public class Node {
            return;
        }
        Node current = head;
-       while (________ != null) {   // stop ON the last node, not past it
-           current = current.next;
+       while (current.________() != null) {   // stop ON the last node, not past it
+           current = current.getNext();
        }
-       ________ = newNode;          // attach the new node to the chain
+       current.________(newNode);             // attach the new node to the chain
    }
    ```
 
@@ -68,7 +71,7 @@ public class Node {
    ```java
    public void insertAtBeginning(int data) {
        Node newNode = new Node(data);
-       head = newNode;          // BUG lives in this ordering
-       newNode.next = head;
+       head = newNode;              // BUG lives in this ordering
+       newNode.setNext(head);
    }
    ```

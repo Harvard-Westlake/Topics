@@ -66,16 +66,19 @@ for (int node = 0; node < 5; node++) {
    ```java
    public static TreeNode insert(TreeNode root, int key) {
        if (root == null) return new TreeNode(key);
-       if (key < root.key) root.left = insert(root.left, key);
-       else                root.right = insert(root.right, key);
+       if (key < root.getKey()) root.setLeft(insert(root.getLeft(), key));
+       else                     root.setRight(insert(root.getRight(), key));
        return root;
    }
 
    class TreeNode {
-       int key;
-       TreeNode left;
-       TreeNode right;
+       private int key;
+       private TreeNode left;
+       private TreeNode right;
 
        public TreeNode(int key) { this.key = key; }
+
+       // Assume proper getters and setters exist for every field:
+       // getKey(), getLeft(), setLeft(TreeNode), getRight(), setRight(TreeNode)
    }
    ```

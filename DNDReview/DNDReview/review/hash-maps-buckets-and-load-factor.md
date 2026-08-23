@@ -38,13 +38,16 @@ public class MiniHashMap {
 }
 
 class Entry {
-    String key;
-    int value;
+    private String key;
+    private int value;
 
     public Entry(String key, int value) {
         this.key = key;
         this.value = value;
     }
+
+    // Assume proper getters and setters exist for every field:
+    // getKey(), getValue(), setValue(int)
 }
 ```
 
@@ -60,8 +63,8 @@ class Entry {
    public int get(String key) {
        ArrayList<Entry> chain = buckets.get(________);   // which bucket to search
        for (Entry entry : chain) {
-           if (entry.key.equals(________)) {             // confirm the exact key
-               return entry.value;
+           if (entry.getKey().equals(________)) {        // confirm the exact key
+               return entry.getValue();
            }
        }
        return -1;   // not found
