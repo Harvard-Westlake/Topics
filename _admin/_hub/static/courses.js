@@ -446,6 +446,7 @@ async function loadSavedModule() {
     if (a.review_markdown) savedReviews[i] = a;
     const copy = Object.assign({}, a);
     delete copy.review_markdown;
+    delete copy.review_markdowns;   // reviewSelections is the single source for the payload
     return copy;
   });
   renderLessonTable();

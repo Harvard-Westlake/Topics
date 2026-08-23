@@ -73,6 +73,10 @@
             "type": "boolean",
             "description": "True when the teacher set this assignment's length in the Module Planner (the inline day-count dropdown), overriding the lesson's LESSONS.md duration. When absent, loading the module re-reads the duration from the repo."
           },
+          "no_assignment": {
+            "type": "boolean",
+            "description": "True when no homework is due for this day (the Planner's 'no HW' checkbox). Canvas sync creates an unpublished content Page (lesson README plus any attached reviews) instead of an assignment — no points, no due date."
+          },
           "title": { "type": "string" },
           "path": {
             "type": "string",
@@ -92,15 +96,12 @@
             "description": "Optional flag on a placeholder entry. \"page\": Canvas sync creates an unpublished Page (linked into the module) instead of an assignment — an in-class day with no homework. \"test\": the day number is reserved for a manually placed test; nothing is created on sync. Absent: plain Additional Day (fill in later, nothing syncs)."
           },
           "review": {
-            "type": ["object", "null"],
-            "required": ["module", "path", "file"],
-            "additionalProperties": false,
-            "description": "Reference to a review fragment to prepend to this assignment. Stored as a reference (not inline content) so the repo stays the single source of truth — the hub resolves it to markdown at import time.",
-            "properties": {
-              "module": { "type": "string", "description": "Topic folder containing the review" },
-              "path": { "type": "string", "description": "Lesson folder containing the review/ subfolder" },
-              "file": { "type": "string", "pattern": "\\.md$", "description": "Filename inside the review/ folder" }
-            }
+            "description": "Review fragment(s) to prepend to this assignment — a single reference (legacy saves), a list of references (multiple reviews stacked on one day, rendered as one block each in order), or null. Stored as references (not inline content) so the repo stays the single source of truth — the hub resolves them to markdown at import time.",
+            "anyOf": [
+              { "type": "null" },
+              { "$ref": "#/$defs/reviewRef" },
+              { "type": "array", "items": { "$ref": "#/$defs/reviewRef" } }
+            ]
           }
         }
       }
@@ -108,6 +109,19 @@
     "updated": {
       "type": "string",
       "description": "ISO date (YYYY-MM-DD) of the last edit"
+    }
+  },
+  "$defs": {
+    "reviewRef": {
+      "type": "object",
+      "required": ["module", "path", "file"],
+      "additionalProperties": false,
+      "properties": {
+        "module": { "type": "string", "description": "Topic folder containing the review" },
+        "path": { "type": "string", "description": "Lesson folder containing the review/ subfolder" },
+        "file": { "type": "string", "pattern": "\\.md$", "description": "Filename inside the review/ folder" },
+        "label": { "type": "string", "description": "Display label cached by the planner (the concept the review covers)" }
+      }
     }
   }
 }

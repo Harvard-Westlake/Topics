@@ -882,13 +882,18 @@ async function openSync(blockId) {
     ? 'Sync Unit ' + r.unit_number + ' — ' + r.name : 'Sync — ' + (r.title || r.type);
 
   const counts = {};
-  (r.slots || []).forEach(s => { if ((s.part || 1) === 1) counts[s.kind] = (counts[s.kind] || 0) + 1; });
+  (r.slots || []).forEach(s => {
+    if ((s.part || 1) !== 1) return;
+    if (s.kind === 'lesson' && s.lesson && s.lesson.no_assignment) counts.nohw = (counts.nohw || 0) + 1;
+    else counts[s.kind] = (counts[s.kind] || 0) + 1;
+  });
   let lines = [];
   if (isModule) {
     const pts = smartRound((r.points || 10) * Math.pow(r.scale || 1.15, r.unit_number));
     lines.push('<div>Canvas module <b>“Unit ' + r.unit_number + '”</b> will be created (unpublished), '
       + 'with due dates from the schedule:</div>');
     if (counts.lesson) lines.push('<div>&bull; ' + counts.lesson + ' lesson assignment' + (counts.lesson > 1 ? 's' : '') + ' @ ' + pts + ' pts (review + ASSIGNMENT.md content)</div>');
+    if (counts.nohw) lines.push('<div>&bull; ' + counts.nohw + ' content page' + (counts.nohw > 1 ? 's' : '') + ' — no assignment due (lesson + reviews, no points)</div>');
     if (counts.test)   lines.push('<div>&bull; ' + counts.test + ' test placeholder' + (counts.test > 1 ? 's' : '') + ' (title + date only — no content)</div>');
     if (counts.final)  lines.push('<div>&bull; ' + counts.final + ' final placeholder' + (counts.final > 1 ? 's' : '') + ' (title + date only — exam content stays private)</div>');
     const skipped = (counts.review || 0) + (counts.flex || 0) + (counts.custom || 0) + (counts.gap || 0);

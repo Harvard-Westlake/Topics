@@ -530,7 +530,10 @@ section.tab.active { display: block; }
 /* Module Planner: drag-to-reorder rows (interleave lessons across topics).
    Extra leading column for the drag handle — planner table only; the Courses
    drawer keeps the original 4-column grid. */
-#plLessonsBlock .lesson-table-head, #plLessonRows .lesson-row { grid-template-columns: 14px 24px 44px 1fr 112px 110px; }
+#plLessonsBlock .lesson-table-head, #plLessonRows .lesson-row { grid-template-columns: 14px 24px 44px 1fr 112px 64px 110px; }
+.nohw-toggle { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); cursor: pointer; user-select: none; white-space: nowrap; }
+.nohw-toggle input { accent-color: var(--yellow); cursor: pointer; }
+.nohw-toggle.on { color: var(--yellow); }
 .dur-select { background: var(--surface); border: 1px solid var(--border); color: var(--muted); border-radius: 6px; font-size: 11px; padding: 3px 4px; font-family: inherit; outline: none; cursor: pointer; width: 100%; }
 .dur-select:hover, .dur-select:focus { border-color: var(--accent); color: var(--text); }
 .dur-select.overridden { color: var(--purple); border-color: var(--purple); font-weight: 600; }
@@ -544,3 +547,9 @@ section.tab.active { display: block; }
 .sync-dot.ok    { background: #0d2d1e; color: var(--green);  border: 1px solid var(--green); }
 .sync-dot.part  { background: #2d230d; color: var(--yellow); border: 1px solid var(--yellow); }
 .sync-dot.ready { background: #1a2035; color: var(--accent); border: 1px solid var(--border); }
+
+/* Module Planner: attached-review chips (several reviews can stack on one day) */
+.review-chips { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.review-chip { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; padding: 2px 8px; background: var(--purple); color: #0d1117; border-radius: 10px; font-weight: 600; }
+.review-chip-x { cursor: pointer; font-weight: 700; opacity: .7; }
+.review-chip-x:hover { opacity: 1; }

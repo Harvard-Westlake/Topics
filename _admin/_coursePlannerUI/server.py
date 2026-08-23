@@ -141,8 +141,10 @@ def validate_module(mod):
             lesson_dir = ROOT / a.get("_module", "") / a.get("path", "")
             if not (lesson_dir / "README.md").exists():
                 problems.append(f"lesson '{a.get('_module')}/{a.get('path')}' does not exist")
-        rev = a.get("review")
-        if rev:
+        revs = a.get("review") or []
+        if not isinstance(revs, list):
+            revs = [revs]
+        for rev in revs:
             rev_file = ROOT / rev.get("module", "") / rev.get("path", "") / "review" / rev.get("file", "")
             if not rev_file.exists():
                 problems.append(

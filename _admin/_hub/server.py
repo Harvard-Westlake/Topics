@@ -525,9 +525,20 @@ def api_create_module(course_id):
         if readme_html:
             html_parts.append(readme_html)
 
-        # Review section (rendered markdown)
-        if a.get("review_markdown"):
-            html_parts.append(review_block_html(md_to_html(a["review_markdown"])))
+        # Review sections (rendered markdown) — one block per attached fragment
+        for review_md in (a.get("review_markdowns")
+                          or ([a["review_markdown"]] if a.get("review_markdown") else [])):
+            html_parts.append(review_block_html(md_to_html(review_md)))
+
+        # 'no assignment' day: lesson content becomes a Canvas Page — no
+        # homework spec, no points, no due date
+        if a.get("no_assignment"):
+            page, perr = create_canvas_page(course_id, module_id, name, "\n".join(html_parts))
+            if perr:
+                errors.append({"name": name, "error": perr})
+            else:
+                results.append(page)
+            continue
 
         # Assignment content from ASSIGNMENT.md
         if mod_dir and lesson_p:
@@ -706,14 +717,22 @@ def api_github_saved_module(slug):
     if not jf.exists():
         return jsonify({"error": f"saved module '{slug}' not found"}), 404
     mod = json.loads(jf.read_text())
-    # Resolve review references to markdown so the drawer can use them directly
+    # Resolve review references to markdown so the drawer can use them directly.
+    # A row may carry several attached reviews — the drawer's single-review
+    # pickers replay only a lone ref; multiple refs travel as resolved markdown.
     for a in mod.get("assignments", []):
-        rev = a.pop("review", None)
-        if rev:
+        refs = _review_refs(a)
+        a.pop("review", None)
+        contents = []
+        for rev in refs:
             rf = TOPICS / rev["module"] / rev["path"] / "review" / rev["file"]
             if rf.exists():
-                a["review_markdown"] = rf.read_text()
-                a["review_ref"] = rev
+                contents.append(rf.read_text())
+        if contents:
+            a["review_markdowns"] = contents
+            a["review_markdown"] = "\n\n---\n\n".join(contents)  # legacy single field
+            if len(refs) == 1:
+                a["review_ref"] = refs[0]
     return jsonify(mod)
 
 # ── Module planner (create/edit curated modules + lesson file editor) ──────────
@@ -774,6 +793,15 @@ def scan_file_links(md_path):
             broken.append(raw)
     return broken
 
+def _review_refs(a):
+    """An assignment's review attachments as a list. The `review` field holds
+    one ref (legacy saves) or a list of refs (multiple reviews stacked on one
+    day) — every consumer goes through here so both shapes just work."""
+    rev = a.get("review")
+    if not rev:
+        return []
+    return rev if isinstance(rev, list) else [rev]
+
 def validate_module(mod):
     problems = []
     for key in ("name", "slug", "topic_names", "assignments"):
@@ -790,8 +818,7 @@ def validate_module(mod):
             lesson_dir = TOPICS / a.get("_module", "") / a.get("path", "")
             if not (lesson_dir / "README.md").exists():
                 problems.append(f"lesson '{a.get('_module')}/{a.get('path')}' does not exist")
-        rev = a.get("review")
-        if rev:
+        for rev in _review_refs(a):
             rev_file = TOPICS / rev.get("module", "") / rev.get("path", "") / "review" / rev.get("file", "")
             if not rev_file.exists():
                 problems.append(
@@ -862,8 +889,10 @@ def api_render():
     body = request.get_json(force=True) or {}
     html_parts = []
     engine = PLANNER_ENGINE
-    if body.get("review_markdown"):
-        rev_html, engine = planner_md_to_html(body["review_markdown"])
+    review_mds = body.get("review_markdowns") or \
+        ([body["review_markdown"]] if body.get("review_markdown") else [])
+    for review_md in review_mds:
+        rev_html, engine = planner_md_to_html(review_md)
         html_parts.append(planner_review_block(rev_html))
     content_html, engine = planner_md_to_html(body.get("markdown", ""), body.get("base_path", ""))
     html_parts.append(content_html)
@@ -1132,6 +1161,7 @@ def expand_module_block(block):
                               "lesson": {"day": a["day"], "duration": dur, "title": a["title"],
                                          "path": a.get("path"), "_module": a.get("_module"),
                                          "sub": a.get("sub"), "kind": a.get("kind"),
+                                         "no_assignment": a.get("no_assignment"),
                                          "review": a.get("review")}})
         else:
             slots.append({"kind": "gap", "title": "(open day)", "module_day": day,
@@ -1389,17 +1419,19 @@ def _canvas_unlock(date_str):
     d = datetime.strptime(date_str, "%Y-%m-%d")
     return d.replace(hour=0, minute=0, second=0, tzinfo=timezone.utc).isoformat()
 
-def _lesson_description(module_dir, lesson_path, review_ref):
+def _lesson_description(module_dir, lesson_path, review_ref, include_assignment=True):
     html_parts = []
     readme_html = _lesson_readme_html(module_dir, lesson_path)
     if readme_html:
         html_parts.append(readme_html)
-    if review_ref:
-        rf = (TOPICS / review_ref.get("module", "") / review_ref.get("path", "")
-              / "review" / review_ref.get("file", ""))
+    # one purple review block per attached fragment (single ref or a list)
+    for rev in _review_refs({"review": review_ref}):
+        rf = (TOPICS / rev.get("module", "") / rev.get("path", "")
+              / "review" / rev.get("file", ""))
         if rf.exists():
             html_parts.append(review_block_html(md_to_html(rf.read_text())))
-    if module_dir and lesson_path:
+    # a 'no assignment' day gets the lesson content but no homework spec
+    if include_assignment and module_dir and lesson_path:
         af = TOPICS / module_dir / lesson_path / "ASSIGNMENT.md"
         if af.exists():
             html_parts.append(md_to_html(af.read_text(), f"{module_dir}/{lesson_path}"))
@@ -1479,6 +1511,10 @@ def _expected_block_items(block):
                 if a.get("kind") == "page":
                     expected.append({"title": f"{unit}.{day_num}{_day_sub_suffix(a)}: {a['title']}",
                                      "type": "Page", "points": None, "due": None})
+                continue
+            if a.get("no_assignment"):
+                expected.append({"title": f"{unit}.{day_num}{_day_sub_suffix(a)}: {a['title']}",
+                                 "type": "Page", "points": None, "due": None})
                 continue
             expected.append({"title": f"{unit}.{day_num}{_day_sub_suffix(a)}: {a['title']}",
                              "type": "Assignment", "points": pts, "due": group_end(s)})
@@ -1700,6 +1736,17 @@ def api_schedule_sync_block(name):
                             errors.append({"name": pname, "error": perr})
                         else:
                             results.append(page)
+                    continue
+                if a.get("no_assignment"):
+                    # content page instead of homework — no points, no due date
+                    pname = f"{unit}.{day_num}{_day_sub_suffix(a)}: {a['title']}"
+                    desc = _lesson_description(a.get("_module"), a.get("path"),
+                                               a.get("review"), include_assignment=False)
+                    page, perr = create_canvas_page(course_id, module_id, pname, desc)
+                    if perr:
+                        errors.append({"name": pname, "error": perr})
+                    else:
+                        results.append(page)
                     continue
                 create_assignment(f"{unit}.{day_num}{_day_sub_suffix(a)}: {a['title']}", points,
                                   _lesson_description(a.get("_module"), a.get("path"),

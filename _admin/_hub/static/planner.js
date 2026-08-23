@@ -5,7 +5,7 @@ window.Planner = (() => {
 let allTopics = [];
 let selectedTopics = [];
 let assignments = [];        // merged lesson rows for selected topics
-let reviewSelections = {};   // idx -> {module, path, file}
+let reviewSelections = {};   // idx -> [{module, path, file, label}, ...] — several reviews may stack on one day
 let savedModules = [];
 let currentSlug = null;      // slug of the loaded saved module (null = new)
 let slugTouched = false;
@@ -156,7 +156,7 @@ async function loadSaved(slug) {
       const entry = {day: p.day, duration: p.duration || 1,
                      title: p.title, path: '', _module: '', placeholder: true};
       if (p.kind) entry.kind = p.kind;
-      if (p.review) reviewSelections[ordered.length] = p.review;
+      if (p.review) reviewSelections[ordered.length] = Array.isArray(p.review) ? p.review : [p.review];
       ordered.push(entry); orderedChecked.push(true);
       return;
     }
@@ -168,7 +168,8 @@ async function loadSaved(slug) {
       row.duration = p.duration || 1;
       row.duration_override = true;
     }
-    if (p.review) reviewSelections[ordered.length] = p.review;
+    if (p.no_assignment) row.no_assignment = true;
+    if (p.review) reviewSelections[ordered.length] = Array.isArray(p.review) ? p.review : [p.review];
     ordered.push(row); orderedChecked.push(true);
   });
   freshMap.forEach(row => { ordered.push(row); orderedChecked.push(false); });
@@ -470,6 +471,14 @@ function durationCell(a, i) {
          ' onchange="Planner.onDurationChange(' + i + ', this.value)">' + opts + '</select>';
 }
 
+function onNoHwChange(i, checked) {
+  const a = assignments[i];
+  if (!a || a.placeholder) return;
+  if (checked) a.no_assignment = true; else delete a.no_assignment;
+  const label = $('plnohwlabel_' + i);
+  if (label) label.classList.toggle('on', checked);
+}
+
 function onDurationChange(i, value) {
   const a = assignments[i];
   if (!a) return;
@@ -510,6 +519,13 @@ function renderLessonRow(a, i, unitNum) {
         '<div class="lesson-day" id="plday_' + i + '">' + fmtDayLabel(unitNum, a) + '</div>' +
         titleCell +
         durationCell(a, i) +
+        (a.placeholder ? '<span></span>' :
+          '<label class="nohw-toggle' + (a.no_assignment ? ' on' : '') + '" id="plnohwlabel_' + i + '"' +
+            ' title="No assignment due this day — Canvas sync creates a content page (lesson + reviews) instead of a homework assignment">' +
+            '<input type="checkbox"' + (a.no_assignment ? ' checked' : '') +
+              ' onchange="Planner.onNoHwChange(' + i + ', this.checked)">' +
+            '<span>no HW</span>' +
+          '</label>') +
         '<label class="review-toggle" id="plrevlabel_' + i + '">' +
           '<input type="checkbox" id="plreview_' + i + '" onchange="Planner.toggleReview(' + i + ')">' +
           '<span>+ Review</span>' +
@@ -520,7 +536,7 @@ function renderLessonRow(a, i, unitNum) {
           '<select id="plrmod_' + i + '" onchange="Planner.onReviewModuleChange(' + i + ')"></select>' +
           '<select id="plrlesson_' + i + '" onchange="Planner.onReviewLessonChange(' + i + ')" disabled></select>' +
           '<select id="plrfile_' + i + '" onchange="Planner.onReviewFileChange(' + i + ')" disabled></select>' +
-          '<span id="plrbadge_' + i + '" class="review-badge" style="display:none"></span>' +
+          '<span id="plrbadge_' + i + '" class="review-chips" style="display:none"></span>' +
         '</div>' +
         '<div class="review-usage" id="plrusage_' + i + '"></div>' +
       '</div>' +
@@ -540,11 +556,35 @@ function toggleReview(i) {
   const cb = $('plreview_' + i);
   $('plrpanel_' + i).style.display = cb.checked ? 'block' : 'none';
   $('plrevlabel_' + i).classList.toggle('on', cb.checked);
-  if (cb.checked) { populateReviewModules(i); renderReviewUsage(i); }
-  else { delete reviewSelections[i]; $('plrbadge_' + i).style.display = 'none'; renderAllOpenReviewUsages(); }
+  if (cb.checked) { populateReviewModules(i); renderReviewChips(i); renderReviewUsage(i); }
+  else { delete reviewSelections[i]; renderReviewChips(i); renderAllOpenReviewUsages(); refreshAll(); }
 }
 
-// Show every OTHER lesson row's already-selected review, and where it lives,
+// ── Attached-review chips (a row can stack several reviews on one day) ────────
+
+function renderReviewChips(i) {
+  const el = $('plrbadge_' + i);
+  if (!el) return;
+  const revs = reviewSelections[i] || [];
+  el.style.display = revs.length ? 'flex' : 'none';
+  el.innerHTML = revs.map((rev, k) =>
+    '<span class="review-chip" title="' + esc(rev.module + '/' + rev.path + '/review/' + rev.file) + '">' +
+      esc(rev.label || rev.file.replace(/\.md$/, '')) +
+      '<span class="review-chip-x" onclick="Planner.removeReview(' + i + ',' + k + ')">&#x2715;</span>' +
+    '</span>'
+  ).join('');
+}
+
+function removeReview(i, k) {
+  if (!reviewSelections[i]) return;
+  reviewSelections[i].splice(k, 1);
+  if (!reviewSelections[i].length) delete reviewSelections[i];
+  renderReviewChips(i);
+  renderAllOpenReviewUsages();
+  refreshAll();
+}
+
+// Show every OTHER lesson row's already-attached reviews, and where they live,
 // so picking one here doesn't silently duplicate a review already in this plan.
 function renderReviewUsage(i) {
   const el = $('plrusage_' + i);
@@ -553,22 +593,23 @@ function renderReviewUsage(i) {
   const curModule = $('plrmod_' + i) ? $('plrmod_' + i).value : '';
   const curPath   = $('plrlesson_' + i) ? $('plrlesson_' + i).value : '';
   const curFile   = $('plrfile_' + i) ? $('plrfile_' + i).value : '';
-  const used = Object.keys(reviewSelections)
-    .map(k => parseInt(k))
-    .filter(j => j !== i && reviewSelections[j])
-    .map(j => {
-      const rev = reviewSelections[j];
-      const a = assignments[j];
+  const used = [];
+  Object.keys(reviewSelections).forEach(k => {
+    const j = parseInt(k);
+    if (j === i || !reviewSelections[j]) return;
+    const a = assignments[j];
+    reviewSelections[j].forEach(rev => {
       const exact = !!curFile && rev.module === curModule && rev.path === curPath && rev.file === curFile;
       const sameLesson = !exact && !!curPath && rev.module === curModule && rev.path === curPath;
-      return {
+      used.push({
         dayLabel: a ? fmtDayLabel(unitNum, a) : '?',
         title: a ? a.title : '(removed lesson)',
         label: rev.label || rev.file.replace(/\.md$/, ''),
         exact, sameLesson,
-      };
-    })
-    .sort((x, y) => (y.exact - x.exact) || (y.sameLesson - x.sameLesson));
+      });
+    });
+  });
+  used.sort((x, y) => (y.exact - x.exact) || (y.sameLesson - x.sameLesson));
   if (!used.length) { el.innerHTML = ''; return; }
   el.innerHTML = '<div class="review-usage-head">Already used in this plan:</div>' +
     used.map(u =>
@@ -604,12 +645,10 @@ function populateReviewModules(i) {
 
 async function onReviewModuleChange(i) {
   const module = $('plrmod_' + i).value;
-  const lessonSel = $('plrlesson_' + i), fileSel = $('plrfile_' + i), badge = $('plrbadge_' + i);
+  const lessonSel = $('plrlesson_' + i), fileSel = $('plrfile_' + i);
   lessonSel.innerHTML = '<option value="">Lesson…</option>'; lessonSel.disabled = true;
-  fileSel.innerHTML = '<option value="">Day…</option>'; fileSel.disabled = true;
-  badge.style.display = 'none';
-  delete reviewSelections[i];
-  renderReviewUsage(i); renderAllOpenReviewUsages();
+  fileSel.innerHTML = '<option value="">Review…</option>'; fileSel.disabled = true;
+  renderReviewUsage(i);
   if (!module) return;
   const res = await fetch('/api/topics/' + encodeURIComponent(module)).then(r => r.json());
   const lessons = (res.assignments || []).filter(a => a.path);
@@ -624,13 +663,11 @@ async function onReviewModuleChange(i) {
 
 async function onReviewLessonChange(i) {
   const module = $('plrmod_' + i).value, lessonPath = $('plrlesson_' + i).value;
-  const fileSel = $('plrfile_' + i), badge = $('plrbadge_' + i);
-  fileSel.innerHTML = '<option value="">Day…</option>'; fileSel.disabled = true;
-  badge.style.display = 'none';
-  delete reviewSelections[i];
+  const fileSel = $('plrfile_' + i);
+  fileSel.innerHTML = '<option value="">Review…</option>'; fileSel.disabled = true;
   // Update usage immediately on picking a lesson — before any file is chosen —
   // so a "same lesson" match against another row's review is visible right away.
-  renderReviewUsage(i); renderAllOpenReviewUsages();
+  renderReviewUsage(i);
   if (!lessonPath) return;
   const res = await fetch('/api/reviews?module=' + encodeURIComponent(module) +
                           '&path=' + encodeURIComponent(lessonPath)).then(r => r.json());
@@ -644,33 +681,39 @@ async function onReviewLessonChange(i) {
   fileSel.disabled = false;
 }
 
+// Picking a review file ADDS it to the row's stack (a day can carry several).
+// The file dropdown resets afterward so the pickers never linger in a
+// selected-looking state — the chips below are the single source of truth
+// for what is actually attached.
 function onReviewFileChange(i) {
   const module = $('plrmod_' + i).value, lessonPath = $('plrlesson_' + i).value;
   const fileSel = $('plrfile_' + i), file = fileSel.value;
+  if (!file) return;
   const label = fileSel.selectedOptions[0] ? fileSel.selectedOptions[0].textContent : file.replace(/\.md$/, '');
-  const badge = $('plrbadge_' + i);
-  if (!file) { badge.style.display = 'none'; delete reviewSelections[i]; renderReviewUsage(i); renderAllOpenReviewUsages(); return; }
-  reviewSelections[i] = {module: module, path: lessonPath, file: file, label: label};
-  badge.textContent = label;
-  badge.style.display = 'inline-block';
+  const revs = reviewSelections[i] || (reviewSelections[i] = []);
+  if (revs.some(r => r.module === module && r.path === lessonPath && r.file === file)) {
+    toast('That review is already attached to this day');
+  } else {
+    revs.push({module: module, path: lessonPath, file: file, label: label});
+  }
+  fileSel.value = '';
+  renderReviewChips(i);
   renderReviewUsage(i);
   renderAllOpenReviewUsages();
+  refreshAll();
 }
 
-// Restore a saved review ref into row i's pickers
-async function applyReview(i, rev) {
+// Restore saved review refs (one or many) onto row i — chips only; the pickers
+// stay blank so nothing looks "selected" that the user didn't just choose.
+async function applyReview(i, revs) {
   $('plreview_' + i).checked = true;
   $('plrpanel_' + i).style.display = 'block';
   $('plrevlabel_' + i).classList.add('on');
   populateReviewModules(i);
-  $('plrmod_' + i).value = rev.module;
-  await onReviewModuleChange(i);
-  $('plrmod_' + i).value = rev.module;
-  $('plrlesson_' + i).value = rev.path;
-  await onReviewLessonChange(i);
-  $('plrlesson_' + i).value = rev.path;
-  $('plrfile_' + i).value = rev.file;
-  onReviewFileChange(i);
+  reviewSelections[i] = (Array.isArray(revs) ? revs : [revs]).map(rev =>
+    Object.assign({label: rev.file.replace(/\.md$/, '')}, rev));
+  renderReviewChips(i);
+  renderReviewUsage(i);
 }
 
 // ── Save ──────────────────────────────────────────────────────────────────────
@@ -705,13 +748,14 @@ function checkedAssignments() {
       }
       const out = {day: itemDay, duration: dur, title: a.title,
                    path: a.path, _module: a._module,
-                   review: reviewSelections[i] || null};
+                   review: (reviewSelections[i] && reviewSelections[i].length) ? reviewSelections[i] : null};
       if (sub !== null) out.sub = sub;
       if (a.placeholder) {
         out.placeholder = true;
         if (a.kind) out.kind = a.kind;
-      } else if (a.duration_override) {
-        out.duration_override = true;
+      } else {
+        if (a.duration_override) out.duration_override = true;
+        if (a.no_assignment) out.no_assignment = true;
       }
       return out;
     });
@@ -841,13 +885,17 @@ async function renderEditorPreview() {
     markdown: $('edText').value,
     base_path: editorCtx.module + '/' + editorCtx.path,
   };
-  // ASSIGNMENT.md previews include the attached review block, exactly like the hub upload
-  const rev = editorCtx.file === 'ASSIGNMENT.md' ? reviewSelections[editorCtx.row] : null;
-  if (rev) {
-    const rc = await fetch('/api/file?module=' + encodeURIComponent(rev.module) +
-                           '&path=' + encodeURIComponent(rev.path) +
-                           '&file=' + encodeURIComponent('review/' + rev.file)).then(r => r.json());
-    if (rc.content) body.review_markdown = rc.content;
+  // ASSIGNMENT.md previews include the attached review blocks, exactly like the hub upload
+  const revs = editorCtx.file === 'ASSIGNMENT.md' ? (reviewSelections[editorCtx.row] || []) : [];
+  if (revs.length) {
+    const contents = [];
+    for (const rev of revs) {
+      const rc = await fetch('/api/file?module=' + encodeURIComponent(rev.module) +
+                             '&path=' + encodeURIComponent(rev.path) +
+                             '&file=' + encodeURIComponent('review/' + rev.file)).then(r => r.json());
+      if (rc.content) contents.push(rc.content);
+    }
+    if (contents.length) body.review_markdowns = contents;
   }
   const res = await fetch('/api/render', {
     method: 'POST', headers: {'Content-Type': 'application/json'},
@@ -897,7 +945,7 @@ return {init, newModule, loadSaved, deleteModule, onNameInput, touchSlug,
         onReviewLessonChange, onReviewFileChange, saveModule, openEditor,
         openEditorTab, setEditorMode, saveFile, markDirty, closeEditor,
         savedDragStart, savedDragOver, savedDragLeave, savedDrop, savedDragEnd,
-        insertPlaceholder, removePlaceholder, onPlaceholderTitleInput, onPlaceholderKind,
-        rowDragStart, rowDragOver, rowDragLeave, rowDrop, rowDragEnd, onShow,
+        insertPlaceholder, removePlaceholder, onPlaceholderTitleInput, onPlaceholderKind, removeReview,
+        rowDragStart, rowDragOver, rowDragLeave, rowDrop, rowDragEnd, onShow, onNoHwChange,
         onDurationChange};
 })();

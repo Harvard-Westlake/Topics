@@ -251,14 +251,17 @@ def generate_lessonplan(mod):
         else:
             src = f"{a['_module']}/{a['path']}"
             src_cell = f"[{src}](../../{src}/)"
-        rev = a.get("review")
-        if rev:
+        revs = a.get("review") or []
+        if not isinstance(revs, list):
+            revs = [revs]
+        rev_links = []
+        for rev in revs:
             rev_file = ROOT / rev["module"] / rev["path"] / "review" / rev["file"]
             label = review_label_for(rev_file) if rev_file.exists() else rev["file"].removesuffix(".md")
-            rev_cell = f"[{label}](../../{rev['module']}/{rev['path']}/review/{rev['file']})"
-        else:
-            rev_cell = "—"
-        lines.append(f"| {day_label(unit, a)} | {a['title']} | {src_cell} | {rev_cell} |")
+            rev_links.append(f"[{label}](../../{rev['module']}/{rev['path']}/review/{rev['file']})")
+        rev_cell = ", ".join(rev_links) if rev_links else "—"
+        title_cell = a["title"] + (" *(no assignment)*" if a.get("no_assignment") else "")
+        lines.append(f"| {day_label(unit, a)} | {title_cell} | {src_cell} | {rev_cell} |")
     lines.append("")
     return "\n".join(lines)
 
@@ -297,8 +300,10 @@ def check_modules(fix=False):
                     warn(f"{rel}: lesson '{label}/' is not listed in {a['_module']}/LESSONS.md")
                 elif row["title"] != a["title"]:
                     warn(f"{rel}: title '{a['title']}' drifted from LESSONS.md ('{row['title']}') — resave from planner")
-            rev = a.get("review")
-            if rev:
+            revs = a.get("review") or []
+            if not isinstance(revs, list):
+                revs = [revs]
+            for rev in revs:
                 rev_file = ROOT / rev["module"] / rev["path"] / "review" / rev["file"]
                 if not rev_file.exists():
                     err(f"{rel}: review reference '{rev['module']}/{rev['path']}/review/{rev['file']}' does not exist")

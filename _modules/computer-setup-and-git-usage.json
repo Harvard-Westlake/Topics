@@ -47,12 +47,14 @@
       "title": "Branching and Merging",
       "path": "BranchingAndMerging",
       "_module": "GitUsage",
-      "review": {
-        "module": "Terminal",
-        "path": "Basics",
-        "file": "four-command-round-trip.md",
-        "label": "The Four-Command Round Trip"
-      }
+      "review": [
+        {
+          "label": "The Four-Command Round Trip",
+          "file": "four-command-round-trip.md",
+          "module": "Terminal",
+          "path": "Basics"
+        }
+      ]
     },
     {
       "day": 4,
@@ -60,12 +62,39 @@
       "title": "DND Review",
       "path": "DNDReview",
       "_module": "DNDReview",
-      "review": {
-        "module": "Terminal",
-        "path": "Basics",
-        "file": "navigation-and-basic-files.md",
-        "label": "Navigation and Basic Files"
-      }
+      "review": [
+        {
+          "label": "Graphs, Trees, and Traversal",
+          "file": "graphs-trees-and-traversal.md",
+          "module": "DNDReview",
+          "path": "DNDReview"
+        },
+        {
+          "label": "Hash Maps: Buckets, Collisions, and Load Factor",
+          "file": "hash-maps-buckets-and-load-factor.md",
+          "module": "DNDReview",
+          "path": "DNDReview"
+        },
+        {
+          "label": "Linked List Node Chains",
+          "file": "linked-list-node-chains.md",
+          "module": "DNDReview",
+          "path": "DNDReview"
+        },
+        {
+          "label": "Recursion, Greedy Choices, and Memoization",
+          "file": "recursion-greedy-and-memoization.md",
+          "module": "DNDReview",
+          "path": "DNDReview"
+        },
+        {
+          "label": "Stacks and Queues Built on ArrayList",
+          "file": "stacks-and-queues-on-arraylist.md",
+          "module": "DNDReview",
+          "path": "DNDReview"
+        }
+      ],
+      "no_assignment": true
     },
     {
       "day": 5,

@@ -7,7 +7,7 @@
 
 </div>
 
-[DND Review Packet](assets/honors-topics-dnd-review-packet.pdf)
+<font color="#388bfd">[DND Review Packet](assets/honors-topics-dnd-review-packet.pdf)</font>
 
 ---
 
