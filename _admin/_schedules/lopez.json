@@ -1,0 +1,40 @@
+{
+  "calendar": "lopez",
+  "calendar_class": "block-g",
+  "end_date": "2027-05-26",
+  "meeting_days": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "no_school": [],
+  "sequence": [
+    {
+      "id": "bmt5x2k9qa1rv",
+      "inserts": [],
+      "ref": "computer-setup-and-git-usage",
+      "source": "saved",
+      "type": "module"
+    },
+    {
+      "id": "bmt5x2k9qb7wd",
+      "inserts": [],
+      "ref": "git-project",
+      "source": "saved",
+      "type": "module"
+    },
+    {
+      "id": "bmt5x2k9qc3np",
+      "inserts": [],
+      "ref": "WebProgramming",
+      "source": "topic",
+      "type": "module"
+    }
+  ],
+  "show_day0_syllabus": true,
+  "start_date": "2026-08-24",
+  "updated": "2026-08-24T13:19:50",
+  "year": "2026-27"
+}
