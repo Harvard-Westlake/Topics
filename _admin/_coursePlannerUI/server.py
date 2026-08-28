@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Local course planner for the Topics repo — create and edit curated modules.
+"""Local course planner for the curriculum repo — create and edit curated modules.
 
 Serves the same Create Module UI as the course hub (../Admin), but instead of
 pushing to Canvas it saves module definitions as JSON into _modules/ and keeps
@@ -29,7 +29,8 @@ PORT = 8901
 sys.path.insert(0, str(ROOT / "_admin" / "_verification"))
 from verify import (generate_lessonplan, parse_lessons_md, LESSONPLANS_DIR,  # noqa: E402
                     MD_LINK, HTML_SRC, FENCED_CODE, INLINE_CODE, PRE_BLOCK)
-from mdrender import md_to_html, review_block, ENGINE  # noqa: E402
+from mdrender import (md_to_html, review_block, ENGINE,  # noqa: E402
+                      COURSE_NAME, REPO_LABEL)
 
 SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 FILE_RE = re.compile(r"^(review/)?[A-Za-z0-9._-]+\.md$|^demos/[A-Za-z0-9._-]+\.html$")
@@ -38,9 +39,12 @@ FILE_RE = re.compile(r"^(review/)?[A-Za-z0-9._-]+\.md$|^demos/[A-Za-z0-9._-]+\.h
 # ── Repo readers (mirror the hub's /api/github/* routes) ──────────────────────
 
 def list_topics():
+    # Topic folders are PascalCase; lowercase root dirs (embed/, attachments/)
+    # are infrastructure, not topics.
     return sorted(
         d.name for d in ROOT.iterdir()
         if d.is_dir() and not d.name.startswith(".") and "_" not in d.name
+        and d.name[:1].isupper()
     )
 
 
@@ -186,7 +190,9 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def _html(self, path):
-        body = path.read_bytes()
+        text = path.read_text(encoding="utf-8")
+        text = text.replace("__COURSE_NAME__", COURSE_NAME).replace("__REPO_LABEL__", REPO_LABEL)
+        body = text.encode()
         self.send_response(200)
         self.send_header("Content-Type", "text/html; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
@@ -319,7 +325,7 @@ class Handler(BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
     server = ThreadingHTTPServer(("127.0.0.1", PORT), Handler)
-    print(f"Topics course planner → http://127.0.0.1:{PORT}")
+    print(f"{COURSE_NAME} course planner → http://127.0.0.1:{PORT}")
     print(f"Repo root: {ROOT}")
     try:
         server.serve_forever()

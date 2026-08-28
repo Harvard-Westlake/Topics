@@ -13,7 +13,9 @@ fidelity you are getting.
 """
 
 import html
+import json
 import re
+from pathlib import Path
 
 try:
     import markdown as md_lib
@@ -22,9 +24,18 @@ except ImportError:
     md_lib = None
     ENGINE = "builtin"
 
-# Must match ../Admin/app.py so previews show exactly what Canvas receives
-GITHUB_REPO = "Harvard-Westlake/Topics"
-GITHUB_BRANCH = "main"
+# Course-specific values live in _admin/_configuration/course.json so the same
+# engine files run unmodified in every course repo (see _admin/sync-engine.sh).
+# Both the hub and the planner import these from here.
+_ROOT = Path(__file__).resolve().parents[2]
+try:
+    _course = json.loads((_ROOT / "_admin" / "_configuration" / "course.json").read_text())
+except (OSError, ValueError):
+    _course = {}
+COURSE_NAME   = _course.get("course_name", _ROOT.name)
+REPO_LABEL    = _course.get("repo_label", _ROOT.name)
+GITHUB_REPO   = _course.get("github_repo", f"Harvard-Westlake/{_ROOT.name}")
+GITHUB_BRANCH = _course.get("github_branch", "main")
 GITHUB_RAW = f"https://raw.githubusercontent.com/{GITHUB_REPO}/{GITHUB_BRANCH}"
 GITHUB_BLOB = f"https://github.com/{GITHUB_REPO}/blob/{GITHUB_BRANCH}"
 

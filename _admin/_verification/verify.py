@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Curriculum consistency verifier for the Topics repo.
+"""Curriculum consistency verifier for a curriculum repo.
 
 Checks that lessons, indexes, and curated modules all still point at things
 that exist:

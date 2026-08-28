@@ -9,7 +9,7 @@ Serves a tabbed UI at http://127.0.0.1:5050 :
                    uploads) with structural ops that keep every index file in step
   Syllabus       — renders the repo's live SYLLABUS.md
 
-The Topics repo (this repo) is the source of truth for all content. The private
+This curriculum repo is the source of truth for all content. The private
 sibling Admin repo holds final exams; syncing a test/final day to Canvas creates a
 placeholder assignment only — exam content never leaves the private repo.
 
@@ -21,7 +21,7 @@ Per-teacher setup:
 The app runs without a token too — the Planner and Schedule tabs are fully
 credential-free; only Canvas calls need HUB_TOKEN.
 """
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, request
 from pathlib import Path
 from dotenv import load_dotenv
 from datetime import datetime, timedelta, timezone
@@ -51,11 +51,6 @@ MODULES_DIR = ROOT / "_modules"
 COURSE_TTL      = 60 * 60 * 24
 SUBRESOURCE_TTL = 60 * 60
 
-GITHUB_REPO   = "Harvard-Westlake/Topics"
-GITHUB_BRANCH = "main"
-GITHUB_RAW    = f"https://raw.githubusercontent.com/{GITHUB_REPO}/{GITHUB_BRANCH}"
-GITHUB_BLOB   = f"https://github.com/{GITHUB_REPO}/blob/{GITHUB_BRANCH}"
-
 # Repo tooling shared with the verifier and the standalone planner
 sys.path.insert(0, str(ROOT / "_admin" / "_verification"))
 sys.path.insert(0, str(ROOT / "_admin" / "_coursePlannerUI"))
@@ -64,7 +59,9 @@ from verify import (generate_lessonplan, LESSONPLANS_DIR,               # noqa: 
                     review_labels, review_label_for)
 from mdrender import (md_to_html as planner_md_to_html,                 # noqa: E402
                       review_block as planner_review_block,
-                      ENGINE as PLANNER_ENGINE)
+                      ENGINE as PLANNER_ENGINE,
+                      COURSE_NAME, REPO_LABEL,
+                      GITHUB_REPO, GITHUB_BRANCH, GITHUB_RAW, GITHUB_BLOB)
 
 SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 NAME_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9 _\-]*$")
@@ -583,8 +580,11 @@ def api_create_module(course_id):
 # ── Topics repo readers ────────────────────────────────────────────────────────
 
 def list_topics():
+    # Topic folders are PascalCase; lowercase root dirs (embed/, attachments/)
+    # are infrastructure, not topics.
     return sorted(d.name for d in TOPICS.iterdir()
-                  if d.is_dir() and not d.name.startswith(".") and "_" not in d.name)
+                  if d.is_dir() and not d.name.startswith(".") and "_" not in d.name
+                  and d.name[:1].isupper())
 
 def parse_topic_lessons(name):
     """Lessons of a topic folder in LESSONS.md order; None if the topic is missing."""
@@ -2489,10 +2489,12 @@ def api_editor_asset_delete():
 
 @app.route("/")
 def index():
-    return send_from_directory(str(HERE), "index.html")
+    page = (HERE / "index.html").read_text(encoding="utf-8")
+    page = page.replace("__COURSE_NAME__", COURSE_NAME).replace("__REPO_LABEL__", REPO_LABEL)
+    return app.response_class(page, mimetype="text/html")
 
 if __name__ == "__main__":
-    print(f"HW Course Hub → http://127.0.0.1:5050")
+    print(f"HW Course Hub ({COURSE_NAME}) → http://127.0.0.1:5050")
     print(f"Repo root: {ROOT}")
     print(f"Finals dir: {FINALS} ({'found' if finals_available() else 'NOT FOUND — finals disabled'})")
     print(f"Canvas token: {'configured' if TOKEN else 'MISSING — Canvas features disabled'}")
