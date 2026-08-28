@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Purpose
 
-This is the public student-facing curriculum repository for the **Honors Topics** computer science course at Harvard-Westlake. Student-facing content is Markdown-only, rendered on GitHub. Course-planning tooling (course hub, planner UI, verifier) lives in underscore-prefixed folders and is never student-facing. Teachers collaborate here via branches and change requests reviewed in meetings; students have read access.
+This is the public student-facing curriculum repository for a Harvard-Westlake computer science course (the course name and GitHub repo are set in `_admin/_configuration/course.json`). Student-facing content is Markdown-only, rendered on GitHub. Course-planning tooling (course hub, planner UI, verifier) lives in underscore-prefixed folders and is never student-facing. Teachers collaborate here via branches and change requests reviewed in meetings; students have read access.
 
 No credentials are ever stored in this repo — each teacher keeps their own Canvas token in a gitignored root `.env` (copy `.env.example`). Final exam content lives only in the private sibling `../Admin` repo (along with instructor solutions); the hub reads it cross-repo and only ever pushes date/points placeholders to Canvas.
 

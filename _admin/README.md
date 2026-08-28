@@ -37,3 +37,16 @@ Final exam **content** lives only in the private sibling Admin repo; syncing a
 test/final day pushes a placeholder assignment (title, date, points) to Canvas.
 
 `_verification/verify.py` runs on every push (`.github/workflows/verify.yml`) and confirms all of the arrows above still point at things that exist.
+
+## The engine and other course repos
+
+The tooling above (plus `CLAUDE.md`, `embed/`, `.github/`, `.gitignore`, `.env.example`, `_modules/README.md`) is the **course engine**, and this repo is its canonical home. Sibling course repos (e.g. `../DND`) run the identical engine over completely independent content.
+
+- **All engine feature work happens here** — never in a sibling repo — then flows outward with [`sync-engine.sh`](sync-engine.sh):
+
+  ```
+  _admin/sync-engine.sh ../DND     # then review with git diff in ../DND
+  ```
+
+- **Engine files contain zero course-specific data.** Anything course-specific lives in `_admin/_configuration/course.json` (course name, GitHub repo — read by the hub and planner at startup), `.env`, `_modules/*.json`, `_admin/_schedules/`, or content folders. The sync never touches those, so each course repo keeps its own.
+- Each sibling repo records which commit of this repo its engine came from in `_admin/_configuration/engine-version.json` — stamped on every sync. To sync a specific engine version, check out that commit here first.

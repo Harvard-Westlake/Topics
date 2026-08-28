@@ -26,15 +26,29 @@
       "type": "module"
     },
     {
-      "id": "bmt5gf0l3zcbyy",
+      "id": "bmt92xrk7uqymk",
+      "type": "module",
+      "source": "saved",
+      "ref": "web",
+      "inserts": []
+    },
+    {
+      "id": "bmt7by8n0vly17",
       "type": "module",
       "source": "topic",
-      "ref": "WebProgramming",
+      "ref": "Blockchains",
+      "inserts": []
+    },
+    {
+      "id": "bmt934dtx0am2j",
+      "type": "module",
+      "source": "topic",
+      "ref": "MiniGPT",
       "inserts": []
     }
   ],
   "show_day0_syllabus": true,
   "start_date": "2026-08-24",
-  "updated": "2026-08-22T23:56:43",
+  "updated": "2026-08-25T12:55:37",
   "year": "2026-27"
 }

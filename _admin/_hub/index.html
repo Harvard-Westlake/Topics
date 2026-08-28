@@ -20,7 +20,7 @@ window.MathJax = {
 <header>
   <div>
     <h1>HW Course Hub</h1>
-    <div class="sub">Topics repo is the source of truth — Canvas LMS: hub.hw.com</div>
+    <div class="sub">__REPO_LABEL__ repo is the source of truth — Canvas LMS: hub.hw.com</div>
   </div>
   <nav class="tabs">
     <button class="tab-btn" data-tab="courses">Courses</button>
@@ -118,7 +118,7 @@ window.MathJax = {
     <!-- Topics repo source (only source) -->
     <div class="field">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">
-        <label style="margin-bottom:0">Module from Topics repo</label>
+        <label style="margin-bottom:0">Module from __REPO_LABEL__ repo</label>
         <label style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);cursor:pointer;user-select:none">
           <input type="checkbox" id="dmHideUsed" onchange="Courses.refreshModuleDatalist('')" style="accent-color:var(--purple);cursor:pointer">
           hide used &nbsp;<span onclick="Courses.clearUsedModules(event)" title="Clear history" style="color:var(--purple);cursor:pointer;font-size:11px">&#10005; clear</span>
@@ -301,7 +301,7 @@ window.MathJax = {
     <div class="scale-note">&#x2715;&thinsp;<span id="plScaleFactor">1.000</span> scale &rarr; <span id="plScaledPts">10</span>&thinsp;pts applied at import</div>
 
     <div class="field">
-      <label>Lessons from Topics repo</label>
+      <label>Lessons from __REPO_LABEL__ repo</label>
       <div class="chip-input" id="plTopicChips" onclick="document.getElementById('plTopicText').focus()">
         <input type="text" id="plTopicText" list="plTopicList" placeholder="Search topic…"
                oninput="Planner.refreshTopicDatalist()" onchange="Planner.onTopicTextChange()" onkeydown="Planner.onTopicTextKey(event)">

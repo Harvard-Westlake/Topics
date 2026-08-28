@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Topics Course Planner</title>
+<title>__COURSE_NAME__ Course Planner</title>
 <script>
 /* Same MathJax delimiters Canvas uses: \(...\) inline, $$...$$ display.
    Single-dollar math is intentionally NOT enabled — Canvas never renders it. */
@@ -192,7 +192,7 @@ header .sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
 <header>
   <div>
-    <h1>Topics Course Planner</h1>
+    <h1>__COURSE_NAME__ Course Planner</h1>
     <div class="sub">Curated curriculum modules — saved to <code>_modules/&lt;slug&gt;.json</code></div>
   </div>
 </header>
@@ -236,7 +236,7 @@ header .sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
     <div class="scale-note">&#x2715;&thinsp;<span id="scaleFactor">1.000</span> scale &rarr; <span id="scaledPts">10</span>&thinsp;pts applied at import</div>
 
     <div class="field">
-      <label>Lessons from Topics repo</label>
+      <label>Lessons from __REPO_LABEL__ repo</label>
       <div class="chip-input" id="moduleChips" onclick="document.getElementById('moduleText').focus()">
         <input type="text" id="moduleText" list="topicList" placeholder="Search topic…"
                oninput="refreshTopicDatalist()" onchange="onTopicTextChange()" onkeydown="onTopicTextKey(event)">

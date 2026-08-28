@@ -382,7 +382,7 @@ async function loadGithubModuleList() {
   if (!allGithubModules.length) {
     const res = await fetch('/api/github/modules').then(r => r.json()).catch(() => null);
     if (!res || res.error) {
-      document.getElementById('dmModuleText').placeholder = 'Topics repo not found';
+      document.getElementById('dmModuleText').placeholder = 'Course repo not found';
       return;
     }
     allGithubModules = res.modules || [];
