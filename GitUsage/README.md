@@ -24,8 +24,8 @@ Creating parallel lines of development, merging them, reviewing pull requests, c
 **[Forks and Collaboration](ForksAndCollaboration/)**  
 Forking public repositories, keeping your fork in sync, and contributing back through cross-fork pull requests.
 
-**[File Hashing and Integrity](FileHashing/)**  
-What commit IDs really are — hash functions, collision probability, terminal hashing commands, and file handling in Java.
+**[File Hashing](FileHashing/)**  
+Hash table review, the probability of collisions and how to size a hash space, and the terminal's built-in hashing commands.
 
 ---
 
@@ -36,7 +36,7 @@ What commit IDs really are — hash functions, collision probability, terminal h
 | 1 | [Repositories and Commits](RepositoriesAndCommits/) | Repos, `git clone`, `git add`, `git commit`, `git push`, `git pull` |
 | 2 | [Branching and Merging](BranchingAndMerging/) | `git branch`, `git checkout`, `git merge`, pull requests, `.gitignore` |
 | 3 | [Forks and Collaboration](ForksAndCollaboration/) | Forking, upstream remotes, syncing forks, cross-repo pull requests |
-| 4 | [File Hashing and Integrity](FileHashing/) | Hash functions, collision probability, `sha256sum`, Java file I/O, `git hash-object` |
+| 4 | [File Hashing](FileHashing/) | Hash tables, collision probability, sizing a hash space, `sum`, `md5sum`, `sha256sum` |
 
 ---
 

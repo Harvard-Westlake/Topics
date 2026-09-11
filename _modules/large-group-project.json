@@ -1,6 +1,6 @@
 {
-  "name": "large project",
-  "slug": "large-project",
+  "name": "Large Group Project",
+  "slug": "large-group-project",
   "description": "",
   "unit_number": 2,
   "points_per_assignment": 10,
@@ -21,7 +21,7 @@
       "review": null
     },
     {
-      "day": 1,
+      "day": 2,
       "duration": 1,
       "title": "Initial Install",
       "path": "InitialInstall",
@@ -29,7 +29,7 @@
       "review": null
     },
     {
-      "day": 1,
+      "day": 3,
       "duration": 1,
       "title": "Deliverables and Issue Tracking",
       "path": "DeliverablesAndIssueTracking",
@@ -37,7 +37,7 @@
       "review": null
     },
     {
-      "day": 2,
+      "day": 4,
       "duration": 3,
       "title": "Sprint Work",
       "path": "SprintWork",
@@ -45,7 +45,7 @@
       "review": null
     },
     {
-      "day": 5,
+      "day": 7,
       "duration": 1,
       "title": "MVP and Merge Discipline",
       "path": "MVPAndMergeDiscipline",
@@ -53,19 +53,22 @@
       "review": null
     },
     {
-      "day": 6,
+      "day": 8,
       "duration": 1,
       "title": "Code Review and MVP Presentation",
       "path": "CodeReviewAndPresentation",
       "_module": "GroupProgramming",
-      "review": {
-        "module": "GitUsage",
-        "path": "RepositoriesAndCommits",
-        "file": "commit-cycle-basics.md"
-      }
+      "review": [
+        {
+          "label": "commit-cycle-basics",
+          "file": "commit-cycle-basics.md",
+          "module": "GitUsage",
+          "path": "RepositoriesAndCommits"
+        }
+      ]
     },
     {
-      "day": 7,
+      "day": 9,
       "duration": 1,
       "title": "Issues as Work Requests",
       "path": "IssuesAsWorkRequests",
@@ -73,7 +76,7 @@
       "review": null
     },
     {
-      "day": 8,
+      "day": 10,
       "duration": 1,
       "title": "Refactoring and the README",
       "path": "RefactorAndReadme",
@@ -81,7 +84,7 @@
       "review": null
     },
     {
-      "day": 9,
+      "day": 11,
       "duration": 2,
       "title": "Help a Classmate",
       "path": "HelpAClassmate",
@@ -89,7 +92,7 @@
       "review": null
     },
     {
-      "day": 11,
+      "day": 13,
       "duration": 1,
       "title": "Final Wrap-Up and Deployment",
       "path": "FinalWrapUp",
@@ -97,5 +100,5 @@
       "review": null
     }
   ],
-  "updated": "2026-08-18"
+  "updated": "2026-09-11"
 }

@@ -1,109 +1,117 @@
-# Assignment — File Hashing and Integrity
+# Assignment — File Hashing
 
-*Lesson: [File Hashing and Integrity](README.md)*
+*Lesson: [File Hashing](README.md)*
 
 **Due:** Next class
 
 ---
 
-## Part 1 — Build the File System
+## Instructions
 
-Create a new repository named `file-hasher` (initialize it locally with `git init`, then create it on GitHub and push — the Day 1 workflow). Inside it, write a Java program `FileHasher.java` whose `main` method:
+For the two problems below, **state your assumptions before your calculations**. Also indicate which of the terminal hash functions (from Part 3 of the lesson) is most suitable for each problem.
 
-1. Creates a directory named `JavaFileSystem`
-2. Creates three text files inside it: `notes.txt`, `data.txt`, and `log.txt`
-3. Writes a different one-sentence message into each file
-4. Reads each file back and prints its contents to the console
-5. Creates a subdirectory `JavaFileSystem/Backup` and writes the combined contents of all three files into `Backup/backup.txt`
+Use the general form from the lesson, where $P$ is the desired probability of **no** collisions:
 
-Commit after each working step with a descriptive message, e.g.:
+$$N \geq \frac{-k(k-1)}{2\ln(P)}$$
 
-```
-(FH-1): Program creates the JavaFileSystem directory
-(FH-2): Program generates the three text files with messages
-(FH-3): Program reads files back and builds backup.txt
-```
+---
+
+## Worked Example
+
+<details>
+<summary><strong>Unique Transaction IDs in a Global Payment System</strong></summary>
+
+In a global digital payment system processing billions of transactions daily, each transaction requires a unique identifier for record-keeping and fraud prevention. How should the transaction ID space be sized to guarantee that no two transactions ever receive the same ID?
+
+**Assumptions:**
+
+- An average of 10 billion daily transactions globally; the transaction ID space needs to be large enough to handle at least $10^{10}$ daily transactions over approximately 100 years (or 100 × 365.25 days) without collisions.
+- Assuming no increase in the number of transactions per day.
+- We want less than a 0.1% chance of a duplicate transaction ID occurring within 100 years.
+
+**Calculation:**
+
+1. Determine the desired probability of no collisions.
+
+$$P(\text{Collisions}) = 1 - P(\text{No Collisions})$$
+
+$$P(\text{Collisions}) = 0.001$$
+
+$$P(\text{No Collisions}) = 1 - 0.001$$
+
+Therefore, the desired probability of no collisions is $P(\text{No Collisions}) = 0.999$.
+
+2. Let $k$ be the number of daily transactions for 100 years.
+
+$$k = 10^{10} \text{ transactions} \times 36525 \text{ days}$$
+
+$$k = 3.65 \times 10^{14}$$
+
+3. Solve for $N$, the number of unique identifiers required for no collisions. Substitute $k$ and $P$.
+
+$$N \geq \frac{-k(k-1)}{2\ln(P)}$$
+
+$$N \geq \frac{-(3.65 \times 10^{14})(3.65 \times 10^{14} - 1)}{2\ln(0.999)}$$
+
+$$N \geq \frac{-1.33 \times 10^{29}}{-0.002001}$$
+
+$$N \geq 6.67 \times 10^{31}$$
+
+$$N \geq 2^{105}$$
+
+Since we'd need a minimum of $2^{105}$ buckets to solve this problem, we can safely use the terminal command `md5sum` as it has $2^{128}$ possible outputs.
+
+</details>
+
+---
+
+## Problem 1 — Unique File Data
+
+In a global cloud storage service where users can upload any number of files, each file needs a unique identifier to prevent overwrites and ensure data integrity. Considering that files can be uploaded by billions of users, each potentially uploading thousands of files, how would you size the hash table to guarantee that no two files ever receive the same identifier by chance?
+
+## Problem 2 — Unique Bank Accounts
+
+Let's say any time someone wants to make a new bank account, they pick a new random account number. Any human can have as many bank accounts as they want. What's a reasonably large size hash table so that no person ever (within a time frame of your choice) accidentally picks the same account number as anyone else?
 
 > **Note:**
-> Add a `.gitignore` that excludes compiled `.class` files before your first commit — you know how from Day 2.
-
----
-
-## Part 2 — Implement hashFile()
-
-Add a method to `FileHasher.java`:
-
-```java
-/**
- * Reads the file at filePath and returns its SHA-256 hash
- * as a lowercase hexadecimal string.
- */
-public static String hashFile(String filePath) throws IOException
-```
-
-Requirements:
-
-1. Read the entire contents of the file at `filePath`
-2. Hash the contents with `MessageDigest.getInstance("SHA-256")`
-3. Convert the resulting bytes to a 64-character hexadecimal string and return it
-4. Handle a missing file with a clear error message rather than a raw crash (catch the exception where you call the method)
-
-In `main`, call `hashFile` on each of your three files and print each name alongside its hash.
-
-Commit with:
-
-```
-(FH-4): Added hashFile method with SHA-256
-```
-
----
-
-## Part 3 — Verify Against the Terminal
-
-Prove your Java implementation is correct by cross-checking it against the terminal's implementation:
-
-1. Run your program and copy the hash it prints for `notes.txt`
-2. In the terminal, run `sha256sum JavaFileSystem/notes.txt` (macOS: `shasum -a 256 JavaFileSystem/notes.txt`)
-3. The two 64-character strings must match exactly — two independent implementations, one fingerprint
-4. Then test the edge cases from class: hash an **empty** file (create `empty.txt`) and confirm your program's output matches the terminal's, and hash a file after changing **one character** and confirm the output avalanches
-
-Commit with:
-
-```
-(FH-5): Verified hashFile against sha256sum, including empty-file case
-```
-
-Push everything to GitHub.
+> There is no single right answer to either problem. Your grade rests on whether your assumptions are stated explicitly and are reasonable, whether your calculation follows from those assumptions, and whether the hash function you pick actually has more than $N$ possible outputs.
 
 ---
 
 ## Success Criteria
 
-Before submitting, confirm each of the following:
+Confirm each of the following before submitting:
 
-- [ ] **Repository created and pushed** — `file-hasher` exists on GitHub with a `.gitignore` excluding `.class` files
-- [ ] **File system built by code** — running the program creates `JavaFileSystem/`, the three text files, and `Backup/backup.txt`
-- [ ] **hashFile implemented** — returns a 64-character lowercase hex SHA-256 string
-- [ ] **Exception handling present** — a missing file produces a clear message, not a raw stack trace
-- [ ] **Terminal verification done** — program output matches `sha256sum` for a normal file AND an empty file
-- [ ] **History tells the story** — at least five commits with the `(FH-N)` prefixes above
+- [ ] **Partner work attached** — a scan of your work from the in-class activity "Calculating Hash Table Sizes" (all four exercises) is uploaded
+- [ ] **Assumptions stated first** — each problem opens with an explicit list of assumptions (how many items, over what time frame, what target collision probability) before any math
+- [ ] **Calculation shown** — each problem computes $k$, then solves $N \geq \frac{-k(k-1)}{2\ln(P)}$ with the numbers substituted, ending in a value for $N$
+- [ ] **Hash function chosen** — each problem names the most suitable terminal hash function from Part 3 and shows that its $2^{\text{bits}}$ outputs exceed your $N$
+- [ ] **Two screenshots** — one per problem, each showing that problem's assumptions, calculation, and chosen hash function
 
 ---
 
 ## Submission
 
-Submit **one text response** and **one screenshot** on Canvas.
+Submit **one text response** and **screenshots** on Canvas.
 
 ### Text response
 
+Copy the stencil below, fill in each line, and paste it into the Canvas text box:
+
 ```
-Repository URL:                    https://github.com/
-notes.txt SHA-256 (from Java):     
-notes.txt SHA-256 (from terminal): 
-Empty file SHA-256:                
-One sentence — why the two implementations must agree:
+Problem 1 — k (number of files):            
+Problem 1 — P (no-collision probability):   
+Problem 1 — N (buckets needed):             
+Problem 1 — hash function chosen:           
+Problem 2 — k (number of accounts):         
+Problem 2 — P (no-collision probability):   
+Problem 2 — N (buckets needed):             
+Problem 2 — hash function chosen:           
 ```
 
-### Screenshot
+### Screenshots
 
-Take a screenshot showing your terminal with **both** hash outputs visible — your Java program's printed hash for `notes.txt` directly above or below the `sha256sum` output for the same file — so the match is verifiable at a glance.
+Upload:
+
+1. A scan or photo of your partner work from the in-class activity (all four exercises, both names visible).
+2. One screenshot per homework problem showing the assumptions, the full calculation, and the chosen hash function together. A screenshot that shows only the final $N$ with no assumptions or work does not count.

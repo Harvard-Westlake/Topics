@@ -1,6 +1,6 @@
 {
-  "name": "web",
-  "slug": "web",
+  "name": "Web Development",
+  "slug": "web-dev",
   "description": "",
   "unit_number": 0,
   "points_per_assignment": 10,
@@ -72,9 +72,9 @@
       "review": [
         {
           "label": "The Four-Command Round Trip",
+          "file": "four-command-round-trip.md",
           "module": "Terminal",
-          "path": "Basics",
-          "file": "four-command-round-trip.md"
+          "path": "Basics"
         }
       ]
     },
@@ -103,5 +103,5 @@
       "review": null
     }
   ],
-  "updated": "2026-08-25"
+  "updated": "2026-09-11"
 }

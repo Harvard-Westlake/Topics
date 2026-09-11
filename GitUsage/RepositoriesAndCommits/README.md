@@ -116,7 +116,7 @@ git init
 This creates a `.git` folder in the current directory. Git now tracks this folder. To connect it to GitHub afterward:
 
 ```bash
-git remote add origin https://github.com/username/repo-name.git
+git remote add origin git@github.com:username/repo-name.git
 git push -u origin main
 ```
 
@@ -132,7 +132,7 @@ git push -u origin main
 **Cloning** downloads a complete copy of a repository to your machine — not just the current files but the entire commit history, all branches, and all metadata.
 
 ```bash
-git clone https://github.com/username/repo-name.git
+git clone git@github.com:username/repo-name.git
 cd repo-name
 ```
 
@@ -144,8 +144,8 @@ After cloning:
 ```bash
 # Verify the remote was set up automatically
 git remote -v
-# origin  https://github.com/username/repo-name.git (fetch)
-# origin  https://github.com/username/repo-name.git (push)
+# origin  git@github.com:username/repo-name.git (fetch)
+# origin  git@github.com:username/repo-name.git (push)
 ```
 
 **Cloning vs downloading a ZIP:**
@@ -158,7 +158,7 @@ git remote -v
 
 Always clone. Downloading a ZIP gives you the files but none of the Git machinery that makes collaboration possible.
 
-**Finding the URL:** click the green or blue **Code** button on any GitHub repository page and copy the HTTPS link.
+**Finding the URL:** click the green or blue **Code** button on any GitHub repository page, select the **SSH** tab, and copy the `git@github.com:...` address. In this course we always use SSH addresses — the SSH key you set up in [Initial Install](../../ComputerSetup/InitialInstall/) authenticates every clone, pull, and push automatically.
 
 **In GitKraken:** click **Clone a Repo** on the home screen → paste the repository URL → choose a destination folder → click **Clone the repo!**
 
@@ -173,7 +173,7 @@ Always clone. Downloading a ZIP gives you the files but none of the Git machiner
 2. Click **Code → Download ZIP**. Extract the ZIP into a folder named `dead-repo`.
 3. In your terminal, clone the same repository into a folder named `live-repo`:
    ```bash
-   git clone https://github.com/octocat/Hello-World.git live-repo
+   git clone git@github.com:octocat/Hello-World.git live-repo
    ```
 4. Open a terminal inside `dead-repo` and run:
    ```bash

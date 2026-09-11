@@ -9,11 +9,11 @@
 ## Part 1 — Create and Clone a Repository
 
 1. Go to GitHub and create a new **public** repository. Give it a meaningful name related to this course.
-2. Copy the repository URL from the **Code** button.
+2. Copy the repository's SSH address from the **Code** button — select the **SSH** tab; the address looks like `git@github.com:your-username/your-repo-name.git`.
 3. Open your terminal, navigate to where you keep your projects, and clone it:
 
 ```bash
-git clone https://github.com/your-username/your-repo-name.git
+git clone git@github.com:your-username/your-repo-name.git
 cd your-repo-name
 ```
 

@@ -13,14 +13,14 @@
 3. Clone **your fork** to your local machine:
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/repo-name.git
+git clone git@github.com:YOUR-USERNAME/repo-name.git
 cd repo-name
 ```
 
 4. Add the original repository as `upstream`:
 
 ```bash
-git remote add upstream https://github.com/ORIGINAL-OWNER/repo-name.git
+git remote add upstream git@github.com:ORIGINAL-OWNER/repo-name.git
 git remote -v
 ```
 

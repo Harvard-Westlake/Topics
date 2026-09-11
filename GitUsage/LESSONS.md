@@ -5,4 +5,4 @@
 | 1 | Repositories and Commits | [RepositoriesAndCommits/](RepositoriesAndCommits/) |
 | 2 | Branching and Merging | [BranchingAndMerging/](BranchingAndMerging/) |
 | 3 | Forks and Collaboration | [ForksAndCollaboration/](ForksAndCollaboration/) |
-| 4 | File Hashing and Integrity | [FileHashing/](FileHashing/) |
+| 4 | File Hashing | [FileHashing/](FileHashing/) |

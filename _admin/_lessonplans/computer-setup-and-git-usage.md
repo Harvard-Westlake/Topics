@@ -15,4 +15,4 @@ Environment setup followed by core Git workflows: install the toolchain, then le
 | 1.4 | DND Review *(no assignment)* | [DNDReview/DNDReview](../../DNDReview/DNDReview/) | [Graphs, Trees, and Traversal](../../DNDReview/DNDReview/review/graphs-trees-and-traversal.md), [Hash Maps: Buckets, Collisions, and Load Factor](../../DNDReview/DNDReview/review/hash-maps-buckets-and-load-factor.md), [Linked List Node Chains](../../DNDReview/DNDReview/review/linked-list-node-chains.md), [Recursion, Greedy Choices, and Memoization](../../DNDReview/DNDReview/review/recursion-greedy-and-memoization.md), [Stacks and Queues Built on ArrayList](../../DNDReview/DNDReview/review/stacks-and-queues-on-arraylist.md) |
 | 1.5 | DND Review Test | *placeholder — not yet filled in* | — |
 | 1.6 | Forks and Collaboration | [GitUsage/ForksAndCollaboration](../../GitUsage/ForksAndCollaboration/) | — |
-| 1.7 | File Hashing and Integrity | [GitUsage/FileHashing](../../GitUsage/FileHashing/) | — |
+| 1.7 | File Hashing | [GitUsage/FileHashing](../../GitUsage/FileHashing/) | — |

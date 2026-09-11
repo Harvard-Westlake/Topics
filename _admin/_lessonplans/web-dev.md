@@ -1,8 +1,8 @@
-# Module — web
+# Module — Web Development
 
-*Generated from [`_modules/web.json`](../../_modules/web.json) — do not edit by hand. Regenerate with `python3 _admin/_verification/verify.py --fix` or by saving from the planner UI.*
+*Generated from [`_modules/web-dev.json`](../../_modules/web-dev.json) — do not edit by hand. Regenerate with `python3 _admin/_verification/verify.py --fix` or by saving from the planner UI.*
 
-**Unit 0** · 10 pts/assignment · scale ×1.5 · updated 2026-08-25
+**Unit 0** · 10 pts/assignment · scale ×1.5 · updated 2026-09-11
 
 | Day | Lesson | Source | Review |
 |---|---|---|---|

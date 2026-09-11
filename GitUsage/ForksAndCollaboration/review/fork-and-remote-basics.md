@@ -6,9 +6,9 @@
 
 | Command | What it does |
 |---|---|
-| `git clone url` | Clone any repository (including your fork) |
+| `git clone git@github.com:owner/repo.git` | Clone any repository (including your fork) — always the SSH address |
 | `git remote -v` | List all configured remotes and their URLs |
-| `git remote add upstream url` | Add the original repo as a second remote |
+| `git remote add upstream git@github.com:owner/repo.git` | Add the original repo as a second remote |
 | `git fetch upstream` | Download upstream changes without merging |
 | `git merge upstream/main` | Merge upstream changes into current branch |
 | `git push origin branch` | Push a branch to your fork on GitHub |

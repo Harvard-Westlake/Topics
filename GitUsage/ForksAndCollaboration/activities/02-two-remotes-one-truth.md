@@ -9,12 +9,12 @@
 1. On GitHub, fork the repository `octocat/Spoon-Knife` — GitHub's official practice-fork repo.
 2. In your terminal, clone **your fork** and step inside:
    ```bash
-   git clone https://github.com/YOUR-USERNAME/Spoon-Knife.git
+   git clone git@github.com:YOUR-USERNAME/Spoon-Knife.git
    cd Spoon-Knife
    ```
 3. Still in your terminal, wire up the second remote and inspect both:
    ```bash
-   git remote add upstream https://github.com/octocat/Spoon-Knife.git
+   git remote add upstream git@github.com:octocat/Spoon-Knife.git
    git remote -v
    ```
    You should see four lines: `origin` fetch/push pointing at your account, `upstream` fetch/push pointing at octocat — exactly the two boxes in the diagram.

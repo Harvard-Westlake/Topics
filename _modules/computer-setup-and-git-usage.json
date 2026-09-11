@@ -117,7 +117,7 @@
     {
       "day": 7,
       "duration": 1,
-      "title": "File Hashing and Integrity",
+      "title": "File Hashing",
       "path": "FileHashing",
       "_module": "GitUsage",
       "review": null

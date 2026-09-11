@@ -6,7 +6,7 @@
 
 | Command | What it does |
 |---|---|
-| `git clone url` | Download a full copy of a remote repository |
+| `git clone git@github.com:owner/repo.git` | Download a full copy of a remote repository (always the SSH address) |
 | `git remote -v` | List configured remotes and their URLs |
 | `git add .` | Stage all changed files |
 | `git commit -m "msg"` | Snapshot staged changes |

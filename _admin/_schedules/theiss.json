@@ -26,11 +26,11 @@
       "type": "module"
     },
     {
-      "id": "bmt92xrk7uqymk",
-      "inserts": [],
-      "ref": "web",
+      "id": "bmtxdvtcwcvcf0",
+      "type": "module",
       "source": "saved",
-      "type": "module"
+      "ref": "web-dev",
+      "inserts": []
     },
     {
       "id": "bmt7by8n0vly17",
@@ -45,10 +45,17 @@
       "ref": "MiniGPT",
       "source": "topic",
       "type": "module"
+    },
+    {
+      "id": "bmtxdo6iyjvz44",
+      "inserts": [],
+      "ref": "Terminal",
+      "source": "topic",
+      "type": "module"
     }
   ],
   "show_day0_syllabus": true,
   "start_date": "2026-08-24",
-  "updated": "2026-08-28T11:42:37",
+  "updated": "2026-09-11T13:03:21",
   "year": "2026-27"
 }

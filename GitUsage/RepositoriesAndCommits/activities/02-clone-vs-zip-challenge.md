@@ -8,7 +8,7 @@
 2. Click **Code → Download ZIP**. Extract the ZIP into a folder named `dead-repo`.
 3. In your terminal, clone the same repository into a folder named `live-repo`:
    ```bash
-   git clone https://github.com/octocat/Hello-World.git live-repo
+   git clone git@github.com:octocat/Hello-World.git live-repo
    ```
 4. Open a terminal inside `dead-repo` and run:
    ```bash

@@ -16,7 +16,7 @@
 2. Clone the repository to your local machine, navigating to your HTCS_Projects folder first:
 
     ```bash
-    git clone [repository-url]
+    git clone git@github.com:YOUR-USERNAME/git-project-YOURNAME.git
     cd git-project-YOURNAME
     ```
 

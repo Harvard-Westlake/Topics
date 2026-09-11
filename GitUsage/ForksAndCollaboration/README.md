@@ -85,7 +85,7 @@ Your fork is now completely independent of the original. Changes you make to you
 Fork first on GitHub, then clone **your fork** (not the original) to your local machine:
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/repo-name.git
+git clone git@github.com:YOUR-USERNAME/repo-name.git
 cd repo-name
 ```
 
@@ -93,8 +93,8 @@ After cloning, `origin` points to your fork:
 
 ```bash
 git remote -v
-# origin  https://github.com/YOUR-USERNAME/repo-name.git (fetch)
-# origin  https://github.com/YOUR-USERNAME/repo-name.git (push)
+# origin  git@github.com:YOUR-USERNAME/repo-name.git (fetch)
+# origin  git@github.com:YOUR-USERNAME/repo-name.git (push)
 ```
 
 You can push freely to `origin` since it is your fork — no permission required.
@@ -123,14 +123,14 @@ The original repository keeps moving after you fork it. To pull those updates in
 
 ```bash
 # Add once — you only need to do this step once per clone
-git remote add upstream https://github.com/ORIGINAL-OWNER/repo-name.git
+git remote add upstream git@github.com:ORIGINAL-OWNER/repo-name.git
 
 # Verify both remotes are set up
 git remote -v
-# origin    https://github.com/YOUR-USERNAME/repo-name.git (fetch)
-# origin    https://github.com/YOUR-USERNAME/repo-name.git (push)
-# upstream  https://github.com/ORIGINAL-OWNER/repo-name.git (fetch)
-# upstream  https://github.com/ORIGINAL-OWNER/repo-name.git (push)
+# origin    git@github.com:YOUR-USERNAME/repo-name.git (fetch)
+# origin    git@github.com:YOUR-USERNAME/repo-name.git (push)
+# upstream  git@github.com:ORIGINAL-OWNER/repo-name.git (fetch)
+# upstream  git@github.com:ORIGINAL-OWNER/repo-name.git (push)
 ```
 
 To sync your fork with the latest upstream changes:
@@ -161,12 +161,12 @@ Run this whenever the original repo gets new commits you want.
 1. On GitHub, fork the repository `octocat/Spoon-Knife` — GitHub's official practice-fork repo.
 2. In your terminal, clone **your fork** and step inside:
    ```bash
-   git clone https://github.com/YOUR-USERNAME/Spoon-Knife.git
+   git clone git@github.com:YOUR-USERNAME/Spoon-Knife.git
    cd Spoon-Knife
    ```
 3. Still in your terminal, wire up the second remote and inspect both:
    ```bash
-   git remote add upstream https://github.com/octocat/Spoon-Knife.git
+   git remote add upstream git@github.com:octocat/Spoon-Knife.git
    git remote -v
    ```
    You should see four lines: `origin` fetch/push pointing at your account, `upstream` fetch/push pointing at octocat — exactly the two boxes in the diagram.
@@ -275,4 +275,4 @@ If changes are requested, you don't open a new PR — you push more commits to t
 
 [Assignment](ASSIGNMENT.md)
 
-← [Branching and Merging](../BranchingAndMerging/) — Next: [File Hashing and Integrity](../FileHashing/)
+← [Branching and Merging](../BranchingAndMerging/) — Next: [File Hashing](../FileHashing/)

@@ -1,7 +1,7 @@
 <div align="center">
 
-# File Hashing and Integrity
-*<font color="#8b949e">What those 40-character commit IDs really are — hash functions, collisions, and files in Java</font>*
+# File Hashing
+*<font color="#8b949e">Hash tables, the probability of collisions, and the terminal's built-in hash functions</font>*
 
 <font color="#a371f7">Learning</font>
 
@@ -9,251 +9,268 @@
 
 ---
 
-For three days you have been staring at strings like `d30f6e0a91c2...` every time you commit. They are not random, and they are not sequential — Git did not count "commit #1, commit #2." Today you learn what they actually are: **hashes** — mathematical fingerprints of your content. By the end of this lesson you will understand how a function can fingerprint any file, why two files almost never share a fingerprint, and how to compute these fingerprints yourself — in the terminal and in Java.
+A hash table promises to find any item in constant time by computing exactly which "bucket" it lives in. That promise only holds if two items rarely land in the same bucket. Today you review how hash tables work, derive the formula that says how likely a collision is, use it to size hash tables for classrooms, governments, and galaxies, and finally meet the terminal commands that hash files into bucket spaces of wildly different sizes.
 
 ## <font color="#388bfd">Table of Contents</font>
 
-1. [See what a hash function is and why Git needs one](#what-is-a-hash-function)
-2. [Understand buckets, hash tables, and why collisions matter](#buckets-and-collisions)
-3. [Calculate the probability of a collision with the birthday formula](#the-mathematics-of-collisions)
-4. [Compare the terminal's hashing commands from weakest to strongest](#hashing-commands-in-the-terminal)
-5. [Grasp how unimaginably large the SHA-256 space is](#the-scale-of-sha-256)
-6. [Create and inspect files from Java with the File class](#handling-files-in-java)
-7. [Connect it all back to Git — every commit ID is a hash](#gits-secret-identity)
-8. [Check your understanding and try the stretch goals](#check-for-understanding)
+1. [Part 1: Review hash tables, buckets, and what happens when keys collide](#part-1-hash-map-review)
+2. [Part 2: Derive the probability of a collision and size a hash table with three locker examples](#part-2-probability-of-collisions)
+3. [Partner activity: calculate hash table sizes for employees, humanity, sand, and stars](#activity-calculating-hash-table-sizes--click-to-expand)
+4. [Part 3: Compare the terminal's hashing commands by their number of possible outputs](#part-3-terminal-hashing)
+5. [Homework: size two real-world ID spaces and pick the right hash command](#homework)
+6. [Check your understanding and try the stretch goals](#check-for-understanding)
 
 ---
 
-## <font color="#388bfd">What is a Hash Function?</font>
+## <font color="#388bfd">Part 1: Hash Map Review</font>
 
-A **hash function** takes any input — a word, a file, an entire movie — and produces a **fixed-size output** called a hash (or digest). The same input always produces the same output, but even a one-character change to the input produces a completely different, unpredictable output.
+### <font color="#79c0ff">Hash Tables</font>
 
-Three properties make hash functions useful:
+- **Definition:** Hash tables are data structures that store key-value pairs, allowing for efficient retrieval and insertion of data.
+- **Efficiency:** They provide average-case constant time O(1) for basic operations like insert, delete, and lookup.
+- **Structure:** A data structure that implements an associative array abstract data type, a structure that can map keys to values.
+- **Hashing Function:** Uses a hash function to compute an index into an array of buckets or slots, from which the desired value can be found.
 
-- **Deterministic** — hashing `"hello"` today, tomorrow, or on your classmate's machine always gives the identical result.
-- **Fixed size** — whether the input is 3 bytes or 3 gigabytes, a SHA-256 hash is always exactly 256 bits (written as 64 hex characters).
-- **Avalanche effect** — changing a single bit of the input scrambles the entire output. There is no way to look at two hashes and tell that their inputs were "almost the same."
+![Diagram of a hash table. Four keys on the left (James, Ellen, Bill, Susan) each flow into a hash function box labeled lambda, which sends each one to a numbered bucket in a storage column on the right. Buckets 01, 03, 04, and 05 hold phone numbers; buckets 00, 02, and 06 are empty.](assets/hash-table-buckets.png)
 
-Think of a hash as a **fingerprint**. A fingerprint doesn't contain the person, but no two people share one — and you can't reconstruct the person from the print.
+*You can think of each item being stored within a single "box" or "bucket".*
 
-> **Note:**
-> Hashing is one-way. You can go from file → hash instantly, but there is no way to go from hash → file. That asymmetry is what makes hashes useful for verification and security.
+### <font color="#79c0ff">What will happen if a single key is used for multiple items?</font>
 
----
+- **Collision Resolution:** When two keys hash to the same index, techniques like chaining (using linked lists) or open addressing (linear or quadratic probing) handle the collision.
 
-## <font color="#388bfd">Buckets and Collisions</font>
+![Diagram of collision resolution by chaining. A column of bucket indexes 0 through 11 on the left; each index points to a linked list of Key, Value nodes ending in an empty-set symbol. Most buckets hold one pair, bucket 10 holds none, and buckets 0 and 5 each hold three colliding pairs that must be walked one by one.](assets/collision-chaining.png)
 
-Hash functions were not invented for security — they were invented for **speed**. A **hash table** stores items in numbered "buckets," and the hash of an item's key tells you exactly which bucket to look in. Instead of searching through everything one by one, you jump straight to the right bucket: on average a **constant-time, O(1)** lookup. Hash tables power dictionaries, sets, caches, and database indexes.
-
-But there's a catch. If two different items hash to the **same bucket**, that's a **collision**. Without a plan for collisions, a new entry either overwrites the old one (data loss) or gets rejected (lost capacity). Real hash tables resolve collisions with techniques like chaining, but every collision costs speed — so the deeper question is:
-
-**How many buckets do we need so that collisions are unlikely in the first place?**
-
-The answer is much stranger than you'd guess.
+- **Time Complexity:** With a good hash function and few collisions, insert, delete, and lookup operations average O(1) time.
+  - However, using slower storage solutions like arrays and linked lists negates the speed advantage that hash maps provide. This may also complicate search capabilities.
+  - **How can we mitigate this collision problem? How many keys (or "buckets") would we need to have in order to avoid collisions?**
 
 ---
 
-## <font color="#388bfd">The Mathematics of Collisions</font>
+## <font color="#388bfd">Part 2: Probability of Collisions</font>
 
-The probability that **at least two** of $k$ randomly assigned items collide inside $N$ possible slots is approximately:
+Let's explore the approximation for the probability of collisions in hash functions.
 
-$$P(\text{collision}) = 1 - e^{-\frac{k(k-1)}{2N}}$$
+Consider the following variables:
 
-- $k$ — the number of items being hashed
-- $N$ — the number of possible hash values (buckets, lockers, slots...)
+- $k$: The number of items (or inputs) being hashed
+- $N$: The total number of possible hash values (size of the hash space)
 
-**Worked example — 30 students, 100 lockers.** Assign each of 30 students a random locker out of 100. What's the chance two students get the same locker?
+We can describe the probability of a collision occurring to be the following:
 
-$$P = 1 - e^{-\frac{30 \cdot 29}{2 \cdot 100}} = 1 - e^{-4.35} \approx 0.987$$
+![The collision probability formula: P of collision is approximately equal to 1 minus e raised to the power of negative k times (k minus 1), all over 2N.](assets/collision-formula.png)
 
-**A 98.7% chance of a collision** — with more than three times as many lockers as students! This is the **birthday paradox**: collisions become likely far, far sooner than intuition suggests, because what matters is the number of *pairs* of items ($\approx k^2/2$), not the number of items.
+### <font color="#79c0ff">Hash Table Size Calculations</font>
 
-To *design* for a collision probability, rearrange the formula to solve for $N$, where $P$ is the desired probability of **no** collision:
+Let's explore a scenario where we randomly assign lockers to students. We'll calculate the probability of a collision (two students assigned the same locker) in the following exercises.
+
+#### Example 1: 100 Lockers
+
+**Question:** If there are 30 students in your class and 100 lockers are randomly assigned, what's the probability that at least two students are assigned the same locker?
+
+<details>
+<summary><strong>Solution</strong></summary>
+
+$$k = 30 \text{ (Number of Students)}$$
+
+$$N = 100 \text{ (Number of Lockers)}$$
+
+$$P(\text{collision}) = 1 - e^{-\frac{30(30-1)}{2(100)}}$$
+
+$$= 1 - e^{-\frac{30(29)}{200}}$$
+
+$$= 1 - e^{-\frac{870}{200}}$$
+
+$$= 1 - e^{-4.35}$$
+
+$$\approx 1 - 0.0129$$
+
+$$\approx 0.9871$$
+
+In a scenario with 30 students and 100 lockers, there's approximately a 98.7% chance of a collision, that is, at least two students being assigned the same locker.
+
+</details>
+
+#### Example 2: Low Probability
+
+**Question:** If your class has 30 students, how many lockers would you need to ensure less than a 1% chance of any two students being assigned the same locker?
+
+<details>
+<summary><strong>Answer</strong></summary>
+
+> **Note:** With 30 lockers for 30 students, sharing is highly likely when randomly assigning them. However, if there were significantly more lockers than students, the chances of two students randomly receiving the same locker would decrease dramatically.
+
+We need to determine how many lockers would be required to reduce the collision probability to 1% or less.
+
+**Calculation Setup:**
+
+1. Number of students:
+
+$$k = 30 \text{ (Number of Students)}$$
+
+2. The probability of a collision is 1 minus the probability of no collisions:
+
+$$P(\text{Collision}) = 1 - P(\text{No Collision})$$
+
+$$P(\text{Collision}) = 1 - e^{-\frac{k(k-1)}{2(N)}}$$
+
+$$\therefore P(\text{No Collision}) = e^{-\frac{k(k-1)}{2(N)}}$$
+
+3. The desired probability of collisions is less than or equal to 1%:
+
+$$P(\text{Collision}) \leq 0.01$$
+
+4. Refactor the inequality to be the following:
+
+$$1 - e^{-\frac{k(k-1)}{2(N)}} \leq 0.01$$
+
+$$-e^{-\frac{k(k-1)}{2(N)}} \leq -0.99$$
+
+$$e^{-\frac{k(k-1)}{2(N)}} \geq 0.99$$
+
+5. Therefore, we want the probability of no collisions to be greater than or equal to 99%.
+
+**Calculation:**
+
+1. Start with the calculation setup. The desired probability of no collisions is 99%.
+
+$$e^{-\frac{k(k-1)}{2N}} \geq 0.99$$
+
+2. Since there are 30 students, $k = 30$.
+
+$$e^{-\frac{30(29)}{2N}} \geq 0.99$$
+
+3. Take the natural log of both sides:
+
+$$-\frac{30(29)}{2N} \geq \ln(0.99)$$
+
+4. Solve for $N$.
+
+$$-\frac{870}{2N} \geq \ln(0.99)$$
+
+$$-870 \geq 2N\ln(0.99)$$
+
+$$-\frac{870}{\ln(0.99)} \leq 2N$$
+
+$$2N \geq \frac{-870}{\ln(0.99)}$$
+
+$$N \geq \frac{-870}{2\ln(0.99)}$$
+
+So we'd need approximately **43,282 lockers**. Wow.
+
+Finally, we can establish a more general form to solve for $N$:
 
 $$N \geq \frac{-k(k-1)}{2\ln(P)}$$
 
-For 30 students to have **less than a 1% chance** of any shared locker ($P = 0.99$), you need $N \geq \frac{-870}{2\ln(0.99)} \approx 43{,}282$ lockers. Thirty students. Forty-three thousand lockers. That's the price of near-certainty — and it's exactly why hash outputs have to be so enormous.
+where $P$ is the desired probability of **no** collisions.
+
+</details>
+
+#### Example 3: 1000 Students
+
+**Question:** If we now have 1,000 students to assign lockers to, how many lockers would we need for less than a 0.5% chance of any two students being randomly assigned the same locker?
+
+<details>
+<summary><strong>Answer</strong></summary>
+
+1. Establish that the desired **probability of no collisions** must be greater than or equal to 99.5%.
+
+$$P = 0.995$$
+
+$$e^{-\frac{k(k-1)}{2N}} \geq 0.995$$
+
+2. Solving for $N$: substitute students and the probability.
+
+$$N \geq \frac{-k(k-1)}{2\ln(P)}$$
+
+$$N \geq \frac{-1000(999)}{2\ln(0.995)}$$
+
+$$N \geq 99{,}650{,}041.353\ldots$$
+
+That's right, you would need approximately **99,650,041 lockers**! With this many lockers, it's very unlikely that two students would accidentally be assigned the same one.
+
+</details>
 
 👉 <details>
-<summary><h3>Activity: The Locker Problem — click to expand</h3></summary>
+<summary><h3>Activity: Calculating Hash Table Sizes — click to expand</h3></summary>
 
-*Concept: The birthday paradox makes collisions far more likely than intuition suggests, and the collision formula tells you exactly how much space "safe" costs.*
+*Concept: The formula $N \geq \frac{-k(k-1)}{2\ln(P)}$ tells you exactly how many buckets a hash table needs to keep collisions below a chosen probability, and the answer grows with $k^2$.*
 
-![Chart of collision probability versus the number of people in the room, for 365 possible birthdays. The curve races upward: at just 23 people the probability of a shared birthday already reaches 50%, and by 60 people it exceeds 99%. What matters is pairs, not people — k people form k(k−1)/2 chances to collide.](assets/the-locker-problem.svg)
+![Flow diagram for sizing a hash table. Two inputs, k (the number of items to store) and P (the desired probability of no collision, such as 0.99), feed the formula N is at least negative k times k minus 1 over 2 ln P, which outputs N, the buckets needed, which grows like k squared. Two already-worked rows: 30 students at P = 0.99 gives about 43,282 lockers, and 1,000 students at P = 0.995 gives about 99,650,041 lockers. A "your turn" row lists the activity's inputs: 100,000 employees, 8 billion humans, 2 to the 62.72 grains of sand, and 2 to the 73.08 stars.](assets/calculating-hash-table-sizes.svg)
 
 ## Task
 
-1. On paper or with a calculator, use the collision formula $P = 1 - e^{-\frac{k(k-1)}{2N}}$ with your actual class. Set $k$ to the number of students in the room and $N = 365$ (days of the year). Compute the probability that two people in the room share a birthday. (For $k = 24$: $P = 1 - e^{-\frac{24 \cdot 23}{730}} \approx 0.53$ — better than a coin flip.)
-2. Check the prediction against reality: go around the room and see if two people actually share a birthday.
-3. Now flip the formula around. Using $N \geq \frac{-k(k-1)}{2\ln(P)}$, calculate how many lockers your class would need so there is **less than a 1% chance** any two students are randomly assigned the same locker ($P = 0.99$).
-4. Write one sentence answering: why does the required $N$ grow so much faster than $k$? (The chart's caption has the key idea.)
+Partner up to tackle the following exercises on determining optimal hash table sizes. Show your work for each one.
 
-*(Standalone file: [activities/01-the-locker-problem.md](activities/01-the-locker-problem.md))*
+1. **Exercise #1 — A large Hash Table (Government Employees).** Suppose the US government employs 100,000 people and assigns each a random ID. How large should the range of IDs be to ensure less than a 0.1% chance that any two employees receive the same ID?
+   - A. ~5,000,000,000 IDs
+   - B. ~50,000,000,000 IDs
+   - C. ~500,000,000,000 IDs
+   - D. ~5,000,000,000,000 IDs
+2. **Exercise #2 — Just a little bigger! (Humanity-Sized).** Imagine you want to store and retrieve any person within the world's population in O(1) time using, of course, a hash table! How many buckets do you need in the table so that there's less than a 1% chance that any two people end up in the same bucket? (Assume a population of 8 billion humans.)
+3. **Exercise #3 — This has got to be the biggest... (Grains of Sand).** Imagine you want to analyze every grain of sand on Earth because, well... you're into that sort of thing. Of course, you want to look up any grain of sand instantly (O(1) time, naturally). How many containers do you need in your hash table so that there's less than a 1% chance that any two grains of sand collide in your storage?
+
+   > **Hint:** Assume there are $2^{62.72}$ (or $7.5 \times 10^{18}$) grains of sand on Earth as of last Thursday.
+
+4. **Exercise #4 — So big it hurts... my brain (Stars in the "known" Universe).** On a blue-green planet named after dirt, a bunch of barely civilized, fur-deprived primates wildly guess the number of stars in the universe to be $2^{73.08}$. If we want to store that many planet names and look them up on Google's new Solar Search Engine in O(1) time with less than a 1% chance of a stellar collision, how many buckets does our Hash Table need?
+5. **Deliverable:** Scan and upload your work using a document scanning app for online submission. You will attach it to tonight's assignment.
+
+*(Standalone file: [activities/01-calculating-hash-table-sizes.md](activities/01-calculating-hash-table-sizes.md))*
 
 </details>
 
 ---
 
-## <font color="#388bfd">Hashing Commands in the Terminal</font>
+## <font color="#388bfd">Part 3: Terminal Hashing</font>
 
-Your terminal ships with a whole family of hash functions. They differ in one crucial way: **how many bits of output they produce** — which, as you just calculated, controls how likely collisions are.
+Terminal has built-in hash functions that can map any input into specific bucket sizes. Here are some common Linux commands for hashing files, along with their respective number of possible outputs:
 
-| Command | Output size | Possible values |
-|---|---|---|
-| `sum file` | 16-bit checksum | 2^16 = 65,536 |
-| `cksum file` | 32-bit checksum | 2^32 ≈ 4.3 × 10^9 |
-| `md5sum file` | 128-bit (32 hex chars) | 2^128 ≈ 3.4 × 10^38 |
-| `shasum file` | 160-bit (40 hex chars) | 2^160 ≈ 1.5 × 10^48 |
-| `sha256sum file` | 256-bit (64 hex chars) | 2^256 ≈ 1.2 × 10^77 |
-| `sha512sum file` | 512-bit (128 hex chars) | 2^512 ≈ 1.3 × 10^154 |
+1. **sum**
+   - Command: `sum filename`
+   - Output: A checksum using the BSD sum algorithm. The output is typically a 16-bit value.
+   - Possibilities: $2^{16} = 65{,}536$
+2. **crc32**
+   - Command: `crc32 filename`
+   - Output: A 32-bit checksum value.
+   - Possibilities: $2^{32} \approx 4.29 \times 10^{9}$
+3. **md5sum**
+   - Command: `md5sum filename`
+   - Output: 128-bit hash, usually displayed as a 32-character hexadecimal number.
+   - Possibilities: $2^{128} \approx 3.4 \times 10^{38}$
+4. **sha1sum**
+   - Command: `sha1sum filename`
+   - Output: 160-bit hash, shown as a 40-character hexadecimal number.
+   - Possibilities: $2^{160} \approx 1.46 \times 10^{48}$
+5. **sha256sum**
+   - Command: `sha256sum filename`
+   - Output: 256-bit hash, represented as a 64-character hexadecimal number.
+   - Possibilities: $2^{256} \approx 1.16 \times 10^{77}$
+6. **sha512sum**
+   - Command: `sha512sum filename`
+   - Output: 512-bit hash, displayed as a 128-character hexadecimal number.
+   - Possibilities: $2^{512} \approx 1.34 \times 10^{154}$
 
-> **Note:**
-> On macOS, use `shasum -a 256` and `shasum -a 512` instead of `sha256sum`/`sha512sum`, and `md5` instead of `md5sum`. Same algorithms, slightly different command names.
-
-A 16-bit `sum` collides constantly — 65,536 slots is nothing (your class of students needs 27,000+ lockers, remember?). MD5 and SHA-1 are broken for security use: researchers can manufacture collisions on purpose. **SHA-256 and SHA-512 are the modern standards** — collision-resistant enough to protect passwords, digital signatures, and Bitcoin.
-
-👉 <details>
-<summary><h3>Activity: One Bit Changes Everything — click to expand</h3></summary>
-
-*Concept: Hashes are deterministic (same content → same hash, on any machine) yet avalanche completely when even one character changes.*
-
-![Diagram of the avalanche effect: two input sentences differing only in the case of one letter flow into SHA-256 and come out as two 64-character hashes that share nothing — the real values f2ad2d87... and 919f031a... that this activity's commands produce on any machine.](assets/one-bit-avalanche.svg)
-
-## Task
-
-1. In your terminal, create a file and hash it (macOS: use `shasum -a 256` instead of `sha256sum`):
-   ```bash
-   echo "Git is a content tracker" > message.txt
-   sha256sum message.txt
-   ```
-2. Copy the 64-character hash somewhere you can compare against — it should match the top hash in the diagram exactly.
-3. Change exactly one character — capitalize the `g`:
-   ```bash
-   echo "git is a content tracker" > message.txt
-   sha256sum message.txt
-   ```
-   Compare the two hashes. Count how many characters they share in the same positions — it should look like a completely unrelated string, and match the bottom hash in the diagram.
-4. Restore the original text, rehash, and confirm you get **exactly** the original hash back — determinism.
-5. Hash an empty file:
-   ```bash
-   touch empty.txt
-   sha256sum empty.txt
-   ```
-   Compare with a neighbor. Every empty file on every machine on Earth hashes to the same value (it starts `e3b0c442...`). Write one sentence on why that must be true.
-
-*(Standalone file: [activities/02-one-bit-changes-everything.md](activities/02-one-bit-changes-everything.md))*
-
-</details>
-
----
-
-## <font color="#388bfd">The Scale of SHA-256</font>
-
-2^256 is not a big number. It is an **incomprehensible** number:
-
-- Written out: 115,792,089,237,316,195,423,570,985,008,687,907,853,269,984,665,640,564,039,457,584,007,913,129,639,936 possible values.
-- That is comparable to the estimated number of **atoms in the observable universe** (10^78 to 10^82).
-- If you could check **one trillion hashes per second**, exhausting the SHA-256 space would take roughly 10^63 years. The universe is 1.4 × 10^10 years old.
-- If every person on Earth generated a million hashes per second for a century, humanity would have used about 0.0000000000000000000000001% of the space.
-
-This is why nobody worries about two different files "accidentally" sharing a SHA-256 hash. It isn't impossible — it's just so improbable that betting on it is a worse bet than picking one specific atom out of the entire solar system.
-
-> **Tip:**
-> This is the answer to the locker problem at scale. Want a collision chance near zero for billions of files? Make $N = 2^{256}$ and the formula's exponent becomes so tiny that $P \approx 0$ for any realistic $k$.
-
----
-
-## <font color="#388bfd">Handling Files in Java</font>
-
-To hash files in a program, you first need to *touch* files from a program. Java's `File` class represents a **path** to a file or directory — a pointer to a location, not the contents:
-
-```java
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-
-File file = new File("notes.txt");       // a path — nothing exists yet
-file.createNewFile();                     // now the file exists (returns false if it already did)
-
-File dir = new File("JavaFileSystem");
-dir.mkdir();                              // create a directory (mkdirs() for nested paths)
-```
-
-Useful `File` methods for inspecting what a path points at:
-
-| Method | What it tells you |
-|---|---|
-| `exists()` | Whether the file or directory is really there |
-| `isFile()` / `isDirectory()` | Which kind of thing the path points to |
-| `length()` | Size in bytes |
-| `delete()` | Remove the file or (empty) directory |
-
-Writing and reading contents uses `FileWriter` and `BufferedReader` — the same classes from the Initial Install path activity:
-
-```java
-FileWriter writer = new FileWriter("notes.txt");
-writer.write("Hashing turns any content into a fixed-size fingerprint.");
-writer.close();                           // always close — unwritten data may be lost otherwise
-```
-
-And Java's built-in `MessageDigest` class computes SHA-256 directly — this is the engine you will use in the assignment to build your own file hasher:
-
-```java
-import java.security.MessageDigest;
-
-MessageDigest digest = MessageDigest.getInstance("SHA-256");
-byte[] hash = digest.digest(fileContents.getBytes());   // 32 bytes = 256 bits
-```
-
-> **Warning:**
-> File operations fail in the real world — the path doesn't exist, you lack permission, the disk is full. That's why Java forces you to handle `IOException` with try/catch. Treat the catch block as a first-class part of your program, not an afterthought.
-
----
-
-## <font color="#388bfd">Git's Secret Identity</font>
-
-Here is the payoff. **Git is a content-addressed database built on hashing.** Every object Git stores — every file snapshot, every commit — is named by the hash of its content. Those 40-character commit IDs you've been copying all week? Hashes.
-
-You can run Git's own hashing yourself:
+Try a few of them yourself. In your terminal, create a file and hash it with commands of increasing size:
 
 ```bash
-git hash-object message.txt
+echo "hash tables need room" > sample.txt
+sum sample.txt
+md5sum sample.txt
+sha256sum sample.txt
 ```
 
-This means:
+> **Note:**
+> On macOS the names differ slightly: use `md5` instead of `md5sum`, and `shasum -a 1`, `shasum -a 256`, or `shasum -a 512` instead of `sha1sum`, `sha256sum`, and `sha512sum`. `crc32` is not installed by default on macOS. Same algorithms, same bucket sizes.
 
-- **Identical content gets identical IDs, everywhere.** If you and a classmate each commit a file with the exact same bytes, Git gives it the exact same object ID on both machines — without your computers ever talking.
-- **Tampering is self-evident.** Change one byte of a committed file's history and its hash no longer matches its ID. The avalanche effect turns any corruption or manipulation into a flashing alarm.
-- **Commits chain their history together.** Each commit's hash covers its content *and* its parent commit's hash — so rewriting anything in the past changes every ID after it. That is what makes a Git history trustworthy.
+Each command is a hash function with a fixed $N$. When you size a hash space in the homework, you are really choosing which of these commands (or which bit length) is big enough for the job.
 
-The `.git/objects` folder you explored in The Hidden Detective activity on Day 1? It is one giant hash table, with SHA hashes as the bucket labels.
+---
 
-👉 <details>
-<summary><h3>Activity: Git's Secret Identity — click to expand</h3></summary>
+## <font color="#388bfd">Homework</font>
 
-*Concept: Git names every object by the hash of its content — identical content produces identical IDs on any machine, and any change is instantly detectable.*
+The homework is two hash-table-sizing problems: a global cloud storage service that must give every uploaded file a unique identifier, and a bank whose customers pick random account numbers. For each, state your assumptions before your calculations and indicate which of the terminal hash functions from Part 3 is most suitable. A fully worked example (unique transaction IDs for a global payment system) is included in the assignment.
 
-![Diagram of two different laptops each creating a file containing hello git and running git hash-object on it. Both machines produce the identical ID 8d0e41234f24b6da002d962a26c2495ea16a425f without ever communicating — because the ID is computed from the content, not assigned to it. This is exactly how commit IDs work.](assets/gits-secret-identity.svg)
-
-## Task
-
-1. In your terminal, in any folder, create a file with **exactly** this content and ask Git to hash it (this works even outside a repository):
-   ```bash
-   echo "hello git" > secret.txt
-   git hash-object secret.txt
-   ```
-2. Compare the 40-character ID with a classmate who ran the same commands — and with the diagram. All three match: different machines, zero communication, identical ID. Write one sentence explaining how that is possible.
-3. Change the content by one character, rerun `git hash-object secret.txt`, and confirm the ID is completely different.
-4. Now connect it to real history: in your terminal, inside the `git-detective` repository from Day 1 (or any repo), run:
-   ```bash
-   git log --oneline -3
-   ```
-   Those short IDs on the left are abbreviations of full 40-character hashes, each one covering the commit's content *and* its parent's hash.
-5. In one sentence: why does hashing each commit's parent make it hard to secretly rewrite old history?
-
-*(Standalone file: [activities/03-gits-secret-identity.md](activities/03-gits-secret-identity.md))*
-
-</details>
+Submit a copy of your partner work from the activity above and screenshots of your two answers with their assumptions and calculations. Full instructions: [Assignment](ASSIGNMENT.md).
 
 ---
 
@@ -261,28 +278,29 @@ The `.git/objects` folder you explored in The Hidden Detective activity on Day 1
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] State the three properties of a hash function (deterministic, fixed-size, avalanche) and give a one-line example of each.
-- [ ] Hash a file in the terminal with `sha256sum` (or `shasum -a 256`) and read off how many hex characters the output has.
-- [ ] Explain what a collision is and why hash tables care about them.
+- [ ] Define a hash table and explain why its insert, delete, and lookup operations average O(1) time.
+- [ ] Explain what a collision is and name two techniques (chaining, open addressing) that resolve one.
+- [ ] Identify what $k$ and $N$ stand for in $P(\text{collision}) \approx 1 - e^{-\frac{k(k-1)}{2N}}$.
+- [ ] Hash a file in the terminal with `sum`, `md5sum`, and `sha256sum` (or their macOS equivalents) and read off how many hex characters each output has.
 
 ### <font color="#79c0ff">Intermediate</font>
 
-- [ ] Compute the collision probability for a given $k$ items and $N$ slots using $P = 1 - e^{-\frac{k(k-1)}{2N}}$.
-- [ ] Use $N \geq \frac{-k(k-1)}{2\ln(P)}$ to size a hash space for a target collision probability.
-- [ ] Create a directory and a file from Java using the `File` class, and write text into it with `FileWriter`.
-- [ ] Rank `sum`, `md5sum`, and `sha256sum` by collision resistance and justify the ranking with bit lengths.
+- [ ] Compute the collision probability for 30 students randomly assigned 100 lockers and state the result as a percentage.
+- [ ] Rearrange the collision formula into $N \geq \frac{-k(k-1)}{2\ln(P)}$, where $P$ is the desired probability of no collision.
+- [ ] Compute how many lockers 30 students need for less than a 1% chance of a shared locker.
+- [ ] Rank `sum`, `crc32`, `md5sum`, `sha1sum`, `sha256sum`, and `sha512sum` by number of possible outputs, citing the bit length of each.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Explain why 30 students need ~43,000 lockers for a 1% collision chance, in terms of pairs rather than items.
-- [ ] Explain how Git uses content hashing to give identical files identical IDs across machines that have never communicated.
-- [ ] Explain why hashing each commit's parent hash makes historical tampering detectable.
+- [ ] Explain why the required number of buckets grows roughly with $k^2$ rather than with $k$.
+- [ ] Size a hash space for a real-world scenario by stating assumptions, choosing a target collision probability, and solving for $N$.
+- [ ] Choose the smallest terminal hash function whose $2^{\text{bits}}$ outputs exceed a computed $N$, and justify the choice.
 
 ## <font color="#388bfd">🚀 Stretch Goals</font>
 
-- [ ] **Hunt a collision you can actually find:** `sum` has only 65,536 outputs. Write a loop that generates numbered files until two of them share a `sum` checksum, and report how many files it took.
-- [ ] **Peek inside the hash table:** in a real repository, open `.git/objects` and find the folder+filename that together spell out one of your commit hashes.
-- [ ] **Research:** look up how Git is migrating from SHA-1 to SHA-256 and why the transition is difficult.
+- [ ] **Find a collision you can actually see:** `sum` has only 65,536 outputs. Write a loop that creates numbered files until two of them share a `sum` checksum, and report how many files it took. Compare that count with what the formula predicts for $P = 0.5$.
+- [ ] **Plot the curve:** for $N = 365$ (birthdays), compute $P(\text{collision})$ for $k = 1$ through $60$ and graph it. Find the smallest $k$ where the probability passes 50%.
+- [ ] **Research:** look up why MD5 and SHA-1 are considered "broken" for security even though their output spaces are enormous, and how that differs from an accidental collision.
 
 ---
 
