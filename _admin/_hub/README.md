@@ -28,6 +28,26 @@ Open http://127.0.0.1:5050.
   cloned simply see finals disabled. Syncing a test/final day to Canvas creates a
   **placeholder assignment only** — exam content never leaves the private repo.
 
+## How Canvas stays current: the live lesson view
+
+Canvas items created by the hub contain **no lesson content**. Each one is a
+button plus an embedded frame pointing at the repo's `view.html` on GitHub Pages,
+which fetches the markdown from GitHub for one git ref and renders it in the
+browser. Push a content edit and every student sees it on their next page load —
+no re-sync. Only titles, points, and dates live on Canvas (the sync-status dot
+watches those, and also warns when an item's link follows a different ref than
+the schedule).
+
+The **Branch** field in the Year Schedule tab (`"ref"` in the schedule JSON,
+default `main`) is the branch or tag that schedule's course follows. Work on your
+own branch and your students see it live; merge `main` into it when you want
+main's changes. **Student view ↗** opens that ref's live page; the ↗ on each
+lesson row opens exactly what that day's Canvas item shows.
+
+The Module Planner's and Module Editor's **Student View** mode is the same page
+reading *this working tree* (`/view.html?src=/raw/…`), so you can check a lesson
+as students will see it before pushing. Save first — it shows saved files.
+
 ## How the year schedule stays dynamic
 
 `_schedules/<teacher>.json` stores only *references*: a module block points at a

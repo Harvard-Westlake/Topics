@@ -202,12 +202,56 @@ function renderSettings() {
     '<button class="dow-btn' + ((schedule.meeting_days || []).includes(d) ? ' active' : '') + '"' +
     ' onclick="Schedule.toggleDow(' + d + ')">' + DOW[d] + '</button>').join('');
   document.getElementById('setDay0').checked = !!schedule.show_day0_syllabus;
+  document.getElementById('setRef').value = schedule.ref && schedule.ref !== 'main' ? schedule.ref : '';
   renderCalClassPicker();
 }
 
 function toggleDay0(checked) {
   schedule.show_day0_syllabus = checked;
   markDirty();
+}
+
+// ── Live student view ─────────────────────────────────────────────────────────
+// Canvas items hold no lesson content: each links to view.html on GitHub
+// Pages, which renders the lesson straight from GitHub for this schedule's
+// ref. So content edits reach students the moment they're pushed, and two
+// teachers can follow different branches of the same repo.
+
+function scheduleRef() { return (schedule.ref || '').trim() || 'main'; }
+
+function setRef(value) {
+  const ref = (value || '').trim();
+  if (ref && !/^[A-Za-z0-9][A-Za-z0-9._\/-]*$/.test(ref)) {
+    alert('Use a plain branch or tag name (letters, digits, . _ / -).');
+    document.getElementById('setRef').value = schedule.ref && schedule.ref !== 'main' ? schedule.ref : '';
+    return;
+  }
+  schedule.ref = ref || 'main';
+  markDirty();
+  renderBoard();   // slot links carry the ref
+}
+
+function studentUrl(params) {
+  const s = new URLSearchParams(Object.assign({ref: scheduleRef()}, params));
+  return (window.HUB_CONFIG || {}).pages_url + '/view.html?' + s.toString().replace(/%2F/g, '/');
+}
+
+function openStudentView() {
+  window.open(studentUrl({path: 'README.md'}), '_blank', 'noopener');
+}
+
+function peekLink(s) {
+  let lesson = null;
+  if (s.lesson && s.lesson._module && s.lesson.path) lesson = s.lesson._module + '/' + s.lesson.path;
+  else if (s.lesson_ref && s.lesson_ref.module && s.lesson_ref.path) lesson = s.lesson_ref.module + '/' + s.lesson_ref.path;
+  if (!lesson) return '';
+  const params = {lesson};
+  if (s.lesson && s.lesson.no_assignment) params.hw = '0';
+  const revs = s.lesson ? (Array.isArray(s.lesson.review) ? s.lesson.review : (s.lesson.review ? [s.lesson.review] : [])) : [];
+  const url = new URL(studentUrl(params));
+  revs.forEach(r => { if (r && r.module && r.path && r.file) url.searchParams.append('review', r.module + '/' + r.path + '/review/' + r.file); });
+  return '<a class="peek" href="' + esc(url.href.replace(/%2F/g, '/')) + '" target="_blank" rel="noopener"' +
+         ' title="Student view — the live page this day\'s Canvas item opens (ref ' + esc(scheduleRef()) + ')">&#8599;</a>';
 }
 
 // ── Class calendar (imported .ics) ────────────────────────────────────────────
@@ -584,7 +628,7 @@ function slotRow(blk, s, num) {
     '<span class="slot-num">' + num + '</span>' +
     '<span>' + badge + '</span>' +
     '<span' + titleAttr + '>' + esc(s.title) + from + '</span>' +
-    '<span class="slot-controls">' + controls + '</span>' +
+    '<span class="slot-controls">' + (later ? '' : peekLink(s)) + controls + '</span>' +
   '</div>';
 }
 
@@ -892,6 +936,8 @@ async function openSync(blockId) {
     const pts = smartRound((r.points || 10) * Math.pow(r.scale || 1.15, r.unit_number));
     lines.push('<div>Canvas module <b>“Unit ' + r.unit_number + '”</b> will be created (unpublished), '
       + 'with due dates from the schedule:</div>');
+    lines.push('<div style="color:var(--muted)">Content is never copied into Canvas: every item links to the live '
+      + 'lesson view for ref <b>' + esc(scheduleRef()) + '</b>, so students always see the current version.</div>');
     if (counts.lesson) lines.push('<div>&bull; ' + counts.lesson + ' lesson assignment' + (counts.lesson > 1 ? 's' : '') + ' @ ' + pts + ' pts (review + ASSIGNMENT.md content)</div>');
     if (counts.nohw) lines.push('<div>&bull; ' + counts.nohw + ' content page' + (counts.nohw > 1 ? 's' : '') + ' — no assignment due (lesson + reviews, no points)</div>');
     if (counts.test)   lines.push('<div>&bull; ' + counts.test + ' test placeholder' + (counts.test > 1 ? 's' : '') + ' (title + date only — no content)</div>');
@@ -1059,7 +1105,7 @@ async function deleteFinal() {
   loadPalette();
 }
 
-return {init, onShow: loadPalette, pickSchedule, newSchedule, loadPalette, toggleDow, toggleDay0, toggleNoSchool,
+return {init, onShow: loadPalette, pickSchedule, newSchedule, loadPalette, toggleDow, toggleDay0, setRef, openStudentView, toggleNoSchool,
         pickCalClass, importIcs,
         addNoSchool, removeNoSchool, toggleTopic, toggleBlock, removeBlock,
         stepBlock, setBlockPoints, removeInsert, stepInsert, setInsertPoints,

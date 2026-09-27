@@ -38,6 +38,10 @@ GITHUB_REPO   = _course.get("github_repo", f"Harvard-Westlake/{_ROOT.name}")
 GITHUB_BRANCH = _course.get("github_branch", "main")
 GITHUB_RAW = f"https://raw.githubusercontent.com/{GITHUB_REPO}/{GITHUB_BRANCH}"
 GITHUB_BLOB = f"https://github.com/{GITHUB_REPO}/blob/{GITHUB_BRANCH}"
+# GitHub Pages root of this repo — serves view.html, the serverless lesson
+# viewer that Canvas assignments link to (see CLAUDE.md "Live lesson view").
+PAGES_URL = _course.get("pages_url") or (
+    f"https://{GITHUB_REPO.split('/')[0].lower()}.github.io/{GITHUB_REPO.split('/')[-1]}")
 
 
 def _resolve_path(base_path, rel):

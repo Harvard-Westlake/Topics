@@ -13,6 +13,7 @@ window.MathJax = {
 };
 </script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<script>window.HUB_CONFIG = __HUB_CONFIG__;</script>
 <link rel="stylesheet" href="/static/app.css">
 </head>
 <body>
@@ -178,6 +179,12 @@ window.MathJax = {
   <label class="day0-toggle" style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);cursor:pointer">
     <input type="checkbox" id="setDay0" onchange="Schedule.toggleDay0(this.checked)">Show syllabus for Day 0
   </label>
+  <label title="Git branch or tag whose content this schedule's Canvas links show. Students see it live; merge main into it whenever you want to take main's changes.">Branch</label>
+  <input type="text" id="setRef" placeholder="main" style="width:120px" spellcheck="false"
+         onchange="Schedule.setRef(this.value)"
+         title="Git branch or tag whose content this schedule's Canvas links show. Students see it live; merge main into it whenever you want to take main's changes.">
+  <button class="btn-icon" onclick="Schedule.openStudentView()"
+          title="Open the live student view of this branch — the page every Canvas link in this schedule resolves to">Student view &#8599;</button>
   <div class="summary">
     <span id="summary"></span>
     <div id="savePill" class="status-pill saved"><div class="dot"></div>Saved</div>
@@ -340,6 +347,8 @@ window.MathJax = {
     <div class="toggle-group">
       <button class="toggle-btn" id="edModeEdit" onclick="Planner.setEditorMode('edit')">Edit</button>
       <button class="toggle-btn active" id="edModePreview" onclick="Planner.setEditorMode('preview')">Canvas Preview</button>
+      <button class="toggle-btn" id="edModeStudent" onclick="Planner.setEditorMode('student')"
+              title="The live page students open from Canvas (README + attached reviews + ASSIGNMENT.md), rendered by view.html from this working tree — save first, unsaved edits are not shown">Student View</button>
     </div>
     <button class="btn-create" id="edSaveBtn" onclick="Planner.saveFile()" style="padding:6px 16px">Save</button>
     <span id="edResult" style="font-size:12px"></span>
@@ -390,6 +399,8 @@ window.MathJax = {
         <div class="toggle-group">
           <button class="toggle-btn" id="meModeEdit" onclick="Editor.setMode('edit')">Edit</button>
           <button class="toggle-btn active" id="meModePreview" onclick="Editor.setMode('preview')">Canvas Preview</button>
+          <button class="toggle-btn" id="meModeStudent" onclick="Editor.setMode('student')"
+                  title="The live page students open from Canvas, rendered by view.html from this working tree — save first, unsaved edits are not shown">Student View</button>
         </div>
         <button class="btn-create" id="meSaveBtn" onclick="Editor.saveFile()" style="padding:6px 16px">Save</button>
         <button class="btn-icon me-danger" id="meFileDeleteBtn" onclick="Editor.deleteCurrentFile()" style="display:none">Delete file</button>

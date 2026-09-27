@@ -855,16 +855,40 @@ async function openEditorTab(file) {
   $('edModePreview').textContent = isDemo ? 'Live Preview' : 'Canvas Preview';
   $('edSub').textContent = isDemo
     ? 'Standalone demo page — previews the current buffer exactly as a browser renders it'
-    : 'Files render exactly as the hub uploads them to Canvas';
+    : 'Canvas Preview: server-side rendering of this file · Student View: the live page Canvas links to';
   setEditorMode('preview');   // preview-first: reading is the common case, Edit is one click away
 }
 
 function setEditorMode(mode) {
   $('edModeEdit').classList.toggle('active', mode === 'edit');
   $('edModePreview').classList.toggle('active', mode === 'preview');
+  $('edModeStudent').classList.toggle('active', mode === 'student');
   $('edText').style.display = mode === 'edit' ? 'block' : 'none';
-  $('edPreview').style.display = mode === 'preview' ? 'block' : 'none';
+  $('edPreview').style.display = mode === 'edit' ? 'none' : 'block';
   if (mode === 'preview') renderEditorPreview();
+  if (mode === 'student') renderStudentView();
+}
+
+// The page a student actually opens from Canvas: view.html composing the
+// lesson's README, this row's attached reviews, and ASSIGNMENT.md — served by
+// this hub from the working tree (/raw/) instead of GitHub, so it shows saved
+// edits before they're pushed.
+function renderStudentView() {
+  const cfg = window.HUB_CONFIG || {};
+  const s = new URLSearchParams({src: '/raw/', ref: cfg.local_branch || 'main',
+                                 lesson: editorCtx.module + '/' + editorCtx.path});
+  const a = assignments[editorCtx.row] || {};
+  if (a.no_assignment) s.set('hw', '0');
+  for (const rev of (reviewSelections[editorCtx.row] || [])) {
+    if (rev.module && rev.path && rev.file) s.append('review', rev.module + '/' + rev.path + '/review/' + rev.file);
+  }
+  $('edPreview').classList.add('demo');
+  $('edPreview').innerHTML = '';
+  const frame = document.createElement('iframe');
+  frame.className = 'demoframe';
+  frame.src = '/view.html?' + s.toString().replace(/%2F/g, '/');
+  $('edPreview').appendChild(frame);
+  $('edEngine').textContent = 'live view of saved files on this machine (branch ' + (cfg.local_branch || 'main') + ')';
 }
 
 async function renderEditorPreview() {

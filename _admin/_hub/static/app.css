@@ -385,6 +385,8 @@ section.tab.active { display: block; }
 .slot-title.editable { cursor: text; }
 .slot-title.editable:hover { text-decoration: underline dotted var(--muted); }
 .slot-controls { display: flex; align-items: center; gap: 8px; }
+.peek { color: var(--muted); text-decoration: none; font-size: 13px; padding: 2px 4px; border-radius: 4px; }
+.peek:hover { color: var(--accent); background: var(--surface-2, rgba(128,128,128,.12)); }
 .slot-row.ins { background: rgba(167,139,250,.04); }
 .slot-row .grip { color: var(--muted); cursor: grab; font-size: 11px; }
 .missing-note { padding: 10px 16px; color: var(--red); font-size: 12px; }

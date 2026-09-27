@@ -9,6 +9,12 @@ Module blocks store only a **reference** (a `_modules/` slug or a topic folder
 name) — lessons and day counts resolve live from the repo, so a change to a
 module's `LESSONS.md` automatically re-dates every schedule that uses it.
 
+`"ref"` (default `"main"`) is the git branch or tag this teacher's Canvas course
+follows: every Canvas item the hub creates for the schedule links to the live
+lesson view (`view.html` on GitHub Pages) for that ref, so students see content
+straight from the repo and each teacher can run their own branch. Set it with
+the **Branch** field in the Year Schedule tab.
+
 Block types: `module`, `test`, `final`, `review`, `flex`, `custom`, `lesson`.
 Module blocks may carry `inserts` — items placed after a given day inside the
 unit. Test/final content itself lives in the private Admin repo, never here.

@@ -191,9 +191,29 @@ async function openTab(file) {
 function setMode(mode) {
   $('meModeEdit').classList.toggle('active', mode === 'edit');
   $('meModePreview').classList.toggle('active', mode === 'preview');
+  $('meModeStudent').classList.toggle('active', mode === 'student');
   $('meText').style.display = mode === 'edit' ? 'block' : 'none';
-  $('mePreview').style.display = mode === 'preview' ? 'block' : 'none';
+  $('mePreview').style.display = mode === 'edit' ? 'none' : 'block';
   if (mode === 'preview') renderPreview();
+  if (mode === 'student') renderStudentView();
+}
+
+// The live page students open from Canvas (view.html), reading this working
+// tree through /raw/ — a lesson composes README + ASSIGNMENT.md; a topic or a
+// single support file shows on its own.
+function renderStudentView() {
+  const cfg = window.HUB_CONFIG || {};
+  const s = new URLSearchParams({src: '/raw/', ref: cfg.local_branch || 'main'});
+  const dir = curPath ? curTopic + '/' + curPath : curTopic;
+  if (curPath && (curFile === 'README.md' || curFile === 'ASSIGNMENT.md')) s.set('lesson', dir);
+  else s.set('path', dir + '/' + (curFile && curFile.endsWith('.md') ? curFile : 'README.md'));
+  $('mePreview').classList.add('demo');
+  $('mePreview').innerHTML = '';
+  const frame = document.createElement('iframe');
+  frame.className = 'demoframe';
+  frame.src = '/view.html?' + s.toString().replace(/%2F/g, '/');
+  $('mePreview').appendChild(frame);
+  $('meEngine').textContent = 'live view of saved files on this machine (branch ' + (cfg.local_branch || 'main') + ')';
 }
 
 async function renderPreview() {

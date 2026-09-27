@@ -701,7 +701,12 @@ function getParsedAssignments() {
     // Find original index in githubAssignments to look up reviewSelections
     const origIdx = githubAssignments.indexOf(a);
     const rev = reviewSelections[origIdx];
-    return rev ? Object.assign({}, a, {review_markdown: rev.content}) : a;
+    const copy = Object.assign({}, a);
+    if (!rev) { delete copy.review_ref; delete copy.review_refs; return copy; }   // review unticked
+    copy.review_markdown = rev.content;
+    // A picker-chosen review travels by reference so the live view can link it
+    if (rev.module && rev.file) copy.review_refs = [{module: rev.module, path: rev.lessonPath, file: rev.file}];
+    return copy;
   });
 }
 

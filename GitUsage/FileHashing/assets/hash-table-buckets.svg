@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 400" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect width="760" height="400" rx="10" fill="#0d1117"/>
+  <text x="30" y="40" fill="#e6edf3" font-size="17" font-weight="700">A hash table: keys → hash function → buckets</text>
+
+  <!-- column headers -->
+  <text x="130" y="92" fill="#8b949e" font-size="14" font-weight="700" text-anchor="middle">keys</text>
+  <text x="380" y="92" fill="#8b949e" font-size="14" font-weight="700" text-anchor="middle">hash function</text>
+  <text x="600" y="92" fill="#8b949e" font-size="14" font-weight="700" text-anchor="middle">storage (buckets)</text>
+
+  <!-- keys -->
+  <g font-size="14" font-family="Consolas, Menlo, monospace" text-anchor="middle">
+    <rect x="70" y="115" width="120" height="34" rx="6" fill="#e3b341"/>
+    <text x="130" y="138" fill="#0d1117" font-weight="700">James</text>
+    <rect x="70" y="170" width="120" height="34" rx="6" fill="#e3b341"/>
+    <text x="130" y="193" fill="#0d1117" font-weight="700">Ellen</text>
+    <rect x="70" y="225" width="120" height="34" rx="6" fill="#e3b341"/>
+    <text x="130" y="248" fill="#0d1117" font-weight="700">Bill</text>
+    <rect x="70" y="280" width="120" height="34" rx="6" fill="#e3b341"/>
+    <text x="130" y="303" fill="#0d1117" font-weight="700">Susan</text>
+  </g>
+
+  <!-- hash function box -->
+  <rect x="345" y="170" width="70" height="90" rx="8" fill="#1f6feb" stroke="#388bfd" stroke-width="2"/>
+  <text x="380" y="224" fill="#e6edf3" font-size="30" text-anchor="middle" font-style="italic">λ</text>
+
+  <!-- arrows keys -> function -->
+  <g stroke="#8b949e" stroke-width="1.5" fill="none">
+    <path d="M 190 132 L 345 195"/>
+    <path d="M 190 187 L 345 208"/>
+    <path d="M 190 242 L 345 222"/>
+    <path d="M 190 297 L 345 236"/>
+  </g>
+
+  <!-- storage -->
+  <g font-size="13" font-family="Consolas, Menlo, monospace">
+    <rect x="510" y="110" width="200" height="210" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+    <line x1="545" y1="110" x2="545" y2="320" stroke="#30363d" stroke-width="1.5"/>
+    <g stroke="#30363d" stroke-width="1.5">
+      <line x1="510" y1="140" x2="710" y2="140"/><line x1="510" y1="170" x2="710" y2="170"/>
+      <line x1="510" y1="200" x2="710" y2="200"/><line x1="510" y1="230" x2="710" y2="230"/>
+      <line x1="510" y1="260" x2="710" y2="260"/><line x1="510" y1="290" x2="710" y2="290"/>
+    </g>
+    <g fill="#8b949e" text-anchor="middle">
+      <text x="527" y="130">00</text><text x="527" y="160">01</text><text x="527" y="190">02</text>
+      <text x="527" y="220">03</text><text x="527" y="250">04</text><text x="527" y="280">05</text><text x="527" y="310">06</text>
+    </g>
+    <g fill="#3fb950">
+      <text x="556" y="160">555-123-4251</text>
+      <text x="556" y="220">621-236-7423</text>
+      <text x="556" y="250">754-231-5342</text>
+      <text x="556" y="280">883-234-1236</text>
+    </g>
+  </g>
+
+  <!-- arrows function -> storage -->
+  <g stroke="#388bfd" stroke-width="1.5" fill="none" marker-end="url(#arrow)">
+    <path d="M 415 195 L 510 155"/>
+    <path d="M 415 208 L 510 215"/>
+    <path d="M 415 222 L 510 245"/>
+    <path d="M 415 236 L 510 275"/>
+  </g>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#388bfd"/>
+    </marker>
+  </defs>
+
+  <text x="30" y="372" fill="#8b949e" font-size="13">You can think of each item being stored within a single "box" or "bucket".</text>
+</svg>

@@ -21,12 +21,13 @@ Per-teacher setup:
 The app runs without a token too — the Planner and Schedule tabs are fully
 credential-free; only Canvas calls need HUB_TOKEN.
 """
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_file, abort
 from pathlib import Path
 from dotenv import load_dotenv
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 import requests, os, sys, json, time, re, html, shutil
+from urllib.parse import urlencode
 import markdown as md_lib
 from icsimport import compress_calendar
 
@@ -61,7 +62,7 @@ from mdrender import (md_to_html as planner_md_to_html,                 # noqa: 
                       review_block as planner_review_block,
                       ENGINE as PLANNER_ENGINE,
                       COURSE_NAME, REPO_LABEL,
-                      GITHUB_REPO, GITHUB_BRANCH, GITHUB_RAW, GITHUB_BLOB)
+                      GITHUB_REPO, GITHUB_BRANCH, GITHUB_RAW, GITHUB_BLOB, PAGES_URL)
 
 SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 NAME_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9 _\-]*$")
@@ -231,24 +232,89 @@ def review_block_html(rev_html):
             '<p style="font-weight:600;color:#8957e5;margin:0 0 8px 0">&#9997;&nbsp;Review</p>'
             + rev_html + '</div>')
 
-def _lesson_readme_html(module_dir, lesson_path):
-    """Collapsible <details> block with the day's README, so a Canvas
-    assignment can show full lesson context without the student leaving
-    Canvas. Native HTML disclosure widget — no JS, survives Canvas's HTML
-    sanitization. Complements (doesn't replace) the plain README.md link
-    every ASSIGNMENT.md opens with (see CLAUDE.md "ASSIGNMENT.md format")."""
-    if not (module_dir and lesson_path):
-        return None
-    rf = TOPICS / module_dir / lesson_path / "README.md"
-    if not rf.exists():
-        return None
-    return ('<details style="background:#f6f8fa;border:1px solid #d0d7de;'
-            'border-radius:6px;margin-bottom:20px;padding:10px 16px">'
-            '<summary style="cursor:pointer;font-weight:600;color:#57606a">'
-            '&#128214;&nbsp;View the lesson for this assignment</summary>'
-            '<div style="margin-top:12px">'
-            + md_to_html(rf.read_text(), f"{module_dir}/{lesson_path}")
-            + '</div></details>')
+# ── Live lesson view (view.html on GitHub Pages) ───────────────────────────────
+# Canvas never holds rendered lesson content any more. Every assignment/page the
+# hub creates carries a link to (and an embedded frame of) the repo's serverless
+# viewer, which fetches the markdown from GitHub for one git ref and renders it
+# in the browser. Content edits therefore reach Canvas the moment they are
+# pushed — no re-sync — and each teacher's schedule names the ref (branch or
+# tag) its course follows, so two teachers can run different branches from one
+# repo and take main's changes only when they merge them.
+
+REF_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._/-]*$")
+
+def schedule_ref(sched):
+    """Git ref a schedule's Canvas links follow (default: the repo's main branch)."""
+    ref = (sched or {}).get("ref") or ""
+    return ref.strip() if REF_RE.match(ref.strip() or "") else GITHUB_BRANCH
+
+def viewer_url(ref, lesson=None, path=None, reviews=(), homework=True, local=False):
+    """URL of view.html for one lesson day or one file.
+
+    lesson  — 'Module/Lesson': composed class day (README, reviews, ASSIGNMENT.md)
+    path    — 'Module/Lesson/README.md': a single file
+    reviews — repo paths of review fragments to stack as purple blocks
+    homework=False leaves ASSIGNMENT.md out (content page / no-homework day)
+    local=True targets this hub (reads the working tree via /raw/) — for previews only
+    """
+    params = []
+    if local:
+        params.append(("src", "/raw/"))
+    params.append(("ref", ref or GITHUB_BRANCH))
+    if lesson:
+        params.append(("lesson", lesson))
+    if path:
+        params.append(("path", path))
+    for r in reviews:
+        params.append(("review", r))
+    if not homework:
+        params.append(("hw", "0"))
+    root = "" if local else PAGES_URL
+    return f"{root}/view.html?{urlencode(params, safe='/')}"
+
+def _review_paths(review_ref):
+    """Repo paths of the review fragments in a `review` field (one ref or a list)."""
+    out = []
+    for rev in _review_refs({"review": review_ref}):
+        if rev.get("module") and rev.get("path") and rev.get("file"):
+            out.append(f"{rev['module']}/{rev['path']}/review/{rev['file']}")
+    return out
+
+def live_stub_html(url, has_homework=True):
+    """The whole Canvas description: a button to the live page plus an embedded
+    frame of it. Inline styles only — Canvas strips classes and scripts."""
+    what = "lesson and assignment" if has_homework else "lesson"
+    u = html.escape(url, quote=True)
+    return (f'<p><a href="{u}" target="_blank" rel="noopener" '
+            'style="display:inline-block;background:#0969da;color:#ffffff;font-weight:600;'
+            'padding:8px 14px;border-radius:6px;text-decoration:none">'
+            f'&#128214;&nbsp;Open the {what}</a> '
+            '<span style="color:#57606a;margin-left:8px">Always the current version, '
+            f'straight from the {html.escape(REPO_LABEL)} repo.</span></p>\n'
+            f'<iframe src="{u}" title="Lesson" width="100%" height="900" loading="lazy" allowfullscreen '
+            'style="width:100%;height:900px;border:1px solid #d0d7de;border-radius:6px;background:#ffffff">'
+            '</iframe>')
+
+def live_description(ref, module_dir, lesson_path, review_ref, include_assignment=True):
+    """Canvas description for a class day: the live-view stub for the lesson
+    (README + attached reviews + ASSIGNMENT.md unless include_assignment is
+    False), or '' when there is nothing to show."""
+    lesson = f"{module_dir}/{lesson_path}" if module_dir and lesson_path else None
+    reviews = _review_paths(review_ref)
+    if not lesson and not reviews:
+        return ""
+    has_hw = bool(include_assignment and lesson
+                  and (TOPICS / module_dir / lesson_path / "ASSIGNMENT.md").exists())
+    url = viewer_url(ref, lesson=lesson, reviews=reviews, homework=include_assignment)
+    return live_stub_html(url, has_homework=has_hw)
+
+_VIEWER_REF_RE = re.compile(r"view\.html\?(?:[^\"'<>]*?&(?:amp;)?)?ref=([^&\"'<>;]+)")
+
+def viewer_ref_in(description):
+    """Git ref a Canvas description's live-view link follows, or None when the
+    description is a pre-live-view snapshot (or has no lesson content)."""
+    m = _VIEWER_REF_RE.search(description or "")
+    return html.unescape(m.group(1)) if m else None
 
 # ── Canvas helpers ─────────────────────────────────────────────────────────────
 
@@ -442,6 +508,11 @@ def api_next_unit(course_id):
     return jsonify({"next_unit": max(nums) + 1 if nums else 0,
                     "existing_count": len(modules)})
 
+def _drawer_review_refs(a):
+    """Review references a Create-Module drawer row carries: `review_refs`
+    (all refs of a saved module row) or the legacy single `review_ref`."""
+    return a.get("review_refs") or ([a["review_ref"]] if a.get("review_ref") else [])
+
 @app.route("/api/courses/<int:course_id>/create-module", methods=["POST"])
 def api_create_module(course_id):
     err = no_token()
@@ -453,6 +524,9 @@ def api_create_module(course_id):
     start_date  = body.get("start_date")
     points      = body.get("points_per_assignment", 10)
     topics      = body.get("topic_names", [])
+    ref         = body.get("ref") or GITHUB_BRANCH
+    if not REF_RE.match(ref):
+        return jsonify({"error": f"invalid git ref '{ref}'"}), 400
 
     if len(topics) == 1:
         mod_name = f"Unit {unit_num}: {topics[0]}"
@@ -498,7 +572,10 @@ def api_create_module(course_id):
             if a.get("kind") == "page":
                 pname = f"{unit_num}.{a['day']}{_day_sub_suffix(a)}: {a['title']}"
                 parts = []
-                if a.get("review_markdown"):
+                stub = live_description(ref, "", "", _drawer_review_refs(a), include_assignment=False)
+                if stub:
+                    parts.append(stub)
+                elif a.get("review_markdown"):      # content-only review (no repo ref) — baked
                     parts.append(review_block_html(md_to_html(a["review_markdown"])))
                 parts.append("<p>In-class day — no assignment due.</p>")
                 page, perr = create_canvas_page(course_id, module_id, pname, "\n".join(parts))
@@ -511,21 +588,22 @@ def api_create_module(course_id):
         duration = a.get("duration", 1)
         name     = f"{unit_num}.{day}{_day_sub_suffix(a)}: {a['title']}"
 
-        # Build HTML description
+        # Build HTML description: the live-view stub (lesson + referenced
+        # reviews + ASSIGNMENT.md, fetched from GitHub when the student opens
+        # it). A review that arrived as bare markdown with no repo reference
+        # can't be linked, so it is baked in below the stub as before.
         html_parts = []
         mod_dir  = a.get("_module", "")
         lesson_p = a.get("path", "")
-
-        # Lesson context (collapsible, so the student can pull up the day's
-        # README without leaving Canvas)
-        readme_html = _lesson_readme_html(mod_dir, lesson_p)
-        if readme_html:
-            html_parts.append(readme_html)
-
-        # Review sections (rendered markdown) — one block per attached fragment
-        for review_md in (a.get("review_markdowns")
-                          or ([a["review_markdown"]] if a.get("review_markdown") else [])):
-            html_parts.append(review_block_html(md_to_html(review_md)))
+        refs = _drawer_review_refs(a)
+        stub = live_description(ref, mod_dir, lesson_p, refs,
+                                include_assignment=not a.get("no_assignment"))
+        if stub:
+            html_parts.append(stub)
+        if not refs:
+            for review_md in (a.get("review_markdowns")
+                              or ([a["review_markdown"]] if a.get("review_markdown") else [])):
+                html_parts.append(review_block_html(md_to_html(review_md)))
 
         # 'no assignment' day: lesson content becomes a Canvas Page — no
         # homework spec, no points, no due date
@@ -536,13 +614,6 @@ def api_create_module(course_id):
             else:
                 results.append(page)
             continue
-
-        # Assignment content from ASSIGNMENT.md
-        if mod_dir and lesson_p:
-            assign_file = TOPICS / mod_dir / lesson_p / "ASSIGNMENT.md"
-            if assign_file.exists():
-                assign_html = md_to_html(assign_file.read_text(), f"{mod_dir}/{lesson_p}")
-                html_parts.append(assign_html)
 
         description = "\n".join(html_parts)
 
@@ -567,7 +638,7 @@ def api_create_module(course_id):
                                                  "content_id": asgn_id}})
         results.append({"name": name, "assignment_id": asgn_id, "linked": mr.ok})
 
-    for key in [f"modules_{course_id}", f"assignments_{course_id}"]:
+    for key in [f"modules_{course_id}", f"assignments_{course_id}", f"assignments_ref_{course_id}"]:
         p = cache_path(key)
         if p.exists():
             p.unlink()
@@ -731,6 +802,7 @@ def api_github_saved_module(slug):
         if contents:
             a["review_markdowns"] = contents
             a["review_markdown"] = "\n\n---\n\n".join(contents)  # legacy single field
+            a["review_refs"] = refs           # live view links reviews by reference
             if len(refs) == 1:
                 a["review_ref"] = refs[0]
     return jsonify(mod)
@@ -992,6 +1064,7 @@ DEFAULT_SCHEDULE = {
     "meeting_days": [0, 1, 2, 3, 4],   # weekday numbers, Monday=0 … Friday=4
     "no_school": [],                   # [{"date": "YYYY-MM-DD", "label": "…"}]
     "show_day0_syllabus": False,        # reserve the first class day for the syllabus (see resolve_schedule)
+    "ref": "main",                      # git branch/tag this teacher's Canvas links follow (see schedule_ref)
     "sequence": [],
 }
 
@@ -1282,6 +1355,9 @@ def api_schedule(name):
         for key in ("start_date", "end_date", "sequence"):
             if key not in sched:
                 return jsonify({"error": f"missing '{key}'"}), 400
+        sched["ref"] = (sched.get("ref") or "").strip() or GITHUB_BRANCH
+        if not REF_RE.match(sched["ref"]):
+            return jsonify({"error": f"invalid git ref '{sched['ref']}' — use a branch or tag name"}), 400
         sched["updated"] = datetime.now().isoformat(timespec="seconds")
         SCHEDULES_DIR.mkdir(parents=True, exist_ok=True)
         schedule_path(name).write_text(json.dumps(sched, indent=2) + "\n")
@@ -1419,23 +1495,9 @@ def _canvas_unlock(date_str):
     d = datetime.strptime(date_str, "%Y-%m-%d")
     return d.replace(hour=0, minute=0, second=0, tzinfo=timezone.utc).isoformat()
 
-def _lesson_description(module_dir, lesson_path, review_ref, include_assignment=True):
-    html_parts = []
-    readme_html = _lesson_readme_html(module_dir, lesson_path)
-    if readme_html:
-        html_parts.append(readme_html)
-    # one purple review block per attached fragment (single ref or a list)
-    for rev in _review_refs({"review": review_ref}):
-        rf = (TOPICS / rev.get("module", "") / rev.get("path", "")
-              / "review" / rev.get("file", ""))
-        if rf.exists():
-            html_parts.append(review_block_html(md_to_html(rf.read_text())))
-    # a 'no assignment' day gets the lesson content but no homework spec
-    if include_assignment and module_dir and lesson_path:
-        af = TOPICS / module_dir / lesson_path / "ASSIGNMENT.md"
-        if af.exists():
-            html_parts.append(md_to_html(af.read_text(), f"{module_dir}/{lesson_path}"))
-    return "\n".join(html_parts)
+def _lesson_description(ref, module_dir, lesson_path, review_ref, include_assignment=True):
+    """Canvas description of a scheduled day — see live_description."""
+    return live_description(ref, module_dir, lesson_path, review_ref, include_assignment)
 
 def _sched_time_fns(sched):
     """(_due_at, _unlock_at) for a schedule. With a bound class calendar, Canvas
@@ -1517,10 +1579,10 @@ def _expected_block_items(block):
                                  "type": "Page", "points": None, "due": None})
                 continue
             expected.append({"title": f"{unit}.{day_num}{_day_sub_suffix(a)}: {a['title']}",
-                             "type": "Assignment", "points": pts, "due": group_end(s)})
+                             "type": "Assignment", "points": pts, "due": group_end(s), "content": True})
         elif kind == "lesson" and s.get("lesson_ref"):
             expected.append({"title": f"{unit}.{day_num}: {s.get('base_title') or s['title']}",
-                             "type": "Assignment", "points": pts, "due": group_end(s)})
+                             "type": "Assignment", "points": pts, "due": group_end(s), "content": True})
         elif kind in ("test", "final"):
             expected.append({"title": f"{unit}.{day_num}: {s.get('base_title') or s['title']}",
                              "type": "Assignment", "points": s.get("points") or 100,
@@ -1548,15 +1610,19 @@ def api_schedule_sync_status(name):
 
     resolved = resolve_schedule(sched)
     _due_at, _ = _sched_time_fns(sched)
+    ref = schedule_ref(sched)
 
     try:
         modules, _, _ = cached(f"modules_{course_id}", ttl, lambda: [
             {"id": m["id"], "name": m["name"], "items_count": m.get("items_count", 0),
              "published": m.get("published"), "position": m.get("position")}
             for m in canvas_paged(f"/courses/{course_id}/modules", {"include[]": "items_count"})])
-        assignments, _, _ = cached(f"assignments_{course_id}", ttl, lambda: [
+        # own cache key: this list also remembers which git ref each
+        # description's live-view link follows (parsed out, never stored whole)
+        assignments, _, _ = cached(f"assignments_ref_{course_id}", ttl, lambda: [
             {"id": a["id"], "name": a["name"], "due_at": a.get("due_at"),
-             "points": a.get("points_possible"), "html_url": a.get("html_url")}
+             "points": a.get("points_possible"), "html_url": a.get("html_url"),
+             "viewer_ref": viewer_ref_in(a.get("description"))}
             for a in canvas_paged(f"/courses/{course_id}/assignments", {"order_by": "due_at"})])
     except Exception as e:
         return jsonify({"error": f"Canvas fetch failed: {e}"}), 502
@@ -1574,12 +1640,20 @@ def api_schedule_sync_status(name):
         except (ValueError, TypeError):
             return False
 
-    def assignment_issues(title, points, due_date):
-        """Points/due-date drift for one Canvas assignment (empty list = match)."""
+    def assignment_issues(title, points, due_date, want_ref=None):
+        """Points/due-date/ref drift for one Canvas assignment (empty list = match).
+        want_ref: the git ref its live-view link should follow (None = no content)."""
         a = asgn_by_name.get(title)
         if not a:
             return None   # not in the course's assignment list at all
         issues = []
+        if want_ref:
+            got = a.get("viewer_ref")
+            if got is None:
+                issues.append(f"“{title}”: holds a fixed content snapshot, not the live lesson view — "
+                              f"re-sync to link it to “{want_ref}”")
+            elif got != want_ref:
+                issues.append(f"“{title}”: live view follows “{got}”, schedule says “{want_ref}”")
         if points is not None and a.get("points") is not None \
                 and float(a["points"]) != float(points):
             issues.append(f"“{title}”: {a['points']:g} pts on Canvas, schedule says {points:g}")
@@ -1622,11 +1696,13 @@ def api_schedule_sync_status(name):
                     missing.append(e["title"])
                     continue
                 if e["type"] == "Assignment":
-                    drifted.extend(assignment_issues(e["title"], e["points"], e["due"]) or [])
+                    drifted.extend(assignment_issues(e["title"], e["points"], e["due"],
+                                                     ref if e.get("content") else None) or [])
             if not missing and not drifted:
                 statuses[bid] = {"status": "synced",
                                  "detail": f"It seems to be synced — “{mod_name}” has all {len(expected)} "
-                                           "item(s) with matching titles, points, and due dates"}
+                                           f"item(s) with matching titles, points, and due dates, "
+                                           f"live from “{ref}”"}
             else:
                 bits = []
                 if missing:
@@ -1644,7 +1720,8 @@ def api_schedule_sync_status(name):
                 statuses[bid] = {"status": "unsynced",
                                  "detail": f"Ready to sync — no assignment named “{title}” in the course yet"}
             else:
-                drifted = assignment_issues(title, points, block.get("end")) or []
+                drifted = assignment_issues(title, points, block.get("end"),
+                                            ref if block["type"] == "lesson" else None) or []
                 statuses[bid] = ({"status": "synced",
                                   "detail": f"It seems to be synced — “{title}” found with matching points and due date"}
                                  if not drifted else
@@ -1674,6 +1751,7 @@ def api_schedule_sync_block(name):
         return jsonify({"error": "block source is missing from the repo"}), 422
 
     _due_at, _unlock_at = _sched_time_fns(sched)
+    ref = schedule_ref(sched)
 
     results, errors = [], []
 
@@ -1729,8 +1807,8 @@ def api_schedule_sync_block(name):
                     # 'test' / plain reserve the day number and create nothing
                     if a.get("kind") == "page":
                         pname = f"{unit}.{day_num}{_day_sub_suffix(a)}: {a['title']}"
-                        desc = (_lesson_description("", "", a.get("review"))
-                                or "<p>In-class day — no assignment due.</p>")
+                        desc = _lesson_description(ref, "", "", a.get("review"))
+                        desc = (desc + "\n" if desc else "") + "<p>In-class day — no assignment due.</p>"
                         page, perr = create_canvas_page(course_id, module_id, pname, desc)
                         if perr:
                             errors.append({"name": pname, "error": perr})
@@ -1740,7 +1818,7 @@ def api_schedule_sync_block(name):
                 if a.get("no_assignment"):
                     # content page instead of homework — no points, no due date
                     pname = f"{unit}.{day_num}{_day_sub_suffix(a)}: {a['title']}"
-                    desc = _lesson_description(a.get("_module"), a.get("path"),
+                    desc = _lesson_description(ref, a.get("_module"), a.get("path"),
                                                a.get("review"), include_assignment=False)
                     page, perr = create_canvas_page(course_id, module_id, pname, desc)
                     if perr:
@@ -1749,13 +1827,13 @@ def api_schedule_sync_block(name):
                         results.append(page)
                     continue
                 create_assignment(f"{unit}.{day_num}{_day_sub_suffix(a)}: {a['title']}", points,
-                                  _lesson_description(a.get("_module"), a.get("path"),
+                                  _lesson_description(ref, a.get("_module"), a.get("path"),
                                                       a.get("review")),
                                   group_end(s), s.get("date"), module_id)
             elif kind == "lesson" and s.get("lesson_ref"):
-                ref = s["lesson_ref"]
+                lref = s["lesson_ref"]
                 create_assignment(f"{unit}.{day_num}: {s.get('base_title') or s['title']}", points,
-                                  _lesson_description(ref.get("module"), ref.get("path"), None),
+                                  _lesson_description(ref, lref.get("module"), lref.get("path"), None),
                                   group_end(s), s.get("date"), module_id)
             elif kind in ("test", "final"):
                 label = "final exam" if kind == "final" else "test"
@@ -1765,7 +1843,7 @@ def api_schedule_sync_block(name):
                                   group_end(s), s.get("date"), module_id)
             # review / flex / custom / gap days are schedule-only — nothing in Canvas
         payload_out = {"module_id": module_id, "module_name": mod_name, "unit_number": unit,
-                       "created": results, "errors": errors}
+                       "ref": ref, "created": results, "errors": errors}
     else:
         kind = block["type"]
         first = block["slots"][0] if block.get("slots") else {}
@@ -1776,15 +1854,15 @@ def api_schedule_sync_block(name):
                               f"<p>In-class {label}. Details will be provided in class.</p>",
                               block.get("end"), block.get("start"))
         elif kind == "lesson":
-            ref = first.get("lesson_ref") or {}
+            lref = first.get("lesson_ref") or {}
             create_assignment(title, block.get("points") or 10,
-                              _lesson_description(ref.get("module"), ref.get("path"), None),
+                              _lesson_description(ref, lref.get("module"), lref.get("path"), None),
                               block.get("end"), block.get("start"))
         else:
             return jsonify({"error": f"'{kind}' days are schedule-only — nothing to sync"}), 422
-        payload_out = {"created": results, "errors": errors}
+        payload_out = {"ref": ref, "created": results, "errors": errors}
 
-    for key in [f"modules_{course_id}", f"assignments_{course_id}"]:
+    for key in [f"modules_{course_id}", f"assignments_{course_id}", f"assignments_ref_{course_id}"]:
         p = cache_path(key)
         if p.exists():
             p.unlink()
@@ -2487,11 +2565,52 @@ def api_editor_asset_delete():
 
 # ── Frontend ───────────────────────────────────────────────────────────────────
 
+def local_branch():
+    """Branch checked out in this working tree (what the hub's previews show)."""
+    try:
+        head = (ROOT / ".git" / "HEAD").read_text().strip()
+        return head.split("refs/heads/", 1)[1] if "refs/heads/" in head else head[:12]
+    except OSError:
+        return GITHUB_BRANCH
+
+def hub_config():
+    return {"course_name": COURSE_NAME, "repo_label": REPO_LABEL, "github_repo": GITHUB_REPO,
+            "github_branch": GITHUB_BRANCH, "pages_url": PAGES_URL, "local_branch": local_branch()}
+
+@app.route("/api/config")
+def api_config():
+    return jsonify(hub_config())
+
 @app.route("/")
 def index():
     page = (HERE / "index.html").read_text(encoding="utf-8")
     page = page.replace("__COURSE_NAME__", COURSE_NAME).replace("__REPO_LABEL__", REPO_LABEL)
+    page = page.replace("__HUB_CONFIG__", json.dumps(hub_config()))
     return app.response_class(page, mimetype="text/html")
+
+# The live lesson viewer, served from the repo root so the hub can preview the
+# working tree exactly as students will see it once pushed: view.html fetches
+# its files from /raw/ (same origin) instead of raw.githubusercontent.com.
+RAW_EXT = {".md", ".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp"}
+
+def _no_store(resp):
+    resp.headers["Cache-Control"] = "no-store"
+    return resp
+
+@app.route("/view.html")
+def viewer_page():
+    return _no_store(send_file(ROOT / "view.html", mimetype="text/html"))
+
+@app.route("/raw/<path:relpath>")
+def raw_file(relpath):
+    target = (ROOT / relpath).resolve()
+    if not target.is_relative_to(ROOT) or not target.is_file():
+        abort(404)
+    rel_parts = target.relative_to(ROOT).parts
+    if any(part.startswith(".") for part in rel_parts) or target.suffix.lower() not in RAW_EXT:
+        abort(404)                              # never dotfiles (.env) or non-content files
+    mime = "text/markdown" if target.suffix.lower() == ".md" else None
+    return _no_store(send_file(target, mimetype=mime))
 
 if __name__ == "__main__":
     print(f"HW Course Hub ({COURSE_NAME}) → http://127.0.0.1:5050")
