@@ -14,6 +14,17 @@ window.MathJax = {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
 <script>window.HUB_CONFIG = __HUB_CONFIG__;</script>
+<script>
+/* Theme before first paint: 'dark' (the default) or 'light' (the HW look). */
+try {
+  var q = new URLSearchParams(location.search).get('theme');           // ?theme=light|dark forces and remembers
+  if (q === 'light' || q === 'dark') localStorage.setItem('hubTheme', q);
+  document.documentElement.dataset.theme = localStorage.getItem('hubTheme') || 'dark';
+} catch (e) { document.documentElement.dataset.theme = 'dark'; }
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700;900&display=swap">
 <link rel="stylesheet" href="/static/app.css">
 </head>
 <body>
@@ -30,6 +41,8 @@ window.MathJax = {
     <button class="tab-btn" data-tab="editor">Module Editor</button>
     <button class="tab-btn" data-tab="syllabus">Syllabus</button>
   </nav>
+  <button class="theme-toggle" id="themeToggle" type="button" onclick="Shell.toggleTheme()"
+          title="Switch between the dark theme and the HW light theme">Light theme</button>
 </header>
 
 <!-- ══════════════════════════ COURSES ══════════════════════════ -->

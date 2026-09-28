@@ -13,13 +13,27 @@ window.Shell = (() => {
     else if (ns && ns.onShow) ns.onShow();   // re-shown: refresh repo-derived lists
   }
 
+  // Dark is the default; 'light' is the HW look (see app.css "Light theme").
+  // The choice lives in localStorage and is applied before first paint by the
+  // inline script in index.html — this only keeps the switch label in step.
+  function applyTheme(theme) {
+    document.documentElement.dataset.theme = theme;
+    try { localStorage.setItem('hubTheme', theme); } catch (e) { /* private window */ }
+    const btn = document.getElementById('themeToggle');
+    if (btn) btn.textContent = theme === 'light' ? 'Dark theme' : 'Light theme';
+  }
+  function toggleTheme() {
+    applyTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light');
+  }
+
   function init() {
+    applyTheme(document.documentElement.dataset.theme || 'dark');
     document.querySelectorAll('.tab-btn').forEach(b => b.onclick = () => show(b.dataset.tab));
     const start = (location.hash || '').replace('#', '') || localStorage.getItem('hubTab') || 'courses';
     show(['courses', 'schedule', 'planner', 'editor', 'syllabus'].includes(start) ? start : 'courses');
   }
 
-  return {init, show};
+  return {init, show, toggleTheme};
 })();
 
 // ── Shared helpers ────────────────────────────────────────────────────────────
