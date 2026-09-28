@@ -431,7 +431,7 @@ function quizSelect(a, i) {
       '</option>').join('') + '</optgroup>';
   });
   const known = a.quiz_id && quizzes.some(q => q.quiz_id === a.quiz_id);
-  return '<select class="ph-kind" style="max-width:280px" id="plquiz_' + i + '"' +
+  return '<select class="ph-kind quiz-pick" id="plquiz_' + i + '"' +
            ' title="Quiz from the private Exams repo — only its quiz_id is saved in this repo"' +
            ' onchange="Planner.onPlaceholderQuiz(' + i + ', this.value)">' + opts + '</select>' +
          (a.quiz_id && !known ? note('quiz ' + esc(a.quiz_id) + ' is not in ../Exams', true) : '');
@@ -564,9 +564,8 @@ function renderLessonRow(a, i, unitNum) {
           '<option value=""' + (!a.kind ? ' selected' : '') + '>Assignment (fill in later)</option>' +
           '<option value="page"' + (a.kind === 'page' ? ' selected' : '') + '>Page — no homework</option>' +
           '<option value="test"' + (a.kind === 'test' ? ' selected' : '') + '>Test day — reserve number</option>' +
-          '<option value="quiz"' + (a.kind === 'quiz' ? ' selected' : '') + '>Quiz — from the private Exams repo</option>' +
+          '<option value="quiz"' + (a.kind === 'quiz' ? ' selected' : '') + '>Quiz (Exams repo)</option>' +
         '</select>' +
-        (a.kind === 'quiz' ? quizSelect(a, i) : '') +
         '<button type="button" class="lesson-remove-btn" title="Remove this day" ' +
           'onclick="Planner.removePlaceholder(' + i + ')">&#x2715;</button>' +
       '</div>'
@@ -595,6 +594,9 @@ function renderLessonRow(a, i, unitNum) {
           '<span>+ Review</span>' +
         '</label>' +
       '</div>' +
+      (a.kind === 'quiz'
+        ? '<div class="quiz-panel" id="plquizpanel_' + i + '"><span>Quiz from the private Exams repo:</span>' + quizSelect(a, i) + '</div>'
+        : '') +
       '<div class="review-panel" id="plrpanel_' + i + '" style="display:none">' +
         '<div class="review-picker">' +
           '<select id="plrmod_' + i + '" onchange="Planner.onReviewModuleChange(' + i + ')"></select>' +

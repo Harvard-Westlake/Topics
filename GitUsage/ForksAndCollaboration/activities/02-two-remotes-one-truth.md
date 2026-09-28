@@ -6,22 +6,20 @@
 
 ## Task
 
-1. On GitHub, fork the repository `octocat/Spoon-Knife` — GitHub's official practice-fork repo.
-2. In your terminal, clone **your fork** and step inside:
+1. In your terminal, fork `octocat/Spoon-Knife` — GitHub's official practice-fork repo — and clone your fork in one step, then step inside:
    ```bash
-   git clone git@github.com:YOUR-USERNAME/Spoon-Knife.git
+   gh repo fork octocat/Spoon-Knife --clone
    cd Spoon-Knife
    ```
-3. Still in your terminal, wire up the second remote and inspect both:
+2. Still in your terminal, inspect the remotes `gh` configured for you:
    ```bash
-   git remote add upstream git@github.com:octocat/Spoon-Knife.git
    git remote -v
    ```
-   You should see four lines: `origin` fetch/push pointing at your account, `upstream` fetch/push pointing at octocat — exactly the two boxes in the diagram.
-4. Fetch from upstream and compare the two remotes' views of main:
+   You should see four lines: `origin` fetch/push pointing at your account, `upstream` fetch/push pointing at octocat — exactly the two boxes in the diagram. (Had you forked on the website and cloned by hand, `git remote add upstream git@github.com:octocat/Spoon-Knife.git` is the one line that adds the second box.)
+3. Fetch from upstream and compare the two remotes' views of main:
    ```bash
    git fetch upstream
    git log origin/main -1 --oneline
    git log upstream/main -1 --oneline
    ```
-5. Write one sentence for each remote: which one can you push to, and why?
+4. Write one sentence for each remote: which one can you push to, and why?

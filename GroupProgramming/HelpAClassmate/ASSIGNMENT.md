@@ -13,8 +13,8 @@
 
 For each run:
 
-1. **Fork** your assigned classmate's repository
-2. **Clone** your fork to your machine
+1. **Fork and clone** your assigned classmate's repository in one step: `gh repo fork THEIR-USERNAME/their-repo --clone`
+2. **Check the remotes** — `git remote -v` shows `origin` (your fork, where you push) and `upstream` (theirs)
 3. **Follow the instructions in their README.md** to get their project up and running
 4. **Solve one of the features in their MVP.md** — work in a feature-named branch with meaningful commits
 5. **Update their MVP.md** to reflect what you completed

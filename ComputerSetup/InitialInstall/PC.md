@@ -16,11 +16,12 @@
 3. [Create your GitHub account and enable two-factor authentication](#3-github-account)
 4. [Install Git inside Ubuntu](#4-git)
 5. [Generate an SSH key, load it into ssh-agent, and connect it to GitHub](#5-ssh-keys-for-github)
-6. [Install GitKraken and sign in with your GitHub account](#6-gitkraken)
-7. [Install VS Code and the Java extension pack](#7-visual-studio-code)
-8. [Install Java 25 LTS for Windows](#8-java-25-lts)
-9. [Verify that Git, Java, and your SSH key all work](#9-verify-your-setup)
-10. [Add a photo and submit your GitHub profile URL](#10-update-your-github-profile)
+6. [Install the GitHub CLI inside Ubuntu and sign in with your SSH key](#6-github-cli)
+7. [Install GitKraken and sign in with your GitHub account](#7-gitkraken)
+8. [Install VS Code and the Java extension pack](#8-visual-studio-code)
+9. [Install Java 25 LTS for Windows](#9-java-25-lts)
+10. [Verify that Git, Java, the GitHub CLI, and your SSH key all work](#10-verify-your-setup)
+11. [Add a photo and submit your GitHub profile URL](#11-update-your-github-profile)
 
 ---
 
@@ -200,7 +201,38 @@ Hi your-username! You've successfully authenticated, but GitHub does not provide
 
 ---
 
-## <font color="#388bfd">6. GitKraken</font>
+## <font color="#388bfd">6. GitHub CLI</font>
+
+The **GitHub CLI** (`gh`) drives GitHub from the terminal. It creates repositories, forks, and clones without a trip to the website, using the SSH key you just made. In this course it is the terminal way to put a local project on GitHub.
+
+In the **Ubuntu app**, install it:
+
+```bash
+sudo apt update && sudo apt install gh -y
+```
+
+Sign in once:
+
+```bash
+gh auth login
+```
+
+Answer the prompts in order: **GitHub.com** → **SSH** → **Skip** when it offers to upload a key (yours is already on GitHub from step 5) → **Login with a web browser**. Copy the one-time code it shows, press Enter, then open the link it prints in your Windows browser and paste the code.
+
+Verify:
+
+```bash
+gh auth status
+# ✓ Logged in to github.com account your-username (keyring)
+# - Git operations protocol: ssh
+```
+
+> **Tip:**
+> If `apt` cannot find `gh`, follow the Linux steps on GitHub's [install page for the CLI](https://github.com/cli/cli/blob/trunk/docs/install_linux.md) to add its package source, then run the install again. If the protocol line says `https` instead of `ssh`, run `gh config set git_protocol ssh`.
+
+---
+
+## <font color="#388bfd">7. GitKraken</font>
 
 GitKraken is a visual interface for Git that you'll use in class.
 
@@ -212,7 +244,7 @@ GitKraken is a visual interface for Git that you'll use in class.
 
 ---
 
-## <font color="#388bfd">7. Visual Studio Code</font>
+## <font color="#388bfd">8. Visual Studio Code</font>
 
 1. Download and install VS Code from [code.visualstudio.com/download](https://code.visualstudio.com/download)
 2. Open VS Code
@@ -223,7 +255,7 @@ GitKraken is a visual interface for Git that you'll use in class.
 
 ---
 
-## <font color="#388bfd">8. Java 25 LTS</font>
+## <font color="#388bfd">9. Java 25 LTS</font>
 
 Go to [Windows Java Downloads — Oracle](https://www.oracle.com/java/technologies/downloads/#jdk25-windows) and download the **x64 Installer**.
 
@@ -231,7 +263,7 @@ Run the installer and follow the prompts.
 
 ---
 
-## <font color="#388bfd">9. Verify Your Setup</font>
+## <font color="#388bfd">10. Verify Your Setup</font>
 
 ### <font color="#79c0ff">Confirm your terminal environment</font>
 
@@ -240,9 +272,12 @@ Open the **Ubuntu app** and check the core tools:
 ```bash
 git --version
 # git version 2.x.x
+
+gh auth status
+# ✓ Logged in to github.com account your-username
 ```
 
-You should see a version number, not an error.
+You should see a version number and a green check, not errors.
 
 Then confirm your SSH key still authenticates to GitHub:
 
@@ -272,7 +307,7 @@ Take a screenshot of the output — you may need to submit it.
 
 ---
 
-## <font color="#388bfd">10. Update Your GitHub Profile</font>
+## <font color="#388bfd">11. Update Your GitHub Profile</font>
 
 On your GitHub account:
 

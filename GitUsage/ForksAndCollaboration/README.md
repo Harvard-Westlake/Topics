@@ -68,12 +68,16 @@ For each scenario, write down **branch**, **collaborator**, or **fork**, plus on
 
 ## <font color="#388bfd">How to Fork a Repository</font>
 
-1. Navigate to any public repository on GitHub
-2. Click the **Fork** button in the top-right corner of the page
-3. Select your account as the destination
-4. GitHub creates a full copy of the repository under your account — you will see **"forked from [original]"** under the repo name
+**In your terminal** — the way this course does it — one command forks the repository under your account and clones that fork onto your machine:
 
-Your fork is now completely independent of the original. Changes you make to your fork do not affect the original, and changes to the original do not automatically appear in your fork.
+```bash
+gh repo fork ORIGINAL-OWNER/repo-name --clone
+cd repo-name
+```
+
+**On the website:** open any public repository on GitHub, click the **Fork** button in the top-right corner, select your account as the destination, and GitHub creates a full copy under your account — you will see **"forked from [original]"** under the repo name. You then clone it yourself (next section).
+
+Either way, your fork is now completely independent of the original. Changes you make to your fork do not affect the original, and changes to the original do not automatically appear in your fork.
 
 > **Note:**
 > A fork copies the whole history — every commit, every branch. It is the same "living repository" idea from Day 1's Clone vs. ZIP challenge, just copied *account-to-account* instead of *cloud-to-laptop*.
@@ -82,22 +86,24 @@ Your fork is now completely independent of the original. Changes you make to you
 
 ## <font color="#388bfd">Cloning Your Fork</font>
 
-Fork first on GitHub, then clone **your fork** (not the original) to your local machine:
+If you used `gh repo fork --clone`, this step already happened. If you forked on the website, clone **your fork** (not the original) to your local machine:
 
 ```bash
-git clone git@github.com:YOUR-USERNAME/repo-name.git
+gh repo clone YOUR-USERNAME/repo-name
 cd repo-name
 ```
 
-After cloning, `origin` points to your fork:
+After cloning, `origin` points to your fork — and when `gh` did the forking, it also added a second remote, `upstream`, pointing at the original:
 
 ```bash
 git remote -v
-# origin  git@github.com:YOUR-USERNAME/repo-name.git (fetch)
-# origin  git@github.com:YOUR-USERNAME/repo-name.git (push)
+# origin    git@github.com:YOUR-USERNAME/repo-name.git (fetch)
+# origin    git@github.com:YOUR-USERNAME/repo-name.git (push)
+# upstream  git@github.com:ORIGINAL-OWNER/repo-name.git (fetch)
+# upstream  git@github.com:ORIGINAL-OWNER/repo-name.git (push)
 ```
 
-You can push freely to `origin` since it is your fork — no permission required.
+You can push freely to `origin` since it is your fork — no permission required. You can only *fetch* from `upstream`.
 
 ---
 
@@ -119,10 +125,10 @@ Working on a branch (rather than directly on `main`) keeps your fork's main clea
 
 ## <font color="#388bfd">Keeping Your Fork in Sync</font>
 
-The original repository keeps moving after you fork it. To pull those updates into your fork, you need to configure an **upstream** remote pointing to the original:
+The original repository keeps moving after you fork it. To pull those updates into your fork, you need an **upstream** remote pointing to the original. `gh repo fork --clone` added it for you; if you cloned some other way, add it once by hand:
 
 ```bash
-# Add once — you only need to do this step once per clone
+# Only needed when upstream is missing from `git remote -v`
 git remote add upstream git@github.com:ORIGINAL-OWNER/repo-name.git
 
 # Verify both remotes are set up
@@ -158,25 +164,23 @@ Run this whenever the original repo gets new commits you want.
 
 ## Task
 
-1. On GitHub, fork the repository `octocat/Spoon-Knife` — GitHub's official practice-fork repo.
-2. In your terminal, clone **your fork** and step inside:
+1. In your terminal, fork `octocat/Spoon-Knife` — GitHub's official practice-fork repo — and clone your fork in one step, then step inside:
    ```bash
-   git clone git@github.com:YOUR-USERNAME/Spoon-Knife.git
+   gh repo fork octocat/Spoon-Knife --clone
    cd Spoon-Knife
    ```
-3. Still in your terminal, wire up the second remote and inspect both:
+2. Still in your terminal, inspect the remotes `gh` configured for you:
    ```bash
-   git remote add upstream git@github.com:octocat/Spoon-Knife.git
    git remote -v
    ```
-   You should see four lines: `origin` fetch/push pointing at your account, `upstream` fetch/push pointing at octocat — exactly the two boxes in the diagram.
-4. Fetch from upstream and compare the two remotes' views of main:
+   You should see four lines: `origin` fetch/push pointing at your account, `upstream` fetch/push pointing at octocat — exactly the two boxes in the diagram. (Had you forked on the website and cloned by hand, `git remote add upstream git@github.com:octocat/Spoon-Knife.git` is the one line that adds the second box.)
+3. Fetch from upstream and compare the two remotes' views of main:
    ```bash
    git fetch upstream
    git log origin/main -1 --oneline
    git log upstream/main -1 --oneline
    ```
-5. Write one sentence for each remote: which one can you push to, and why?
+4. Write one sentence for each remote: which one can you push to, and why?
 
 *(Standalone file: [activities/02-two-remotes-one-truth.md](activities/02-two-remotes-one-truth.md))*
 
@@ -249,8 +253,8 @@ If changes are requested, you don't open a new PR — you push more commits to t
 
 ### <font color="#79c0ff">Introductory</font>
 
-- [ ] Fork a repository on GitHub and identify that it now exists under your account.
-- [ ] Clone your fork and confirm that `origin` points to your copy, not the original.
+- [ ] Fork a repository with `gh repo fork --clone` (or the Fork button) and identify that it now exists under your account.
+- [ ] Confirm with `git remote -v` that `origin` points to your copy and `upstream` to the original.
 - [ ] Pick the right tool — branch, collaborator, or fork — for a given collaboration scenario and justify the choice.
 
 ### <font color="#79c0ff">Intermediate</font>

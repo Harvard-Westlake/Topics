@@ -6,7 +6,8 @@
 
 | Command | What it does |
 |---|---|
-| `git clone url` | Clone any repository (including your fork) |
+| `gh repo fork owner/repo --clone` | Fork a repository under your account and clone the fork (adds `origin` and `upstream`) |
+| `gh repo clone owner/repo` | Clone any repository (including your fork) over SSH |
 | `git remote -v` | List all configured remotes and their URLs |
 | `git remote add upstream url` | Add the original repo as a second remote |
 | `git fetch upstream` | Download upstream changes without merging |

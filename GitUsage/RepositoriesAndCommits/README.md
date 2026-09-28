@@ -99,31 +99,44 @@ The two stay in sync through **push** (local → remote) and **pull** (remote �
 
 ## <font color="#388bfd">Initializing a Repository</font>
 
-### <font color="#79c0ff">Recommended: create on GitHub first, then clone</font>
+### <font color="#79c0ff">Recommended: create it locally, then publish it with gh</font>
+
+Every repository starts as an ordinary folder. Turn the folder into a repository, make the first commit, and let the GitHub CLI create the matching repository on GitHub and connect the two — all from your terminal:
+
+```bash
+mkdir my-project && cd my-project
+git init
+echo "# My Project" > README.md
+git add README.md
+git commit -m "Initial commit"
+gh repo create my-project --source=. --public --push
+```
+
+`git init` creates the `.git` folder that makes this directory a repository. `gh repo create` then creates `my-project` under your GitHub account, adds it as the `origin` remote, and pushes your commit. Use `--private` instead of `--public` when the project should not be visible to everyone. Open it in the browser with `gh repo view --web`.
+
+### <font color="#79c0ff">Alternative: create on GitHub first, then clone</font>
 
 1. Go to GitHub and click **New repository**
 2. Give it a name, set it to public or private, and click **Create repository**
-3. Copy the URL and clone it (see [Cloning a Repository](#cloning-a-repository) below)
+3. Clone it (see [Cloning a Repository](#cloning-a-repository) below) with `gh repo clone your-username/repo-name`
 
-This approach sets up the remote automatically so there is nothing to configure.
+This also ends with the remote configured — it is just two places to visit instead of one.
 
-### <font color="#79c0ff">Alternative: initialize locally</font>
+### <font color="#79c0ff">What gh did for you</font>
 
-```bash
-git init
-```
-
-This creates a `.git` folder in the current directory. Git now tracks this folder. To connect it to GitHub afterward:
+Connecting a local repository to GitHub by hand takes two commands — create an empty repository on the website, then:
 
 ```bash
 git remote add origin git@github.com:username/repo-name.git
 git push -u origin main
 ```
 
+`gh repo create --source=. --push` runs exactly this wiring for you. You only need it by hand when a repository was created some other way.
+
 **In GitKraken:** folder icon (top left) → Init → Local Only → select your folder → Create Repository.
 
 > **Tip:**
-> Creating on GitHub first and cloning is cleaner for beginners — the remote is already configured when you clone.
+> Whichever path you take, finish by running `git remote -v` — if `origin` is listed, your local repository knows where its GitHub copy lives.
 
 ---
 
@@ -132,8 +145,14 @@ git push -u origin main
 **Cloning** downloads a complete copy of a repository to your machine — not just the current files but the entire commit history, all branches, and all metadata.
 
 ```bash
-git clone git@github.com:username/repo-name.git
+gh repo clone username/repo-name
 cd repo-name
+```
+
+`gh repo clone` takes the repository's `owner/name` and clones over SSH using the key you set up. It is the same as the plain Git command with the full SSH address:
+
+```bash
+git clone git@github.com:username/repo-name.git
 ```
 
 After cloning:
@@ -158,7 +177,7 @@ git remote -v
 
 Always clone. Downloading a ZIP gives you the files but none of the Git machinery that makes collaboration possible.
 
-**Finding the URL:** click the green or blue **Code** button on any GitHub repository page, select the **SSH** tab, and copy the `git@github.com:...` address. In this course we always use SSH addresses — the SSH key you set up in [Initial Install](../../ComputerSetup/InitialInstall/) authenticates every clone, pull, and push automatically.
+**Finding the name:** the `owner/name` that `gh repo clone` needs is the repository's page address after `github.com/`. For plain `git clone` or GitKraken you need the full SSH address instead: click the green or blue **Code** button on any GitHub repository page, select the **SSH** tab, and copy the `git@github.com:...` address. In this course we always use SSH — the key you set up in [Initial Install](../../ComputerSetup/InitialInstall/) authenticates every clone, pull, and push automatically.
 
 **In GitKraken:** click **Clone a Repo** on the home screen → paste the repository URL → choose a destination folder → click **Clone the repo!**
 
@@ -173,7 +192,7 @@ Always clone. Downloading a ZIP gives you the files but none of the Git machiner
 2. Click **Code → Download ZIP**. Extract the ZIP into a folder named `dead-repo`.
 3. In your terminal, clone the same repository into a folder named `live-repo`:
    ```bash
-   git clone git@github.com:octocat/Hello-World.git live-repo
+   gh repo clone octocat/Hello-World live-repo
    ```
 4. Open a terminal inside `dead-repo` and run:
    ```bash
@@ -303,7 +322,8 @@ git pull
 ## <font color="#388bfd">☑️ Check for Understanding</font>
 
 - [ ] I can explain the difference between a local repository on my machine and a remote repository on GitHub.
-- [ ] I can successfully clone a repository using its URL rather than downloading it as a ZIP file.
+- [ ] I can publish a local folder to GitHub with `gh repo create --source=. --public --push` and confirm the `origin` remote with `git remote -v`.
+- [ ] I can successfully clone a repository with `gh repo clone owner/name` (or its SSH address) rather than downloading it as a ZIP file.
 - [ ] I understand that the `.git` folder is hidden, starts with a dot, and contains my project's entire history.
 - [ ] I can explain the difference between staging (preparing) a file and committing (saving) it.
 - [ ] I can write a clear, present-tense commit message that explains what changed and why.

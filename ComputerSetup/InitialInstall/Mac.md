@@ -17,11 +17,12 @@
 4. [Install Homebrew, the macOS package manager](#4-homebrew)
 5. [Install Git with Homebrew](#5-git)
 6. [Generate an SSH key, load it into ssh-agent, and connect it to GitHub](#6-ssh-keys-for-github)
-7. [Install GitKraken and sign in with your GitHub account](#7-gitkraken)
-8. [Install VS Code and the Java extension pack](#8-visual-studio-code)
-9. [Check your chip type and install Java 25 LTS](#9-java-25-lts)
-10. [Verify that Git, Java, Homebrew, and your SSH key all work](#10-verify-your-setup)
-11. [Add a photo and submit your GitHub profile URL](#11-update-your-github-profile)
+7. [Install the GitHub CLI with Homebrew and sign in with your SSH key](#7-github-cli)
+8. [Install GitKraken and sign in with your GitHub account](#8-gitkraken)
+9. [Install VS Code and the Java extension pack](#9-visual-studio-code)
+10. [Check your chip type and install Java 25 LTS](#10-java-25-lts)
+11. [Verify that Git, Java, Homebrew, the GitHub CLI, and your SSH key all work](#11-verify-your-setup)
+12. [Add a photo and submit your GitHub profile URL](#12-update-your-github-profile)
 
 ---
 
@@ -183,7 +184,38 @@ Hi your-username! You've successfully authenticated, but GitHub does not provide
 
 ---
 
-## <font color="#388bfd">7. GitKraken</font>
+## <font color="#388bfd">7. GitHub CLI</font>
+
+The **GitHub CLI** (`gh`) drives GitHub from the terminal. It creates repositories, forks, and clones without a trip to the website, using the SSH key you just made. In this course it is the terminal way to put a local project on GitHub.
+
+Install it with Homebrew:
+
+```bash
+brew install gh
+```
+
+Sign in once:
+
+```bash
+gh auth login
+```
+
+Answer the prompts in order: **GitHub.com** → **SSH** → **Skip** when it offers to upload a key (yours is already on GitHub from step 6) → **Login with a web browser**. Copy the one-time code it shows, press Enter, and paste the code into the browser page that opens.
+
+Verify:
+
+```bash
+gh auth status
+# ✓ Logged in to github.com account your-username (keyring)
+# - Git operations protocol: ssh
+```
+
+> **Tip:**
+> If the protocol line says `https` instead of `ssh`, run `gh config set git_protocol ssh` so that `gh` clones with your SSH key like the rest of this course.
+
+---
+
+## <font color="#388bfd">8. GitKraken</font>
 
 GitKraken is a visual interface for Git that you'll use in class.
 
@@ -195,7 +227,7 @@ GitKraken is a visual interface for Git that you'll use in class.
 
 ---
 
-## <font color="#388bfd">8. Visual Studio Code</font>
+## <font color="#388bfd">9. Visual Studio Code</font>
 
 1. Download and install VS Code from [code.visualstudio.com/download](https://code.visualstudio.com/download)
 2. Open VS Code
@@ -206,7 +238,7 @@ GitKraken is a visual interface for Git that you'll use in class.
 
 ---
 
-## <font color="#388bfd">9. Java 25 LTS</font>
+## <font color="#388bfd">10. Java 25 LTS</font>
 
 ### <font color="#79c0ff">Check your chip type first</font>
 
@@ -234,11 +266,11 @@ Open the `.dmg` file and follow the installation prompts.
 
 ---
 
-## <font color="#388bfd">10. Verify Your Setup</font>
+## <font color="#388bfd">11. Verify Your Setup</font>
 
 ### <font color="#79c0ff">Confirm your terminal environment</font>
 
-Open Terminal and check the three core tools:
+Open Terminal and check the four core tools:
 
 ```bash
 git --version
@@ -249,9 +281,12 @@ java -version
 
 brew --version
 # Homebrew x.x.x
+
+gh auth status
+# ✓ Logged in to github.com account your-username
 ```
 
-All three should print version numbers, not errors.
+All four should print a version or a green check, not errors.
 
 Then confirm your SSH key still authenticates to GitHub:
 
@@ -281,7 +316,7 @@ Take a screenshot of the output — you may need to submit it.
 
 ---
 
-## <font color="#388bfd">11. Update Your GitHub Profile</font>
+## <font color="#388bfd">12. Update Your GitHub Profile</font>
 
 On your GitHub account:
 

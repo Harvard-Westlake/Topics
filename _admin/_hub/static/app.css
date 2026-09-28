@@ -555,3 +555,93 @@ section.tab.active { display: block; }
 .review-chip { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; padding: 2px 8px; background: var(--purple); color: #0d1117; border-radius: 10px; font-weight: 600; }
 .review-chip-x { cursor: pointer; font-weight: 700; opacity: .7; }
 .review-chip-x:hover { opacity: 1; }
+
+/* Planner quiz rows: the picker gets its own full-width line under the row,
+   so it can never overflow the title cell and hide behind the duration select. */
+.quiz-panel { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; background: rgba(79, 142, 247, .05); border-top: 1px dashed var(--border); padding: 6px 8px 8px 90px; font-size: 12px; color: var(--muted); }
+.quiz-panel .quiz-pick { flex: 1 1 320px; max-width: 640px; min-width: 240px; color: var(--text); }
+
+/* ── Light theme — the HW look (learn.hw.com tokens) ──────────────────────────
+   Dark above is the default and untouched. <html data-theme="light"> swaps the
+   variables for the Harvard-Westlake palette: white surfaces over a khaki wash,
+   black Source Sans type, brand-red primary buttons that turn gold on hover,
+   secondary-blue informational accents, hairline borders at black-20%. Ink
+   shades of green and orange are darkened from the brand fills so small text
+   stays legible on white; fills and tints use the exact tokens. */
+html[data-theme="light"] {
+  --hw-red: #DA0016; --hw-gold: #EDA300; --hw-black: #000000;
+  --hw-blue: #539ADC; --hw-green: #9CCA00; --hw-khaki: #BFC299; --hw-orange: #FA7300; --hw-gray: #4D4D4D;
+  --hw-blue-20: rgb(83 154 220 / 20%); --hw-green-20: rgb(156 202 0 / 20%); --hw-khaki-20: rgb(191 194 153 / 20%);
+  --hw-orange-20: rgb(250 115 0 / 20%); --hw-red-20: rgb(218 0 22 / 20%); --hw-gold-20: rgb(237 163 0 / 20%);
+  --hw-font-sans: "Source Sans 3", "Source Sans Pro", "Source Sans", Arial, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  --bg:      #ffffff;
+  --surface: #ffffff;
+  --surface2:#f6f6f1;
+  --border:  rgb(77 77 77 / 20%);
+  --accent:  var(--hw-blue);
+  --text:    var(--hw-black);
+  --muted:   var(--hw-gray);
+  --yellow:  #b35300;    /* orange ink (warning) */
+  --red:     var(--hw-red);
+  --green:   #5f8a00;    /* green ink (success) */
+  --purple:  #6f42c1;
+}
+html[data-theme="light"] body {
+  font-family: var(--hw-font-sans);
+  color: var(--hw-black);
+  background: radial-gradient(1200px 600px at 0 -10%, var(--hw-blue-20), transparent 60%),
+              linear-gradient(#ffffff, var(--hw-khaki-20));
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+}
+html[data-theme="light"] header { background: rgba(255,255,255,.85); backdrop-filter: blur(6px); }
+html[data-theme="light"] header h1 { font-weight: 900; letter-spacing: 0; }
+html[data-theme="light"] .tab-btn { font-weight: 600; }
+html[data-theme="light"] .tab-btn.active { color: var(--hw-black); border-bottom-color: var(--hw-red); }
+html[data-theme="light"] .tab-btn:hover { color: var(--hw-red); }
+
+/* primary action buttons: solid brand red, gold on hover (HW button spec) */
+html[data-theme="light"] .btn-create { background: var(--hw-red); color: #fff; font-weight: 600; transition: background .15s, color .15s; }
+html[data-theme="light"] .btn-create:hover:not(:disabled) { background: var(--hw-gold); color: #000; }
+html[data-theme="light"] .btn-icon { background: #fff; }
+html[data-theme="light"] .btn-icon:hover { border-color: var(--hw-red); color: var(--hw-red); }
+html[data-theme="light"] input:focus, html[data-theme="light"] select:focus, html[data-theme="light"] textarea:focus { box-shadow: 0 0 0 3px var(--hw-red-20); }
+
+/* tinted fills that were hard-coded for the dark surface */
+html[data-theme="light"] .status-pill.live, html[data-theme="light"] .status-pill.saved { background: var(--hw-green-20); }
+html[data-theme="light"] .status-pill.cache, html[data-theme="light"] .status-pill.saving, html[data-theme="light"] .status-pill.loading { background: var(--hw-blue-20); }
+html[data-theme="light"] .status-pill.cache-fallback { background: var(--hw-orange-20); }
+html[data-theme="light"] .status-pill.error { background: var(--hw-red-20); }
+html[data-theme="light"] .badge-year { background: var(--hw-blue-20); }
+html[data-theme="light"] .badge-subj { background: rgba(111,66,193,.14); }
+html[data-theme="light"] .badge-other, html[data-theme="light"] .badge-unpub { background: var(--hw-gold-20); }
+html[data-theme="light"] .badge-concl { background: var(--hw-red-20); }
+html[data-theme="light"] .sub-btn.active, html[data-theme="light"] .sub-btn-new:hover { background: var(--hw-blue-20); }
+html[data-theme="light"] .sub-btn-unlocked:hover { background: var(--hw-green-20); }
+html[data-theme="light"] .warn { background: var(--hw-orange-20); border-color: rgb(250 115 0 / 50%); }
+html[data-theme="light"] .kb-lesson { background: var(--hw-blue-20); }
+html[data-theme="light"] .kb-test { background: var(--hw-gold-20); }
+html[data-theme="light"] .kb-final { background: var(--hw-red-20); }
+html[data-theme="light"] .kb-review { background: rgba(111,66,193,.14); }
+html[data-theme="light"] .kb-flex, html[data-theme="light"] .kb-day0 { background: var(--hw-green-20); }
+html[data-theme="light"] .kb-custom { background: var(--hw-khaki-20); }
+html[data-theme="light"] .mini-btn.sync:hover { background: var(--hw-green-20); }
+html[data-theme="light"] .slot-row:hover { background: rgba(0,0,0,.03); }
+html[data-theme="light"] .slot-row.ins { background: rgba(111,66,193,.06); }
+html[data-theme="light"] .stale-note { background: var(--hw-orange-20); }
+html[data-theme="light"] .me-impact.ok { background: var(--hw-green-20); }
+html[data-theme="light"] .me-impact.warn { background: var(--hw-orange-20); }
+html[data-theme="light"] .sync-dot.ok { background: var(--hw-green-20); }
+html[data-theme="light"] .sync-dot.part { background: var(--hw-gold-20); }
+html[data-theme="light"] .sync-dot.ready { background: var(--hw-blue-20); }
+html[data-theme="light"] .lesson-row.placeholder-row, html[data-theme="light"] .quiz-panel { background: rgb(83 154 220 / 8%); }
+html[data-theme="light"] .lesson-row.placeholder-row:hover { background: rgb(83 154 220 / 14%); }
+html[data-theme="light"] .review-chip { color: #fff; }
+html[data-theme="light"] .modal,
+html[data-theme="light"] .course-card,
+html[data-theme="light"] .panel { box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+
+/* the header switch itself */
+.theme-toggle { margin-left: 14px; background: var(--surface); border: 1px solid var(--border); color: var(--muted); border-radius: 20px; padding: 6px 12px; font-size: 12px; font-family: inherit; cursor: pointer; white-space: nowrap; transition: border-color .15s, color .15s; }
+.theme-toggle:hover { border-color: var(--accent); color: var(--text); }

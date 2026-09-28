@@ -6,21 +6,34 @@
 
 ---
 
-## Part 1 — Create and Clone a Repository
+## Part 1 — Create and Publish a Repository
 
-1. Go to GitHub and create a new **public** repository. Give it a meaningful name related to this course.
-2. Copy the repository's SSH address from the **Code** button — select the **SSH** tab; the address looks like `git@github.com:your-username/your-repo-name.git`.
-3. Open your terminal, navigate to where you keep your projects, and clone it:
+1. Open your terminal and navigate to where you keep your projects. Create a folder with a meaningful name related to this course and turn it into a repository:
 
 ```bash
-git clone git@github.com:your-username/your-repo-name.git
-cd your-repo-name
+mkdir your-repo-name && cd your-repo-name
+git init
 ```
 
-4. Verify the remote is configured:
+2. Give it a first file and a first commit:
+
+```bash
+echo "# Your Repo Name" > README.md
+git add README.md
+git commit -m "Initial commit"
+```
+
+3. Publish it to GitHub as a **public** repository — one command creates it under your account, connects it as `origin`, and pushes:
+
+```bash
+gh repo create your-repo-name --source=. --public --push
+```
+
+4. Verify the remote is configured, then open the repository page:
 
 ```bash
 git remote -v
+gh repo view --web
 ```
 
 ---
@@ -67,8 +80,8 @@ git push
 
 Before submitting, confirm each of the following:
 
-- [ ] **Repository created on GitHub** — it is publicly visible
-- [ ] **Repository cloned locally** — you ran `git clone` and confirmed with `git remote -v`
+- [ ] **Repository created locally and published** — you ran `git init`, made a first commit, and published with `gh repo create --source=. --public --push`
+- [ ] **Remote configured** — `git remote -v` lists `origin` and the repository is publicly visible on GitHub
 - [ ] **File created and edited** — `journal.md` exists with at least two sentences
 - [ ] **Staged correctly** — you ran `git add` and confirmed staged status with `git status`
 - [ ] **Committed with a meaningful message** — the message describes what was added, not just "update"
