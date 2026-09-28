@@ -134,6 +134,14 @@ The course is fluid by design: new days get inserted mid-unit after teachers hav
 
 When adding a lesson to a topic that is on the calendar, finish with step 1 (`insert`) and tell the teacher which blocks to re-sync.
 
+### Quizzes (private Exams repo, linked by `quiz_id`)
+
+Quiz questions never enter this public repo. They live in the private sibling **Exams** repo, one folder per quiz at `Exams/<Class>/<Topic>/Quizzes/<slug>/` (Class = `repo_label` in course.json, so `Exams/Topics/GitProject/Quizzes/git-part2-init-and-blobs-quiz/`), encrypted at rest by `Exams/Tools/examcrypt/examcrypt.py` (key = the folder's initial commit, ledger in the git-ignored `Exams/.security.env`). Only three plaintext files are tracked there: `README.md`, `exam-content.tar.enc`, and **`quiz.meta.json`** — an opaque `quiz_id`, title, points, question count, paired lesson. Nothing sensitive.
+
+- **The link is the `quiz_id`.** A curated module row `{"placeholder": true, "kind": "quiz", "quiz_id": "<id>", "title": …}` is all this repo stores. The hub reads `quiz.meta.json` files from the Exams checkout (`EXAMS_DIR`, default `../Exams`; `EXAMS_CLASS`, default the repo label) via `/api/quizzes` and offers them in the Module Planner's placeholder kind select as **Quiz**; `validate_module` and `verify.py` refuse a quiz row without an id and warn when the id is not in the checkout. `curriculum.py quizzes` lists them; `curriculum.py insert-quiz <module> <quiz_id> --after <Lesson>` places one from the command line.
+- **Sync** treats a quiz day like a test day with identity: an assignment whose description carries `Quiz ID: <id>`, matched on re-sync by that id (`quiz_id_in`), renamed and re-dated in place like everything else. Ticking **push quiz questions** in the Sync dialog instead creates a Canvas **New Quiz** from the quiz's unlocked `quiz.json` through the New Quizzes API (`_push_new_quiz`: essay and choice items, one attempt, results hidden); on API failure it falls back to the placeholder and reports why. Questions are only ever read from an **unlocked** folder on the teacher's machine.
+- **New quiz:** in Exams, create `<Class>/<Topic>/Quizzes/<slug>/` with a non-sensitive `README.md`, a `quiz.meta.json` (`quiz_id` = first 16 hex of sha256 of the folder path, or any unique hex), and a `quiz.json` (source of truth; `python3 Tools/qti/build_qti.py <folder>/quiz.json` also builds a QTI package for manual import). Then `examcrypt.py shell <folder>`, `examcrypt.py lock <folder>`, commit. The quiz appears in the Planner as soon as the meta file exists.
+
 ### Live lesson view (`view.html`)
 
 **Canvas never holds rendered lesson content.** The hub used to bake each day's README, reviews, and ASSIGNMENT.md into the Canvas assignment description as HTML, which went stale the moment the repo changed. Now every assignment/page the hub creates is a short stub — a button plus an embedded frame — pointing at `view.html`, a single self-contained page at the repo root served by GitHub Pages:
@@ -165,6 +173,7 @@ A placeholder may also carry an optional `"kind"` flag (a select on the placehol
 - **no `kind`** — plain Additional Day: to be filled with a real lesson later; sync creates nothing.
 - **`"kind": "page"`** — in-class day with no homework: sync creates an unpublished Canvas **Page** (titled `unit.day: Title`, linked into the module, containing any attached review plus an "In-class day — no assignment due" note) instead of an assignment. Both sync paths handle it via `create_canvas_page` in `_admin/_hub/server.py`.
 - **`"kind": "test"`** — reserved test day: the day still consumes its `unit.day` number (so numbering stays consistent for a manually placed test) but sync creates nothing.
+- **`"kind": "quiz"`** — an in-class quiz whose content lives **encrypted in the private Exams repo**; the row also carries `"quiz_id"` (see "Quizzes" below). Sync creates an assignment named `unit.day: Title` carrying `Quiz ID: <id>` in its description (points from the quiz's meta, due that class day), or the real Canvas New Quiz when the teacher ticks "push quiz questions" and the quiz folder is unlocked locally.
 
 - Lesson-existence checks (`verify.py`'s `check_modules`, the hub's and standalone planner's `validate_module`) skip a placeholder's `path`/`_module`, but still validate its `review` reference if it has one.
 - `generate_lessonplan` renders its Source cell as *placeholder — not yet filled in* instead of a broken link.

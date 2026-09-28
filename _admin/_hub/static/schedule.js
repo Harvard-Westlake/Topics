@@ -928,7 +928,8 @@ async function openSync(blockId) {
   const counts = {};
   (r.slots || []).forEach(s => {
     if ((s.part || 1) !== 1) return;
-    if (s.kind === 'lesson' && s.lesson && s.lesson.no_assignment) counts.nohw = (counts.nohw || 0) + 1;
+    if (s.kind === 'lesson' && s.lesson && s.lesson.kind === 'quiz') counts.quiz = (counts.quiz || 0) + 1;
+    else if (s.kind === 'lesson' && s.lesson && s.lesson.no_assignment) counts.nohw = (counts.nohw || 0) + 1;
     else counts[s.kind] = (counts[s.kind] || 0) + 1;
   });
   let lines = [];
@@ -943,6 +944,11 @@ async function openSync(blockId) {
     if (counts.nohw) lines.push('<div>&bull; ' + counts.nohw + ' content page' + (counts.nohw > 1 ? 's' : '') + ' — no assignment due (lesson + reviews, no points)</div>');
     if (counts.test)   lines.push('<div>&bull; ' + counts.test + ' test placeholder' + (counts.test > 1 ? 's' : '') + ' (title + date only — no content)</div>');
     if (counts.final)  lines.push('<div>&bull; ' + counts.final + ' final placeholder' + (counts.final > 1 ? 's' : '') + ' (title + date only — exam content stays private)</div>');
+    if (counts.quiz) {
+      lines.push('<div>&bull; ' + counts.quiz + ' quiz' + (counts.quiz > 1 ? 'zes' : '') + ' from the private Exams repo (assignment carrying the quiz id, due that day)</div>');
+      lines.push('<label style="display:block;margin:4px 0 0 14px"><input type="checkbox" id="syncPushQuizzes"> '
+        + 'Also push the quiz questions as a Canvas <b>New Quiz</b> (New Quizzes API) — needs the quiz folder unlocked in ../Exams</label>');
+    }
     const skipped = (counts.review || 0) + (counts.flex || 0) + (counts.custom || 0) + (counts.gap || 0);
     if (skipped) lines.push('<div style="color:var(--muted)">&bull; ' + skipped + ' review/flex/custom day' + (skipped > 1 ? 's' : '') + ' stay schedule-only</div>');
   } else if (r.type === 'test' || r.type === 'final') {
@@ -1029,7 +1035,10 @@ async function previewPlan() {
   const create = p.create || [], update = p.update || [], retire = p.retire || [], same = p.unchanged || [];
   let h = '<div style="font-weight:600;margin-bottom:4px">' +
     (p.module_exists === false ? 'Nothing on Canvas yet — Sync will create:' : 'Already on Canvas — Sync will:') + '</div>';
-  create.forEach(x => h += row('+', 'result-ok', x.title, 'create'));
+  create.forEach(x => h += row('+', 'result-ok', x.title,
+    x.quiz ? (x.quiz.known ? 'create — quiz ' + x.quiz.quiz_id + (x.quiz.unlocked ? ' (unlocked: questions can be pushed)' : ' (locked: placeholder only)')
+                           : 'create — quiz ' + x.quiz.quiz_id + ' NOT FOUND in ../Exams')
+           : 'create'));
   update.forEach(x => h += row('&#x21bb;', 'result-ok', x.title, (x.changes || []).join('; ')));
   retire.forEach(x => h += row('&#x25CC;', 'result-err', x.title, 'no longer in the schedule — unpublished, not deleted'));
   if (same.length) h += '<div style="color:var(--muted)">' + same.length + ' item' + (same.length > 1 ? 's' : '') + ' already match</div>';
@@ -1076,7 +1085,8 @@ async function doSync() {
   btn.textContent = 'Syncing…';
   const res = await fetch('/api/schedules/' + encodeURIComponent(schedName) + '/sync-block', {
     method: 'POST', headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({course_id: parseInt(courseId), block_id: syncBlockId}),
+    body: JSON.stringify({course_id: parseInt(courseId), block_id: syncBlockId,
+                          push_quizzes: !!(document.getElementById('syncPushQuizzes') || {}).checked}),
   }).then(r => r.json()).catch(e => ({error: String(e)}));
   btn.textContent = 'Sync';
   btn.disabled = false;

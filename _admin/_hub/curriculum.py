@@ -13,6 +13,8 @@ meeting. This tool does the module edit and shows exactly what moved, per teache
     python3 _admin/_hub/curriculum.py remove git-project GitProject/PeerCodeVerification
     python3 _admin/_hub/curriculum.py dates  theiss [--block git-project]
     python3 _admin/_hub/curriculum.py impact git-project      # which schedules carry this module, with dates
+    python3 _admin/_hub/curriculum.py quizzes                 # quizzes in the private Exams checkout, by quiz_id
+    python3 _admin/_hub/curriculum.py insert-quiz git-project <quiz_id> --after PeerCodeVerification [--duration 0.5]
 
 `insert` / `remove` rewrite the module JSON (renumbering days like the Planner does,
 ½-days included), regenerate _admin/_lessonplans/ through verify.py --fix, and print a
@@ -240,8 +242,9 @@ def _edit_module(args, mutate):
     print(f"wrote _modules/{slug}.json:")
     for a in mod["assignments"]:
         sub = f".{a['sub']}" if a.get("sub") is not None else ""
-        print(f"  day {a['day']}{sub:<3} ×{a.get('duration', 1):<4} {a['title']}"
-              + ("  (placeholder)" if a.get("placeholder") else f"  [{a.get('_module')}/{a.get('path')}]"))
+        tag = (f"  [quiz {a.get('quiz_id')}]" if a.get("kind") == "quiz" else
+               "  (placeholder)" if a.get("placeholder") else f"  [{a.get('_module')}/{a.get('path')}]")
+        print(f"  day {a['day']}{sub:<3} ×{a.get('duration', 1):<4} {a['title']}{tag}")
     regenerate_lessonplans()
     if not carriers:
         print("no schedule carries this module — nothing re-dates")
@@ -252,6 +255,42 @@ def _edit_module(args, mutate):
         print_shift(name, before[name], rows, res["warnings"])
     print("\nnext: commit, then in the Year Schedule tab click Sync on each * block whose unit is already "
           "on Canvas — Sync updates posted items in place (renames, re-dates, creates the new day).")
+
+
+def cmd_quizzes(_args):
+    if not hub.exams_available():
+        sys.exit(f"curriculum.py: no Exams checkout at {hub.EXAMS_DIR / hub.EXAMS_CLASS} (set EXAMS_DIR)")
+    qs = hub.list_quizzes()
+    if not qs:
+        print("no quizzes — add <Class>/<Topic>/Quizzes/<slug>/quiz.meta.json in the Exams repo")
+    for q in qs:
+        state = "unlocked" if q["unlocked"] else ("locked" if q["locked"] else "no archive")
+        print(f"{q['quiz_id']}  {q['topic']:<16} {q['title'][:60]:<60} {q['points'] or '?':>4} pts  {state}")
+        if q.get("lesson"):
+            print(f"{'':18}pairs with {q['lesson']}")
+
+
+def cmd_insert_quiz(args):
+    q = hub.quiz_by_id(args.quiz_id)
+    if q is None:
+        sys.exit(f"curriculum.py: quiz_id {args.quiz_id!r} is not in {hub.EXAMS_DIR / hub.EXAMS_CLASS} — run `quizzes`")
+
+    def mutate(mod):
+        rows = mod.setdefault("assignments", [])
+        if any(a.get("quiz_id") == q["quiz_id"] for a in rows):
+            sys.exit(f"curriculum.py: quiz {q['quiz_id']} is already in _modules/{args.module}.json")
+        new = {"day": 0, "duration": args.duration, "title": args.title or f"Quiz: {q['title']}",
+               "path": "", "_module": "", "placeholder": True, "kind": "quiz", "quiz_id": q["quiz_id"],
+               "review": None}
+        if args.after in (None, "start"):
+            idx = 0
+        else:
+            idx = next((i + 1 for i, a in enumerate(rows) if a.get("path") == args.after), None)
+            if idx is None:
+                sys.exit(f"curriculum.py: --after {args.after!r} is not a lesson path in this module; "
+                         f"rows: {[a.get('path') for a in rows]}")
+        rows.insert(idx, new)
+    _edit_module(args, mutate)
 
 
 def cmd_insert(args):
@@ -299,6 +338,12 @@ def main():
     p.add_argument("module")
     p = sub.add_parser("dates", help="every block and day of a schedule with its date")
     p.add_argument("schedule"); p.add_argument("--block")
+    sub.add_parser("quizzes", help="quizzes available in the private Exams checkout (quiz_id, title, state)")
+    p = sub.add_parser("insert-quiz", help="place a quiz (by quiz_id) in a curated module and re-date")
+    p.add_argument("module"); p.add_argument("quiz_id")
+    p.add_argument("--after", help="lesson path to insert after ('start' = first)")
+    p.add_argument("--duration", type=float, default=1); p.add_argument("--title")
+    p.add_argument("--dry-run", action="store_true")
     for name, helptext in (("insert", "add a lesson to a curated module and re-date"),
                            ("remove", "drop a lesson from a curated module and re-date")):
         p = sub.add_parser(name, help=helptext)
@@ -311,8 +356,8 @@ def main():
     args = ap.parse_args()
     if getattr(args, "duration", None) is not None:
         args.duration = 0.5 if args.duration == 0.5 else int(args.duration)
-    {"where": cmd_where, "impact": cmd_impact, "dates": cmd_dates,
-     "insert": cmd_insert, "remove": cmd_remove}[args.cmd](args)
+    {"where": cmd_where, "impact": cmd_impact, "dates": cmd_dates, "quizzes": cmd_quizzes,
+     "insert": cmd_insert, "insert-quiz": cmd_insert_quiz, "remove": cmd_remove}[args.cmd](args)
 
 
 if __name__ == "__main__":

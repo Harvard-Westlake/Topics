@@ -9,6 +9,7 @@ let reviewSelections = {};   // idx -> [{module, path, file, label}, ...] — se
 let savedModules = [];
 let currentSlug = null;      // slug of the loaded saved module (null = new)
 let slugTouched = false;
+let quizzes = null;          // quizzes in the private Exams checkout (/api/quizzes); null until loaded
 
 const $ = id => document.getElementById(id);
 
@@ -17,12 +18,14 @@ function slugify(s) {
 }
 
 function init() {
+  loadQuizzes();
   loadTopics().then(loadSavedList);
 }
 
 // Called every time the tab is re-shown — picks up topics/lessons created in
 // the Module Editor (or on disk) since the tab was first initialized.
 function onShow() {
+  loadQuizzes();
   loadTopics();
   loadSavedList();
 }
@@ -156,6 +159,7 @@ async function loadSaved(slug) {
       const entry = {day: p.day, duration: p.duration || 1,
                      title: p.title, path: '', _module: '', placeholder: true};
       if (p.kind) entry.kind = p.kind;
+      if (p.quiz_id) entry.quiz_id = p.quiz_id;
       if (p.review) reviewSelections[ordered.length] = Array.isArray(p.review) ? p.review : [p.review];
       ordered.push(entry); orderedChecked.push(true);
       return;
@@ -380,17 +384,75 @@ function onPlaceholderTitleInput(i, value) {
 
 // Placeholder kinds: '' = ordinary Additional Day (fill in later, nothing syncs),
 // 'page' = Canvas Page instead of an assignment (no homework that day),
-// 'test' = reserved day number for manual test placement (nothing syncs).
+// 'test' = reserved day number for manual test placement (nothing syncs),
+// 'quiz' = a quiz from the private Exams repo — only its quiz_id is saved here
+//          (see CLAUDE.md "Quizzes"); sync places it by that id.
 function onPlaceholderKind(i, value) {
   const a = assignments[i];
   if (!a || !a.placeholder) return;
-  const wasDefault = a.title === 'Additional Day' || a.title === 'Test Day' || a.title === 'In-Class Page';
+  const wasDefault = a.title === 'Additional Day' || a.title === 'Test Day' || a.title === 'In-Class Page' || a.title === 'Quiz';
   if (value) a.kind = value; else delete a.kind;
+  if (value !== 'quiz') delete a.quiz_id;
   if (wasDefault) {
-    a.title = value === 'test' ? 'Test Day' : (value === 'page' ? 'In-Class Page' : 'Additional Day');
+    a.title = value === 'test' ? 'Test Day' : value === 'page' ? 'In-Class Page' : value === 'quiz' ? 'Quiz' : 'Additional Day';
+  }
+  const checkedArr = snapshotChecked();
+  renderLessonTable();            // the quiz picker appears / disappears with the kind
+  reapplyRowState(checkedArr);
+}
+
+// The private Exams checkout's quizzes (title, topic, points, locked/unlocked).
+// Fetched once per show; rows of kind 'quiz' re-render when the list arrives.
+async function loadQuizzes() {
+  try {
+    const d = await fetch('/api/quizzes').then(r => r.json());
+    quizzes = d.quizzes || [];
+  } catch (e) {
+    quizzes = [];
+  }
+  if (assignments.some(a => a.kind === 'quiz')) {
+    const checkedArr = snapshotChecked();
+    renderLessonTable();
+    reapplyRowState(checkedArr);
+  }
+}
+
+function quizSelect(a, i) {
+  const note = (text, red) => '<span style="font-size:11px;color:' + (red ? 'var(--red)' : 'var(--muted)') + '">' + text + '</span>';
+  if (quizzes === null) { loadQuizzes(); return note('loading quizzes…'); }
+  if (!quizzes.length) return note('no quizzes found — add &lt;Class&gt;/&lt;Topic&gt;/Quizzes/&lt;slug&gt;/quiz.meta.json in ../Exams');
+  const byTopic = {};
+  quizzes.forEach(q => (byTopic[q.topic] = byTopic[q.topic] || []).push(q));
+  let opts = '<option value=""' + (!a.quiz_id ? ' selected' : '') + '>— pick a quiz —</option>';
+  Object.keys(byTopic).sort().forEach(t => {
+    opts += '<optgroup label="' + esc(t) + '">' + byTopic[t].map(q =>
+      '<option value="' + esc(q.quiz_id) + '"' + (a.quiz_id === q.quiz_id ? ' selected' : '') + '>' +
+        esc(q.title) + (q.points ? ' · ' + q.points + ' pts' : '') + (q.unlocked ? '' : ' · locked') +
+      '</option>').join('') + '</optgroup>';
+  });
+  const known = a.quiz_id && quizzes.some(q => q.quiz_id === a.quiz_id);
+  return '<select class="ph-kind" style="max-width:280px" id="plquiz_' + i + '"' +
+           ' title="Quiz from the private Exams repo — only its quiz_id is saved in this repo"' +
+           ' onchange="Planner.onPlaceholderQuiz(' + i + ', this.value)">' + opts + '</select>' +
+         (a.quiz_id && !known ? note('quiz ' + esc(a.quiz_id) + ' is not in ../Exams', true) : '');
+}
+
+function onPlaceholderQuiz(i, quizId) {
+  const a = assignments[i];
+  if (!a || a.kind !== 'quiz') return;
+  const prev = quizzes && quizzes.find(q => q.quiz_id === a.quiz_id);
+  const wasDefault = a.title === 'Quiz' || (prev && a.title === quizTitle(prev));
+  if (quizId) a.quiz_id = quizId; else delete a.quiz_id;
+  const q = quizzes && quizzes.find(x => x.quiz_id === quizId);
+  if (q && wasDefault) {
+    a.title = quizTitle(q);
     const input = $('pltitle_' + i);
     if (input) input.value = a.title;
   }
+}
+
+function quizTitle(q) {
+  return /quiz/i.test(q.title) ? q.title : 'Quiz: ' + q.title;
 }
 
 // ── Row drag: interleave lessons from any selected topic in any order ─────────
@@ -502,7 +564,9 @@ function renderLessonRow(a, i, unitNum) {
           '<option value=""' + (!a.kind ? ' selected' : '') + '>Assignment (fill in later)</option>' +
           '<option value="page"' + (a.kind === 'page' ? ' selected' : '') + '>Page — no homework</option>' +
           '<option value="test"' + (a.kind === 'test' ? ' selected' : '') + '>Test day — reserve number</option>' +
+          '<option value="quiz"' + (a.kind === 'quiz' ? ' selected' : '') + '>Quiz — from the private Exams repo</option>' +
         '</select>' +
+        (a.kind === 'quiz' ? quizSelect(a, i) : '') +
         '<button type="button" class="lesson-remove-btn" title="Remove this day" ' +
           'onclick="Planner.removePlaceholder(' + i + ')">&#x2715;</button>' +
       '</div>'
@@ -753,6 +817,7 @@ function checkedAssignments() {
       if (a.placeholder) {
         out.placeholder = true;
         if (a.kind) out.kind = a.kind;
+        if (a.kind === 'quiz' && a.quiz_id) out.quiz_id = a.quiz_id;
       } else {
         if (a.duration_override) out.duration_override = true;
         if (a.no_assignment) out.no_assignment = true;
@@ -970,6 +1035,6 @@ return {init, newModule, loadSaved, deleteModule, onNameInput, touchSlug,
         openEditorTab, setEditorMode, saveFile, markDirty, closeEditor,
         savedDragStart, savedDragOver, savedDragLeave, savedDrop, savedDragEnd,
         insertPlaceholder, removePlaceholder, onPlaceholderTitleInput, onPlaceholderKind, removeReview,
-        rowDragStart, rowDragOver, rowDragLeave, rowDrop, rowDragEnd, onShow, onNoHwChange,
+        rowDragStart, rowDragOver, rowDragLeave, rowDrop, rowDragEnd, onShow, onNoHwChange, onPlaceholderQuiz,
         onDurationChange};
 })();
