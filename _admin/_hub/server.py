@@ -450,6 +450,11 @@ def _push_new_quiz(course_id, e, due_at, unlock_at):
     if not r.ok:
         return None, f"New Quizzes API {r.status_code}: {r.text[:300]}"
     asgn_id = r.json().get("id")
+    # The New Quizzes API drops `instructions` from the Canvas assignment, so the
+    # Quiz ID marker the sync planner matches on has to be set through the regular
+    # Assignments API (verified to persist on a quiz_lti assignment). Best effort.
+    requests.put(f"{BASE}/courses/{course_id}/assignments/{asgn_id}", headers=hdrs(),
+                 json={"assignment": {"description": e["description"]}})
     failed = []
     for pos, it in enumerate(items, start=1):
         it["position"] = pos
@@ -1876,6 +1881,8 @@ def _assignment_changes(e, a, due_at, unlock_at):
             ch.append("replace the fixed content snapshot with the live lesson view")
         elif want and a["viewer_url"] != want:
             ch.append("live view link → " + want.split("?", 1)[-1])
+    if e.get("quiz") and a.get("quiz") != e["quiz"]["quiz_id"]:
+        ch.append("add the quiz id marker")   # so future renumbering finds it by id, not title
     return ch
 
 def _plan_module_sync(block, ref, state, due_at, unlock_at):
@@ -2062,7 +2069,7 @@ def _apply_module_sync(course_id, plan, ref, due_at, unlock_at, options=None):
                 payload["assignment"]["due_at"] = due_at(e["due"])
             if e.get("unlock"):
                 payload["assignment"]["unlock_at"] = unlock_at(e["unlock"])
-            if any(ch.startswith(("replace the fixed", "live view link")) for ch in u["changes"]):
+            if any(ch.startswith(("replace the fixed", "live view link", "add the quiz id")) for ch in u["changes"]):
                 payload["assignment"]["description"] = e["description"]
             r = put(f"{BASE}/courses/{course_id}/assignments/{a['id']}", payload)
             if not r.ok:
