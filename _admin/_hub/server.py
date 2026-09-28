@@ -34,9 +34,11 @@ from icsimport import compress_calendar
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]                      # the Topics repo root
 
-# Per-teacher secrets: repo-root .env first, then legacy ../Admin/.env fallback
+# Per-teacher secrets: repo-root .env first, then legacy ../Admin/.env fallback.
+# An empty HUB_TOKEN= placeholder in the root .env must not shadow the fallback.
 load_dotenv(ROOT / ".env")
-load_dotenv(ROOT.parent / "Admin" / ".env")
+if not os.environ.get("HUB_TOKEN"):
+    load_dotenv(ROOT.parent / "Admin" / ".env", override=True)
 
 app    = Flask(__name__, static_folder=str(HERE / "static"), static_url_path="/static")
 TOKEN  = os.environ.get("HUB_TOKEN")
