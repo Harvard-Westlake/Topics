@@ -20,7 +20,8 @@ For the last three classes you built `init()`, a SHA-1 hasher, blob files, and a
 5. [Verify a SHA-1 hash by hand in the terminal](#verifying-a-hash-by-hand)
 6. [Write evidence that would convince a stranger](#writing-evidence-that-convinces)
 7. [The nine behaviors you are verifying today](#what-you-are-verifying)
-8. [Rules for reviewers](#reviewer-rules)
+8. [Rename their variables and methods so they say what they hold and do](#renaming-for-sense)
+9. [Rules for reviewers](#reviewer-rules)
 
 ---
 
@@ -231,25 +232,25 @@ Every character changed. When a classmate's hash does not match, check `wc -c` o
 
 ## <font color="#388bfd">Writing Evidence That Convinces</font>
 
-Your assignment is a table with the nine behaviors on the left and your findings on the right. A finding a stranger cannot reproduce is an opinion, not evidence. Each row needs three things:
+Your assignment is a chart with the nine behaviors on the left and two answers per row on the right. A finding a stranger cannot reproduce is an opinion, not evidence.
 
-1. **How their code does it** — the method name and the approach (data types, how the file is read and written, what check decides whether to write).
-2. **How you verified it** — the exact commands or calls you ran, and what you saw. Paste output; do not paraphrase it.
-3. **A verdict** from this fixed list:
+**Answer one — how well does it work, 1 to 5:**
 
-| Verdict | Meaning |
+| Rating | Meaning |
 |---|---|
-| **Works** | You predicted the behavior from the code and then observed it, with the command and output recorded. |
-| **Partly** | The core behavior happens but a rule is broken — a trailing space, a blank final line, a duplicate line after a re-add. Say which rule. |
-| **Fails** | You ran it and it did not do what the milestone asked. Record what it did instead. |
-| **Could not test** | It would not compile or run even after the minimal changes reviewers are allowed. Paste the error. |
-| **Not implemented** | There is no code for it. Say how you know — no method, no commit, README does not mention it. |
+| **5** | Works exactly as described, and you proved it — command and output recorded. |
+| **4** | Works, but one small rule is broken — a trailing space, a blank final line. Say which. |
+| **3** | Partly works — the core behavior happens but something the milestone asked for does not. |
+| **2** | Runs, but does the wrong thing. Record what it did instead. |
+| **1** | Missing, fails, or could not be tested — say which, and paste the error or explain how you know it is absent. |
+
+**Answer two — one written cell that covers three things:** how their code does it (the method name, the approach, the data types), how you verified it (the exact commands or calls you ran and what you saw — paste output, do not paraphrase it), and what you changed to test it, or "nothing".
 
 Here is what a complete row looks like:
 
-| # | Behavior | Verdict | How their code does it | How I verified it |
-|---|---|---|---|---|
-| 7 | Same content at two paths → two index lines, one blob | Works | `add(String path)` calls `hashFile` then `writeBlob`, which checks `blobFile.exists()` before writing; `updateIndex` appends unconditionally with `new FileWriter(index, true)` | `printf 'same' > a.txt; mkdir -p sub; printf 'same' > sub/b.txt`, then staged both from `Verify.java`. `ls git/objects` → one file, `ff3390557335ba88d37755e41514beb03bc499ec`. `cat -e git/index` → two lines with that hash, paths `a.txt$` and `sub/b.txt$` |
+| Behavior | 1–5 | Is it functional / verified the functionality? What was modified to get it working? |
+|---|---|---|
+| 7. Same content at two paths → two index lines, one blob | 5 | **How:** `add(String path)` calls `hashFile` then `writeBlob`, which checks `blobFile.exists()` before writing; `updateIndex` appends unconditionally with `new FileWriter(index, true)`. **Verified:** `printf 'same' > a.txt; mkdir -p sub; printf 'same' > sub/b.txt`, then staged both from `Verify.java`. `ls git/objects` → one file, `ff3390557335ba88d37755e41514beb03bc499ec`. `cat -e git/index` → two lines with that hash, paths `a.txt$` and `sub/b.txt$`. **Modified:** nothing beyond adding `Verify.java`. |
 
 Notice what the row does *not* say: "seems fine", "worked for me", "I think it appends". Every claim points at a method or a command.
 
@@ -257,7 +258,7 @@ Notice what the row does *not* say: "seems fine", "worked for me", "I think it a
 
 ## <font color="#388bfd">What You Are Verifying</font>
 
-The assignment table lists these nine behaviors in this order. Read them now so you know what to look for while you build your feature map.
+The assignment chart lists these nine behaviors in this order. Read them now so you know what to look for while you build your feature map.
 
 1. **Initialize** — `init()` creates `git/`, `git/objects/`, `git/index`, and `git/HEAD`; running it a second time reports that the repository already exists and changes nothing.
 2. **Stage a file into a blob** — adding a file creates `git/objects/<hash>` whose content is byte for byte identical to the original.
@@ -267,16 +268,38 @@ The assignment table lists these nine behaviors in this order. Read them now so 
 6. **Multiple entries** — adding several different files produces one correct line per file, each on its own line.
 7. **Duplicate content** — two files with identical content at different paths produce two index lines with the same hash and exactly one blob in `git/objects/`.
 8. **Modify and re-add** — changing a file's content and adding it again replaces its index line with the new hash (no duplicate path) and writes a new blob; the old blob remains.
-9. **Compression** — blob content is compressed on disk and decompresses back to the original. This was an optional stretch milestone; **Not implemented** is a legitimate verdict here.
+9. **Compression** — blob content is compressed on disk and decompresses back to the original. This was an optional stretch milestone; a **1** with the note "not implemented" is a complete answer here.
+
+---
+
+## <font color="#388bfd">Renaming for Sense</font>
+
+Once you know what their code does, you are in a rare position: you can see which names helped you and which ones fought you. The second half of the assignment is to fix the names — and only the names — on a branch in your fork.
+
+Two questions decide every name:
+
+| Ask | The answer is the name | Example |
+|---|---|---|
+| **What does this variable hold?** | Name it for its contents, not its type or its position | `String s` holding a SHA-1 → `hash` · `File f` being written → `blobFile` · `int i` walking index lines → `lineNumber` |
+| **What does this method do?** | Name it for the one job it performs, as a verb phrase | `doStuff()` that appends one line → `appendIndexEntry()` · `helper()` that turns bytes into hex → `bytesToHex()` · `run(String p)` that hashes, writes the blob, and updates the index → `stageFile(String path)` |
+
+Three rules keep a rename from becoming a rewrite:
+
+- **Rename only.** No logic changes, no reordering, no fixing the bug you found — that goes in your chart, not in their code.
+- **Rename with the tool, not with find-and-replace.** In VS Code, right-click the name → **Rename Symbol** (or press F2). Every reference updates together; a hand-edited rename that misses one reference is the classic way to break code you meant to leave alone.
+- **Prove nothing changed.** Run your `Verify.java` again after renaming. Same blobs, same index, same output. If a rating in your chart would move, you changed more than a name.
+
+This is the same standard this course holds its own starter code to — no single-letter identifiers, parameters that say what they hold, the lesson's vocabulary (hash, blob, index entry) in the names — now applied to a classmate's code.
 
 ---
 
 ## <font color="#388bfd">Reviewer Rules</font>
 
-- **Verify, don't fix.** You may add a driver class (`Verify.java`) and you may change a hardcoded path so the code runs on your machine. You may not rewrite their methods. Anything you change goes in the table's last column.
+- **In Part 1, verify — don't fix.** You may add a driver class (`Verify.java`) and you may change a hardcoded path so the code runs on your machine. You may not rewrite their methods. Anything you change goes in the chart's written answer.
+- **In Part 2, rename — only rename.** Behavior stays identical; your `Verify.java` proves it.
 - **The project rules still apply.** No AI tools, and none of their code goes into your own `git-project-YOURNAME`.
 - **Describe behavior, not people.** "The index gains a duplicate line on re-add because `updateIndex` never reads the existing file" is a finding. "This is sloppy" is not.
-- **Honesty beats a clean sheet.** A table with two **Could not test** rows and pasted errors is worth more than nine unexplained **Works**. Your classmate gets this table back — make it something they can act on.
+- **Honesty beats a clean sheet.** A chart with two rows rated **1** and pasted errors is worth more than nine unexplained **5**s. Your classmate gets this chart back — make it something they can act on.
 
 ---
 
@@ -293,12 +316,13 @@ The assignment table lists these nine behaviors in this order. Read them now so 
 - [ ] Write a small driver class in your fork that exercises a classmate's init, hash, blob, and index methods without modifying those methods.
 - [ ] Give one piece of black-box evidence and one piece of white-box evidence for the same feature, and explain what each proves.
 - [ ] Show, with commands and their output, that two identical files produce two index lines but only one blob.
+- [ ] Rename a variable and a method in someone else's code by answering "What does it hold?" and "What does it do?", using Rename Symbol, without changing behavior.
 
 ### <font color="#79c0ff">Advanced</font>
 
 - [ ] Prove whether an index file ends in a blank line or has a trailing space using byte-level tools such as `cat -e`, `od -c`, or `tail -c`.
 - [ ] Trace a modify-and-re-add through a classmate's code and predict, before running it, whether the index will gain a duplicate line.
-- [ ] Write a verification row a stranger could reproduce exactly: the command, the observed output, the method responsible, and the verdict.
+- [ ] Write a verification row a stranger could reproduce exactly: the command, the observed output, the method responsible, and the 1–5 rating it earns.
 
 ## <font color="#388bfd">🚀 Stretch Goals</font>
 
