@@ -32,6 +32,7 @@ By the end of the install, your terminal accepts the same Unix commands used thr
 | Shell | zsh | bash |
 | Package manager | Homebrew | apt (built into Ubuntu) |
 | Version control | Git | Git |
+| GitHub from the terminal | GitHub CLI (`gh`) | GitHub CLI (`gh`) |
 | Visual Git client | GitKraken | GitKraken |
 | Code editor | VS Code | VS Code |
 | Language runtime | Java 25 LTS | Java 25 LTS |

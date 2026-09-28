@@ -9,22 +9,22 @@
 ## Part 1 — Fork and Clone
 
 1. Go to GitHub and find a public repository to contribute to. You can use a repository shared by your teacher, a classmate's project, or any public repo you find interesting.
-2. Fork it — click **Fork** in the top-right corner of the repository page.
-3. Clone **your fork** to your local machine:
+2. In your terminal, fork it and clone your fork in one step:
 
 ```bash
-git clone git@github.com:YOUR-USERNAME/repo-name.git
+gh repo fork ORIGINAL-OWNER/repo-name --clone
 cd repo-name
 ```
 
-4. Add the original repository as `upstream`:
+   (Forking with the **Fork** button on the website works too — then clone with `gh repo clone YOUR-USERNAME/repo-name`.)
+
+3. Confirm both remotes:
 
 ```bash
-git remote add upstream git@github.com:ORIGINAL-OWNER/repo-name.git
 git remote -v
 ```
 
-Confirm that both `origin` (your fork) and `upstream` (the original) are listed.
+Both `origin` (your fork) and `upstream` (the original) must be listed. If `upstream` is missing — it will be after a website fork — add it: `git remote add upstream git@github.com:ORIGINAL-OWNER/repo-name.git`.
 
 ---
 

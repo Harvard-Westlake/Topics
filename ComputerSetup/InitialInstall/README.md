@@ -57,10 +57,10 @@ Choose your operating system and follow the steps in order.
 ## <font color="#388bfd">Choose your operating system</font>
 
 **[Mac](Mac.md)**  
-Open Terminal, install Homebrew and Git, connect to GitHub with an SSH key, set up GitKraken and VS Code, and install Java 25.
+Open Terminal, install Homebrew, Git, and the GitHub CLI, connect to GitHub with an SSH key, set up GitKraken and VS Code, and install Java 25.
 
 **[PC](PC.md)**  
-Install WSL and Ubuntu to get a Unix terminal, then install Git, connect to GitHub with an SSH key, and set up GitKraken, VS Code, and Java 25.
+Install WSL and Ubuntu to get a Unix terminal, then install Git and the GitHub CLI, connect to GitHub with an SSH key, and set up GitKraken, VS Code, and Java 25.
 
 ---
 
@@ -196,6 +196,7 @@ pwd                 # /Users/you            ← right back where you started
 | Package manager | Homebrew | apt |
 | Version control | Git | Git |
 | GitHub authentication | SSH key (ed25519) + ssh-agent | SSH key (ed25519) + ssh-agent |
+| GitHub from the terminal | GitHub CLI (`gh`) | GitHub CLI (`gh`) |
 | Visual Git client | GitKraken | GitKraken |
 | Code editor | VS Code | VS Code |
 | Language runtime | Java 25 LTS | Java 25 LTS |

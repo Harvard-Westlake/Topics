@@ -33,9 +33,9 @@ Hash table review, the probability of collisions and how to size a hash space, a
 
 | Day | Lesson | What you'll learn |
 |---|---|---|
-| 1 | [Repositories and Commits](RepositoriesAndCommits/) | Repos, `git clone`, `git add`, `git commit`, `git push`, `git pull` |
+| 1 | [Repositories and Commits](RepositoriesAndCommits/) | Repos, `gh repo create`, `gh repo clone`, `git add`, `git commit`, `git push`, `git pull` |
 | 2 | [Branching and Merging](BranchingAndMerging/) | `git branch`, `git checkout`, `git merge`, pull requests, `.gitignore` |
-| 3 | [Forks and Collaboration](ForksAndCollaboration/) | Forking, upstream remotes, syncing forks, cross-repo pull requests |
+| 3 | [Forks and Collaboration](ForksAndCollaboration/) | `gh repo fork`, upstream remotes, syncing forks, cross-repo pull requests |
 | 4 | [File Hashing](FileHashing/) | Hash tables, collision probability, sizing a hash space, `sum`, `md5sum`, `sha256sum` |
 
 ---

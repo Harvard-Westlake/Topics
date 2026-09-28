@@ -19,13 +19,14 @@
 ## Part 1: Verify
 
 1. Your teacher assigns you a classmate's `git-project-THEIRNAME` repository at random.
-2. On GitHub, **Fork** it. In your terminal, clone **your fork** and confirm `origin` is yours:
+2. In your terminal, fork it and clone your fork in one step, then confirm the remotes:
    ```bash
    cd ~/HTCS_Projects
-   git clone git@github.com:YOUR-USERNAME/git-project-THEIRNAME.git
+   gh repo fork THEIR-USERNAME/git-project-THEIRNAME --clone
    cd git-project-THEIRNAME
    git remote -v
    ```
+   `origin` must be under your username (your fork) and `upstream` under theirs (the original).
 3. Open the folder in **VS Code**. Read their `README.md`, then `Git.java`.
 4. Get it running as best you can. If `main` is empty, add a `Verify.java` with a `main` that calls their methods. If a hardcoded path stops it on your machine, change the path. Do not change how their methods work — that is Part 2, and it is renaming only.
 5. Verify each of the nine behaviors in the chart **one way or another**: run it and inspect `git/`, or read the code path and predict what it does, then check. The lesson's [black-box toolkit](README.md#two-ways-to-verify-a-feature) has the commands.
@@ -85,7 +86,7 @@ Rules for renaming:
 
 ## Success Criteria
 
-- [ ] **Forked theirs and cloned your fork of theirs** — `git remote -v` shows your own username
+- [ ] **Forked theirs and cloned your fork of theirs** — `git remote -v` shows `origin` under your username and `upstream` under theirs
 - [ ] **Loaded it in VS Code, tried to run it, and verified each behavior one way or another** — every chart row has a 1–5 and a written answer
 - [ ] **Committed to a new branch after you got their code running as best you can**
 - [ ] **Renamed and refactored variable and method names to be sensible** — behavior unchanged, committed and pushed

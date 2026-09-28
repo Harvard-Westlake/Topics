@@ -6,7 +6,8 @@
 
 | Command | What it does |
 |---|---|
-| `git clone url` | Download a full copy of a remote repository |
+| `gh repo create name --source=. --public --push` | Publish the current local repository to GitHub as `origin` |
+| `gh repo clone owner/repo` | Download a full copy of a remote repository over SSH |
 | `git remote -v` | List configured remotes and their URLs |
 | `git add .` | Stage all changed files |
 | `git commit -m "msg"` | Snapshot staged changes |

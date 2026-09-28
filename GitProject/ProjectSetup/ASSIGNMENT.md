@@ -11,14 +11,15 @@
 
 ### Instructions
 
-1. Initialize a Git repository on GitHub with a `README.md`. Name it exactly `git-project-YOURNAME`, where YOURNAME is your own name. **Never rename this repository** — it is referenced throughout the project.
-
-2. Clone the repository to your local machine, navigating to your HTCS_Projects folder first:
+1. In your terminal, create the project folder inside `HTCS_Projects` and turn it into a repository. Name it exactly `git-project-YOURNAME`, where YOURNAME is your own name. **Never rename this repository** — it is referenced throughout the project.
 
     ```bash
-    git clone git@github.com:YOUR-USERNAME/git-project-YOURNAME.git
-    cd git-project-YOURNAME
+    cd ~/HTCS_Projects
+    mkdir git-project-YOURNAME && cd git-project-YOURNAME
+    git init
     ```
+
+2. Create a `README.md` with the project's name as its first line — you will document every method here as the project grows.
 
 3. Create a Java class file called `Git.java` with an empty `main` method.
 
@@ -40,7 +41,17 @@
     - **Summary:** `(GP-1.1): Initialized Project`
     - **Description:** List every file you created and what its purpose is.
 
-7. Visit your repository on GitHub to verify all files appear correctly.
+7. Publish the repository to GitHub from your terminal — this creates `git-project-YOURNAME` under your account, connects it as `origin`, and pushes your commit in one command:
+
+    ```bash
+    gh repo create git-project-YOURNAME --source=. --public --push
+    ```
+
+8. Open it and verify all files appear correctly:
+
+    ```bash
+    gh repo view --web
+    ```
 
 ---
 
@@ -53,7 +64,7 @@ Confirm each of the following before submitting:
 - [ ] **`.gitignore` committed** — contains `/git` and `.DS_Store` entries
 - [ ] **`git/HEAD` created locally** — exists in the `git/` folder (not pushed — it is gitignored)
 - [ ] **Commit uses label format** — summary begins with `(GP-1.1):`
-- [ ] **Branch used** — committed on a feature branch, not directly on `main`
+- [ ] **Published with `gh repo create --source=. --public --push`** — `git remote -v` shows `origin` under your account. This first commit lives on `main` so GitHub's default branch is right; every later milestone goes on a feature branch, never directly on `main`
 
 ---
 
