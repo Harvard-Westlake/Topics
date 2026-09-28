@@ -555,3 +555,8 @@ section.tab.active { display: block; }
 .review-chip { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; padding: 2px 8px; background: var(--purple); color: #0d1117; border-radius: 10px; font-weight: 600; }
 .review-chip-x { cursor: pointer; font-weight: 700; opacity: .7; }
 .review-chip-x:hover { opacity: 1; }
+
+/* Planner quiz rows: the picker gets its own full-width line under the row,
+   so it can never overflow the title cell and hide behind the duration select. */
+.quiz-panel { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; background: rgba(79, 142, 247, .05); border-top: 1px dashed var(--border); padding: 6px 8px 8px 90px; font-size: 12px; color: var(--muted); }
+.quiz-panel .quiz-pick { flex: 1 1 320px; max-width: 640px; min-width: 240px; color: var(--text); }
