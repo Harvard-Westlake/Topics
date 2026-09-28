@@ -1939,6 +1939,8 @@ def _plan_module_sync(block, ref, state, due_at, unlock_at):
             plan["reorder"] = True
         else:
             matched_positions.append(c["item"].get("position") or 0)
+        e["_canvas"] = (("Assignment", c["asgn"]["id"]) if c["kind"] == "Assignment"
+                        else ("Page", (c["item"] or {}).get("page_url")))
         entry = {"expected": e, "match": c, "title": e["title"], "type": e["type"],
                  "from": c["name"], "changes": changes}
         (plan["update"] if changes else plan["unchanged"]).append(entry)
@@ -2019,10 +2021,12 @@ def _apply_module_sync(course_id, plan, ref, due_at, unlock_at, options=None):
                 out["errors"].append({"name": e["title"], "error": perr})
             else:
                 out["created"].append(page)
+                e["_canvas"] = ("Page", page.get("page_url"))
             continue
         if e.get("quiz") and options.get("push_quizzes"):
             asgn_id, perr = _push_new_quiz(course_id, e, due_at, unlock_at)
             if asgn_id:
+                e["_canvas"] = ("Assignment", asgn_id)
                 out["created"].append({"name": e["title"], "assignment_id": asgn_id, "new_quiz": True,
                                        "linked": link(e["title"], "Assignment", content_id=asgn_id)})
                 if perr:
@@ -2043,6 +2047,7 @@ def _apply_module_sync(course_id, plan, ref, due_at, unlock_at, options=None):
             out["errors"].append({"name": e["title"], "error": r.text})
             continue
         asgn_id = r.json()["id"]
+        e["_canvas"] = ("Assignment", asgn_id)
         out["created"].append({"name": e["title"], "assignment_id": asgn_id,
                                "linked": link(e["title"], "Assignment", content_id=asgn_id)})
 
@@ -2092,19 +2097,37 @@ def _apply_module_sync(course_id, plan, ref, due_at, unlock_at, options=None):
             # Canvas refuses to unpublish an assignment that already has submissions
             out["errors"].append({"name": c["name"], "error": f"could not unpublish: {r.text}"})
 
-    if plan["reorder"] and not out["errors"]:
+    if plan["reorder"]:
+        # Restore module order even when an item above reported an error (a quiz
+        # push with a failed question, say) — a new day must still land in its
+        # place, not at the end. Items are found by the Canvas object they wrap
+        # (assignment id / page url), titles only as a fallback; every one of ours
+        # is re-positioned 1..n in expected order, so stale positions can't mislead.
         try:
             live = canvas_paged(f"/courses/{course_id}/modules/{module_id}/items")
         except Exception as ex:  # ordering is cosmetic — never fail the sync over it
-            live, out["errors"] = [], out["errors"] + [{"name": "(reorder)", "error": str(ex)}]
-        by_title = {}
+            live = []
+            out["errors"].append({"name": "(reorder)", "error": str(ex)})
+        by_key, by_title = {}, {}
         for it in live:
+            if it.get("type") == "Assignment" and it.get("content_id") is not None:
+                by_key[("Assignment", it["content_id"])] = it
+            elif it.get("type") == "Page" and it.get("page_url"):
+                by_key[("Page", it["page_url"])] = it
             by_title.setdefault((it.get("title"), it.get("type")), it)
-        for pos, e in enumerate(plan["expected"], start=1):
-            it = by_title.get((e["title"], e["type"]))
-            if it and it.get("position") != pos:
-                put(f"{BASE}/courses/{course_id}/modules/{module_id}/items/{it['id']}",
-                    {"module_item": {"position": pos}})
+        ordered = []
+        for e in plan["expected"]:
+            it = by_key.get(e.get("_canvas")) or by_title.get((e["title"], e["type"]))
+            if it and it not in ordered:
+                ordered.append(it)
+        current = sorted(ordered, key=lambda it: it.get("position") or 0)
+        if [it["id"] for it in current] != [it["id"] for it in ordered]:
+            for pos, it in enumerate(ordered, start=1):
+                r = put(f"{BASE}/courses/{course_id}/modules/{module_id}/items/{it['id']}",
+                        {"module_item": {"position": pos}})
+                if not r.ok:
+                    out["errors"].append({"name": f"(reorder) {it.get('title')}", "error": r.text[:200]})
+            out["reordered"] = len(ordered)
     _invalidate_course_caches(course_id)
     return out
 
