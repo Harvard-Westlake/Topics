@@ -928,20 +928,27 @@ async function openSync(blockId) {
   const counts = {};
   (r.slots || []).forEach(s => {
     if ((s.part || 1) !== 1) return;
-    if (s.kind === 'lesson' && s.lesson && s.lesson.no_assignment) counts.nohw = (counts.nohw || 0) + 1;
+    if (s.kind === 'lesson' && s.lesson && s.lesson.kind === 'quiz') counts.quiz = (counts.quiz || 0) + 1;
+    else if (s.kind === 'lesson' && s.lesson && s.lesson.no_assignment) counts.nohw = (counts.nohw || 0) + 1;
     else counts[s.kind] = (counts[s.kind] || 0) + 1;
   });
   let lines = [];
   if (isModule) {
     const pts = smartRound((r.points || 10) * Math.pow(r.scale || 1.15, r.unit_number));
-    lines.push('<div>Canvas module <b>“Unit ' + r.unit_number + '”</b> will be created (unpublished), '
-      + 'with due dates from the schedule:</div>');
+    lines.push('<div>Canvas module <b>“Unit ' + r.unit_number + '”</b> is created if it is missing; otherwise its '
+      + 'items are updated <b>in place</b> — renamed, re-dated, re-pointed — and days no longer in the schedule are '
+      + 'unpublished. Nothing is ever deleted. Due dates come from the schedule:</div>');
     lines.push('<div style="color:var(--muted)">Content is never copied into Canvas: every item links to the live '
       + 'lesson view for ref <b>' + esc(scheduleRef()) + '</b>, so students always see the current version.</div>');
     if (counts.lesson) lines.push('<div>&bull; ' + counts.lesson + ' lesson assignment' + (counts.lesson > 1 ? 's' : '') + ' @ ' + pts + ' pts (review + ASSIGNMENT.md content)</div>');
     if (counts.nohw) lines.push('<div>&bull; ' + counts.nohw + ' content page' + (counts.nohw > 1 ? 's' : '') + ' — no assignment due (lesson + reviews, no points)</div>');
     if (counts.test)   lines.push('<div>&bull; ' + counts.test + ' test placeholder' + (counts.test > 1 ? 's' : '') + ' (title + date only — no content)</div>');
     if (counts.final)  lines.push('<div>&bull; ' + counts.final + ' final placeholder' + (counts.final > 1 ? 's' : '') + ' (title + date only — exam content stays private)</div>');
+    if (counts.quiz) {
+      lines.push('<div>&bull; ' + counts.quiz + ' quiz' + (counts.quiz > 1 ? 'zes' : '') + ' from the private Exams repo (assignment carrying the quiz id, due that day)</div>');
+      lines.push('<label style="display:block;margin:4px 0 0 14px"><input type="checkbox" id="syncPushQuizzes"> '
+        + 'Also push the quiz questions as a Canvas <b>New Quiz</b> (New Quizzes API) — needs the quiz folder unlocked in ../Exams</label>');
+    }
     const skipped = (counts.review || 0) + (counts.flex || 0) + (counts.custom || 0) + (counts.gap || 0);
     if (skipped) lines.push('<div style="color:var(--muted)">&bull; ' + skipped + ' review/flex/custom day' + (skipped > 1 ? 's' : '') + ' stay schedule-only</div>');
   } else if (r.type === 'test' || r.type === 'final') {
@@ -998,6 +1005,48 @@ async function openSync(blockId) {
   onSyncCourseChange();
 }
 
+// Dry-run the sync against the chosen course and show exactly what a real
+// Sync would create, update, or unpublish — the server plans both from the
+// same code, so the preview is the truth, not a guess.
+let planSeq = 0;
+async function previewPlan() {
+  const sel = document.getElementById('syncCourse');
+  const courseId = sel.value;
+  let box = document.getElementById('syncPlan');
+  if (!box) {
+    box = document.createElement('div');
+    box.id = 'syncPlan';
+    box.style.marginTop = '8px';
+    document.getElementById('syncPreview').appendChild(box);
+  }
+  if (!courseId || !schedName || !syncBlockId) { box.innerHTML = ''; return; }
+  const seq = ++planSeq;
+  box.innerHTML = '<div style="color:var(--muted)">Checking what is already on Canvas…</div>';
+  const res = await fetch('/api/schedules/' + encodeURIComponent(schedName) + '/sync-block', {
+    method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({course_id: parseInt(courseId), block_id: syncBlockId, dry_run: true}),
+  }).then(r => r.json()).catch(e => ({error: String(e)}));
+  if (seq !== planSeq) return;   // the course changed while we waited
+  if (res.error) { box.innerHTML = '<div style="color:var(--red)">' + esc(res.error) + '</div>'; return; }
+  const p = res.plan || {};
+  const row = (icon, cls, text, sub) =>
+    '<div class="result-row"><span class="' + cls + '">' + icon + '</span> ' + esc(text) +
+    (sub ? ' <span style="color:var(--muted)">— ' + esc(sub) + '</span>' : '') + '</div>';
+  const create = p.create || [], update = p.update || [], retire = p.retire || [], same = p.unchanged || [];
+  let h = '<div style="font-weight:600;margin-bottom:4px">' +
+    (p.module_exists === false ? 'Nothing on Canvas yet — Sync will create:' : 'Already on Canvas — Sync will:') + '</div>';
+  create.forEach(x => h += row('+', 'result-ok', x.title,
+    x.quiz ? (x.quiz.known ? 'create — quiz ' + x.quiz.quiz_id + (x.quiz.unlocked ? ' (unlocked: questions can be pushed)' : ' (locked: placeholder only)')
+                           : 'create — quiz ' + x.quiz.quiz_id + ' NOT FOUND in ../Exams')
+           : 'create'));
+  update.forEach(x => h += row('&#x21bb;', 'result-ok', x.title, (x.changes || []).join('; ')));
+  retire.forEach(x => h += row('&#x25CC;', 'result-err', x.title, 'no longer in the schedule — unpublished, not deleted'));
+  if (same.length) h += '<div style="color:var(--muted)">' + same.length + ' item' + (same.length > 1 ? 's' : '') + ' already match</div>';
+  if (p.reorder) h += '<div style="color:var(--muted)">module order will be restored</div>';
+  if (!create.length && !update.length && !retire.length) h += '<div style="color:var(--green)">Everything matches — nothing to do.</div>';
+  box.innerHTML = h;
+}
+
 function onSyncCourseChange() {
   const sel = document.getElementById('syncCourse');
   const opt = sel.selectedOptions[0];
@@ -1008,10 +1057,12 @@ function onSyncCourseChange() {
     btn.disabled = true;
     target.textContent = '';
     warn.style.display = 'none';
+    previewPlan();
     return;
   }
   btn.disabled = false;
   target.innerHTML = 'Will write to: <b>' + esc(opt.textContent) + '</b>';
+  previewPlan();
   const last = schedName ? localStorage.getItem('syncCourseId_' + schedName) : null;
   const switched = last && String(opt.value) !== last;
   warn.style.display = switched ? 'block' : 'none';
@@ -1027,14 +1078,15 @@ async function doSync() {
   const sel = document.getElementById('syncCourse');
   const courseId = sel.value;
   if (!courseId || !schedName) return;
-  if (!confirm('Sync to “' + sel.selectedOptions[0].textContent + '”?')) return;
+  if (!confirm('Sync to “' + sel.selectedOptions[0].textContent + '”?\n\nExisting items are updated in place; days no longer in the schedule are unpublished. Nothing is deleted.')) return;
   localStorage.setItem('syncCourseId_' + schedName, courseId);
   const btn = document.getElementById('syncBtn');
   btn.disabled = true;
   btn.textContent = 'Syncing…';
   const res = await fetch('/api/schedules/' + encodeURIComponent(schedName) + '/sync-block', {
     method: 'POST', headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({course_id: parseInt(courseId), block_id: syncBlockId}),
+    body: JSON.stringify({course_id: parseInt(courseId), block_id: syncBlockId,
+                          push_quizzes: !!(document.getElementById('syncPushQuizzes') || {}).checked}),
   }).then(r => r.json()).catch(e => ({error: String(e)}));
   btn.textContent = 'Sync';
   btn.disabled = false;
@@ -1044,13 +1096,17 @@ async function doSync() {
     out.innerHTML = '<div style="color:var(--red);font-size:13px">&#x2715; ' + esc(res.error) + '</div>';
     return;
   }
-  const ok = res.created || [];
+  const ok = res.created || [], upd = res.updated || [], ret = res.retired || [], same = res.unchanged || [];
   const err = res.errors || [];
+  const sub = t => t ? ' <span style="color:var(--muted)">— ' + esc(t) + '</span>' : '';
   out.innerHTML =
     '<div style="color:var(--green);font-size:13px;font-weight:600;margin-bottom:6px">&#x2713; ' +
-      (res.module_name ? esc(res.module_name) + ' created — ' : '') + ok.length + ' assignment' + (ok.length !== 1 ? 's' : '') + '</div>' +
-    ok.map(x => '<div class="result-row"><span class="result-ok">&#x2713;</span> ' + esc(x.name) + '</div>').join('') +
-    err.map(x => '<div class="result-row"><span class="result-err">&#x2715;</span> ' + esc(x.name) + '</div>').join('') +
+      (res.module_name ? esc(res.module_name) + ' — ' : '') + ok.length + ' created, ' + upd.length + ' updated, ' +
+      ret.length + ' unpublished' + (same.length ? ', ' + same.length + ' unchanged' : '') + '</div>' +
+    ok.map(x => '<div class="result-row"><span class="result-ok">+</span> ' + esc(x.name) + '</div>').join('') +
+    upd.map(x => '<div class="result-row"><span class="result-ok">&#x21bb;</span> ' + esc(x.name) + sub((x.changes || []).join('; ')) + '</div>').join('') +
+    ret.map(x => '<div class="result-row"><span class="result-err">&#x25CC;</span> ' + esc(x.name) + sub('unpublished') + '</div>').join('') +
+    err.map(x => '<div class="result-row"><span class="result-err">&#x2715;</span> ' + esc(x.name) + sub(x.error) + '</div>').join('') +
     '<div style="margin-top:8px"><a href="' + canvasCourseUrl(courseId, '/modules') +
     '" target="_blank" style="color:var(--accent);font-size:12px">Open in Canvas &rarr;</a></div>';
   refreshSyncStatus(true);   // live recheck so the board's dots reflect the new state

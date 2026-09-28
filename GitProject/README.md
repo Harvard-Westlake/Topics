@@ -21,6 +21,7 @@ The project is designed around reading unfamiliar code. After the first part, ea
 |---|---|---|
 | 1 | Your own | GitHub repo, Java class, `.gitignore`, HEAD setup |
 | 2 | Your own | `init()`, SHA-1 hashing, blob files, index file |
+| Peer check | A random classmate's fork | A verification chart of their Part 2 behaviors, then a rename-for-readability commit on your fork |
 | 3 | Your own | Index formatting, tree files, trees from index |
 | 4 | A classmate's codebase | Commit files, HEAD chain, `GitWrapper` |
 | 5 | TBD | Branches *(not yet specced)* |
@@ -56,8 +57,9 @@ Read the doc for each concept before starting the part that uses it.
 |---|---|---|
 | 1 | [Project Setup](ProjectSetup/) | GitHub repo, `Git.java`, `.gitignore`, initial HEAD |
 | 2–4 | [Initialization and Blobs](InitAndBlobs/) | `init()`, SHA-1 hashing, blob files, index file |
-| 5–7 | [Trees](Trees/) | Index formatting, basic trees, trees from index |
-| 8–11 | [Commits](Commits/) | Root tree, commit files, HEAD chain, `GitWrapper` |
+| 5 | [Peer Code Verification](PeerCodeVerification/) | Fork a classmate's Part 2, read it cold, verify nine behaviors, rename it for readability |
+| 6–8 | [Trees](Trees/) | Index formatting, basic trees, trees from index |
+| 9–12 | [Commits](Commits/) | Root tree, commit files, HEAD chain, `GitWrapper` |
 | TBD | [Branches](Branches/) | Branch files, HEAD pointers *(coming soon)* |
 
 ---

@@ -26,7 +26,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
-import requests, os, sys, json, time, re, html, shutil
+import requests, os, sys, json, time, re, html, shutil, uuid
 from urllib.parse import urlencode
 import markdown as md_lib
 from icsimport import compress_calendar
@@ -34,9 +34,11 @@ from icsimport import compress_calendar
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]                      # the Topics repo root
 
-# Per-teacher secrets: repo-root .env first, then legacy ../Admin/.env fallback
+# Per-teacher secrets: repo-root .env first, then legacy ../Admin/.env fallback.
+# An empty HUB_TOKEN= placeholder in the root .env must not shadow the fallback.
 load_dotenv(ROOT / ".env")
-load_dotenv(ROOT.parent / "Admin" / ".env")
+if not os.environ.get("HUB_TOKEN"):
+    load_dotenv(ROOT.parent / "Admin" / ".env", override=True)
 
 app    = Flask(__name__, static_folder=str(HERE / "static"), static_url_path="/static")
 TOKEN  = os.environ.get("HUB_TOKEN")
@@ -63,6 +65,11 @@ from mdrender import (md_to_html as planner_md_to_html,                 # noqa: 
                       ENGINE as PLANNER_ENGINE,
                       COURSE_NAME, REPO_LABEL,
                       GITHUB_REPO, GITHUB_BRANCH, GITHUB_RAW, GITHUB_BLOB, PAGES_URL)
+
+# Private sibling Exams repo: <EXAMS_CLASS>/<Topic>/Quizzes/<slug>/ quiz folders (see "Quizzes" below)
+EXAMS_DIR = Path(os.environ.get("EXAMS_DIR") or (ROOT.parent / "Exams"))
+EXAMS_CLASS = os.environ.get("EXAMS_CLASS") or REPO_LABEL
+NEW_QUIZZES_BASE = BASE.replace("/api/v1", "/api/quiz/v1")
 
 SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 NAME_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9 _\-]*$")
@@ -315,6 +322,144 @@ def viewer_ref_in(description):
     description is a pre-live-view snapshot (or has no lesson content)."""
     m = _VIEWER_REF_RE.search(description or "")
     return html.unescape(m.group(1)) if m else None
+
+# ── Quizzes (private Exams repo) ───────────────────────────────────────────────
+# Quiz content never enters this repo. The sibling Exams checkout holds
+# <EXAMS_CLASS>/<Topic>/Quizzes/<slug>/ folders encrypted at rest (examcrypt);
+# the only plaintext the hub reads is quiz.meta.json — an opaque quiz_id, title,
+# points, question count. A curated module row stores just that quiz_id
+# ({"placeholder": true, "kind": "quiz", "quiz_id": …}); the Planner offers the
+# quizzes below as the choices for it, and sync places the quiz by id.
+
+def exams_available():
+    return (EXAMS_DIR / EXAMS_CLASS).is_dir()
+
+def list_quizzes():
+    out = []
+    base = EXAMS_DIR / EXAMS_CLASS
+    if not base.is_dir():
+        return out
+    for meta_path in sorted(base.glob("*/Quizzes/*/quiz.meta.json")):
+        try:
+            meta = json.loads(meta_path.read_text())
+        except (OSError, json.JSONDecodeError):
+            continue
+        if not meta.get("quiz_id"):
+            continue
+        folder = meta_path.parent
+        out.append({"quiz_id": str(meta["quiz_id"]), "title": meta.get("title") or folder.name,
+                    "topic": meta.get("topic") or folder.parent.parent.name, "slug": folder.name,
+                    "lesson": meta.get("lesson"), "points": meta.get("points"),
+                    "questions": meta.get("questions"),
+                    "folder": str(folder.relative_to(EXAMS_DIR)),
+                    "unlocked": (folder / "quiz.json").exists(),
+                    "locked": (folder / "exam-content.tar.enc").exists()})
+    return out
+
+def quiz_by_id(quiz_id):
+    return next((q for q in list_quizzes() if q["quiz_id"] == str(quiz_id)), None)
+
+@app.route("/api/quizzes")
+def api_quizzes():
+    return jsonify({"available": exams_available(), "dir": str(EXAMS_DIR / EXAMS_CLASS),
+                    "quizzes": list_quizzes()})
+
+_QUIZ_ID_RE = re.compile(r"Quiz ID:\s*(?:<code>)?([0-9a-f]{8,64})")
+
+def quiz_id_in(description):
+    """The quiz_id marker a synced quiz assignment's description carries, or None."""
+    m = _QUIZ_ID_RE.search(description or "")
+    return m.group(1) if m else None
+
+def _asgn_identity(a):
+    """Stable identity of a Canvas assignment as the sync planner sees it."""
+    if a.get("lesson"):
+        return f"lesson:{a['lesson']}"
+    if a.get("quiz"):
+        return f"quiz:{a['quiz']}"
+    return None
+
+def _new_quiz_items(spec):
+    """Canvas New Quizzes item payloads for a quiz.json (the Exams repo's quiz
+    format: `topical` essays, `features` × (yes/no, 1–5, pointed essay), one
+    reflection). Part headers are folded into the first item of each part."""
+    pts = spec["points"]
+
+    def essay(body, points, header=""):
+        return {"entry_type": "Item", "points_possible": points,
+                "entry": {"title": "", "item_body": (header or "") + body, "interaction_type_slug": "essay",
+                          "interaction_data": {"rce": True, "essay": None, "word_count": False,
+                                               "file_upload": False, "spell_check": False,
+                                               "word_limit_enabled": False},
+                          "properties": {}, "scoring_data": {"value": ""}, "scoring_algorithm": "None"}}
+
+    def choice(body, points, choices, header=""):
+        ids = [str(uuid.uuid4()) for _ in choices]
+        return {"entry_type": "Item", "points_possible": points,
+                "entry": {"title": "", "item_body": (header or "") + body, "interaction_type_slug": "choice",
+                          "interaction_data": {"choices": [
+                              {"id": cid, "position": i + 1, "item_body": f"<p>{html.escape(str(c))}</p>"}
+                              for i, (cid, c) in enumerate(zip(ids, choices))]},
+                          "properties": {"shuffle_rules": {"choices": {"shuffled": False}},
+                                         "vary_points_by_answer": False},
+                          "scoring_data": {"value": ids[0]}, "scoring_algorithm": "Equivalence"}}
+
+    items = []
+    for n, q in enumerate(spec.get("topical", []), start=1):
+        items.append(essay(q["prompt"], pts["topical"], spec.get("topical_header", "") if n == 1 else ""))
+    for n, f in enumerate(spec.get("features", []), start=1):
+        lead = (f"<p><strong>Behavior {n} — {html.escape(f['name'])}.</strong> "
+                f"<em>{html.escape(f['description'])}</em></p>")
+        items.append(choice(lead + f"<p>{html.escape(spec['yes_no_prompt'])}</p>", pts["yes_no"],
+                            spec["yes_no_choices"], spec.get("self_assessment_header", "") if n == 1 else ""))
+        items.append(choice(f"<p><strong>Behavior {n} — {html.escape(f['name'])}.</strong> "
+                            f"{html.escape(spec['confidence_prompt'])}</p>", pts["confidence"],
+                            spec["confidence_choices"]))
+        items.append(essay(f"<p><strong>Behavior {n} — {html.escape(f['name'])}.</strong> {f['pointed']}</p>",
+                           pts["pointed"]))
+    if spec.get("reflection"):
+        items.append(essay(spec["reflection"]["prompt"], pts["reflection"], spec.get("reflection_header", "")))
+    return items
+
+def _push_new_quiz(course_id, e, due_at, unlock_at):
+    """Create a Canvas New Quiz (an assignment) with the questions from the
+    quiz's UNLOCKED quiz.json. Returns (assignment_id, error) — an id with an
+    error means the quiz exists but some items failed."""
+    q = quiz_by_id(e["quiz"]["quiz_id"])
+    if not q or not q["unlocked"]:
+        return None, "quiz folder is locked — run `examcrypt.py unlock` in the Exams repo first"
+    try:
+        spec = json.loads((EXAMS_DIR / q["folder"] / "quiz.json").read_text())
+        items = _new_quiz_items(spec)
+    except Exception as ex:
+        return None, f"could not read quiz.json: {ex}"
+    payload = {"quiz": {"title": e["title"], "points_possible": e["points"], "instructions": e["description"],
+                        "quiz_settings": {
+                            "shuffle_answers": False, "shuffle_questions": False,
+                            "multiple_attempts": {"multiple_attempts_enabled": False},
+                            "result_view_settings": {
+                                "result_view_restricted": True, "display_points_awarded": True,
+                                "display_points_possible": True, "display_items": False,
+                                "display_item_response": False, "display_item_response_correctness": False,
+                                "display_item_correct_answer": False, "display_item_feedback": False}}}}
+    if e.get("due"):
+        payload["quiz"]["due_at"] = due_at(e["due"])
+    if e.get("unlock"):
+        payload["quiz"]["unlock_at"] = unlock_at(e["unlock"])
+    r = requests.post(f"{NEW_QUIZZES_BASE}/courses/{course_id}/quizzes", headers=hdrs(), json=payload)
+    if not r.ok:
+        return None, f"New Quizzes API {r.status_code}: {r.text[:300]}"
+    asgn_id = r.json().get("id")
+    failed = []
+    for pos, it in enumerate(items, start=1):
+        it["position"] = pos
+        ir = requests.post(f"{NEW_QUIZZES_BASE}/courses/{course_id}/quizzes/{asgn_id}/items",
+                           headers=hdrs(), json={"item": it})
+        if not ir.ok:
+            failed.append(f"item {pos}: {ir.status_code} {ir.text[:100]}")
+    if failed:
+        return asgn_id, f"quiz created but {len(failed)} of {len(items)} items failed: " + "; ".join(failed[:3])
+    return asgn_id, None
 
 # ── Canvas helpers ─────────────────────────────────────────────────────────────
 
@@ -890,6 +1035,13 @@ def validate_module(mod):
             lesson_dir = TOPICS / a.get("_module", "") / a.get("path", "")
             if not (lesson_dir / "README.md").exists():
                 problems.append(f"lesson '{a.get('_module')}/{a.get('path')}' does not exist")
+        elif a.get("kind") == "quiz":
+            qid = a.get("quiz_id")
+            if not qid:
+                problems.append(f"quiz row '{a.get('title')}' has no quiz_id — pick a quiz in the Planner")
+            elif exams_available() and quiz_by_id(qid) is None:
+                problems.append(f"quiz_id '{qid}' is not in {EXAMS_DIR / EXAMS_CLASS} — pull the Exams repo, "
+                                f"or the quiz was removed")
         for rev in _review_refs(a):
             rev_file = TOPICS / rev.get("module", "") / rev.get("path", "") / "review" / rev.get("file", "")
             if not rev_file.exists():
@@ -1234,6 +1386,7 @@ def expand_module_block(block):
                               "lesson": {"day": a["day"], "duration": dur, "title": a["title"],
                                          "path": a.get("path"), "_module": a.get("_module"),
                                          "sub": a.get("sub"), "kind": a.get("kind"),
+                                         "quiz_id": a.get("quiz_id"),
                                          "no_assignment": a.get("no_assignment"),
                                          "review": a.get("review")}})
         else:
@@ -1548,10 +1701,47 @@ def _unit_module_name(block):
         return f"Unit {unit}: {', '.join(topics[:-1])}, and {topics[-1]}"
     return f"Unit {unit}: {block.get('name', '')}".rstrip(": ")
 
-def _expected_block_items(block):
-    """What syncing this resolved module block would create on Canvas:
-    [{title, type ('Assignment'|'Page'), points, due (date str or None)}].
-    Mirrors the create loop in api_schedule_sync_block exactly."""
+# ── Sync planning ──────────────────────────────────────────────────────────────
+# What a resolved block should leave on Canvas, matched against what is already
+# there. Shared by sync-status (read-only) and sync-block (the upsert), so the
+# status dot and the Sync button can never disagree. Canvas items are matched by
+# a stable identity — the lesson their live-view link composes — not by title, so
+# inserting or removing a day (which renumbers every later "unit.day:" title)
+# renames and re-dates the existing items in place instead of duplicating them.
+# Nothing is ever deleted: items the schedule no longer expects are unpublished.
+
+_VIEWER_URL_RE = re.compile(r"https?://[^\"'<>\s]*view\.html\?[^\"'<>\s]*")
+_VIEWER_LESSON_RE = re.compile(r"view\.html\?(?:[^\"'<>]*?&(?:amp;)?)?lesson=([^&\"'<>;]+)")
+_NUMBERED_TITLE_RE = re.compile(r"^\d+\.\d+(?:\.\d)?:\s*")
+
+def viewer_url_in(description):
+    """The live-view URL inside a Canvas description, or None."""
+    m = _VIEWER_URL_RE.search(description or "")
+    return html.unescape(m.group(0)) if m else None
+
+def viewer_lesson_in(description):
+    """'Module/Lesson' that a description's live-view link composes, or None."""
+    m = _VIEWER_LESSON_RE.search(description or "")
+    return html.unescape(m.group(1)) if m else None
+
+def _base_title(name):
+    """A Canvas title without its 'unit.day: ' numbering prefix."""
+    return _NUMBERED_TITLE_RE.sub("", name or "").strip()
+
+def _same_instant(expected_iso, canvas_iso):
+    try:
+        e = datetime.fromisoformat(expected_iso)
+        c = datetime.fromisoformat(canvas_iso.replace("Z", "+00:00"))
+        return abs((e - c).total_seconds()) < 60
+    except (ValueError, TypeError, AttributeError):
+        return False
+
+def _expected_block_items(block, ref):
+    """What syncing this resolved module block should leave on Canvas, in module
+    order: [{title, type ('Assignment'|'Page'), identity, base_title, points, due,
+    unlock, description, content}]. `identity` survives renumbering:
+    'lesson:<Module>/<Lesson>' for anything linking a live lesson view, else
+    'page:' / 'test:' / 'final:' plus the un-numbered title."""
     slots = block.get("slots", [])
     unit = block["unit_number"]
     pts = smart_round((block.get("points") or 10) * ((block.get("scale") or 1.15) ** unit))
@@ -1561,40 +1751,395 @@ def _expected_block_items(block):
                  if x.get("group") == s.get("group") and x.get("date")]
         return dated[-1] if dated else s.get("date")
 
+    def item(title, type_, identity, points=None, due=None, unlock=None, description="", content=False):
+        return {"title": title, "type": type_, "identity": identity, "base_title": _base_title(title),
+                "points": points, "due": due, "unlock": unlock, "description": description,
+                "content": content}
+
     expected = []
     for i, s in enumerate(slots):
         if s.get("part", 1) != 1:
-            continue
+            continue  # later day of a multi-day item — covered by its first day
         day_num = s.get("day_num", i + 1)
         kind = s.get("kind")
         if kind == "lesson" and s.get("lesson"):
             a = s["lesson"]
+            name = f"{unit}.{day_num}{_day_sub_suffix(a)}: {a['title']}"
             if not (a.get("_module") and a.get("path")):
+                # placeholder: 'quiz' syncs an assignment carrying the quiz_id (or the
+                # real New Quiz when pushed); 'page' syncs a Canvas Page (no assignment);
+                # 'test' / plain reserve the day number and create nothing
+                if a.get("kind") == "quiz" and a.get("quiz_id"):
+                    q = quiz_by_id(a["quiz_id"])
+                    desc = (f"<p>In-class quiz — {html.escape((q or {}).get('title') or a['title'])}. "
+                            "Questions are delivered in Canvas; the source stays in the private Exams repo.</p>"
+                            f'<p style="color:#57606a;font-size:12px">Quiz ID: <code>{html.escape(str(a["quiz_id"]))}</code></p>')
+                    it = item(name, "Assignment", f"quiz:{a['quiz_id']}", (q or {}).get("points") or 100,
+                              group_end(s), s.get("date"), desc)
+                    it["quiz"] = {"quiz_id": str(a["quiz_id"]), "known": q is not None,
+                                  "unlocked": bool(q and q["unlocked"]), "folder": (q or {}).get("folder")}
+                    expected.append(it)
+                    continue
                 if a.get("kind") == "page":
-                    expected.append({"title": f"{unit}.{day_num}{_day_sub_suffix(a)}: {a['title']}",
-                                     "type": "Page", "points": None, "due": None})
+                    desc = live_description(ref, "", "", a.get("review"))
+                    desc = (desc + "\n" if desc else "") + "<p>In-class day — no assignment due.</p>"
+                    expected.append(item(name, "Page", f"page:{a['title']}", description=desc))
                 continue
+            lesson_id = f"lesson:{a['_module']}/{a['path']}"
             if a.get("no_assignment"):
-                expected.append({"title": f"{unit}.{day_num}{_day_sub_suffix(a)}: {a['title']}",
-                                 "type": "Page", "points": None, "due": None})
+                # content page instead of homework — no points, no due date
+                desc = live_description(ref, a["_module"], a["path"], a.get("review"),
+                                        include_assignment=False)
+                expected.append(item(name, "Page", lesson_id, description=desc, content=True))
                 continue
-            expected.append({"title": f"{unit}.{day_num}{_day_sub_suffix(a)}: {a['title']}",
-                             "type": "Assignment", "points": pts, "due": group_end(s), "content": True})
+            expected.append(item(name, "Assignment", lesson_id, pts, group_end(s), s.get("date"),
+                                 live_description(ref, a["_module"], a["path"], a.get("review")),
+                                 content=True))
         elif kind == "lesson" and s.get("lesson_ref"):
-            expected.append({"title": f"{unit}.{day_num}: {s.get('base_title') or s['title']}",
-                             "type": "Assignment", "points": pts, "due": group_end(s), "content": True})
+            lref = s["lesson_ref"]
+            expected.append(item(f"{unit}.{day_num}: {s.get('base_title') or s['title']}", "Assignment",
+                                 f"lesson:{lref.get('module')}/{lref.get('path')}", pts,
+                                 group_end(s), s.get("date"),
+                                 live_description(ref, lref.get("module"), lref.get("path"), None),
+                                 content=True))
         elif kind in ("test", "final"):
-            expected.append({"title": f"{unit}.{day_num}: {s.get('base_title') or s['title']}",
-                             "type": "Assignment", "points": s.get("points") or 100,
-                             "due": group_end(s)})
+            label = "final exam" if kind == "final" else "test"
+            base = s.get("base_title") or s["title"]
+            expected.append(item(f"{unit}.{day_num}: {base}", "Assignment", f"{kind}:{base}",
+                                 s.get("points") or 100, group_end(s), s.get("date"),
+                                 f"<p>In-class {label}. Details will be provided in class.</p>"))
+        # review / flex / custom / gap days are schedule-only — nothing in Canvas
     return expected
+
+def _canvas_course_state(course_id, ttl):
+    """(modules, assignments, module_items_fn): the course as the sync planner
+    sees it, read through the normal caches (ttl 0 = live). Descriptions are
+    never stored whole — only the live-view link parsed out of them."""
+    modules, _, _ = cached(f"modules_{course_id}", ttl, lambda: [
+        {"id": m["id"], "name": m["name"], "items_count": m.get("items_count", 0),
+         "published": m.get("published"), "position": m.get("position")}
+        for m in canvas_paged(f"/courses/{course_id}/modules", {"include[]": "items_count"})])
+
+    def _asgn(a):
+        desc = a.get("description")
+        return {"id": a["id"], "name": a["name"], "due_at": a.get("due_at"),
+                "unlock_at": a.get("unlock_at"), "points": a.get("points_possible"),
+                "published": a.get("published"), "html_url": a.get("html_url"),
+                "viewer_url": viewer_url_in(desc), "viewer_ref": viewer_ref_in(desc),
+                "lesson": viewer_lesson_in(desc), "quiz": quiz_id_in(desc)}
+    assignments, _, _ = cached(f"assignments_sync_{course_id}", ttl, lambda: [
+        _asgn(a) for a in canvas_paged(f"/courses/{course_id}/assignments", {"order_by": "due_at"})])
+
+    def module_items(mid):
+        data, _, _ = cached(f"module_items_v2_{course_id}_{mid}", ttl, lambda: [
+            {"id": it.get("id"), "title": it.get("title"), "type": it.get("type"),
+             "content_id": it.get("content_id"), "page_url": it.get("page_url"),
+             "position": it.get("position"), "published": it.get("published")}
+            for it in canvas_paged(f"/courses/{course_id}/modules/{mid}/items")])
+        return data
+    return modules, assignments, module_items
+
+def _invalidate_course_caches(course_id):
+    for key in [f"modules_{course_id}", f"assignments_{course_id}",
+                f"assignments_ref_{course_id}", f"assignments_sync_{course_id}"]:
+        p = cache_path(key)
+        if p.exists():
+            p.unlink()
+    for p in list(CACHE.glob(f"module_items_{course_id}_*.json")) + \
+             list(CACHE.glob(f"module_items_v2_{course_id}_*.json")):
+        p.unlink()
+
+def _assignment_changes(e, a, due_at, unlock_at):
+    """Human-readable drift between an expected item and a Canvas assignment
+    (empty list = nothing to update)."""
+    ch = []
+    if a["name"] != e["title"]:
+        ch.append(f"rename from “{a['name']}”")
+    if e.get("points") is not None and a.get("points") is not None \
+            and float(a["points"]) != float(e["points"]):
+        ch.append(f"points {a['points']:g} → {e['points']:g}")
+    if e.get("due"):
+        exp = due_at(e["due"])
+        if exp and not a.get("due_at"):
+            ch.append(f"set due date {exp[:10]}")
+        elif exp and not _same_instant(exp, a["due_at"]):
+            ch.append(f"due {a['due_at'][:10]} → {exp[:10]}")
+    if e.get("unlock"):
+        exp = unlock_at(e["unlock"])
+        if exp and not a.get("unlock_at"):
+            ch.append(f"set unlock date {exp[:10]}")
+        elif exp and not _same_instant(exp, a["unlock_at"]):
+            ch.append(f"unlock {a['unlock_at'][:10]} → {exp[:10]}")
+    if e.get("content"):
+        want = viewer_url_in(e["description"])
+        if a.get("viewer_url") is None:
+            ch.append("replace the fixed content snapshot with the live lesson view")
+        elif want and a["viewer_url"] != want:
+            ch.append("live view link → " + want.split("?", 1)[-1])
+    return ch
+
+def _plan_module_sync(block, ref, state, due_at, unlock_at):
+    """Match a module block's expected items against the course. Returns
+    {module_name, module_id, expected, create, update, unchanged, retire, reorder}
+    where update/unchanged entries carry the matched Canvas item and retire lists
+    module items the schedule no longer expects. Matching order per expected
+    item: exact title in the module → same lesson identity in the module → same
+    un-numbered title in the module → same lesson identity anywhere in the course
+    (an assignment whose module link was removed)."""
+    modules, assignments, module_items = state
+    expected = _expected_block_items(block, ref)
+    mod_name = _unit_module_name(block)
+    mod = next((m for m in modules if m["name"] == mod_name), None)
+    plan = {"module_name": mod_name, "module_id": mod["id"] if mod else None, "expected": expected,
+            "create": [], "update": [], "unchanged": [], "retire": [], "reorder": False}
+    if not expected:
+        return plan
+    asgn_by_id = {a["id"]: a for a in assignments}
+    cands = []
+    for it in (module_items(mod["id"]) if mod else []):
+        if it.get("type") == "Assignment":
+            a = asgn_by_id.get(it.get("content_id"))
+            if a is None:
+                continue
+            cands.append({"kind": "Assignment", "item": it, "asgn": a, "name": a["name"],
+                          "identity": _asgn_identity(a), "base": _base_title(a["name"])})
+        elif it.get("type") == "Page":
+            cands.append({"kind": "Page", "item": it, "asgn": None, "name": it.get("title") or "",
+                          "identity": None, "base": _base_title(it.get("title"))})
+    linked = {c["asgn"]["id"] for c in cands if c["asgn"]}
+    loose = [{"kind": "Assignment", "item": None, "asgn": a, "name": a["name"],
+              "identity": _asgn_identity(a), "base": _base_title(a["name"])}
+             for a in assignments if a["id"] not in linked and _asgn_identity(a)]
+    claimed = set()
+
+    def take(pool, pred):
+        for c in pool:
+            if id(c) not in claimed and pred(c):
+                claimed.add(id(c))
+                return c
+        return None
+
+    matched_positions = []
+    for idx, e in enumerate(expected):
+        same_kind = lambda c, e=e: c["kind"] == e["type"]
+        c = (take(cands, lambda c: same_kind(c) and c["name"] == e["title"])
+             or take(cands, lambda c: same_kind(c) and c["identity"] and c["identity"] == e["identity"])
+             or take(cands, lambda c: same_kind(c) and c["base"] == e["base_title"])
+             or (take(loose, lambda c: c["identity"] == e["identity"]) if e["type"] == "Assignment" else None))
+        if c is None:
+            plan["create"].append(e)
+            plan["reorder"] = True   # a new item lands at the end; positions must be redone
+            continue
+        if c["kind"] == "Assignment":
+            changes = _assignment_changes(e, c["asgn"], due_at, unlock_at)
+        else:
+            changes = [f"rename from “{c['name']}”"] if c["name"] != e["title"] else []
+        if c["item"] is None:
+            changes.append("link into the module again")
+            plan["reorder"] = True
+        else:
+            matched_positions.append(c["item"].get("position") or 0)
+        entry = {"expected": e, "match": c, "title": e["title"], "type": e["type"],
+                 "from": c["name"], "changes": changes}
+        (plan["update"] if changes else plan["unchanged"]).append(entry)
+    if matched_positions != sorted(matched_positions):
+        plan["reorder"] = True
+    for c in cands:
+        if id(c) not in claimed:
+            plan["retire"].append({"match": c, "title": c["name"], "type": c["kind"],
+                                   "published": (c["asgn"] or c["item"]).get("published")})
+    return plan
+
+def _plan_public(plan):
+    """The plan without Canvas internals — what the dry-run preview shows."""
+    def strip(entries):
+        return [{"title": x["title"], "type": x["type"], "from": x.get("from"),
+                 "changes": x.get("changes", [])} for x in entries]
+    return {"module_name": plan["module_name"], "module_exists": plan["module_id"] is not None,
+            "create": [{"title": e["title"], "type": e["type"], "quiz": e.get("quiz")} for e in plan["create"]],
+            "update": strip(plan["update"]), "unchanged": strip(plan["unchanged"]),
+            "retire": [{"title": r["title"], "type": r["type"], "published": r.get("published")}
+                       for r in plan["retire"]],
+            "reorder": plan["reorder"]}
+
+def _plan_summary(plan, ref):
+    """(status, detail) for the sync-status dot."""
+    mod_name = plan["module_name"]
+    if plan["module_id"] is None:
+        return "unsynced", f"Ready to sync — no module named “{mod_name}” in the course yet"
+    if not plan["create"] and not plan["update"] and not plan["retire"]:
+        return "synced", (f"It seems to be synced — “{mod_name}” has all {len(plan['expected'])} "
+                          f"item(s) with matching titles, points, and due dates, live from “{ref}”")
+    bits = []
+    if plan["create"]:
+        bits.append("to create: " + ", ".join(f"“{e['title']}”" for e in plan["create"][:4])
+                    + ("…" if len(plan["create"]) > 4 else ""))
+    if plan["update"]:
+        bits.append("to update: " + "; ".join(f"“{u['title']}” ({', '.join(u['changes'])})"
+                                              for u in plan["update"][:3])
+                    + ("…" if len(plan["update"]) > 3 else ""))
+    if plan["retire"]:
+        bits.append("no longer in the schedule (will be unpublished): "
+                    + ", ".join(f"“{r['title']}”" for r in plan["retire"][:3])
+                    + ("…" if len(plan["retire"]) > 3 else ""))
+    return "partial", f"Partially synced — “{mod_name}” exists but " + " · ".join(bits) + ". Sync updates in place."
+
+def _apply_module_sync(course_id, plan, ref, due_at, unlock_at, options=None):
+    """Carry out a module plan against Canvas. Creates what is missing, updates
+    matched items in place (name, points, dates, module link, and the live-view
+    description when its link drifted), unpublishes retired items, and rewrites
+    module positions when the order changed. Never deletes anything.
+    options["push_quizzes"]: create quiz days as real New Quizzes (questions from
+    the unlocked quiz.json) instead of placeholder assignments."""
+    options = options or {}
+    out = {"module_name": plan["module_name"], "module_id": plan["module_id"], "ref": ref,
+           "created": [], "updated": [], "retired": [],
+           "unchanged": [u["title"] for u in plan["unchanged"]], "errors": []}
+    module_id = plan["module_id"]
+    if module_id is None:
+        mod_res = requests.post(f"{BASE}/courses/{course_id}/modules", headers=hdrs(),
+                                json={"module": {"name": plan["module_name"], "position": 1}})
+        if not mod_res.ok:
+            out["errors"].append({"name": plan["module_name"], "error": f"Module creation failed: {mod_res.text}"})
+            return out
+        module_id = out["module_id"] = mod_res.json()["id"]
+
+    def put(url, payload):
+        return requests.put(url, headers=hdrs(), json=payload)
+
+    def link(title, type_, **content):
+        mr = requests.post(f"{BASE}/courses/{course_id}/modules/{module_id}/items", headers=hdrs(),
+                           json={"module_item": {"title": title, "type": type_, **content}})
+        return mr.ok
+
+    for e in plan["create"]:
+        if e["type"] == "Page":
+            page, perr = create_canvas_page(course_id, module_id, e["title"], e["description"])
+            if perr:
+                out["errors"].append({"name": e["title"], "error": perr})
+            else:
+                out["created"].append(page)
+            continue
+        if e.get("quiz") and options.get("push_quizzes"):
+            asgn_id, perr = _push_new_quiz(course_id, e, due_at, unlock_at)
+            if asgn_id:
+                out["created"].append({"name": e["title"], "assignment_id": asgn_id, "new_quiz": True,
+                                       "linked": link(e["title"], "Assignment", content_id=asgn_id)})
+                if perr:
+                    out["errors"].append({"name": e["title"], "error": perr})
+                continue
+            out["errors"].append({"name": e["title"],
+                                  "error": f"New Quizzes push failed — created a placeholder assignment instead: {perr}"})
+        submission = ["none"] if e.get("quiz") else ["online_upload", "online_text_entry"]
+        payload = {"assignment": {"name": e["title"], "points_possible": e["points"],
+                                  "submission_types": submission,
+                                  "description": e["description"], "published": False}}
+        if e.get("due"):
+            payload["assignment"]["due_at"] = due_at(e["due"])
+        if e.get("unlock"):
+            payload["assignment"]["unlock_at"] = unlock_at(e["unlock"])
+        r = requests.post(f"{BASE}/courses/{course_id}/assignments", headers=hdrs(), json=payload)
+        if not r.ok:
+            out["errors"].append({"name": e["title"], "error": r.text})
+            continue
+        asgn_id = r.json()["id"]
+        out["created"].append({"name": e["title"], "assignment_id": asgn_id,
+                               "linked": link(e["title"], "Assignment", content_id=asgn_id)})
+
+    for u in plan["update"]:
+        e, c = u["expected"], u["match"]
+        if e["type"] == "Assignment":
+            a = c["asgn"]
+            payload = {"assignment": {"name": e["title"]}}
+            if e.get("points") is not None:
+                payload["assignment"]["points_possible"] = e["points"]
+            if e.get("due"):
+                payload["assignment"]["due_at"] = due_at(e["due"])
+            if e.get("unlock"):
+                payload["assignment"]["unlock_at"] = unlock_at(e["unlock"])
+            if any(ch.startswith(("replace the fixed", "live view link")) for ch in u["changes"]):
+                payload["assignment"]["description"] = e["description"]
+            r = put(f"{BASE}/courses/{course_id}/assignments/{a['id']}", payload)
+            if not r.ok:
+                out["errors"].append({"name": e["title"], "error": r.text})
+                continue
+            if c["item"] is None:
+                link(e["title"], "Assignment", content_id=a["id"])
+            elif c["item"].get("title") != e["title"]:
+                put(f"{BASE}/courses/{course_id}/modules/{module_id}/items/{c['item']['id']}",
+                    {"module_item": {"title": e["title"]}})
+        else:
+            page_url = c["item"].get("page_url")
+            r = put(f"{BASE}/courses/{course_id}/pages/{page_url}", {"wiki_page": {"title": e["title"]}})
+            if not r.ok:
+                out["errors"].append({"name": e["title"], "error": r.text})
+                continue
+            put(f"{BASE}/courses/{course_id}/modules/{module_id}/items/{c['item']['id']}",
+                {"module_item": {"title": e["title"]}})
+        out["updated"].append({"name": e["title"], "from": c["name"], "changes": u["changes"]})
+
+    for rt in plan["retire"]:
+        c = rt["match"]
+        if c["kind"] == "Assignment":
+            r = put(f"{BASE}/courses/{course_id}/assignments/{c['asgn']['id']}",
+                    {"assignment": {"published": False}})
+        else:
+            r = put(f"{BASE}/courses/{course_id}/pages/{c['item'].get('page_url')}",
+                    {"wiki_page": {"published": False}})
+        if r.ok:
+            out["retired"].append({"name": c["name"], "type": c["kind"]})
+        else:
+            # Canvas refuses to unpublish an assignment that already has submissions
+            out["errors"].append({"name": c["name"], "error": f"could not unpublish: {r.text}"})
+
+    if plan["reorder"] and not out["errors"]:
+        try:
+            live = canvas_paged(f"/courses/{course_id}/modules/{module_id}/items")
+        except Exception as ex:  # ordering is cosmetic — never fail the sync over it
+            live, out["errors"] = [], out["errors"] + [{"name": "(reorder)", "error": str(ex)}]
+        by_title = {}
+        for it in live:
+            by_title.setdefault((it.get("title"), it.get("type")), it)
+        for pos, e in enumerate(plan["expected"], start=1):
+            it = by_title.get((e["title"], e["type"]))
+            if it and it.get("position") != pos:
+                put(f"{BASE}/courses/{course_id}/modules/{module_id}/items/{it['id']}",
+                    {"module_item": {"position": pos}})
+    _invalidate_course_caches(course_id)
+    return out
+
+def _standalone_expected(block, ref):
+    """The one assignment a standalone test / final / lesson block syncs to."""
+    kind = block["type"]
+    first = block["slots"][0] if block.get("slots") else {}
+    title = first.get("base_title") or block.get("title") or kind.title()
+    if kind in ("test", "final"):
+        label = "final exam" if kind == "final" else "test"
+        return {"title": title, "type": "Assignment", "identity": f"{kind}:{title}", "base_title": title,
+                "points": block.get("points") or 100, "due": block.get("end"), "unlock": block.get("start"),
+                "description": f"<p>In-class {label}. Details will be provided in class.</p>", "content": False}
+    if kind == "lesson":
+        lref = first.get("lesson_ref") or {}
+        return {"title": title, "type": "Assignment",
+                "identity": f"lesson:{lref.get('module')}/{lref.get('path')}", "base_title": title,
+                "points": block.get("points") or 10, "due": block.get("end"), "unlock": block.get("start"),
+                "description": live_description(ref, lref.get("module"), lref.get("path"), None),
+                "content": True}
+    return None
+
+def _match_standalone(e, assignments):
+    a = next((a for a in assignments if a["name"] == e["title"]), None)
+    if a is None and e["identity"].startswith("lesson:"):
+        a = next((a for a in assignments if a.get("lesson") and f"lesson:{a['lesson']}" == e["identity"]), None)
+    return a
 
 @app.route("/api/schedules/<name>/sync-status")
 def api_schedule_sync_status(name):
     """Compare every syncable block against what actually exists in a Canvas
-    course: 'synced' (module + all items found, points and due dates match),
-    'partial' (found but incomplete or drifted), or 'unsynced' (nothing there
-    yet). Reads through the normal Canvas caches, so repeat checks are cheap."""
+    course, using the same planner as sync-block: 'synced' (module + all items
+    found, titles, points, and due dates match), 'partial' (found but some items
+    would be created, updated, or unpublished by a sync — the detail says which),
+    or 'unsynced' (nothing there yet). Reads through the Canvas caches."""
     err = no_token()
     if err:
         return err
@@ -1609,67 +2154,13 @@ def api_schedule_sync_status(name):
     ttl = 0 if request.args.get("refresh") == "1" else SUBRESOURCE_TTL
 
     resolved = resolve_schedule(sched)
-    _due_at, _ = _sched_time_fns(sched)
+    _due_at, _unlock_at = _sched_time_fns(sched)
     ref = schedule_ref(sched)
-
     try:
-        modules, _, _ = cached(f"modules_{course_id}", ttl, lambda: [
-            {"id": m["id"], "name": m["name"], "items_count": m.get("items_count", 0),
-             "published": m.get("published"), "position": m.get("position")}
-            for m in canvas_paged(f"/courses/{course_id}/modules", {"include[]": "items_count"})])
-        # own cache key: this list also remembers which git ref each
-        # description's live-view link follows (parsed out, never stored whole)
-        assignments, _, _ = cached(f"assignments_ref_{course_id}", ttl, lambda: [
-            {"id": a["id"], "name": a["name"], "due_at": a.get("due_at"),
-             "points": a.get("points_possible"), "html_url": a.get("html_url"),
-             "viewer_ref": viewer_ref_in(a.get("description"))}
-            for a in canvas_paged(f"/courses/{course_id}/assignments", {"order_by": "due_at"})])
+        state = _canvas_course_state(course_id, ttl)
     except Exception as e:
         return jsonify({"error": f"Canvas fetch failed: {e}"}), 502
-
-    mod_by_name = {m["name"]: m for m in modules}
-    asgn_by_name = {}
-    for a in assignments:
-        asgn_by_name.setdefault(a["name"], a)
-
-    def same_instant(expected_iso, canvas_iso):
-        try:
-            e = datetime.fromisoformat(expected_iso)
-            c = datetime.fromisoformat(canvas_iso.replace("Z", "+00:00"))
-            return abs((e - c).total_seconds()) < 60
-        except (ValueError, TypeError):
-            return False
-
-    def assignment_issues(title, points, due_date, want_ref=None):
-        """Points/due-date/ref drift for one Canvas assignment (empty list = match).
-        want_ref: the git ref its live-view link should follow (None = no content)."""
-        a = asgn_by_name.get(title)
-        if not a:
-            return None   # not in the course's assignment list at all
-        issues = []
-        if want_ref:
-            got = a.get("viewer_ref")
-            if got is None:
-                issues.append(f"“{title}”: holds a fixed content snapshot, not the live lesson view — "
-                              f"re-sync to link it to “{want_ref}”")
-            elif got != want_ref:
-                issues.append(f"“{title}”: live view follows “{got}”, schedule says “{want_ref}”")
-        if points is not None and a.get("points") is not None \
-                and float(a["points"]) != float(points):
-            issues.append(f"“{title}”: {a['points']:g} pts on Canvas, schedule says {points:g}")
-        if due_date:
-            exp = _due_at(due_date)
-            if exp and a.get("due_at") and not same_instant(exp, a["due_at"]):
-                issues.append(f"“{title}”: due dates differ (Canvas {a['due_at'][:10]}, schedule {exp[:10]})")
-            elif exp and not a.get("due_at"):
-                issues.append(f"“{title}”: no due date on Canvas")
-        return issues
-
-    def module_items(mid):
-        data, _, _ = cached(f"module_items_{course_id}_{mid}", ttl, lambda: [
-            {"title": it.get("title"), "type": it.get("type")}
-            for it in canvas_paged(f"/courses/{course_id}/modules/{mid}/items")])
-        return data
+    _, assignments, _ = state
 
     statuses = {}
     for block in resolved["blocks"]:
@@ -1677,59 +2168,37 @@ def api_schedule_sync_status(name):
         if not bid or block.get("missing"):
             continue
         if block["type"] == "module":
-            expected = _expected_block_items(block)
-            if not expected:
-                continue
-            mod_name = _unit_module_name(block)
-            mod = mod_by_name.get(mod_name)
-            if not mod:
-                statuses[bid] = {"status": "unsynced",
-                                 "detail": f"Ready to sync — no module named “{mod_name}” in the course yet"}
-                continue
             try:
-                item_keys = {(it["title"], it["type"]) for it in module_items(mod["id"])}
-            except Exception:
-                item_keys = set()
-            missing, drifted = [], []
-            for e in expected:
-                if (e["title"], e["type"]) not in item_keys:
-                    missing.append(e["title"])
-                    continue
-                if e["type"] == "Assignment":
-                    drifted.extend(assignment_issues(e["title"], e["points"], e["due"],
-                                                     ref if e.get("content") else None) or [])
-            if not missing and not drifted:
-                statuses[bid] = {"status": "synced",
-                                 "detail": f"It seems to be synced — “{mod_name}” has all {len(expected)} "
-                                           f"item(s) with matching titles, points, and due dates, "
-                                           f"live from “{ref}”"}
-            else:
-                bits = []
-                if missing:
-                    bits.append("missing from Canvas: " + ", ".join(f"“{t}”" for t in missing[:4])
-                                + ("…" if len(missing) > 4 else ""))
-                if drifted:
-                    bits.append("; ".join(drifted[:3]) + ("…" if len(drifted) > 3 else ""))
-                statuses[bid] = {"status": "partial",
-                                 "detail": f"Partially synced — “{mod_name}” exists but " + " · ".join(bits)}
+                plan = _plan_module_sync(block, ref, state, _due_at, _unlock_at)
+            except Exception as e:
+                statuses[bid] = {"status": "partial", "detail": f"Could not check: {e}"}
+                continue
+            if not plan["expected"]:
+                continue
+            status, detail = _plan_summary(plan, ref)
+            statuses[bid] = {"status": status, "detail": detail}
         elif block["type"] in ("test", "final", "lesson"):
-            first = block["slots"][0] if block.get("slots") else {}
-            title = first.get("base_title") or block.get("title") or block["type"].title()
-            points = block.get("points") or (100 if block["type"] in ("test", "final") else 10)
-            if title not in asgn_by_name:
+            e = _standalone_expected(block, ref)
+            a = _match_standalone(e, assignments)
+            if a is None:
                 statuses[bid] = {"status": "unsynced",
-                                 "detail": f"Ready to sync — no assignment named “{title}” in the course yet"}
-            else:
-                drifted = assignment_issues(title, points, block.get("end"),
-                                            ref if block["type"] == "lesson" else None) or []
-                statuses[bid] = ({"status": "synced",
-                                  "detail": f"It seems to be synced — “{title}” found with matching points and due date"}
-                                 if not drifted else
-                                 {"status": "partial", "detail": "Partially synced — " + "; ".join(drifted)})
+                                 "detail": f"Ready to sync — no assignment named “{e['title']}” in the course yet"}
+                continue
+            changes = _assignment_changes(e, a, _due_at, _unlock_at)
+            statuses[bid] = ({"status": "synced",
+                              "detail": f"It seems to be synced — “{e['title']}” found with matching points and due date"}
+                             if not changes else
+                             {"status": "partial", "detail": "Partially synced — " + "; ".join(changes)
+                                                             + ". Sync updates in place."})
     return jsonify({"course_id": course_id, "statuses": statuses})
 
 @app.route("/api/schedules/<name>/sync-block", methods=["POST"])
 def api_schedule_sync_block(name):
+    """Upsert one schedule block into a Canvas course. Body: {course_id, block_id,
+    dry_run?}. With dry_run the plan is returned and nothing is written — the
+    Sync dialog shows it as a preview. Otherwise: missing items are created,
+    matched items are updated in place, items the schedule no longer expects
+    are unpublished (never deleted), and module order is restored."""
     err = no_token()
     if err:
         return err
@@ -1741,6 +2210,8 @@ def api_schedule_sync_block(name):
     body = request.get_json(force=True) or {}
     course_id = body.get("course_id")
     block_id = body.get("block_id")
+    dry_run = bool(body.get("dry_run"))
+    options = {"push_quizzes": bool(body.get("push_quizzes"))}
     if not course_id or not block_id:
         return jsonify({"error": "course_id and block_id required"}), 400
     resolved = resolve_schedule(sched)
@@ -1752,123 +2223,67 @@ def api_schedule_sync_block(name):
 
     _due_at, _unlock_at = _sched_time_fns(sched)
     ref = schedule_ref(sched)
-
-    results, errors = [], []
-
-    def create_assignment(name, points, description, due, unlock, module_id=None):
-        payload = {"assignment": {
-            "name": name, "points_possible": points,
-            "submission_types": ["online_upload", "online_text_entry"],
-            "description": description, "published": False}}
-        if due:
-            payload["assignment"]["due_at"] = _due_at(due)
-        if unlock:
-            payload["assignment"]["unlock_at"] = _unlock_at(unlock)
-        r = requests.post(f"{BASE}/courses/{course_id}/assignments", headers=hdrs(), json=payload)
-        if not r.ok:
-            errors.append({"name": name, "error": r.text})
-            return
-        asgn_id = r.json()["id"]
-        linked = True
-        if module_id:
-            mr = requests.post(f"{BASE}/courses/{course_id}/modules/{module_id}/items",
-                               headers=hdrs(),
-                               json={"module_item": {"title": name, "type": "Assignment",
-                                                     "content_id": asgn_id}})
-            linked = mr.ok
-        results.append({"name": name, "assignment_id": asgn_id, "linked": linked})
+    try:
+        # a real sync always looks at the live course; a preview may use the caches
+        state = _canvas_course_state(course_id, SUBRESOURCE_TTL if dry_run else 0)
+    except Exception as e:
+        return jsonify({"error": f"Canvas fetch failed: {e}"}), 502
+    _, assignments, _ = state
 
     if block["type"] == "module":
-        unit = block["unit_number"]
-        mod_name = _unit_module_name(block)
-        points = smart_round((block.get("points") or 10) * ((block.get("scale") or 1.15) ** unit))
-        mod_res = requests.post(f"{BASE}/courses/{course_id}/modules", headers=hdrs(),
-                                json={"module": {"name": mod_name, "position": 1}})
-        if not mod_res.ok:
-            return jsonify({"error": f"Module creation failed: {mod_res.text}"}), 502
-        module_id = mod_res.json()["id"]
+        plan = _plan_module_sync(block, ref, state, _due_at, _unlock_at)
+        if not plan["expected"]:
+            return jsonify({"error": "nothing in this block syncs to Canvas"}), 422
+        if dry_run:
+            return jsonify({"dry_run": True, "ref": ref, "unit_number": block["unit_number"],
+                            "plan": _plan_public(plan)})
+        out = _apply_module_sync(course_id, plan, ref, _due_at, _unlock_at, options)
+        out["unit_number"] = block["unit_number"]
+        return jsonify(out)
 
-        slots = block["slots"]
-
-        def group_end(s):
-            dated = [x.get("date") for x in slots
-                     if x.get("group") == s.get("group") and x.get("date")]
-            return dated[-1] if dated else s.get("date")
-
-        for i, s in enumerate(slots):
-            if s.get("part", 1) != 1:
-                continue  # later day of a multi-day item — covered by its first day
-            day_num = s.get("day_num", i + 1)
-            kind = s.get("kind")
-            if kind == "lesson" and s.get("lesson"):
-                a = s["lesson"]
-                if not (a.get("_module") and a.get("path")):
-                    # placeholder: 'page' syncs a Canvas Page (no assignment);
-                    # 'test' / plain reserve the day number and create nothing
-                    if a.get("kind") == "page":
-                        pname = f"{unit}.{day_num}{_day_sub_suffix(a)}: {a['title']}"
-                        desc = _lesson_description(ref, "", "", a.get("review"))
-                        desc = (desc + "\n" if desc else "") + "<p>In-class day — no assignment due.</p>"
-                        page, perr = create_canvas_page(course_id, module_id, pname, desc)
-                        if perr:
-                            errors.append({"name": pname, "error": perr})
-                        else:
-                            results.append(page)
-                    continue
-                if a.get("no_assignment"):
-                    # content page instead of homework — no points, no due date
-                    pname = f"{unit}.{day_num}{_day_sub_suffix(a)}: {a['title']}"
-                    desc = _lesson_description(ref, a.get("_module"), a.get("path"),
-                                               a.get("review"), include_assignment=False)
-                    page, perr = create_canvas_page(course_id, module_id, pname, desc)
-                    if perr:
-                        errors.append({"name": pname, "error": perr})
-                    else:
-                        results.append(page)
-                    continue
-                create_assignment(f"{unit}.{day_num}{_day_sub_suffix(a)}: {a['title']}", points,
-                                  _lesson_description(ref, a.get("_module"), a.get("path"),
-                                                      a.get("review")),
-                                  group_end(s), s.get("date"), module_id)
-            elif kind == "lesson" and s.get("lesson_ref"):
-                lref = s["lesson_ref"]
-                create_assignment(f"{unit}.{day_num}: {s.get('base_title') or s['title']}", points,
-                                  _lesson_description(ref, lref.get("module"), lref.get("path"), None),
-                                  group_end(s), s.get("date"), module_id)
-            elif kind in ("test", "final"):
-                label = "final exam" if kind == "final" else "test"
-                create_assignment(f"{unit}.{day_num}: {s.get('base_title') or s['title']}",
-                                  s.get("points") or 100,
-                                  f"<p>In-class {label}. Details will be provided in class.</p>",
-                                  group_end(s), s.get("date"), module_id)
-            # review / flex / custom / gap days are schedule-only — nothing in Canvas
-        payload_out = {"module_id": module_id, "module_name": mod_name, "unit_number": unit,
-                       "ref": ref, "created": results, "errors": errors}
-    else:
-        kind = block["type"]
-        first = block["slots"][0] if block.get("slots") else {}
-        title = first.get("base_title") or block.get("title") or kind.title()
-        if kind in ("test", "final"):
-            label = "final exam" if kind == "final" else "test"
-            create_assignment(title, block.get("points") or 100,
-                              f"<p>In-class {label}. Details will be provided in class.</p>",
-                              block.get("end"), block.get("start"))
-        elif kind == "lesson":
-            lref = first.get("lesson_ref") or {}
-            create_assignment(title, block.get("points") or 10,
-                              _lesson_description(ref, lref.get("module"), lref.get("path"), None),
-                              block.get("end"), block.get("start"))
+    e = _standalone_expected(block, ref)
+    if e is None:
+        return jsonify({"error": f"'{block['type']}' days are schedule-only — nothing to sync"}), 422
+    a = _match_standalone(e, assignments)
+    changes = _assignment_changes(e, a, _due_at, _unlock_at) if a else []
+    if dry_run:
+        return jsonify({"dry_run": True, "ref": ref, "plan": {
+            "module_name": None, "module_exists": True,
+            "create": [] if a else [{"title": e["title"], "type": "Assignment"}],
+            "update": [{"title": e["title"], "type": "Assignment", "from": a["name"], "changes": changes}] if a and changes else [],
+            "unchanged": [{"title": e["title"], "type": "Assignment", "from": a["name"], "changes": []}] if a and not changes else [],
+            "retire": [], "reorder": False}})
+    out = {"ref": ref, "created": [], "updated": [], "retired": [], "unchanged": [], "errors": []}
+    if a is None:
+        payload = {"assignment": {"name": e["title"], "points_possible": e["points"],
+                                  "submission_types": ["online_upload", "online_text_entry"],
+                                  "description": e["description"], "published": False}}
+        if e.get("due"):
+            payload["assignment"]["due_at"] = _due_at(e["due"])
+        if e.get("unlock"):
+            payload["assignment"]["unlock_at"] = _unlock_at(e["unlock"])
+        r = requests.post(f"{BASE}/courses/{course_id}/assignments", headers=hdrs(), json=payload)
+        if r.ok:
+            out["created"].append({"name": e["title"], "assignment_id": r.json()["id"], "linked": False})
         else:
-            return jsonify({"error": f"'{kind}' days are schedule-only — nothing to sync"}), 422
-        payload_out = {"ref": ref, "created": results, "errors": errors}
-
-    for key in [f"modules_{course_id}", f"assignments_{course_id}", f"assignments_ref_{course_id}"]:
-        p = cache_path(key)
-        if p.exists():
-            p.unlink()
-    for p in CACHE.glob(f"module_items_{course_id}_*.json"):
-        p.unlink()
-    return jsonify(payload_out)
+            out["errors"].append({"name": e["title"], "error": r.text})
+    elif changes:
+        payload = {"assignment": {"name": e["title"], "points_possible": e["points"]}}
+        if e.get("due"):
+            payload["assignment"]["due_at"] = _due_at(e["due"])
+        if e.get("unlock"):
+            payload["assignment"]["unlock_at"] = _unlock_at(e["unlock"])
+        if any(ch.startswith(("replace the fixed", "live view link")) for ch in changes):
+            payload["assignment"]["description"] = e["description"]
+        r = requests.put(f"{BASE}/courses/{course_id}/assignments/{a['id']}", headers=hdrs(), json=payload)
+        if r.ok:
+            out["updated"].append({"name": e["title"], "from": a["name"], "changes": changes})
+        else:
+            out["errors"].append({"name": e["title"], "error": r.text})
+    else:
+        out["unchanged"].append(e["title"])
+    _invalidate_course_caches(course_id)
+    return jsonify(out)
 
 # ── Module Editor ──────────────────────────────────────────────────────────────
 # Edits the repo topic folders (the content source of truth). Strict one-way
@@ -1912,13 +2327,13 @@ def _scan_usage(topic, path=None, review_file=None):
             continue
         hit = False
         for a in mod.get("assignments", []):
-            rev = a.get("review") or {}
+            revs = _review_refs(a)   # one reference or a stacked list — never index it directly
             if review_file:
-                hit = hit or (rev.get("module") == topic and rev.get("path") == path
-                              and rev.get("file") == review_file)
+                hit = hit or any(r.get("module") == topic and r.get("path") == path
+                                 and r.get("file") == review_file for r in revs)
             elif path:
                 hit = hit or (a.get("_module") == topic and a.get("path") == path) \
-                          or (rev.get("module") == topic and rev.get("path") == path)
+                          or any(r.get("module") == topic and r.get("path") == path for r in revs)
             else:
                 hit = hit or a.get("_module") == topic
         if not path and not review_file and topic in (mod.get("topic_names") or []):
@@ -2616,5 +3031,7 @@ if __name__ == "__main__":
     print(f"HW Course Hub ({COURSE_NAME}) → http://127.0.0.1:5050")
     print(f"Repo root: {ROOT}")
     print(f"Finals dir: {FINALS} ({'found' if finals_available() else 'NOT FOUND — finals disabled'})")
+    print(f"Exams dir: {EXAMS_DIR / EXAMS_CLASS} ({len(list_quizzes())} quiz(zes)" if exams_available()
+          else f"Exams dir: {EXAMS_DIR / EXAMS_CLASS} (NOT FOUND — quizzes disabled)")
     print(f"Canvas token: {'configured' if TOKEN else 'MISSING — Canvas features disabled'}")
     app.run(port=5050, debug=True)

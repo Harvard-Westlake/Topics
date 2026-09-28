@@ -10,6 +10,9 @@ _admin/_solutions/
 __pycache__/
 *.pyc
 
+# Local virtualenv for the course hub's dependencies
+_admin/_hub/.venv/
+
 # Per-teacher secrets — every teacher keeps their own Canvas token in .env
 # (copy .env.example). NEVER commit a real token.
 .env

@@ -66,4 +66,4 @@ See [Docs/trees.md](../Docs/trees.md) and the interactive visualizer linked in t
 
 [Assignment](ASSIGNMENT.md)
 
-← [Initialization and Blobs](../InitAndBlobs/) — Next: [Commits](../Commits/)
+← [Peer Code Verification](../PeerCodeVerification/) — Next: [Commits](../Commits/)

@@ -247,7 +247,10 @@ def generate_lessonplan(mod):
     lines += ["| Day | Lesson | Source | Review |", "|---|---|---|---|"]
     for a in mod.get("assignments", []):
         if a.get("placeholder"):
-            src_cell = "*placeholder — not yet filled in*"
+            if a.get("kind") == "quiz":
+                src_cell = f"*quiz `{a.get('quiz_id') or '?'}` — content in the private Exams repo*"
+            else:
+                src_cell = "*placeholder — not yet filled in*"
         else:
             src = f"{a['_module']}/{a['path']}"
             src_cell = f"[{src}](../../{src}/)"
@@ -264,6 +267,24 @@ def generate_lessonplan(mod):
         lines.append(f"| {day_label(unit, a)} | {title_cell} | {src_cell} | {rev_cell} |")
     lines.append("")
     return "\n".join(lines)
+
+
+_KNOWN_QUIZ_IDS = None
+
+def known_quiz_ids():
+    """quiz_ids in the private sibling Exams checkout (../Exams/<Class>/<Topic>/Quizzes/*/quiz.meta.json).
+    Empty when no checkout is present (CI) — callers then skip the check."""
+    global _KNOWN_QUIZ_IDS
+    if _KNOWN_QUIZ_IDS is None:
+        _KNOWN_QUIZ_IDS = set()
+        for meta in (ROOT.parent / "Exams").glob("*/*/Quizzes/*/quiz.meta.json"):
+            try:
+                qid = json.loads(meta.read_text()).get("quiz_id")
+            except (OSError, json.JSONDecodeError):
+                continue
+            if qid:
+                _KNOWN_QUIZ_IDS.add(str(qid))
+    return _KNOWN_QUIZ_IDS
 
 
 def check_modules(fix=False):
@@ -286,6 +307,12 @@ def check_modules(fix=False):
                 err(f"{rel}: topic_names entry '{t}' is not a folder in the repo")
 
         for a in mod.get("assignments", []):
+            if a.get("placeholder") and a.get("kind") == "quiz":
+                qid = a.get("quiz_id")
+                if not qid:
+                    err(f"{rel}: quiz row '{a.get('title')}' has no quiz_id — pick the quiz in the Module Planner")
+                elif known_quiz_ids() and str(qid) not in known_quiz_ids():
+                    warn(f"{rel}: quiz_id '{qid}' is not in the ../Exams checkout (stale checkout, or the quiz was removed)")
             if not a.get("placeholder"):
                 label = f"{a.get('_module')}/{a.get('path')}"
                 lesson_dir = ROOT / a.get("_module", "") / a.get("path", "")

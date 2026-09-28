@@ -3,7 +3,7 @@
   "slug": "git-project",
   "description": "Program Git",
   "unit_number": 2,
-  "points_per_assignment": 10,
+  "points_per_assignment": 120,
   "scale_factor": 1.15,
   "start_date": null,
   "topic_names": [
@@ -28,11 +28,34 @@
     },
     {
       "day": 5,
-      "duration": 3,
+      "duration": 0.5,
+      "title": "Git Project Part 2 \u2014 Initialization and Blobs: Quiz and Self-Assessment",
+      "path": "",
+      "_module": "",
+      "review": null,
+      "sub": 0,
+      "placeholder": true,
+      "kind": "quiz",
+      "quiz_id": "ee92474635bc750d"
+    },
+    {
+      "day": 5,
+      "duration": 0.5,
+      "title": "Peer Code Verification",
+      "path": "PeerCodeVerification",
+      "_module": "GitProject",
+      "review": null,
+      "sub": 1,
+      "duration_override": true
+    },
+    {
+      "day": 6,
+      "duration": 2,
       "title": "Trees",
       "path": "Trees",
       "_module": "GitProject",
-      "review": null
+      "review": null,
+      "duration_override": true
     },
     {
       "day": 8,
@@ -43,5 +66,5 @@
       "review": null
     }
   ],
-  "updated": "2026-08-22"
+  "updated": "2026-09-28"
 }

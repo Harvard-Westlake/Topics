@@ -56,4 +56,4 @@ Your program creates a `git/` directory in the project root. This is separate fr
 
 [Assignment](ASSIGNMENT.md)
 
-← [Project Setup](../ProjectSetup/) — Next: [Trees](../Trees/)
+← [Project Setup](../ProjectSetup/) — Next: [Peer Code Verification](../PeerCodeVerification/)
