@@ -28,6 +28,14 @@
     },
     {
       "day": 5,
+      "duration": 1,
+      "title": "Peer Code Verification",
+      "path": "PeerCodeVerification",
+      "_module": "GitProject",
+      "review": null
+    },
+    {
+      "day": 6,
       "duration": 3,
       "title": "Trees",
       "path": "Trees",
@@ -35,7 +43,7 @@
       "review": null
     },
     {
-      "day": 8,
+      "day": 9,
       "duration": 4,
       "title": "Commits",
       "path": "Commits",
@@ -43,5 +51,5 @@
       "review": null
     }
   ],
-  "updated": "2026-08-22"
+  "updated": "2026-09-27"
 }
