@@ -9,7 +9,7 @@
 ## Table of Contents
 
 1. [Part 1: fork a classmate's code, get it running, and verify it](#part-1-verify)
-2. [The verification chart you fill out — nine behaviors, two answers each](#verification-chart)
+2. [The verification chart you fill out — six behaviors, two answers each](#verification-chart)
 3. [Part 2: rename their variables and methods so they make sense](#part-2-rename)
 4. [Four checks before you submit](#success-criteria)
 5. [What to submit on the Hub: the chart and your commit URL](#submission)
@@ -29,7 +29,7 @@
    `origin` must be under your username (your fork) and `upstream` under theirs (the original).
 3. Open the folder in **VS Code**. Read their `README.md`, then `Git.java`.
 4. Get it running as best you can. If `main` is empty, add a `Verify.java` with a `main` that calls their methods. If a hardcoded path stops it on your machine, change the path. Do not change how their methods work — that is Part 2, and it is renaming only.
-5. Verify each of the nine behaviors in the chart **one way or another**: run it and inspect `git/`, or read the code path and predict what it does, then check. The lesson's [black-box toolkit](README.md#two-ways-to-verify-a-feature) has the commands.
+5. Verify each of the six behaviors in the chart **one way or another**: run it and inspect `git/`, or read the code path and predict what it does, then check. The lesson's [black-box toolkit](README.md#two-ways-to-verify-a-feature) has the commands.
 6. Commit what you added to a **new branch** in your fork, for example `peer-review-YOURNAME`, and push it:
    ```bash
    git checkout -b peer-review-YOURNAME
@@ -54,11 +54,8 @@ One row per behavior, two answers per row. The left column is fixed.
 | **2. Stage a file into a blob** — adding a file creates `git/objects/<hash>` whose content is byte for byte identical to the original file. | | |
 | **3. Hash correctness** — the blob's filename is the true SHA-1 of the content. A file containing exactly `sha1test` (8 bytes, no newline) must produce `12c4c60ee087ae0f12dc6abc88495e459f6f2654`, the same as `printf 'sha1test' \| shasum` or `echo -n "sha1test" \| sha1sum`. | | |
 | **4. Index tracks the file** — after adding a file, `git/index` contains a line for that file. | | |
-| **5. Index line format** — each line is `<hash>`, one space, `<relative path>`. The hash matches the blob's filename. No trailing space. No blank final line. | | |
-| **6. Multiple entries** — adding several different files produces one correct line per file, each on its own line. | | |
-| **7. Duplicate content** — two files with identical content at different paths produce two index lines with the same hash but exactly one blob in `git/objects/`. | | |
-| **8. Modify and re-add** — changing a file's content and adding it again replaces its index line with the new hash (no duplicate path) and writes a new blob. The old blob remains. | | |
-| **9. Compression** — blob content is compressed on disk and decompresses back to the original. *(Optional stretch milestone — a 1 with the note "not implemented" is a complete answer.)* | | |
+| **5. Duplicate content** — two files with identical content at different paths produce two index lines with the same hash but exactly one blob in `git/objects/`. | | |
+| **6. Compression** — blob content is compressed on disk and decompresses back to the original. *(Optional stretch milestone — a 1 with the note "not implemented" is a complete answer.)* | | |
 
 ---
 

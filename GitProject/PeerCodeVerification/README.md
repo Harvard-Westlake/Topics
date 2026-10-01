@@ -19,7 +19,7 @@ For the last three classes you built `init()`, a SHA-1 hasher, blob files, and a
 4. [Two ways to verify a feature: black box and white box](#two-ways-to-verify-a-feature)
 5. [Verify a SHA-1 hash by hand in the terminal](#verifying-a-hash-by-hand)
 6. [Write evidence that would convince a stranger](#writing-evidence-that-convinces)
-7. [The nine behaviors you are verifying today](#what-you-are-verifying)
+7. [The six behaviors you are verifying today](#what-you-are-verifying)
 8. [Rename their variables and methods so they say what they hold and do](#renaming-for-sense)
 9. [Rules for reviewers](#reviewer-rules)
 
@@ -108,7 +108,7 @@ Do not start at line 1 and read to the end. Read with a purpose, in this order:
 2. **Find the entry point.** Open `Git.java` and locate `main`. Does it call anything? Many Part 2 programs have an empty `main` and were tested by hand — that tells you how you will have to test them too.
 3. **Build the feature map.** For each of the four milestones — GP-2.1 `init`, GP-2.2 hash, GP-2.3 blob, GP-2.4 index — find the method that does it. Note the signature: what does it take in (a `String` path? a `File`?) and what does it return or write?
 4. **Follow one call all the way down.** Pick the method that stages a file and trace it: read the content → hash it → write the blob → write the index line. At each step, note the data shape (`String` vs `byte[]`), how the path to `git/objects/<hash>` is built, and what happens when something already exists.
-5. **Gauge before you run.** Predict what will happen when you stage two identical files, or re-stage a modified file. Write the prediction down. Then run it. A prediction that comes true is the strongest evidence there is; a prediction that fails tells you exactly where to look.
+5. **Gauge before you run.** Predict what will happen when you stage two files with identical content at different paths. Write the prediction down. Then run it. A prediction that comes true is the strongest evidence there is; a prediction that fails tells you exactly where to look.
 
 While you read, these patterns deserve a note in your table:
 
@@ -153,7 +153,7 @@ While you read, these patterns deserve a note in your table:
 
 **Black box:** run the program and inspect what it left behind in `git/`. You do not need to understand the code to do this — you only need to know what the milestone promised.
 
-**White box:** read the code path and predict the result before running. This catches things a single run will not — for example, an index writer that appends correctly the first time but duplicates a path on a re-add.
+**White box:** read the code path and predict the result before running. This catches things a single run will not — for example, a hasher that reads the file line by line and only produces the right blob name for files that happen to end in a newline.
 
 A verdict of **Works** needs both: you read the code and can say *how* it does it, and you ran it and can show *that* it did. These commands, run in your terminal from the root of the fork, are the black-box toolkit for Part 2:
 
@@ -237,7 +237,7 @@ Every character changed. When a classmate's hash does not match, check `wc -c` o
 
 ## <font color="#388bfd">Writing Evidence That Convinces</font>
 
-Your assignment is a chart with the nine behaviors on the left and two answers per row on the right. A finding a stranger cannot reproduce is an opinion, not evidence.
+Your assignment is a chart with the six behaviors on the left and two answers per row on the right. A finding a stranger cannot reproduce is an opinion, not evidence.
 
 **Answer one — how well does it work, 1 to 5:**
 
@@ -255,7 +255,7 @@ Here is what a complete row looks like:
 
 | Behavior | 1–5 | Is it functional / verified the functionality? What was modified to get it working? |
 |---|---|---|
-| 7. Same content at two paths → two index lines, one blob | 5 | **How:** `add(String path)` calls `hashFile` then `writeBlob`, which checks `blobFile.exists()` before writing; `updateIndex` appends unconditionally with `new FileWriter(index, true)`. **Verified:** `printf 'same' > a.txt; mkdir -p sub; printf 'same' > sub/b.txt`, then staged both from `Verify.java`. `ls git/objects` → one file, `ff3390557335ba88d37755e41514beb03bc499ec`. `cat -e git/index` → two lines with that hash, paths `a.txt$` and `sub/b.txt$`. **Modified:** nothing beyond adding `Verify.java`. |
+| 5. Same content at two paths → two index lines, one blob | 5 | **How:** `add(String path)` calls `hashFile` then `writeBlob`, which checks `blobFile.exists()` before writing; `updateIndex` appends unconditionally with `new FileWriter(index, true)`. **Verified:** `printf 'same' > a.txt; mkdir -p sub; printf 'same' > sub/b.txt`, then staged both from `Verify.java`. `ls git/objects` → one file, `ff3390557335ba88d37755e41514beb03bc499ec`. `cat -e git/index` → two lines with that hash, paths `a.txt$` and `sub/b.txt$`. **Modified:** nothing beyond adding `Verify.java`. |
 
 Notice what the row does *not* say: "seems fine", "worked for me", "I think it appends". Every claim points at a method or a command.
 
@@ -263,17 +263,14 @@ Notice what the row does *not* say: "seems fine", "worked for me", "I think it a
 
 ## <font color="#388bfd">What You Are Verifying</font>
 
-The assignment chart lists these nine behaviors in this order. Read them now so you know what to look for while you build your feature map.
+The assignment chart lists these six behaviors in this order. Read them now so you know what to look for while you build your feature map.
 
 1. **Initialize** — `init()` creates `git/`, `git/objects/`, `git/index`, and `git/HEAD`; running it a second time reports that the repository already exists and changes nothing.
 2. **Stage a file into a blob** — adding a file creates `git/objects/<hash>` whose content is byte for byte identical to the original.
 3. **Hash correctness** — the blob's name is the true SHA-1 of the content; a file containing exactly `sha1test` produces `12c4c60ee087ae0f12dc6abc88495e459f6f2654`.
 4. **Index tracks the file** — after adding a file, `git/index` contains a line for it.
-5. **Index line format** — each line is `<hash>`, one space, `<relative path>`; the hash matches the blob's name; no trailing space; no blank final line.
-6. **Multiple entries** — adding several different files produces one correct line per file, each on its own line.
-7. **Duplicate content** — two files with identical content at different paths produce two index lines with the same hash and exactly one blob in `git/objects/`.
-8. **Modify and re-add** — changing a file's content and adding it again replaces its index line with the new hash (no duplicate path) and writes a new blob; the old blob remains.
-9. **Compression** — blob content is compressed on disk and decompresses back to the original. This was an optional stretch milestone; a **1** with the note "not implemented" is a complete answer here.
+5. **Duplicate content** — two files with identical content at different paths produce two index lines with the same hash and exactly one blob in `git/objects/`.
+6. **Compression** — blob content is compressed on disk and decompresses back to the original. This was an optional stretch milestone; a **1** with the note "not implemented" is a complete answer here.
 
 ---
 
@@ -303,8 +300,8 @@ This is the same standard this course holds its own starter code to — no singl
 - **In Part 1, verify — don't fix.** You may add a driver class (`Verify.java`) and you may change a hardcoded path so the code runs on your machine. You may not rewrite their methods. Anything you change goes in the chart's written answer.
 - **In Part 2, rename — only rename.** Behavior stays identical; your `Verify.java` proves it.
 - **The project rules still apply.** No AI tools, and none of their code goes into your own `git-project-YOURNAME`.
-- **Describe behavior, not people.** "The index gains a duplicate line on re-add because `updateIndex` never reads the existing file" is a finding. "This is sloppy" is not.
-- **Honesty beats a clean sheet.** A chart with two rows rated **1** and pasted errors is worth more than nine unexplained **5**s. Your classmate gets this chart back — make it something they can act on.
+- **Describe behavior, not people.** "A second blob appears for identical content because `writeBlob` never checks whether the file already exists" is a finding. "This is sloppy" is not.
+- **Honesty beats a clean sheet.** A chart with two rows rated **1** and pasted errors is worth more than six unexplained **5**s. Your classmate gets this chart back — make it something they can act on.
 
 ---
 
@@ -326,14 +323,14 @@ This is the same standard this course holds its own starter code to — no singl
 ### <font color="#79c0ff">Advanced</font>
 
 - [ ] Prove whether an index file ends in a blank line or has a trailing space using byte-level tools such as `cat -e`, `od -c`, or `tail -c`.
-- [ ] Trace a modify-and-re-add through a classmate's code and predict, before running it, whether the index will gain a duplicate line.
+- [ ] Trace a second add of identical content through a classmate's code and predict, before running it, whether a second blob will be written.
 - [ ] Write a verification row a stranger could reproduce exactly: the command, the observed output, the method responsible, and the 1–5 rating it earns.
 
 ## <font color="#388bfd">🚀 Stretch Goals</font>
 
-- [ ] Turn your `Verify.java` into an automated tester that prints PASS or FAIL for all nine behaviors, then run it unchanged against a second classmate's fork.
+- [ ] Turn your `Verify.java` into an automated tester that prints PASS or FAIL for all six behaviors, then run it unchanged against a second classmate's fork.
 - [ ] In a real Git repository, compare `git hash-object sha1test.txt` with `shasum sha1test.txt`. They differ — find out what real Git prepends to the content before hashing.
-- [ ] Decompress a real Git blob to see behavior 9 in the wild. In your terminal, inside any real repository:
+- [ ] Decompress a real Git blob to see behavior 6 in the wild. In your terminal, inside any real repository:
   ```bash
   python3 -c "import sys, zlib; sys.stdout.buffer.write(zlib.decompress(open(sys.argv[1], 'rb').read()))" .git/objects/ab/cdef...
   ```
