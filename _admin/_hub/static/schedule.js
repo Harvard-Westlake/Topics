@@ -946,8 +946,12 @@ async function openSync(blockId) {
     if (counts.final)  lines.push('<div>&bull; ' + counts.final + ' final placeholder' + (counts.final > 1 ? 's' : '') + ' (title + date only — exam content stays private)</div>');
     if (counts.quiz) {
       lines.push('<div>&bull; ' + counts.quiz + ' quiz' + (counts.quiz > 1 ? 'zes' : '') + ' from the private Exams repo (assignment carrying the quiz id, due that day)</div>');
-      lines.push('<label style="display:block;margin:4px 0 0 14px"><input type="checkbox" id="syncPushQuizzes"> '
-        + 'Also push the quiz questions as a Canvas <b>New Quiz</b> (New Quizzes API) — needs the quiz folder unlocked in ../Exams</label>');
+      lines.push('<label style="display:block;margin:4px 0 0 14px"><input type="checkbox" id="syncPushQuizzes" onchange="previewPlan()"> '
+        + 'Also push the quiz questions as a Canvas <b>New Quiz</b> (New Quizzes API) — needs the quiz folder unlocked in ../Exams. '
+        + 'A day that is only a placeholder so far is upgraded to a New Quiz.</label>');
+      lines.push('<div style="color:var(--muted);margin:2px 0 0 14px">Questions already on Canvas are refreshed automatically: '
+        + 'the version stamped on the Canvas quiz is compared with the Exams copy, and a changed quiz is pushed again '
+        + '(folder unlocked; refused once students have submitted).</div>');
     }
     const skipped = (counts.review || 0) + (counts.flex || 0) + (counts.custom || 0) + (counts.gap || 0);
     if (skipped) lines.push('<div style="color:var(--muted)">&bull; ' + skipped + ' review/flex/custom day' + (skipped > 1 ? 's' : '') + ' stay schedule-only</div>');
@@ -1024,7 +1028,8 @@ async function previewPlan() {
   box.innerHTML = '<div style="color:var(--muted)">Checking what is already on Canvas…</div>';
   const res = await fetch('/api/schedules/' + encodeURIComponent(schedName) + '/sync-block', {
     method: 'POST', headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({course_id: parseInt(courseId), block_id: syncBlockId, dry_run: true}),
+    body: JSON.stringify({course_id: parseInt(courseId), block_id: syncBlockId, dry_run: true,
+                          push_quizzes: !!(document.getElementById('syncPushQuizzes') || {}).checked}),
   }).then(r => r.json()).catch(e => ({error: String(e)}));
   if (seq !== planSeq) return;   // the course changed while we waited
   if (res.error) { box.innerHTML = '<div style="color:var(--red)">' + esc(res.error) + '</div>'; return; }

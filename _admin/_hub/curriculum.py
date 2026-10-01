@@ -265,7 +265,7 @@ def cmd_quizzes(_args):
         print("no quizzes — add <Class>/<Topic>/Quizzes/<slug>/quiz.meta.json in the Exams repo")
     for q in qs:
         state = "unlocked" if q["unlocked"] else ("locked" if q["locked"] else "no archive")
-        print(f"{q['quiz_id']}  {q['topic']:<16} {q['title'][:60]:<60} {q['points'] or '?':>4} pts  {state}")
+        print(f"{q['quiz_id']}  {q['topic']:<16} {q['title'][:60]:<60} {q['points'] or '?':>4} pts  v{q.get('version') or '?':<12} {state}")
         if q.get("lesson"):
             print(f"{'':18}pairs with {q['lesson']}")
 

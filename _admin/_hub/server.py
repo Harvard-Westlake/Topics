@@ -26,7 +26,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
-import requests, os, sys, json, time, re, html, shutil, uuid
+import requests, os, sys, json, time, re, html, shutil, uuid, hashlib
 from urllib.parse import urlencode
 import markdown as md_lib
 from icsimport import compress_calendar
@@ -347,13 +347,25 @@ def list_quizzes():
         if not meta.get("quiz_id"):
             continue
         folder = meta_path.parent
+        unlocked = (folder / "quiz.json").exists()
+        live_hash = None
+        if unlocked:
+            try:
+                live_hash = _quiz_content_hash(json.loads((folder / "quiz.json").read_text()))
+            except (OSError, json.JSONDecodeError, TypeError):
+                live_hash = None
+        meta_hash = meta.get("content_hash") or None
         out.append({"quiz_id": str(meta["quiz_id"]), "title": meta.get("title") or folder.name,
                     "topic": meta.get("topic") or folder.parent.parent.name, "slug": folder.name,
                     "lesson": meta.get("lesson"), "points": meta.get("points"),
                     "questions": meta.get("questions"),
                     "folder": str(folder.relative_to(EXAMS_DIR)),
-                    "unlocked": (folder / "quiz.json").exists(),
-                    "locked": (folder / "exam-content.tar.enc").exists()})
+                    "unlocked": unlocked,
+                    "locked": (folder / "exam-content.tar.enc").exists(),
+                    # the fingerprint of the questions: the unlocked quiz.json when present (what a
+                    # push would send), else what build_qti.py recorded in the meta at the last build
+                    "version": live_hash or meta_hash, "meta_version": meta_hash,
+                    "meta_stale": bool(live_hash and meta_hash and live_hash != meta_hash)})
     return out
 
 def quiz_by_id(quiz_id):
@@ -370,6 +382,31 @@ def quiz_id_in(description):
     """The quiz_id marker a synced quiz assignment's description carries, or None."""
     m = _QUIZ_ID_RE.search(description or "")
     return m.group(1) if m else None
+
+def _quiz_content_hash(spec):
+    """Fingerprint of a quiz.json — the same value Exams/Tools/qti/build_qti.py
+    writes to quiz.meta.json as `content_hash` (keep the two in lockstep).
+    Canonical JSON, so reformatting the file does not change the version."""
+    canon = json.dumps(spec, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    return hashlib.sha256(canon.encode("utf-8")).hexdigest()[:12]
+
+_QUIZ_VERSION_RE = re.compile(r"Quiz version:\s*(?:<code>)?([0-9a-f]{6,64})")
+_QUIZ_VERSION_P_RE = re.compile(r"\s*<p[^>]*>Quiz version:.*?</p>", re.S)
+
+def quiz_version_in(description):
+    """The content version a pushed New Quiz's description was stamped with
+    (`Quiz version: <hash>`), or None for a placeholder or a pre-versioning push."""
+    m = _QUIZ_VERSION_RE.search(description or "")
+    return m.group(1) if m else None
+
+def _with_quiz_version(description, version):
+    """The description with its version stamp replaced (or added). Written only on
+    assignments that really carry the questions, so the sync planner can tell a
+    pushed quiz whose questions are behind the Exams repo from a current one."""
+    base = _QUIZ_VERSION_P_RE.sub("", description or "")
+    if not version:
+        return base
+    return base + f'<p style="color:#57606a;font-size:12px">Quiz version: <code>{html.escape(str(version))}</code></p>'
 
 def _asgn_identity(a):
     """Stable identity of a Canvas assignment as the sync planner sees it."""
@@ -421,19 +458,65 @@ def _new_quiz_items(spec):
         items.append(essay(spec["reflection"]["prompt"], pts["reflection"], spec.get("reflection_header", "")))
     return items
 
-def _push_new_quiz(course_id, e, due_at, unlock_at):
-    """Create a Canvas New Quiz (an assignment) with the questions from the
-    quiz's UNLOCKED quiz.json. Returns (assignment_id, error) — an id with an
-    error means the quiz exists but some items failed."""
+def _quiz_payload(e):
+    """(items, version, error) for the quiz an expected item carries — read from
+    the UNLOCKED quiz.json in the Exams checkout, never from a cache, so what
+    reaches Canvas is always the file as it is on disk right now."""
     q = quiz_by_id(e["quiz"]["quiz_id"])
     if not q or not q["unlocked"]:
-        return None, "quiz folder is locked — run `examcrypt.py unlock` in the Exams repo first"
+        return None, None, "quiz folder is locked — run `examcrypt.py unlock` in the Exams repo first"
     try:
         spec = json.loads((EXAMS_DIR / q["folder"] / "quiz.json").read_text())
-        items = _new_quiz_items(spec)
+        return _new_quiz_items(spec), _quiz_content_hash(spec), None
     except Exception as ex:
-        return None, f"could not read quiz.json: {ex}"
-    payload = {"quiz": {"title": e["title"], "points_possible": e["points"], "instructions": e["description"],
+        return None, None, f"could not read quiz.json: {ex}"
+
+def _quiz_has_submissions(course_id, asgn_id):
+    subs = canvas_paged(f"/courses/{course_id}/assignments/{asgn_id}/submissions")
+    return any(s.get("submitted_at") or s.get("workflow_state") not in (None, "unsubmitted") for s in subs)
+
+def _refresh_new_quiz_items(course_id, asgn_id, items):
+    """Replace every question of an existing New Quiz with `items` (the current
+    quiz.json), in order. Refused once any student has submitted — a quiz with
+    submissions is graded against the questions it had. Returns an error or None."""
+    try:
+        if _quiz_has_submissions(course_id, asgn_id):
+            return ("students have already submitted this quiz — its questions were left as they are "
+                    "(change them in Canvas by hand if you must)")
+    except Exception as ex:
+        return f"could not check for submissions: {ex}"
+    r = requests.get(f"{NEW_QUIZZES_BASE}/courses/{course_id}/quizzes/{asgn_id}/items", headers=hdrs())
+    if not r.ok:
+        return f"New Quizzes API {r.status_code} listing items: {r.text[:200]}"
+    old = r.json() if isinstance(r.json(), list) else []
+    failed = []
+    for it in old:
+        dr = requests.delete(f"{NEW_QUIZZES_BASE}/courses/{course_id}/quizzes/{asgn_id}/items/{it.get('id')}",
+                             headers=hdrs())
+        if not dr.ok:
+            failed.append(f"remove item {it.get('id')}: {dr.status_code}")
+    if failed:
+        return f"{len(failed)} old item(s) could not be removed, new questions not pushed: " + "; ".join(failed[:3])
+    for pos, it in enumerate(items, start=1):
+        it["position"] = pos
+        ir = requests.post(f"{NEW_QUIZZES_BASE}/courses/{course_id}/quizzes/{asgn_id}/items",
+                           headers=hdrs(), json={"item": it})
+        if not ir.ok:
+            failed.append(f"item {pos}: {ir.status_code} {ir.text[:100]}")
+    if failed:
+        return f"{len(failed)} of {len(items)} new items failed: " + "; ".join(failed[:3])
+    return None
+
+def _push_new_quiz(course_id, e, due_at, unlock_at):
+    """Create a Canvas New Quiz (an assignment) with the questions from the
+    quiz's UNLOCKED quiz.json, stamped with their content version. Returns
+    (assignment_id, error) — an id with an error means the quiz exists but some
+    items failed."""
+    items, version, qerr = _quiz_payload(e)
+    if qerr:
+        return None, qerr
+    description = _with_quiz_version(e["description"], version)
+    payload = {"quiz": {"title": e["title"], "points_possible": e["points"], "instructions": description,
                         "quiz_settings": {
                             "shuffle_answers": False, "shuffle_questions": False,
                             "multiple_attempts": {"multiple_attempts_enabled": False},
@@ -454,7 +537,7 @@ def _push_new_quiz(course_id, e, due_at, unlock_at):
     # Quiz ID marker the sync planner matches on has to be set through the regular
     # Assignments API (verified to persist on a quiz_lti assignment). Best effort.
     requests.put(f"{BASE}/courses/{course_id}/assignments/{asgn_id}", headers=hdrs(),
-                 json={"assignment": {"description": e["description"]}})
+                 json={"assignment": {"description": description}})
     failed = []
     for pos, it in enumerate(items, start=1):
         it["position"] = pos
@@ -1782,7 +1865,9 @@ def _expected_block_items(block, ref):
                     it = item(name, "Assignment", f"quiz:{a['quiz_id']}", (q or {}).get("points") or 100,
                               group_end(s), s.get("date"), desc)
                     it["quiz"] = {"quiz_id": str(a["quiz_id"]), "known": q is not None,
-                                  "unlocked": bool(q and q["unlocked"]), "folder": (q or {}).get("folder")}
+                                  "unlocked": bool(q and q["unlocked"]), "folder": (q or {}).get("folder"),
+                                  "version": (q or {}).get("version"),
+                                  "meta_stale": bool(q and q.get("meta_stale"))}
                     expected.append(it)
                     continue
                 if a.get("kind") == "page":
@@ -1831,8 +1916,10 @@ def _canvas_course_state(course_id, ttl):
                 "unlock_at": a.get("unlock_at"), "points": a.get("points_possible"),
                 "published": a.get("published"), "html_url": a.get("html_url"),
                 "viewer_url": viewer_url_in(desc), "viewer_ref": viewer_ref_in(desc),
-                "lesson": viewer_lesson_in(desc), "quiz": quiz_id_in(desc)}
-    assignments, _, _ = cached(f"assignments_sync_{course_id}", ttl, lambda: [
+                "lesson": viewer_lesson_in(desc), "quiz": quiz_id_in(desc),
+                "quiz_version": quiz_version_in(desc),
+                "new_quiz": bool(a.get("is_quiz_lti_assignment"))}
+    assignments, _, _ = cached(f"assignments_sync_v2_{course_id}", ttl, lambda: [
         _asgn(a) for a in canvas_paged(f"/courses/{course_id}/assignments", {"order_by": "due_at"})])
 
     def module_items(mid):
@@ -1846,7 +1933,8 @@ def _canvas_course_state(course_id, ttl):
 
 def _invalidate_course_caches(course_id):
     for key in [f"modules_{course_id}", f"assignments_{course_id}",
-                f"assignments_ref_{course_id}", f"assignments_sync_{course_id}"]:
+                f"assignments_ref_{course_id}", f"assignments_sync_{course_id}",
+                f"assignments_sync_v2_{course_id}"]:
         p = cache_path(key)
         if p.exists():
             p.unlink()
@@ -1854,9 +1942,17 @@ def _invalidate_course_caches(course_id):
              list(CACHE.glob(f"module_items_v2_{course_id}_*.json")):
         p.unlink()
 
-def _assignment_changes(e, a, due_at, unlock_at):
+def _quiz_refresh_change(qz, a):
+    tail = f"stamped {a['quiz_version']}" if a.get("quiz_version") else "pushed before versioning"
+    note = "" if qz.get("unlocked") else " — unlock the quiz folder in ../Exams first"
+    return f"quiz questions → version {qz['version']} ({tail}){note}"
+
+def _assignment_changes(e, a, due_at, unlock_at, options=None):
     """Human-readable drift between an expected item and a Canvas assignment
-    (empty list = nothing to update)."""
+    (empty list = nothing to update). For a quiz day: a pushed New Quiz whose
+    stamped version is not the Exams repo's current one needs its questions
+    replaced; with options["push_quizzes"], a day that only has a placeholder
+    is upgraded to a real New Quiz."""
     ch = []
     if a["name"] != e["title"]:
         ch.append(f"rename from “{a['name']}”")
@@ -1881,11 +1977,19 @@ def _assignment_changes(e, a, due_at, unlock_at):
             ch.append("replace the fixed content snapshot with the live lesson view")
         elif want and a["viewer_url"] != want:
             ch.append("live view link → " + want.split("?", 1)[-1])
-    if e.get("quiz") and a.get("quiz") != e["quiz"]["quiz_id"]:
-        ch.append("add the quiz id marker")   # so future renumbering finds it by id, not title
+    if e.get("quiz"):
+        qz = e["quiz"]
+        if a.get("quiz") != qz["quiz_id"]:
+            ch.append("add the quiz id marker")   # so future renumbering finds it by id, not title
+        if a.get("new_quiz"):
+            # the questions are on Canvas — compare the version stamped there with the Exams repo
+            if qz.get("version") and a.get("quiz_version") != qz["version"]:
+                ch.append(_quiz_refresh_change(qz, a))
+        elif (options or {}).get("push_quizzes") and qz.get("unlocked"):
+            ch.append("replace the placeholder with a New Quiz carrying the questions")
     return ch
 
-def _plan_module_sync(block, ref, state, due_at, unlock_at):
+def _plan_module_sync(block, ref, state, due_at, unlock_at, options=None):
     """Match a module block's expected items against the course. Returns
     {module_name, module_id, expected, create, update, unchanged, retire, reorder}
     where update/unchanged entries carry the matched Canvas item and retire lists
@@ -1938,7 +2042,7 @@ def _plan_module_sync(block, ref, state, due_at, unlock_at):
             plan["reorder"] = True   # a new item lands at the end; positions must be redone
             continue
         if c["kind"] == "Assignment":
-            changes = _assignment_changes(e, c["asgn"], due_at, unlock_at)
+            changes = _assignment_changes(e, c["asgn"], due_at, unlock_at, options)
         else:
             changes = [f"rename from “{c['name']}”"] if c["name"] != e["title"] else []
         if c["item"] is None:
@@ -1999,7 +2103,9 @@ def _apply_module_sync(course_id, plan, ref, due_at, unlock_at, options=None):
     description when its link drifted), unpublishes retired items, and rewrites
     module positions when the order changed. Never deletes anything.
     options["push_quizzes"]: create quiz days as real New Quizzes (questions from
-    the unlocked quiz.json) instead of placeholder assignments."""
+    the unlocked quiz.json) instead of placeholder assignments, and upgrade days
+    already on Canvas as placeholders. A pushed quiz whose stamped version is
+    behind the Exams repo gets its questions replaced in place."""
     options = options or {}
     out = {"module_name": plan["module_name"], "module_id": plan["module_id"], "ref": ref,
            "created": [], "updated": [], "retired": [],
@@ -2062,6 +2168,34 @@ def _apply_module_sync(course_id, plan, ref, due_at, unlock_at, options=None):
         e, c = u["expected"], u["match"]
         if e["type"] == "Assignment":
             a = c["asgn"]
+            if any(ch.startswith("replace the placeholder") for ch in u["changes"]):
+                # "push quiz questions" ticked for a day that so far has only a placeholder:
+                # create the real New Quiz in its place and drop the placeholder — submission
+                # type "none", so nothing a student could have handed in is lost
+                asgn_id, perr = _push_new_quiz(course_id, e, due_at, unlock_at)
+                if asgn_id:
+                    e["_canvas"] = ("Assignment", asgn_id)
+                    linked = link(e["title"], "Assignment", content_id=asgn_id)
+                    dr = requests.delete(f"{BASE}/courses/{course_id}/assignments/{a['id']}", headers=hdrs())
+                    if not dr.ok:
+                        out["errors"].append({"name": e["title"],
+                                              "error": f"placeholder could not be removed: {dr.text[:200]}"})
+                    if perr:
+                        out["errors"].append({"name": e["title"], "error": perr})
+                    out["updated"].append({"name": e["title"], "from": c["name"], "changes": u["changes"],
+                                           "new_quiz": True, "linked": linked})
+                    plan["reorder"] = True
+                    continue
+                out["errors"].append({"name": e["title"],
+                                      "error": f"New Quizzes push failed — placeholder kept: {perr}"})
+            refreshed = None
+            if any(ch.startswith("quiz questions") for ch in u["changes"]):
+                items, version, qerr = _quiz_payload(e)
+                qerr = qerr or _refresh_new_quiz_items(course_id, a["id"], items)
+                if qerr:
+                    out["errors"].append({"name": e["title"], "error": f"quiz questions not refreshed: {qerr}"})
+                else:
+                    refreshed = version
             payload = {"assignment": {"name": e["title"]}}
             if e.get("points") is not None:
                 payload["assignment"]["points_possible"] = e["points"]
@@ -2069,8 +2203,13 @@ def _apply_module_sync(course_id, plan, ref, due_at, unlock_at, options=None):
                 payload["assignment"]["due_at"] = due_at(e["due"])
             if e.get("unlock"):
                 payload["assignment"]["unlock_at"] = unlock_at(e["unlock"])
-            if any(ch.startswith(("replace the fixed", "live view link", "add the quiz id")) for ch in u["changes"]):
-                payload["assignment"]["description"] = e["description"]
+            if refreshed or any(ch.startswith(("replace the fixed", "live view link", "add the quiz id"))
+                                for ch in u["changes"]):
+                desc = e["description"]
+                if e.get("quiz") and a.get("new_quiz"):
+                    # never strip the version stamp off a quiz that carries questions
+                    desc = _with_quiz_version(desc, refreshed or a.get("quiz_version"))
+                payload["assignment"]["description"] = desc
             r = put(f"{BASE}/courses/{course_id}/assignments/{a['id']}", payload)
             if not r.ok:
                 out["errors"].append({"name": e["title"], "error": r.text})
@@ -2261,7 +2400,7 @@ def api_schedule_sync_block(name):
     _, assignments, _ = state
 
     if block["type"] == "module":
-        plan = _plan_module_sync(block, ref, state, _due_at, _unlock_at)
+        plan = _plan_module_sync(block, ref, state, _due_at, _unlock_at, options)
         if not plan["expected"]:
             return jsonify({"error": "nothing in this block syncs to Canvas"}), 422
         if dry_run:
