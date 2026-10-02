@@ -106,13 +106,13 @@ Folders whose names begin with `_` (e.g. `_admin/`, `_modules/`) are **ignored b
 `_modules/<slug>.json` files are saved unit plans: an ordered selection of lessons (possibly spanning topics) with optional review fragments attached, plus unit number, base points, and scale factor. Format: `_admin/_configuration/module.schema.json`. Review fragments are stored as **references** (`{module, path, file}`), never inline content — the repo's markdown stays the single source of truth and the hub resolves content at import time. An assignment's `review` field holds one reference (legacy saves) **or a list of references** — several reviews can stack on a single day, each rendered as its own purple block in order; every consumer goes through `_review_refs` in `_admin/_hub/server.py` so both shapes work. In the Planner, attached reviews render as chips with a per-chip ✕; the three pickers are purely an "add another" tool and always reset after a pick.
 
 - **The hub has two themes.** Dark is the default; the **Light theme** button at the top right switches to the HW look (learn.hw.com tokens: white surfaces over a khaki wash, black Source Sans type, brand-red primary buttons that turn gold, secondary-blue info accents). It is `<html data-theme="light">`, remembered in localStorage (`hubTheme`) and forceable with `?theme=light|dark`; every rule lives in `_admin/_hub/static/app.css` under `html[data-theme="light"]`. New hub CSS must use the `--bg/--surface/--border/--accent/--text/--muted` variables, and any hard-coded dark fill needs a light override in that block.
-- **The course hub** (`python3 _admin/_hub/server.py` → http://127.0.0.1:5050) is the one UI for everything: the **Module Planner** tab creates/edits `_modules/*.json` (with the same lesson file editor and Canvas-fidelity preview as the standalone planner), the **Year Schedule** tab drags modules/tests/finals onto real class dates (`_admin/_schedules/<teacher>.json`, one file per teacher), and the **Courses** tab talks to Canvas using the teacher's own token from the gitignored root `.env`.
+- **The course hub** (`python3 _admin/_hub/server.py` → <http://127.0.0.1:5050>) is the one UI for everything: the **Module Planner** tab creates/edits `_modules/*.json` (with the same lesson file editor and Canvas-fidelity preview as the standalone planner), the **Year Schedule** tab drags modules/tests/finals onto real class dates (`_admin/_schedules/<teacher>.json`, one file per teacher), and the **Courses** tab talks to Canvas using the teacher's own token from the gitignored root `.env`.
 - **Sync is an upsert, and the sync-status dot is its dry run.** `/api/schedules/<name>/sync-block` plans a block with `_plan_module_sync` in `_admin/_hub/server.py`: every expected Canvas item (from `_expected_block_items`) is matched to what the course already holds by a **stable identity** — the `lesson=<Module>/<Lesson>` its live-view link composes (`viewer_lesson_in`), falling back to the un-numbered title — never by the `unit.day:` title alone. Matched items are updated in place (name, points, due/unlock dates, module link, and the live-view description when its link drifted), missing items are created, module order is restored, and items the schedule no longer expects are **unpublished, never deleted**. POST `{..., "dry_run": true}` returns the plan without writing; the Sync dialog shows it under the course picker. The status dot next to each Sync button runs the same planner against the course that schedule last synced to (`syncCourseId_<schedule>` in localStorage): green ✓ = nothing to do, yellow ● = the tooltip lists what a sync would create/update/unpublish, ↑ = no module on Canvas yet. Reads through the normal Canvas caches (`assignments_sync_*`, `module_items_v2_*`) and re-checks after every save and (live) after every sync.
 - **Half days:** the Planner's day-count dropdown includes **½ Day** — two consecutive ½-day assignments pair onto one class day, numbered with sub-indices `unit.day.0` (first) and `unit.day.1` on the board, in Canvas names, and in generated lesson plans. On disk they carry `"duration": 0.5` and `"sub": 0|1` (see module.schema.json); the Year Schedule gives both the same class date (the second rides as `co_day`), and an unpaired ½ day still consumes its whole slot. Sub-indices are recomputed by the planner's renumbering, never hand-maintained.
 - **Planner lesson rows are drag-reorderable and may interleave topics.** Each row has a `⋮⋮` drag handle; the table order IS the module order, so lessons from different selected topics can be intermixed day by day (with placeholders anywhere). The saved `assignments` array order is authoritative: loading a module rebuilds rows in saved order, appends repo lessons missing from the save unchecked, and reports saved-but-deleted lessons as stale. Adding/removing a topic chip preserves the existing row order and only appends/removes that topic's lessons. Tabs also refresh their repo-derived lists every time they're re-shown (`onShow` in `shell.js`), so topics/lessons created in the Module Editor appear in the Planner and Year Schedule palettes without a page reload.
 - **The Module Editor tab** edits the topic folders themselves — the content layer upstream of the Planner. Strict one-way flow: content → curated modules (references) → schedules (references); no tab writes upstream. Clicking a lesson opens everything in it (README, ASSIGNMENT, milestones, activities, reviews, demos, `assets/` uploads) in one workspace, with an impact banner showing which curated modules and schedules reference the lesson (`_scan_usage` in `server.py`). Structural ops (create/rename/delete/reorder lessons, new topics) regenerate every index file server-side (LESSONS.md, topic README table, root README bullets, the CLAUDE.md "Current topics" line, prev/next navs) and rewrite `_modules/*.json` references on rename; deleting a lesson or review file that a curated module still references is refused — detach it in the Planner first. Saving an activity file auto-regenerates its embedded `<details>` toggle in the README (matched by the standalone-file link), so the two intentional duplicates can't drift; creating one inserts the toggle above Check for Understanding, deleting one removes it. The workspace's file tabs are grouped into labeled rows (Lesson / Milestones / Activities / Reviews / Demos / Materials), and the new-review / new-activity dialogs include a one-click "Copy for AI" prompt: the lesson's full text (README + assignment + reviews + activities, from `/api/editor/bundle`) with an intention prompt appended, ready to paste into a chat. Uploads land in the lesson's `assets/` (filenames kebab-cased, extension whitelist) and return a ready-to-paste link snippet; asset deletion is refused while any markdown in the topic still links to the file.
 - Saving a module also regenerates `_admin/_lessonplans/<slug>.md`.
-- The standalone planner (`python3 _admin/_coursePlannerUI/server.py` → http://127.0.0.1:8901) still works as a stdlib-only, credential-free fallback; its `mdrender.py` must stay in lockstep with the hub's `md_to_html`.
+- The standalone planner (`python3 _admin/_coursePlannerUI/server.py` → <http://127.0.0.1:8901>) still works as a stdlib-only, credential-free fallback; its `mdrender.py` must stay in lockstep with the hub's `md_to_html`.
 - Year schedules store module **references** (a `_modules` slug or topic folder name) — day counts and lessons re-resolve from the repo on every request, so content edits automatically re-date every teacher's schedule. A lesson that exists in a topic folder but is not a row in any curated module is on **no** calendar — see "Re-dating" below.
 - **Each schedule names the git ref its Canvas course follows** (`"ref"` in `_admin/_schedules/<teacher>.json`, the **Branch** field in the Year Schedule tab, default `main`). Every Canvas item the hub creates for that schedule links to the live lesson view for that ref — see "Live lesson view" below.
 - A schedule's `show_day0_syllabus` flag (toggled in the Year Schedule tab) reserves the first class date for a syllabus placeholder — it isn't a `sequence` block, adds no unit number, and has no Canvas sync button; `resolve_schedule` returns its date as `day0_date` and every real block's first day starts on the class meeting after it.
@@ -123,12 +123,14 @@ Folders whose names begin with `_` (e.g. `_admin/`, `_modules/`) are **ignored b
 The course is fluid by design: new days get inserted mid-unit after teachers have already synced that unit to Canvas. Three layers re-date, each on its own:
 
 1. **Content → module.** Adding a lesson folder does not change any calendar until a curated module lists it. `_admin/_hub/curriculum.py` does that edit and shows the consequences:
+
    ```bash
    python3 _admin/_hub/curriculum.py where  GitProject/PeerCodeVerification          # which modules/schedules carry it, on what dates
    python3 _admin/_hub/curriculum.py insert git-project GitProject/PeerCodeVerification --after InitAndBlobs [--duration 1]
    python3 _admin/_hub/curriculum.py remove git-project GitProject/PeerCodeVerification
    python3 _admin/_hub/curriculum.py dates  theiss --block git-project               # every day of a block with its date
    ```
+
    `insert`/`remove` renumber the module's days like the Planner (½-days included), regenerate `_admin/_lessonplans/`, and print a before/after table of every teacher schedule that carries the module — the block itself grows or shrinks and every later block shifts by that many class meetings. They never write schedules or Canvas. (The Module Planner tab does the same edit by hand: add the lesson row, drag it into place, save.)
 2. **Module → schedules.** Nothing to do: schedules hold references and re-resolve from the repo on every request (`resolve_schedule`). Commit and merge to the branch each schedule's `ref` follows.
 3. **Schedules → Canvas.** In the Year Schedule tab every affected block's dot turns yellow; its tooltip and the Sync dialog's preview list exactly what will change. Click **Sync** — it updates the posted items in place (renumbered titles, new due dates, the new day created in the right position), so students keep their existing assignment links and submissions. Titles alone are not identity: an item is found again through the lesson its live-view link points at, so renumbering `2.5: Trees` to `2.6: Trees` is a rename, not a delete-and-recreate. Days removed from a schedule are unpublished on Canvas, not deleted — delete by hand once you have checked for submissions.
@@ -142,7 +144,8 @@ Quiz questions never enter this public repo. They live in the private sibling **
 - **The link is the `quiz_id`.** A curated module row `{"placeholder": true, "kind": "quiz", "quiz_id": "<id>", "title": …}` is all this repo stores. The hub reads `quiz.meta.json` files from the Exams checkout (`EXAMS_DIR`, default `../Exams`; `EXAMS_CLASS`, default the repo label) via `/api/quizzes` and offers them in the Module Planner's placeholder kind select as **Quiz**; `validate_module` and `verify.py` refuse a quiz row without an id and warn when the id is not in the checkout. `curriculum.py quizzes` lists them; `curriculum.py insert-quiz <module> <quiz_id> --after <Lesson>` places one from the command line.
 - **Sync** treats a quiz day like a test day with identity: an assignment whose description carries `Quiz ID: <id>`, matched on re-sync by that id (`quiz_id_in`), renamed and re-dated in place like everything else. Ticking **push quiz questions** in the Sync dialog instead creates a Canvas **New Quiz** from the quiz's unlocked `quiz.json` through the New Quizzes API (`_push_new_quiz`: essay and choice items, one attempt, results hidden); on API failure it falls back to the placeholder and reports why. Questions are only ever read from an **unlocked** folder on the teacher's machine.
 - **Quiz versions — Sync always pushes the latest questions.** `Exams/Tools/qti/build_qti.py` is the one rebuild step, and it refreshes the folder's `quiz.meta.json` too (points, question count, `content_hash` = first 12 hex of sha256 over the canonical `quiz.json`). The hub computes the same fingerprint (`_quiz_content_hash` in `server.py` — keep it in lockstep with `content_hash` in `build_qti.py`) from the unlocked `quiz.json`, falling back to the meta's hash while the folder is locked, and stamps it as `Quiz version: <hash>` beside the Quiz ID on every New Quiz it pushes (`_with_quiz_version`). On re-sync a pushed quiz (`is_quiz_lti_assignment`) whose stamp differs, or has none because it was pushed before versioning, shows *quiz questions → version …* on the status dot and in the Sync preview, and **Sync** replaces its items in place (`_refresh_new_quiz_items`: list, delete, re-create in order, re-stamp) — refused, with the dot left yellow, while the folder is locked or once any student has submitted. Ticking **push quiz questions** on a re-sync upgrades a day that only has a placeholder assignment: the New Quiz is created and linked in its place and the placeholder (submission type `none`, nothing a student could have handed in) is deleted. Changed a quiz? Rebuild → `lock` → commit the archive **and** `quiz.meta.json` → Sync.
-- **New quiz:** in Exams, create `<Class>/<Topic>/Quizzes/<slug>/` with a non-sensitive `README.md`, a `quiz.meta.json` (`quiz_id` = first 16 hex of sha256 of the folder path, or any unique hex), and a `quiz.json` (source of truth; `python3 Tools/qti/build_qti.py <folder>/quiz.json` also builds a QTI package for manual import). Then `examcrypt.py shell <folder>`, `examcrypt.py lock <folder>`, commit. The quiz appears in the Planner as soon as the meta file exists.
+- **New quiz:** in Exams, create `<Class>/<Topic>/Quizzes/<slug>/` with a non-sensitive `README.md`, a `quiz.meta.json` (`quiz_id` = first 16 hex of sha256 of the folder path, or any unique hex), and a `quiz.json` (source of truth; `python3 Tools/qti/build_qti.py <folder>/quiz.json` also builds a QTI package for manual import). Then `examcrypt.py shell <folder>`, `examcrypt.py lock <folder>`, commit. The quiz appears in the Planner as soon as the meta file exists. **Canvas imports a QTI package in reverse** (last question first, every time so far), so `build_qti.py` lists the items last-to-first inside the package by default and the imported quiz reads in `quiz.json` order; `"canvas_reverses_order": false` turns that off. Always open the imported quiz and confirm Part 1 is at the top before publishing. The hub's New Quizzes API push sets an explicit position per item and is a separate path.
+- **Quiz export (a teacher's own student responses).** The tool lives in the private Exams repo at `../Exams/Tools/quiz-export/export_quiz.py` (never in this public repo) and is run from a Topics checkout like other Exams tooling, with the teacher's own `HUB_TOKEN` against the teacher's own course. It writes a quiz's per-student responses to one wide table (one row per student, one column per question) for grading and honesty review; output lands in a gitignored `exports/` folder because student responses are personal data. **Classic quizzes** export end to end via Canvas's documented Student Analysis report (`POST /courses/:id/quizzes/:quiz_id/reports`). **New Quizzes** do not return answer text through a Canvas token, and the tool does **not** replay the instructor LTI launch to mint the quiz tool's bearer — that mint is blocked locally as credential exploration. For an existing New Quiz, read attempts in the Moderate page or SpeedGrader; to automate going forward, import quizzes as Classic (the QTI package we build is Classic-flavored, so only the import choice changes).
 
 ### Live lesson view (`view.html`)
 
@@ -202,6 +205,7 @@ Each top-level subfolder (e.g. `Terminal/`, `ComputerSetup/`) is a **module**. E
 Lesson folders may also contain sibling `.md` files instead of further nested subfolders when content naturally splits by variant (e.g. `InitialInstall/Mac.md` and `InitialInstall/PC.md`). In this pattern, the lesson's `README.md` links to those files rather than to sub-subfolders.
 
 **When adding a new day lesson to a module** (e.g. "add a PipeAndGREP day to Terminal"):
+
 1. Create `Terminal/PipeAndGREP/` with a `README.md`
 2. Add a row to `Terminal/LESSONS.md`
 3. Add a row to the `## Lessons` table in `Terminal/README.md`
@@ -222,6 +226,7 @@ Format:
 ```
 
 Column definitions:
+
 - **Day** — lesson number in delivery order; use `1-2` for multi-day lessons
 - **Lesson** — human-readable name matching the lesson folder's `README.md` title
 - **Path** — relative link to the lesson subfolder
@@ -231,7 +236,7 @@ Column definitions:
 Every README title block includes a lesson type label directly below the italic subtitle, inside the `<div align="center">` block. There are four labels that map to three colors:
 
 | Label | Color | Hex | Meaning |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | Environment Configuration | Green | `#3fb950` | Setup guides — gets machines and tools ready |
 | Learning | Purple | `#a371f7` | Introduces new concepts |
 | Reinforce | Purple | `#a371f7` | Builds on concepts through practice (same color as Learning) |
@@ -244,7 +249,7 @@ The root README `## Table of Contents` section groups topics by type using a col
 Apply these colors to non-body, non-H1 text using `<font color="">` tags:
 
 | Element | Color | Usage |
-|---|---|---|
+| --- | --- | --- |
 | `##` section headers | `#388bfd` | `## <font color="#388bfd">Title</font>` |
 | `###` sub-headers | `#79c0ff` | `### <font color="#79c0ff">Title</font>` |
 | Italic subtitles | `#8b949e` | `*<font color="#8b949e">subtitle</font>*` |
@@ -281,6 +286,7 @@ When a README, a variant file (e.g. `Mac.md`/`PC.md`), or an `ASSIGNMENT.md` is 
 ```
 
 Rules:
+
 - **Numbered, not bulleted or bold-linked** — the numbering matches the order sections appear in the page.
 - **The link text alone must say what the section covers.** Do not add a second line of prose under the link — fold that sentence into the link text itself, e.g. `1. [Install Homebrew, the macOS package manager](#4-homebrew)`, not `**[Homebrew](#4-homebrew)**` followed by a description line on the next line.
 - Anchors are GitHub's auto-generated heading slugs: lowercase, spaces become hyphens, punctuation is stripped.
@@ -332,6 +338,7 @@ LessonFolder/
 ```
 
 Rules for review files:
+
 - **Task-based, not checkbox-based.** Reviews are exercises the student performs, not self-assessments. Use a numbered `## Tasks` list, not "I can…" checkboxes (those belong in Check for Understanding sections).
 - **Terse reference only.** The top section must fit in a table or a few bullet points. If you find yourself writing a sentence of explanation, stop — that belongs in the lesson README.
 - **Self-contained.** Must make sense when inserted into any other assignment with no surrounding context.
@@ -382,6 +389,7 @@ Field label:   value
 ```
 
 When converting old-format assignments (pasted from Notion or elsewhere), always:
+
 1. Rewrite success criteria as explicit checkboxes with a one-sentence pass/fail description
 2. Add a Submission section with a copy-paste stencil for any text fields
 3. Specify exactly what the screenshot must show (and what disqualifies it)
@@ -438,6 +446,7 @@ Single-day lessons omit the `**Duration:**` field entirely and use a single numb
 When an assignment contains multiple distinct milestones (typically multi-day work), split it into a menu-plus-subfiles structure rather than one long file.
 
 **Folder layout:**
+
 ```
 LessonName/
   ASSIGNMENT.md            — menu only (links to docs + each milestone)
@@ -448,6 +457,7 @@ LessonName/
 ```
 
 **`ASSIGNMENT.md` menu format:**
+
 ```markdown
 # Assignment — [Lesson Name]
 
@@ -481,6 +491,7 @@ LessonName/
 ```
 
 **Individual milestone file format:**
+
 ```markdown
 # GP-X.N — Milestone Title
 
@@ -504,6 +515,7 @@ LessonName/
 ```
 
 Rules:
+
 - **ASSIGNMENT.md becomes a menu**, not the full assignment. Move all milestone content into subfiles.
 - Each milestone file is **self-contained** — it must make sense without the surrounding assignment.
 - Include a **Recall** section only when the student needs a quick pointer to prior content or reference docs.
@@ -511,6 +523,7 @@ Rules:
 - **No Check for Understanding / Stretch Goals section** in milestone files — those belong in the lesson README only.
 
 **When adding milestone files to an existing lesson (Common Operations checklist):**
+
 1. Create `LessonName/milestones/` folder
 2. Create `milestones/gp-X-N.md` for each milestone
 3. Rewrite `LessonName/ASSIGNMENT.md` as a menu (links to docs + milestones table + overall success criteria)
@@ -522,6 +535,7 @@ Rules:
 A module may contain a `Docs/` folder for standalone reference documentation — conceptual explanations, data format specs, or key concept summaries that students consult throughout the module. These are not day lessons.
 
 Rules for `Docs/` folders:
+
 - **Not added to `LESSONS.md`** — it is not a day lesson
 - **Not listed as a subtopic bullet in the root `README.md`** — it is not a course topic
 - **Linked from the module `README.md`** under a "Reference Documentation" section or table
@@ -532,6 +546,7 @@ Rules for `Docs/` folders:
 - Doc files use the same `##` / `###` color scheme as lesson pages
 
 **When adding a new module with reference documentation:**
+
 1. Create `ModuleName/Docs/README.md` — index of all docs in the folder
 2. Create individual doc files: `ModuleName/Docs/concept-name.md`
 3. Add a "Reference Documentation" table to `ModuleName/README.md` linking each doc file
@@ -623,6 +638,7 @@ LessonFolder/
 The `<details>` body is a **full, byte-for-byte duplicate** of the activity file's content (everything below its own `# Activity — [Title]` line) — GitHub markdown has no way to transclude another file, so this is the only way to get an inline toggle. This means every activity's content is intentionally maintained in two places; when you edit one, edit the other to match. **The one permitted divergence is asset paths:** an activity's diagram lives in the lesson's `assets/` folder, which the standalone file reaches as `../assets/…` and the README embed as `assets/…` — the hub's toggle auto-sync rewrites the prefix automatically (`_sync_activity_toggle` in `_admin/_hub/server.py`).
 
 Rules:
+
 - **Naming:** the activity file is numbered (`01-`, `02-`, ...) matching the order activities appear in the README, then a short kebab-case description, e.g. `activities/02-clone-vs-zip-challenge.md`. The embedded toggle's summary is always `Activity: [Title]`, where `[Title]` is that same activity's title **before** it was turned into the kebab-case filename (e.g. file `02-clone-vs-zip-challenge.md` ↔ summary `Activity: Clone vs. ZIP Challenge`) — this is the fixed, mechanical link between a toggle you see in the README and the file it lives in, so anyone can find one from the other.
 - **Activity headers are always large.** The toggle's summary text is wrapped in `<h3>` (as in the template above), never plain bold — activity headers must render larger than body text so they stand out while scrolling a lesson. The hub's Module Editor writes and re-syncs toggles in this format automatically (`_activity_toggle` in `_admin/_hub/server.py`).
 - **One concept per activity.** Keep each one short enough to do in a few minutes without breaking lecture flow.
@@ -645,6 +661,7 @@ These checklists are the authoritative source for keeping the repo consistent. E
 A module is a new top-level folder (e.g. `Python/`, `DataStructures/`).
 
 **Create:**
+
 1. `ModuleName/README.md` — centered title block + type label + one-paragraph intro + TOC linking to each lesson + Lessons table at bottom
 2. `ModuleName/LESSONS.md` — machine-readable lesson index
 3. For each day lesson inside it: see **Add a lesson to an existing module** below
@@ -660,6 +677,7 @@ A module is a new top-level folder (e.g. `Python/`, `DataStructures/`).
 A lesson is a new subfolder inside a module (e.g. `Terminal/PipeAndGREP/`).
 
 **Create:**
+
 1. `ModuleName/LessonName/README.md` — centered title block + type label + all lesson content woven with `👉 Activity Break` callouts + Check for Understanding / Stretch Goals sections + bottom nav
 2. `ModuleName/LessonName/activities/` — one numbered file per activity break referenced from the README; see **activities/ folders**
 3. `ModuleName/LessonName/ASSIGNMENT.md` — optional; if present, add `[Assignment](ASSIGNMENT.md)` link above the nav line in the README
@@ -681,6 +699,7 @@ A lesson is a new subfolder inside a module (e.g. `Terminal/PipeAndGREP/`).
 Review files are composable fragments in `LessonFolder/review/`. The module importer picks them up automatically — no index changes are needed.
 
 **Create:**
+
 1. `LessonFolder/review/descriptive-name.md` — named for what it covers, e.g. `branch-and-merge-basics.md` (add a `-N` suffix only when two files in the set cover the identical topic)
    - Title: `# Review — [Concept Name]`
    - Source link: `*Originally covered in [Lesson Title](../README.md)*`
@@ -744,16 +763,19 @@ Bottom nav lines use this pattern. Adapt based on position in the module:
 ```
 
 First lesson in a module (no prev):
+
 ```markdown
 ← Back to [Module Name](../) — Next: [NextLesson](../NextLesson/)
 ```
 
 Last lesson in a module (no next):
+
 ```markdown
 ← [PrevLesson](../PrevLesson/) — Back to [Module Name](../)
 ```
 
 When an `ASSIGNMENT.md` is present, the assignment link goes on the line immediately above the nav line with a blank line between them:
+
 ```markdown
 [Assignment](ASSIGNMENT.md)
 
