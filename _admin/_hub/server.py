@@ -26,7 +26,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
-import requests, os, sys, json, time, re, html, shutil, uuid, hashlib
+import requests, os, sys, json, time, re, html, shutil, uuid, hashlib, subprocess, tempfile
 from urllib.parse import urlencode
 import markdown as md_lib
 from icsimport import compress_calendar
@@ -686,6 +686,76 @@ def api_favorites():
 
 # ── Per-course sub-resources ───────────────────────────────────────────────────
 
+def _quiz_kind(a):
+    """Classify a Canvas assignment as a 'new' or 'classic' quiz, or None.
+
+    Mirrors classify() in Exams/Tools/quiz-export/export_quiz.py so the Courses
+    tab can show an export control only on quiz rows.
+    """
+    if a.get("is_quiz_lti_assignment"):
+        return "new"
+    if a.get("quiz_id"):
+        return "classic"
+    types = a.get("submission_types") or []
+    if "online_quiz" in types:
+        return "classic"
+    if "external_tool" in types:
+        url = (a.get("external_tool_tag_attributes") or {}).get("url", "")
+        if "quiz-lti" in url:
+            return "new"
+    return None
+
+
+# The quiz-response exporter lives in the private Exams repo, not here; the hub
+# runs it as a subprocess (same interpreter, so it has requests) and streams back
+# the CSV. Keeping the logic in Exams matches how the hub reads other Exams content.
+QUIZ_EXPORT_SCRIPT = EXAMS_DIR / "Tools" / "quiz-export" / "export_quiz.py"
+
+
+@app.route("/api/courses/<int:course_id>/quiz-export/<int:assignment_id>")
+def api_quiz_export(course_id, assignment_id):
+    err = no_token()
+    if err:
+        return err
+    if not QUIZ_EXPORT_SCRIPT.exists():
+        return jsonify({"error": f"quiz-export tool not found at {QUIZ_EXPORT_SCRIPT} — "
+                        "pull the Exams repo next to this one."}), 404
+    out_dir = tempfile.mkdtemp(prefix="quiz-export-")
+    out_path = Path(out_dir) / f"{course_id}-{assignment_id}.csv"
+    try:
+        proc = subprocess.run(
+            [sys.executable, str(QUIZ_EXPORT_SCRIPT),
+             "--course", str(course_id), "--assignment", str(assignment_id),
+             "--out", str(out_path), "--emit-path"],
+            capture_output=True, text=True, env=os.environ, timeout=300)
+    except subprocess.TimeoutExpired:
+        shutil.rmtree(out_dir, ignore_errors=True)
+        return jsonify({"error": "The export timed out after 5 minutes."}), 504
+
+    if proc.returncode == 2:
+        # Unsupported quiz (New Quiz, or not a quiz): the reason is on stderr.
+        shutil.rmtree(out_dir, ignore_errors=True)
+        reason = (proc.stderr or proc.stdout).strip() or "This quiz can't be exported."
+        return jsonify({"error": reason, "unsupported": True}), 422
+    if proc.returncode != 0:
+        shutil.rmtree(out_dir, ignore_errors=True)
+        return jsonify({"error": (proc.stderr or proc.stdout).strip()[:2000]
+                        or "Export failed."}), 500
+
+    produced = proc.stdout.strip().splitlines()
+    path = Path(produced[-1]) if produced else out_path
+    if not path.exists():
+        shutil.rmtree(out_dir, ignore_errors=True)
+        return jsonify({"error": "The export produced no file."}), 500
+    resp = _no_store(send_file(path, mimetype="text/csv", as_attachment=True,
+                               download_name=path.name))
+
+    @resp.call_on_close
+    def _cleanup():
+        shutil.rmtree(out_dir, ignore_errors=True)
+    return resp
+
+
 @app.route("/api/courses/<int:course_id>/assignments")
 def api_assignments(course_id):
     err = no_token()
@@ -694,7 +764,8 @@ def api_assignments(course_id):
     def fetch():
         rows = canvas_paged(f"/courses/{course_id}/assignments", {"order_by": "due_at"})
         return [{"id": a["id"], "name": a["name"], "due_at": a.get("due_at"),
-                 "points": a.get("points_possible"), "html_url": a.get("html_url")} for a in rows]
+                 "points": a.get("points_possible"), "html_url": a.get("html_url"),
+                 "quiz_kind": _quiz_kind(a)} for a in rows]
     data, source, fetched_at = cached(f"assignments_{course_id}", SUBRESOURCE_TTL, fetch)
     return jsonify({"assignments": data, "source": source, "fetched_at": fetched_at})
 

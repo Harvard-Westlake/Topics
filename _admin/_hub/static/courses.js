@@ -271,12 +271,48 @@ async function togglePanel(courseId, type) {
   const data = prefetched[key];
 
   btn.classList.remove('loading');
-  document.getElementById('panelInner_' + courseId).innerHTML = renderPanel(type, data);
+  document.getElementById('panelInner_' + courseId).innerHTML = renderPanel(type, data, courseId);
   panel.classList.add('open');
   wrap.classList.add('open');
 }
 
-function renderPanel(type, data) {
+function quizExportChip(courseId, a) {
+  if (!a.quiz_kind) return '';
+  if (a.quiz_kind === 'classic')
+    return ' <button class="quiz-export" onclick="Courses.exportQuiz(' + courseId + ',' + a.id + ')"' +
+           ' title="Download every student\'s responses as a CSV (one row per student)">&#8595; Export</button>';
+  // New Quiz: per-student answers are not available through the API; the click explains why.
+  return ' <button class="quiz-export quiz-export-na" onclick="Courses.exportQuiz(' + courseId + ',' + a.id + ')"' +
+         ' title="New Quiz — per-student answers are not available through the API">Export</button>';
+}
+
+async function exportQuiz(courseId, assignmentId) {
+  toast('Preparing export…');
+  try {
+    const r = await fetch('/api/courses/' + courseId + '/quiz-export/' + assignmentId);
+    const ct = r.headers.get('content-type') || '';
+    if (r.ok && ct.includes('text/csv')) {
+      const blob = await r.blob();
+      let fname = 'quiz-' + assignmentId + '.csv';
+      const cd = r.headers.get('content-disposition') || '';
+      const m = cd.match(/filename="?([^";]+)"?/);
+      if (m) fname = m[1];
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url; link.download = fname;
+      document.body.appendChild(link); link.click(); link.remove();
+      URL.revokeObjectURL(url);
+      toast('Downloaded ' + fname);
+    } else {
+      const j = await r.json().catch(() => ({}));
+      toast(j.error || ('Export failed (' + r.status + ').'));
+    }
+  } catch (e) {
+    toast('Export failed: ' + e.message);
+  }
+}
+
+function renderPanel(type, data, courseId) {
   if (!data) return '<div style="color:var(--muted);font-size:13px;padding:12px 0">Failed to load.</div>';
 
   if (type === 'assignments') {
@@ -285,7 +321,9 @@ function renderPanel(type, data) {
     return rows.map(a =>
       '<div class="assign-row">' +
         '<div class="assign-due">' + fmtDue(a.due_at) + '</div>' +
-        '<div><a href="' + canvasLink(a.html_url) + '" target="_blank">' + a.name + '</a></div>' +
+        '<div><a href="' + canvasLink(a.html_url) + '" target="_blank">' + a.name + '</a>' +
+          quizExportChip(courseId, a) +
+        '</div>' +
         '<div class="assign-pts">' + (a.points != null ? a.points + ' pts' : '&mdash;') + '</div>' +
       '</div>'
     ).join('');
@@ -816,5 +854,6 @@ return {init, render, setView, doRefresh, togglePanel, openDrawer, closeDrawer,
         refreshModuleDatalist, clearUsedModules, onModuleTextInput,
         onModuleTextChange, onModuleTextKey, createModule, onLessonCheck,
         toggleReview, onReviewModuleChange, onReviewLessonChange,
-        onReviewFileChange, removeModuleChip, unlockNewModule, tryNewModule};
+        onReviewFileChange, removeModuleChip, unlockNewModule, tryNewModule,
+        exportQuiz};
 })();

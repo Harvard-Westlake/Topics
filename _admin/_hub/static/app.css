@@ -244,6 +244,12 @@ section.tab.active { display: block; }
 .assign-row a:hover { color: var(--accent); }
 .assign-due { color: var(--muted); font-variant-numeric: tabular-nums; }
 .assign-pts { color: var(--muted); text-align: right; }
+.quiz-export { margin-left: 8px; font-size: 11px; line-height: 1.4; padding: 1px 8px; border-radius: 10px;
+  border: 1px solid var(--border); background: transparent; color: var(--accent); cursor: pointer;
+  vertical-align: middle; white-space: nowrap; }
+.quiz-export:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+.quiz-export-na { color: var(--muted); }
+.quiz-export-na:hover { background: transparent; color: var(--muted); border-color: var(--border); cursor: help; }
 .module-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
 .module-row:last-child { border-bottom: none; }
 .module-items { color: var(--muted); }
