@@ -1910,15 +1910,18 @@ def _expected_block_items(block, ref):
                  if x.get("group") == s.get("group") and x.get("date")]
         return dated[-1] if dated else s.get("date")
 
+    cur_slot = [0]   # index of the slot being expanded — the key the Sync dialog's per-day checkboxes use
+
     def item(title, type_, identity, points=None, due=None, unlock=None, description="", content=False):
         return {"title": title, "type": type_, "identity": identity, "base_title": _base_title(title),
                 "points": points, "due": due, "unlock": unlock, "description": description,
-                "content": content}
+                "content": content, "slot": cur_slot[0]}
 
     expected = []
     for i, s in enumerate(slots):
         if s.get("part", 1) != 1:
             continue  # later day of a multi-day item — covered by its first day
+        cur_slot[0] = i
         day_num = s.get("day_num", i + 1)
         kind = s.get("kind")
         if kind == "lesson" and s.get("lesson"):
@@ -2067,13 +2070,21 @@ def _plan_module_sync(block, ref, state, due_at, unlock_at, options=None):
     module items the schedule no longer expects. Matching order per expected
     item: exact title in the module → same lesson identity in the module → same
     un-numbered title in the module → same lesson identity anywhere in the course
-    (an assignment whose module link was removed)."""
+    (an assignment whose module link was removed).
+
+    options["slots"] (a set of slot indexes) limits the sync to those class days:
+    every expected item is still matched (so module order can be restored), but
+    only the chosen days land in create/update — the rest are listed under
+    `skipped`, with what a full sync would have done to them — and nothing is
+    retired, so unselected days are left exactly as they are."""
     modules, assignments, module_items = state
     expected = _expected_block_items(block, ref)
+    only = (options or {}).get("slots")
     mod_name = _unit_module_name(block)
     mod = next((m for m in modules if m["name"] == mod_name), None)
     plan = {"module_name": mod_name, "module_id": mod["id"] if mod else None, "expected": expected,
-            "create": [], "update": [], "unchanged": [], "retire": [], "reorder": False}
+            "create": [], "update": [], "unchanged": [], "retire": [], "skipped": [],
+            "reorder": False, "partial": only is not None}
     if not expected:
         return plan
     asgn_by_id = {a["id"]: a for a in assignments}
@@ -2103,12 +2114,17 @@ def _plan_module_sync(block, ref, state, due_at, unlock_at, options=None):
 
     matched_positions = []
     for idx, e in enumerate(expected):
+        chosen = only is None or e["slot"] in only
         same_kind = lambda c, e=e: c["kind"] == e["type"]
         c = (take(cands, lambda c: same_kind(c) and c["name"] == e["title"])
              or take(cands, lambda c: same_kind(c) and c["identity"] and c["identity"] == e["identity"])
              or take(cands, lambda c: same_kind(c) and c["base"] == e["base_title"])
              or (take(loose, lambda c: c["identity"] == e["identity"]) if e["type"] == "Assignment" else None))
         if c is None:
+            if not chosen:
+                plan["skipped"].append({"expected": e, "title": e["title"], "type": e["type"],
+                                        "slot": e["slot"], "would": "create", "changes": []})
+                continue
             plan["create"].append(e)
             plan["reorder"] = True   # a new item lands at the end; positions must be redone
             continue
@@ -2118,33 +2134,42 @@ def _plan_module_sync(block, ref, state, due_at, unlock_at, options=None):
             changes = [f"rename from “{c['name']}”"] if c["name"] != e["title"] else []
         if c["item"] is None:
             changes.append("link into the module again")
-            plan["reorder"] = True
+            if chosen:
+                plan["reorder"] = True
         else:
             matched_positions.append(c["item"].get("position") or 0)
         e["_canvas"] = (("Assignment", c["asgn"]["id"]) if c["kind"] == "Assignment"
                         else ("Page", (c["item"] or {}).get("page_url")))
         entry = {"expected": e, "match": c, "title": e["title"], "type": e["type"],
-                 "from": c["name"], "changes": changes}
+                 "from": c["name"], "changes": changes, "slot": e["slot"]}
+        if not chosen:
+            entry["would"] = "update" if changes else "unchanged"
+            plan["skipped"].append(entry)
+            continue
         (plan["update"] if changes else plan["unchanged"]).append(entry)
     if matched_positions != sorted(matched_positions):
         plan["reorder"] = True
-    for c in cands:
-        if id(c) not in claimed:
-            plan["retire"].append({"match": c, "title": c["name"], "type": c["kind"],
-                                   "published": (c["asgn"] or c["item"]).get("published")})
+    if only is None:
+        for c in cands:
+            if id(c) not in claimed:
+                plan["retire"].append({"match": c, "title": c["name"], "type": c["kind"],
+                                       "published": (c["asgn"] or c["item"]).get("published")})
     return plan
 
 def _plan_public(plan):
     """The plan without Canvas internals — what the dry-run preview shows."""
     def strip(entries):
         return [{"title": x["title"], "type": x["type"], "from": x.get("from"),
-                 "changes": x.get("changes", [])} for x in entries]
+                 "changes": x.get("changes", []), "slot": x.get("slot")} for x in entries]
     return {"module_name": plan["module_name"], "module_exists": plan["module_id"] is not None,
-            "create": [{"title": e["title"], "type": e["type"], "quiz": e.get("quiz")} for e in plan["create"]],
+            "create": [{"title": e["title"], "type": e["type"], "quiz": e.get("quiz"), "slot": e.get("slot")}
+                       for e in plan["create"]],
             "update": strip(plan["update"]), "unchanged": strip(plan["unchanged"]),
             "retire": [{"title": r["title"], "type": r["type"], "published": r.get("published")}
                        for r in plan["retire"]],
-            "reorder": plan["reorder"]}
+            "skipped": [dict(pub, would=x.get("would"))
+                        for x, pub in zip(plan.get("skipped", []), strip(plan.get("skipped", [])))],
+            "partial": plan.get("partial", False), "reorder": plan["reorder"]}
 
 def _plan_summary(plan, ref):
     """(status, detail) for the sync-status dot."""
@@ -2180,7 +2205,9 @@ def _apply_module_sync(course_id, plan, ref, due_at, unlock_at, options=None):
     options = options or {}
     out = {"module_name": plan["module_name"], "module_id": plan["module_id"], "ref": ref,
            "created": [], "updated": [], "retired": [],
-           "unchanged": [u["title"] for u in plan["unchanged"]], "errors": []}
+           "unchanged": [u["title"] for u in plan["unchanged"]],
+           "skipped": [x["title"] for x in plan.get("skipped", [])],
+           "partial": plan.get("partial", False), "errors": []}
     module_id = plan["module_id"]
     if module_id is None:
         mod_res = requests.post(f"{BASE}/courses/{course_id}/modules", headers=hdrs(),
@@ -2416,7 +2443,12 @@ def api_schedule_sync_status(name):
             if not plan["expected"]:
                 continue
             status, detail = _plan_summary(plan, ref)
-            statuses[bid] = {"status": status, "detail": detail}
+            items = ([{"slot": e["slot"], "title": e["title"], "status": "missing"} for e in plan["create"]]
+                     + [{"slot": u["slot"], "title": u["title"], "status": "drifted",
+                         "detail": "; ".join(u["changes"])} for u in plan["update"]]
+                     + [{"slot": u["slot"], "title": u["title"], "status": "synced"} for u in plan["unchanged"]])
+            statuses[bid] = {"status": status, "detail": detail,
+                             "items": sorted(items, key=lambda x: x["slot"])}
         elif block["type"] in ("test", "final", "lesson"):
             e = _standalone_expected(block, ref)
             a = _match_standalone(e, assignments)
@@ -2432,13 +2464,36 @@ def api_schedule_sync_status(name):
                                                              + ". Sync updates in place."})
     return jsonify({"course_id": course_id, "statuses": statuses})
 
+@app.route("/api/schedules/<name>/sync-items")
+def api_schedule_sync_items(name):
+    """The Canvas items a module block would sync, one per class day, so the
+    Sync dialog can offer per-day checkboxes before (and without) a course is
+    picked. Repo-only — no Canvas call, no token needed."""
+    if not NAME_RE.match(name):
+        return jsonify({"error": "invalid schedule name"}), 400
+    sched = load_schedule(name)
+    if sched is None:
+        return jsonify({"error": "schedule not found"}), 404
+    block_id = request.args.get("block_id")
+    block = next((b for b in resolve_schedule(sched)["blocks"] if b.get("id") == block_id), None)
+    if block is None:
+        return jsonify({"error": "block not found in schedule"}), 404
+    if block["type"] != "module" or block.get("missing"):
+        return jsonify({"items": []})
+    keys = ("slot", "title", "type", "points", "due")
+    return jsonify({"items": [{k: e[k] for k in keys}
+                              for e in _expected_block_items(block, schedule_ref(sched))]})
+
 @app.route("/api/schedules/<name>/sync-block", methods=["POST"])
 def api_schedule_sync_block(name):
     """Upsert one schedule block into a Canvas course. Body: {course_id, block_id,
-    dry_run?}. With dry_run the plan is returned and nothing is written — the
-    Sync dialog shows it as a preview. Otherwise: missing items are created,
-    matched items are updated in place, items the schedule no longer expects
-    are unpublished (never deleted), and module order is restored."""
+    dry_run?, push_quizzes?, slots?}. With dry_run the plan is returned and
+    nothing is written — the Sync dialog shows it as a preview. Otherwise:
+    missing items are created, matched items are updated in place, items the
+    schedule no longer expects are unpublished (never deleted), and module order
+    is restored. `slots` (slot indexes from /sync-items) limits a module block
+    to those class days: only they are created/updated, nothing is unpublished,
+    and every other day is left exactly as it is."""
     err = no_token()
     if err:
         return err
@@ -2454,6 +2509,11 @@ def api_schedule_sync_block(name):
     options = {"push_quizzes": bool(body.get("push_quizzes"))}
     if not course_id or not block_id:
         return jsonify({"error": "course_id and block_id required"}), 400
+    if body.get("slots") is not None:
+        try:
+            options["slots"] = {int(x) for x in body["slots"]}
+        except (TypeError, ValueError):
+            return jsonify({"error": "slots must be a list of slot indexes"}), 400
     resolved = resolve_schedule(sched)
     block = next((b for b in resolved["blocks"] if b.get("id") == block_id), None)
     if block is None:
@@ -2474,6 +2534,8 @@ def api_schedule_sync_block(name):
         plan = _plan_module_sync(block, ref, state, _due_at, _unlock_at, options)
         if not plan["expected"]:
             return jsonify({"error": "nothing in this block syncs to Canvas"}), 422
+        if plan["partial"] and not (plan["create"] or plan["update"] or plan["unchanged"]):
+            return jsonify({"error": "none of the selected days creates a Canvas item"}), 422
         if dry_run:
             return jsonify({"dry_run": True, "ref": ref, "unit_number": block["unit_number"],
                             "plan": _plan_public(plan)})

@@ -16,6 +16,10 @@ let courses = null, favoriteIds = new Set();
 let saveTimer = null;
 let editingFinal = null;
 let syncBlockId = null;
+let syncItems = [];            // /sync-items rows for the block open in the sync dialog
+let syncSelected = new Set();  // slot indexes ticked in the sync dialog (empty = whole unit)
+let syncPlanBySlot = {};       // slot -> what the dry run says Sync would do to that day
+let boardPick = {};            // block id -> Set of slot indexes ticked on the board (pre-selects the sync dialog)
 let dndAttached = false;
 
 const DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -554,7 +558,7 @@ function moduleCard(blk, unit) {
         '<span class="src-badge">' + (blk.source === 'topic' ? 'topic' : 'saved') + '</span>' +
         '<span class="block-dates">' + dates + '</span>' +
         '<span class="block-actions">' +
-          (r && !r.missing ? syncDot(blk.id) + '<button class="mini-btn sync" onclick="Schedule.openSync(\'' + blk.id + '\')">Sync</button>' : '') +
+          (r && !r.missing ? syncDot(blk.id) + '<button class="mini-btn sync" onclick="Schedule.openSync(\'' + blk.id + '\')">' + syncLabel(blk.id) + '</button>' : '') +
           '<button class="x-btn" onclick="Schedule.removeBlock(\'' + blk.id + '\')">&#x2715;</button>' +
         '</span>' +
       '</div>';
@@ -571,7 +575,7 @@ function moduleRows(blk, r) {
   let html = idz(blk.id, 0, null);
   const seenParts = {};
   r.slots.forEach((s, i) => {
-    html += slotRow(blk, s, s.day_num != null ? s.day_num : i);  // day_num is 0-indexed; 0 is a real value here
+    html += slotRow(blk, s, s.day_num != null ? s.day_num : i, i);  // day_num is 0-indexed; 0 is a real value here
     const next = r.slots[i + 1];
     if (next && next.co_day) return;   // more lessons share this class day — zone after the last one
     if (s.insert_id) {
@@ -593,9 +597,16 @@ function findAfterDay(r, i) {
   return 0;
 }
 
-function slotRow(blk, s, num) {
+function slotRow(blk, s, num, slotIdx) {
   const isInsert = !!s.insert_id;
   const later = (s.part || 1) > 1;
+  // per-day sync checkbox — only on days that put something on Canvas
+  const picked = !!(boardPick[blk.id] && boardPick[blk.id].has(slotIdx));
+  const pick = (!later && slotIdx != null && isSyncableSlot(s))
+    ? '<input type="checkbox" class="slot-pick" data-slot="' + slotIdx + '"' + (picked ? ' checked' : '') +
+      ' title="Tick days to sync only those (shift-click: this day and every day after it)"' +
+      ' onclick="Schedule.togglePick(event,\'' + blk.id + '\',' + slotIdx + ',this.checked)">'
+    : '<span></span>';
   // ½-day lessons share the class day — show the .0/.1 sub-index in the number
   if (s.lesson && s.lesson.duration === 0.5) num = num + '.' + (s.lesson.sub || 0);
   let controls = '';
@@ -623,7 +634,8 @@ function slotRow(blk, s, num) {
     ? ' title="Class ' + s.time.start + '–' + s.time.end +
       (s.next_date ? ' · HW due 11:59 PM the night before ' + fmtShort(s.next_date) : '') + '"'
     : '';
-  return '<div class="slot-row' + (isInsert ? ' ins' : '') + '">' +
+  return '<div class="slot-row' + (isInsert ? ' ins' : '') + (picked ? ' picked' : '') + '">' +
+    pick +
     '<span class="slot-date"' + timeTip + '>' + fmtD(s.date) + '</span>' +
     '<span class="slot-num">' + num + '</span>' +
     '<span>' + badge + '</span>' +
@@ -920,6 +932,11 @@ async function openSync(blockId) {
   document.getElementById('syncResult').innerHTML = '';
   document.getElementById('syncBtn').disabled = false;
   document.getElementById('syncBtn').textContent = 'Sync';
+  syncItems = [];
+  syncSelected = new Set(boardPick[blockId] || []);   // rows ticked on the board
+  syncPlanBySlot = {};
+  document.getElementById('syncDays').style.display = 'none';
+  document.getElementById('syncDays').innerHTML = '';
 
   const isModule = r.type === 'module';
   document.getElementById('syncTitle').textContent = isModule
@@ -937,7 +954,8 @@ async function openSync(blockId) {
     const pts = smartRound((r.points || 10) * Math.pow(r.scale || 1.15, r.unit_number));
     lines.push('<div>Canvas module <b>“Unit ' + r.unit_number + '”</b> is created if it is missing; otherwise its '
       + 'items are updated <b>in place</b> — renamed, re-dated, re-pointed — and days no longer in the schedule are '
-      + 'unpublished. Nothing is ever deleted. Due dates come from the schedule:</div>');
+      + 'unpublished. Nothing is ever deleted. Due dates come from the schedule. '
+      + 'Tick days below to sync only those — unticked days are then left exactly as they are:</div>');
     lines.push('<div style="color:var(--muted)">Content is never copied into Canvas: every item links to the live '
       + 'lesson view for ref <b>' + esc(scheduleRef()) + '</b>, so students always see the current version.</div>');
     if (counts.lesson) lines.push('<div>&bull; ' + counts.lesson + ' lesson assignment' + (counts.lesson > 1 ? 's' : '') + ' @ ' + pts + ' pts (review + ASSIGNMENT.md content)</div>');
@@ -946,7 +964,7 @@ async function openSync(blockId) {
     if (counts.final)  lines.push('<div>&bull; ' + counts.final + ' final placeholder' + (counts.final > 1 ? 's' : '') + ' (title + date only — exam content stays private)</div>');
     if (counts.quiz) {
       lines.push('<div>&bull; ' + counts.quiz + ' quiz' + (counts.quiz > 1 ? 'zes' : '') + ' from the private Exams repo (assignment carrying the quiz id, due that day)</div>');
-      lines.push('<label style="display:block;margin:4px 0 0 14px"><input type="checkbox" id="syncPushQuizzes" onchange="previewPlan()"> '
+      lines.push('<label style="display:block;margin:4px 0 0 14px"><input type="checkbox" id="syncPushQuizzes" onchange="Schedule.previewPlan()"> '
         + 'Also push the quiz questions as a Canvas <b>New Quiz</b> (New Quizzes API) — needs the quiz folder unlocked in ../Exams. '
         + 'A day that is only a placeholder so far is upgraded to a New Quiz.</label>');
       lines.push('<div style="color:var(--muted);margin:2px 0 0 14px">Questions already on Canvas are refreshed automatically: '
@@ -966,6 +984,13 @@ async function openSync(blockId) {
 
   const sel = document.getElementById('syncCourse');
   try {
+    if (isModule) {
+      const d = await fetch('/api/schedules/' + encodeURIComponent(schedName) +
+                            '/sync-items?block_id=' + encodeURIComponent(blockId)).then(r => r.json());
+      if (d.error) throw new Error(d.error);
+      syncItems = d.items || [];
+      renderSyncDays();
+    }
     await loadCourses();
   } catch (e) {
     sel.innerHTML = '';
@@ -1023,17 +1048,28 @@ async function previewPlan() {
     box.style.marginTop = '8px';
     document.getElementById('syncPreview').appendChild(box);
   }
-  if (!courseId || !schedName || !syncBlockId) { box.innerHTML = ''; return; }
+  if (!courseId || !schedName || !syncBlockId) { box.innerHTML = ''; syncPlanBySlot = {}; renderSyncDays(); return; }
   const seq = ++planSeq;
   box.innerHTML = '<div style="color:var(--muted)">Checking what is already on Canvas…</div>';
+  const body = {course_id: parseInt(courseId), block_id: syncBlockId, dry_run: true,
+                push_quizzes: !!(document.getElementById('syncPushQuizzes') || {}).checked};
+  if (syncSelected.size) body.slots = Array.from(syncSelected).sort((a, b) => a - b);
   const res = await fetch('/api/schedules/' + encodeURIComponent(schedName) + '/sync-block', {
     method: 'POST', headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({course_id: parseInt(courseId), block_id: syncBlockId, dry_run: true,
-                          push_quizzes: !!(document.getElementById('syncPushQuizzes') || {}).checked}),
+    body: JSON.stringify(body),
   }).then(r => r.json()).catch(e => ({error: String(e)}));
-  if (seq !== planSeq) return;   // the course changed while we waited
+  if (seq !== planSeq) return;   // the course or selection changed while we waited
   if (res.error) { box.innerHTML = '<div style="color:var(--red)">' + esc(res.error) + '</div>'; return; }
   const p = res.plan || {};
+  // Every expected day gets a verdict — chosen ones from create/update/unchanged,
+  // skipped ones from what a full sync would have done — so the checkbox rows
+  // can show which days are actually out of date on this course.
+  syncPlanBySlot = {};
+  (p.create || []).forEach(x => { if (x.slot != null) syncPlanBySlot[x.slot] = {status: 'create', detail: ''}; });
+  (p.update || []).forEach(x => { if (x.slot != null) syncPlanBySlot[x.slot] = {status: 'update', detail: (x.changes || []).join('; ')}; });
+  (p.unchanged || []).forEach(x => { if (x.slot != null) syncPlanBySlot[x.slot] = {status: 'unchanged', detail: ''}; });
+  (p.skipped || []).forEach(x => { if (x.slot != null) syncPlanBySlot[x.slot] = {status: x.would || 'unchanged', detail: (x.changes || []).join('; ')}; });
+  renderSyncDays();
   const row = (icon, cls, text, sub) =>
     '<div class="result-row"><span class="' + cls + '">' + icon + '</span> ' + esc(text) +
     (sub ? ' <span style="color:var(--muted)">— ' + esc(sub) + '</span>' : '') + '</div>';
@@ -1048,8 +1084,143 @@ async function previewPlan() {
   retire.forEach(x => h += row('&#x25CC;', 'result-err', x.title, 'no longer in the schedule — unpublished, not deleted'));
   if (same.length) h += '<div style="color:var(--muted)">' + same.length + ' item' + (same.length > 1 ? 's' : '') + ' already match</div>';
   if (p.reorder) h += '<div style="color:var(--muted)">module order will be restored</div>';
+  if (p.partial) {
+    const sk = p.skipped || [];
+    const stale = sk.filter(x => x.would && x.would !== 'unchanged').length;
+    h += '<div style="color:var(--muted)">' + sk.length + ' unticked day' + (sk.length !== 1 ? 's' : '') + ' left untouched'
+      + (stale ? ' (' + stale + ' of them would change in a full sync)' : '') + '; nothing is unpublished</div>';
+  }
   if (!create.length && !update.length && !retire.length) h += '<div style="color:var(--green)">Everything matches — nothing to do.</div>';
   box.innerHTML = h;
+}
+
+// ── Per-day selection on the board ───────────────────────────────────────────
+// Ticking rows under a unit pre-selects them in that unit's Sync dialog and
+// relabels its Sync button; the dialog writes its selection back here.
+
+function isSyncableSlot(s) {
+  // mirrors _expected_block_items: which slots produce a Canvas item
+  if ((s.part || 1) !== 1) return false;
+  if (s.kind === 'test' || s.kind === 'final') return true;
+  if (s.kind !== 'lesson') return false;
+  if (s.lesson_ref) return true;
+  const a = s.lesson;
+  if (!a) return false;
+  if (a._module && a.path) return true;
+  return a.kind === 'page' || (a.kind === 'quiz' && !!a.quiz_id);
+}
+
+function syncLabel(blockId) {
+  const n = boardPick[blockId] ? boardPick[blockId].size : 0;
+  return n ? 'Sync individual (' + n + ')' : 'Sync';
+}
+
+function paintPicks(blockId) {
+  // update the unit's rows and Sync button in place — no board re-render
+  const card = document.getElementById('blk_' + blockId);
+  if (!card) return;
+  const set = boardPick[blockId] || new Set();
+  card.querySelectorAll('.slot-pick').forEach(cb => {
+    const on = set.has(parseInt(cb.dataset.slot, 10));
+    cb.checked = on;
+    const row = cb.closest('.slot-row');
+    if (row) row.classList.toggle('picked', on);
+  });
+  const btn = card.querySelector('.block-head .mini-btn.sync');
+  if (btn) btn.textContent = syncLabel(blockId);
+}
+
+function togglePick(ev, blockId, slot, on) {
+  const set = boardPick[blockId] || (boardPick[blockId] = new Set());
+  if (ev && ev.shiftKey) {
+    const r = resolvedById(blockId);
+    (r ? r.slots : []).forEach((s, i) => { if (i >= slot && isSyncableSlot(s)) set.add(i); });
+  } else if (on) set.add(slot);
+  else set.delete(slot);
+  if (!set.size) delete boardPick[blockId];
+  paintPicks(blockId);
+}
+
+function pushPicksToBoard() {
+  if (!syncBlockId) return;
+  if (syncSelected.size) boardPick[syncBlockId] = new Set(syncSelected);
+  else delete boardPick[syncBlockId];
+  paintPicks(syncBlockId);
+}
+
+// ── Per-day selection inside the sync dialog ─────────────────────────────────
+// Empty selection = the whole unit. With days ticked, only those slots are sent
+// as `slots`, the button reads "Sync individual (N)", and the dry run above
+// re-plans for just those days.
+
+function renderSyncDays() {
+  const box = document.getElementById('syncDays');
+  if (!syncItems.length) { box.style.display = 'none'; box.innerHTML = ''; return; }
+  const hasPlan = Object.keys(syncPlanBySlot).length > 0;
+  const stale = syncItems.filter(it => syncPlanBySlot[it.slot] && syncPlanBySlot[it.slot].status !== 'unchanged').length;
+  const glyph = x => !x ? '<span class="sync-dot" style="visibility:hidden">&nbsp;</span>'
+    : x.status === 'unchanged' ? '<span class="sync-dot ok" title="Already matches Canvas">&#x2713;</span>'
+    : x.status === 'update'    ? '<span class="sync-dot part" title="' + esc(x.detail || 'Would be updated') + '">&#9679;</span>'
+    :                            '<span class="sync-dot ready" title="Not on Canvas yet">&#8593;</span>';
+  const n = syncSelected.size;
+  let html = '<div class="sync-days-head"><span>Days to sync</span><span class="sync-days-links">'
+    + '<a onclick="Schedule.selectSyncDays(\'all\')">all</a> &middot; '
+    + '<a onclick="Schedule.selectSyncDays(\'none\')">none</a>'
+    + (hasPlan ? ' &middot; <a onclick="Schedule.selectSyncDays(\'stale\')">out of date (' + stale + ')</a>' : '')
+    + '</span></div>';
+  html += '<div class="sync-days-note">' + (n
+    ? n + ' day' + (n > 1 ? 's' : '') + ' selected — only these are written; every other day stays exactly as it is on Canvas.'
+    : 'Nothing selected — the whole unit syncs. Hover a row and use “from here ↓” to pick a day and everything after it.')
+    + '</div>';
+  syncItems.forEach(it => {
+    const on = syncSelected.has(it.slot);
+    const meta = (it.type === 'Page' ? 'page' : (it.points != null ? it.points + ' pts' : ''))
+      + (it.due && it.type !== 'Page' ? ' &middot; due ' + fmtShort(it.due) : '');
+    html += '<label class="sync-day' + (on ? ' on' : '') + '">'
+      + '<input type="checkbox"' + (on ? ' checked' : '') + ' onchange="Schedule.toggleSyncDay(' + it.slot + ', this.checked)">'
+      + glyph(syncPlanBySlot[it.slot])
+      + '<span class="sync-day-title" title="' + esc(it.title) + '">' + esc(it.title) + '</span>'
+      + '<span class="sync-day-meta">' + meta + '</span>'
+      + '<button type="button" class="sync-day-from" title="Select this day and every day after it" '
+      + 'onclick="Schedule.selectSyncFrom(' + it.slot + ')">from here &darr;</button>'
+      + '</label>';
+  });
+  box.innerHTML = html;
+  box.style.display = 'flex';
+  updateSyncButton();
+}
+
+function selectionChanged() {
+  renderSyncDays();
+  pushPicksToBoard();
+  previewPlan();   // the dry run re-plans for the ticked days
+}
+
+function toggleSyncDay(slot, on) {
+  if (on) syncSelected.add(slot); else syncSelected.delete(slot);
+  selectionChanged();
+}
+
+function selectSyncFrom(slot) {
+  syncItems.forEach(it => { if (it.slot >= slot) syncSelected.add(it.slot); });
+  selectionChanged();
+}
+
+function selectSyncDays(mode) {
+  syncSelected = new Set();
+  if (mode === 'all') syncItems.forEach(it => syncSelected.add(it.slot));
+  if (mode === 'stale') syncItems.forEach(it => {
+    const v = syncPlanBySlot[it.slot];
+    if (v && v.status !== 'unchanged') syncSelected.add(it.slot);
+  });
+  selectionChanged();
+}
+
+function updateSyncButton() {
+  const btn = document.getElementById('syncBtn');
+  if (btn.textContent === 'Syncing…') return;
+  const n = syncSelected.size;
+  btn.textContent = n ? 'Sync individual (' + n + ')' : 'Sync';
 }
 
 function onSyncCourseChange() {
@@ -1067,6 +1238,7 @@ function onSyncCourseChange() {
   }
   btn.disabled = false;
   target.innerHTML = 'Will write to: <b>' + esc(opt.textContent) + '</b>';
+  updateSyncButton();
   previewPlan();
   const last = schedName ? localStorage.getItem('syncCourseId_' + schedName) : null;
   const switched = last && String(opt.value) !== last;
@@ -1083,18 +1255,25 @@ async function doSync() {
   const sel = document.getElementById('syncCourse');
   const courseId = sel.value;
   if (!courseId || !schedName) return;
-  if (!confirm('Sync to “' + sel.selectedOptions[0].textContent + '”?\n\nExisting items are updated in place; days no longer in the schedule are unpublished. Nothing is deleted.')) return;
+  const n = syncSelected.size;
+  const msg = n
+    ? 'Sync ' + n + ' selected day' + (n > 1 ? 's' : '') + ' to “' + sel.selectedOptions[0].textContent + '”?\n\nOnly those days are created or updated. Every other day is left exactly as it is; nothing is unpublished or deleted.'
+    : 'Sync to “' + sel.selectedOptions[0].textContent + '”?\n\nExisting items are updated in place; days no longer in the schedule are unpublished. Nothing is deleted.';
+  if (!confirm(msg)) return;
   localStorage.setItem('syncCourseId_' + schedName, courseId);
   const btn = document.getElementById('syncBtn');
   btn.disabled = true;
   btn.textContent = 'Syncing…';
+  const body = {course_id: parseInt(courseId), block_id: syncBlockId,
+                push_quizzes: !!(document.getElementById('syncPushQuizzes') || {}).checked};
+  if (n) body.slots = Array.from(syncSelected).sort((a, b) => a - b);
   const res = await fetch('/api/schedules/' + encodeURIComponent(schedName) + '/sync-block', {
     method: 'POST', headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({course_id: parseInt(courseId), block_id: syncBlockId,
-                          push_quizzes: !!(document.getElementById('syncPushQuizzes') || {}).checked}),
+    body: JSON.stringify(body),
   }).then(r => r.json()).catch(e => ({error: String(e)}));
   btn.textContent = 'Sync';
   btn.disabled = false;
+  updateSyncButton();
   const out = document.getElementById('syncResult');
   out.style.display = 'block';
   if (res.error) {
@@ -1107,7 +1286,8 @@ async function doSync() {
   out.innerHTML =
     '<div style="color:var(--green);font-size:13px;font-weight:600;margin-bottom:6px">&#x2713; ' +
       (res.module_name ? esc(res.module_name) + ' — ' : '') + ok.length + ' created, ' + upd.length + ' updated, ' +
-      ret.length + ' unpublished' + (same.length ? ', ' + same.length + ' unchanged' : '') + '</div>' +
+      ret.length + ' unpublished' + (same.length ? ', ' + same.length + ' unchanged' : '') +
+      ((res.skipped || []).length ? ', ' + res.skipped.length + ' unticked day' + (res.skipped.length > 1 ? 's' : '') + ' untouched' : '') + '</div>' +
     ok.map(x => '<div class="result-row"><span class="result-ok">+</span> ' + esc(x.name) + '</div>').join('') +
     upd.map(x => '<div class="result-row"><span class="result-ok">&#x21bb;</span> ' + esc(x.name) + sub((x.changes || []).join('; ')) + '</div>').join('') +
     ret.map(x => '<div class="result-row"><span class="result-err">&#x25CC;</span> ' + esc(x.name) + sub('unpublished') + '</div>').join('') +
@@ -1115,6 +1295,7 @@ async function doSync() {
     '<div style="margin-top:8px"><a href="' + canvasCourseUrl(courseId, '/modules') +
     '" target="_blank" style="color:var(--accent);font-size:12px">Open in Canvas &rarr;</a></div>';
   refreshSyncStatus(true);   // live recheck so the board's dots reflect the new state
+  if (n) previewPlan();      // and the dialog's per-day glyphs for the days just written
 }
 
 // ── Finals (stored in the private Admin repo) ─────────────────────────────────
@@ -1171,5 +1352,6 @@ return {init, onShow: loadPalette, pickSchedule, newSchedule, loadPalette, toggl
         addNoSchool, removeNoSchool, toggleTopic, toggleBlock, removeBlock,
         stepBlock, setBlockPoints, removeInsert, stepInsert, setInsertPoints,
         editBlockTitle, editInsertTitle, openSync, closeSync, doSync, onSyncCourseChange,
+        previewPlan, toggleSyncDay, selectSyncFrom, selectSyncDays, togglePick,
         newFinal, openFinalEditor, closeFinalEditor, saveFinal, deleteFinal};
 })();

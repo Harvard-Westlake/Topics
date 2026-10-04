@@ -38,6 +38,14 @@ no re-sync. Only titles, points, and dates live on Canvas (the sync-status dot
 watches those, and also warns when an item's link follows a different ref than
 the schedule).
 
+Syncing a unit again never duplicates it: the hub reuses the unit's Canvas
+module and updates existing items in place. To touch just some days — say you
+moved one date and only the days after it changed — tick them on the board
+(expand the unit; shift-click a checkbox for that day and everything after it)
+or in the Sync dialog (hover a row and use "from here ↓"). The button becomes **Sync individual (N)**, the preview re-plans for
+just those days, and every unticked day stays exactly as it is on Canvas —
+nothing is unpublished in a partial sync.
+
 The **Branch** field in the Year Schedule tab (`"ref"` in the schedule JSON,
 default `main`) is the branch or tag that schedule's course follows. Work on your
 own branch and your students see it live; merge `main` into it when you want

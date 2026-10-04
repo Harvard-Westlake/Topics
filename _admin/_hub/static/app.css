@@ -381,7 +381,9 @@ section.tab.active { display: block; }
 .pts-input:focus { border-color: var(--accent); }
 
 .block-body { border-top: 1px solid var(--border); background: var(--surface2); padding: 4px 0 6px; }
-.slot-row { display: grid; grid-template-columns: 100px 34px 66px 1fr auto; gap: 8px; align-items: center; padding: 5px 16px; font-size: 12px; }
+.slot-row { display: grid; grid-template-columns: 16px 100px 34px 66px 1fr auto; gap: 8px; align-items: center; padding: 5px 16px; font-size: 12px; }
+.slot-row .slot-pick { margin: 0; accent-color: var(--accent); cursor: pointer; }
+.slot-row.picked { background: rgba(79, 142, 247, .10); }
 .slot-row:hover { background: rgba(255,255,255,.02); }
 .slot-date { color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .slot-num { color: var(--accent); font-weight: 600; font-variant-numeric: tabular-nums; }
@@ -651,3 +653,19 @@ html[data-theme="light"] .panel { box-shadow: 0 1px 3px rgba(0,0,0,.08); }
 /* the header switch itself */
 .theme-toggle { margin-left: 14px; background: var(--surface); border: 1px solid var(--border); color: var(--muted); border-radius: 20px; padding: 6px 12px; font-size: 12px; font-family: inherit; cursor: pointer; white-space: nowrap; transition: border-color .15s, color .15s; }
 .theme-toggle:hover { border-color: var(--accent); color: var(--text); }
+
+/* Year Schedule: per-day checkboxes in the Sync dialog */
+.sync-days { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; font-size: 12px; display: flex; flex-direction: column; gap: 2px; max-height: 38vh; overflow-y: auto; }
+.sync-days-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-weight: 600; margin-bottom: 4px; }
+.sync-days-links { font-weight: 400; color: var(--muted); }
+.sync-days-links a, .sync-day-from { color: var(--accent); cursor: pointer; background: none; border: 0; font: inherit; padding: 0; }
+.sync-days-links a:hover, .sync-day-from:hover { text-decoration: underline; }
+.sync-days-note { color: var(--muted); margin-bottom: 6px; }
+.sync-day { display: flex; align-items: center; gap: 8px; padding: 3px 4px; border-radius: 5px; cursor: pointer; }
+.sync-day:hover { background: var(--surface2); }
+.sync-day.on { background: rgba(79, 142, 247, .12); }
+.sync-day input { margin: 0; accent-color: var(--accent); }
+.sync-day-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sync-day-meta { color: var(--muted); white-space: nowrap; }
+.sync-day-from { white-space: nowrap; opacity: 0; }
+.sync-day:hover .sync-day-from, .sync-day-from:focus { opacity: 1; }
