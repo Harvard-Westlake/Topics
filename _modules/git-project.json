@@ -50,15 +50,14 @@
     },
     {
       "day": 6,
-      "duration": 2,
+      "duration": 3,
       "title": "Trees",
       "path": "Trees",
       "_module": "GitProject",
-      "review": null,
-      "duration_override": true
+      "review": null
     },
     {
-      "day": 8,
+      "day": 9,
       "duration": 4,
       "title": "Commits",
       "path": "Commits",
@@ -66,5 +65,5 @@
       "review": null
     }
   ],
-  "updated": "2026-09-28"
+  "updated": "2026-10-02"
 }
