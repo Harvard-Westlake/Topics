@@ -64,8 +64,8 @@ A parent directory's tree file needs to include the hash of each subdirectory. B
 
 This means: **always create the innermost (deepest) trees first, then work outward toward the root.**
 
-In GP-3.2, you implement this recursively from a directory path.
-In GP-3.3, you implement it from the index using a working list — because the index is flat (no directory structure), and you need to derive the hierarchy from file paths.
+In GP-3.2, you write one tree file for one directory from the working list — a runtime copy of the index.
+In GP-3.3, you build the working list from the index and collapse it, deepest directory first, until only the root tree remains — because the index is flat (no directory structure), and you need to derive the hierarchy from file paths.
 
 ## <font color="#388bfd">The Root Tree</font>
 
