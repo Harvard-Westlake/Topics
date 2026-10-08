@@ -44,18 +44,19 @@ Get your copy of the chart: download [verification-table.xlsx](assets/verificati
 
 ## Verification Chart
 
-One row per behavior, two answers per row. The left column is fixed.
+One row per behavior, two answers per row. The left column is fixed. Hashes are shortened here; the full values are in the lesson's [expected hashes](README.md#hashing-a-tree-by-hand).
 
-**How well does it work (1–5, 5 is best):** 5 = works exactly as described and you proved it · 4 = works, one small rule broken (a trailing newline in a tree file) · 3 = partly works · 2 = runs but does the wrong thing · 1 = missing, fails, or could not be tested (say which).
+- **Rating (1–5, 5 is best):** 5 = works exactly as described and you proved it · 4 = works, one small rule broken (a trailing newline in a tree file) · 3 = partly works · 2 = runs but does the wrong thing · 1 = missing, fails, or could not be tested (say which).
+- **Notes:** **How** their code does it (method names, approach, data types) · how you **verified** it (exact commands or calls, and what you saw) · what you **modified** to test it, or "nothing".
 
-| Behavior to verify | How well does it work? (1–5) | Is it functional / verified the functionality? What was modified to get it working?<br>*How their code does it (method names, approach, data types) · how you verified it (exact commands or calls, and what you saw) · what you changed to test it, or "nothing"* |
+| Behavior to verify | Rating (1–5) | Notes |
 |---|---|---|
-| **1. Index stores relative paths** — after staging `tree-test/docs/hello.txt`, `git/index` has the line `aaf4c61ddcc5e8a2dabede0f3b482cd9aea9434d tree-test/docs/hello.txt`, not a bare filename. | | |
-| **2. No duplicate entries** — staging the same unchanged file twice leaves exactly one index line for it. | | |
-| **3. A modified file replaces its entry** — after `printf 'hello again' > tree-test/docs/hello.txt` and staging it again, its line carries `714d500fdb9ddeb5b957022131ac8a13c437a3bd`, the old hash is gone, and there is still one line for it. | | |
-| **4. `createTree` writes one directory's tree** — for `tree-test/docs` it writes two lines (`blob`, hash, final name only) into `git/objects/d5ff240dd607e36048326aaf7982a025debb0cd7` and returns that hash. | | |
-| **5. Root tree from staged files only** — with `scratch.txt` on disk but never staged, the root tree is `54c35b48b2551e71b9bc43f0d44264807fbf6cc9` (or `60a91a23cb87e720ab7cf5bc8f5f5c34da9c0e79` with one extra level above `tree-test`) and no tree lists `scratch.txt`. | | |
-| **6. Deterministic** — running the root-tree method twice on an unchanged index returns the same hash, and the number of files in `git/objects/` does not change. | | |
+| **1. Index stores relative paths** — after staging `tree-test/docs/hello.txt`, its index line is `aaf4c61d… tree-test/docs/hello.txt`, not a bare filename. | | **How:**<br>**Verified:**<br>**Modified:** |
+| **2. No duplicate entries** — staging the same unchanged file twice leaves exactly one index line for it. | | **How:**<br>**Verified:**<br>**Modified:** |
+| **3. A modified file replaces its entry** — after `printf 'hello again'` into `hello.txt` and staging it again, its line carries `714d500f…`, the old hash is gone, and there is one line for it. | | **How:**<br>**Verified:**<br>**Modified:** |
+| **4. `createTree` writes one directory's tree** — for `tree-test/docs` it writes two lines (`blob`, hash, final name only) into `git/objects/d5ff240d…` and returns that hash. | | **How:**<br>**Verified:**<br>**Modified:** |
+| **5. Root tree from staged files only** — with `scratch.txt` never staged, the root tree is `54c35b48…` (or `60a91a23…` with one extra level) and no tree lists `scratch.txt`. | | **How:**<br>**Verified:**<br>**Modified:** |
+| **6. Deterministic** — running the root-tree method twice on an unchanged index returns the same hash, and `git/objects/` gains no files. | | **How:**<br>**Verified:**<br>**Modified:** |
 
 > **Note:** Behavior 3 edits `hello.txt`. Test it last, or rebuild `tree-test/` with the lesson's `printf` commands before testing behaviors 4–6, or the expected tree hashes will not match.
 

@@ -15,4 +15,4 @@ Program Git
 | 2.6 · 3d | Trees | [GitProject/Trees](../../GitProject/Trees/) | — |
 | 2.9.0 | Git Project Part 3 — Trees: Quiz | *quiz `004df05af92b7b74` — content in the private Exams repo* | — |
 | 2.9.1 | Peer Tree Verification | [GitProject/PeerTreeVerification](../../GitProject/PeerTreeVerification/) | — |
-| 2.10 · 4d | Commits | [GitProject/Commits](../../GitProject/Commits/) | — |
+| 2.10 · 2d | Commits | [GitProject/Commits](../../GitProject/Commits/) | — |

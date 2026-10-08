@@ -29,7 +29,7 @@
     {
       "day": 5,
       "duration": 0.5,
-      "title": "Git Project Part 2 — Initialization and Blobs: Quiz and Self-Assessment",
+      "title": "Git Project Part 2 \u2014 Initialization and Blobs: Quiz and Self-Assessment",
       "path": "",
       "_module": "",
       "review": null,
@@ -59,14 +59,14 @@
     {
       "day": 9,
       "duration": 0.5,
-      "title": "Git Project Part 3 — Trees: Quiz",
+      "title": "Git Project Part 3 \u2014 Trees: Quiz",
       "path": "",
       "_module": "",
+      "review": null,
+      "sub": 0,
       "placeholder": true,
       "kind": "quiz",
-      "quiz_id": "004df05af92b7b74",
-      "review": null,
-      "sub": 0
+      "quiz_id": "004df05af92b7b74"
     },
     {
       "day": 9,
@@ -75,15 +75,17 @@
       "path": "PeerTreeVerification",
       "_module": "GitProject",
       "review": null,
-      "sub": 1
+      "sub": 1,
+      "duration_override": true
     },
     {
       "day": 10,
-      "duration": 4,
+      "duration": 2,
       "title": "Commits",
       "path": "Commits",
       "_module": "GitProject",
-      "review": null
+      "review": null,
+      "duration_override": true
     }
   ],
   "updated": "2026-10-08"
