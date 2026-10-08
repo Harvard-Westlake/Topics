@@ -23,6 +23,7 @@ The project is designed around reading unfamiliar code. After the first part, ea
 | 2 | Your own | `init()`, SHA-1 hashing, blob files, index file |
 | Peer check | A random classmate's fork | A verification chart of their Part 2 behaviors, then a rename-for-readability commit on your fork |
 | 3 | Your own | Index formatting, tree files, trees from index |
+| Peer check | A random classmate's fork | A verification chart of their Part 3 tree behaviors, then a rename-for-readability commit on your fork |
 | 4 | A classmate's codebase | Commit files, HEAD chain, `GitWrapper` |
 | 5 | TBD | Branches *(not yet specced)* |
 
@@ -59,7 +60,8 @@ Read the doc for each concept before starting the part that uses it.
 | 2–4 | [Initialization and Blobs](InitAndBlobs/) | `init()`, SHA-1 hashing, blob files, index file |
 | 5 | [Peer Code Verification](PeerCodeVerification/) | Fork a classmate's Part 2, read it cold, verify six behaviors, rename it for readability |
 | 6–8 | [Trees](Trees/) | Index formatting, trees from the working list, root tree from the index |
-| 9–12 | [Commits](Commits/) | Root tree, commit files, HEAD chain, `GitWrapper` |
+| 9 | [Peer Tree Verification](PeerTreeVerification/) | Fork a classmate's Part 3, hash their trees by hand, verify six behaviors, rename it for readability |
+| 10–13 | [Commits](Commits/) | Root tree, commit files, HEAD chain, `GitWrapper` |
 | TBD | [Branches](Branches/) | Branch files, HEAD pointers *(coming soon)* |
 
 ---

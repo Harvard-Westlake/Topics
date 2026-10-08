@@ -71,4 +71,4 @@ See [Docs/commits.md](../Docs/commits.md) for the full ordered sequence.
 
 [Assignment](ASSIGNMENT.md)
 
-← [Trees](../Trees/) — Next: [Branches](../Branches/)
+← [Peer Tree Verification](../PeerTreeVerification/) — Next: [Branches](../Branches/)

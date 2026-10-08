@@ -6,5 +6,6 @@
 | 2–4 | Initialization and Blobs | [InitAndBlobs/](InitAndBlobs/) |
 | 5 | Peer Code Verification | [PeerCodeVerification/](PeerCodeVerification/) |
 | 6–8 | Trees | [Trees/](Trees/) |
-| 9–12 | Commits | [Commits/](Commits/) |
+| 9 | Peer Tree Verification | [PeerTreeVerification/](PeerTreeVerification/) |
+| 10–13 | Commits | [Commits/](Commits/) |
 | TBD | Branches | [Branches/](Branches/) |

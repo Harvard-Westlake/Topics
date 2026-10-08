@@ -68,4 +68,4 @@ See [Docs/trees.md](../Docs/trees.md) and the interactive visualizer linked in t
 
 [Assignment](ASSIGNMENT.md)
 
-← [Peer Code Verification](../PeerCodeVerification/) — Next: [Commits](../Commits/)
+← [Peer Code Verification](../PeerCodeVerification/) — Next: [Peer Tree Verification](../PeerTreeVerification/)

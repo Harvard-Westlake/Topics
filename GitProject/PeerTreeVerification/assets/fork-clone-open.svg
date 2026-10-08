@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrowP" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#a371f7"/></marker>
+    <marker id="arrowB" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#388bfd"/></marker>
+  </defs>
+  <rect width="760" height="420" rx="10" fill="#0d1117"/>
+  <text x="30" y="40" fill="#e6edf3" font-size="17" font-weight="700">Fork first, then clone the fork</text>
+
+  <!-- classmate's repository -->
+  <rect x="30" y="80" width="300" height="96" rx="8" fill="#161b22" stroke="#e3b341"/>
+  <text x="46" y="106" fill="#e3b341" font-size="12" font-weight="600">GITHUB · THEIR ACCOUNT</text>
+  <text x="46" y="130" fill="#e6edf3" font-size="13" font-weight="700" font-family="Menlo, Consolas, monospace">THEIR-USERNAME/git-project-THEIRNAME</text>
+  <text x="46" y="156" fill="#8b949e" font-size="12">read-only to you — no write access</text>
+
+  <!-- fork arrow -->
+  <line x1="332" y1="128" x2="424" y2="128" stroke="#a371f7" stroke-width="3" marker-end="url(#arrowP)"/>
+  <text x="379" y="116" fill="#a371f7" font-size="12" font-weight="600" text-anchor="middle">Fork</text>
+
+  <!-- your fork -->
+  <rect x="430" y="80" width="300" height="96" rx="8" fill="#161b22" stroke="#a371f7"/>
+  <text x="446" y="106" fill="#a371f7" font-size="12" font-weight="600">GITHUB · YOUR ACCOUNT</text>
+  <text x="446" y="130" fill="#e6edf3" font-size="13" font-weight="700" font-family="Menlo, Consolas, monospace">YOUR-USERNAME/git-project-THEIRNAME</text>
+  <text x="446" y="156" fill="#8b949e" font-size="12">"forked from THEIR-USERNAME/…" — you own this copy</text>
+
+  <!-- clone arrow -->
+  <line x1="580" y1="178" x2="580" y2="256" stroke="#388bfd" stroke-width="3" marker-end="url(#arrowB)"/>
+  <text x="594" y="222" fill="#388bfd" font-size="12" font-weight="600">gh repo fork THEIR-USERNAME/… --clone</text>
+
+  <!-- your laptop -->
+  <rect x="430" y="262" width="300" height="112" rx="8" fill="#161b22" stroke="#388bfd"/>
+  <text x="446" y="288" fill="#388bfd" font-size="12" font-weight="600">YOUR LAPTOP</text>
+  <text x="446" y="312" fill="#e6edf3" font-size="13" font-weight="700" font-family="Menlo, Consolas, monospace">~/HTCS_Projects/git-project-THEIRNAME</text>
+  <text x="446" y="334" fill="#8b949e" font-size="11.5" font-family="Menlo, Consolas, monospace">origin   → YOUR-USERNAME/git-project-THEIRNAME</text>
+  <text x="446" y="350" fill="#8b949e" font-size="11.5" font-family="Menlo, Consolas, monospace">upstream → THEIR-USERNAME/git-project-THEIRNAME</text>
+  <text x="446" y="366" fill="#8b949e" font-size="11.5">open here in VS Code · add Verify.java here</text>
+
+  <!-- refused push, laptop straight to their repo -->
+  <line x1="430" y1="318" x2="180" y2="178" stroke="#f85149" stroke-width="2" stroke-dasharray="6 6"/>
+  <line x1="293" y1="230" x2="317" y2="254" stroke="#f85149" stroke-width="3"/>
+  <line x1="317" y1="230" x2="293" y2="254" stroke="#f85149" stroke-width="3"/>
+  <text x="30" y="300" fill="#f85149" font-size="12" font-weight="600">push straight to THEIR repo → refused</text>
+  <text x="30" y="320" fill="#8b949e" font-size="12">you have no write access, and you never need it today</text>
+
+  <!-- footer -->
+  <text x="30" y="400" fill="#8b949e" font-size="12">git remote -v: origin is YOUR fork (push), upstream is THEIRS (fetch only). One command sets up both.</text>
+</svg>
