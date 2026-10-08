@@ -13,7 +13,7 @@
 
 In this part you create the foundation the entire project builds on:
 
-- A public GitHub repository named `git-project-YOURNAME` — this name never changes
+- A public GitHub repository with a name you choose — it never changes once published
 - A `Git.java` file with an empty `main` method — your program lives here
 - A `.gitignore` that tells GitHub's own Git to ignore the `git/` folder your program will create
 - An initial `HEAD` file inside `git/` — this will track the most recent commit

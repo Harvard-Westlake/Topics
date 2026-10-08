@@ -18,12 +18,12 @@
 
 ## Part 1: Verify
 
-1. Your teacher assigns you a classmate's `git-project-THEIRNAME` repository at random.
+1. Your teacher assigns you a classmate's repository at random.
 2. In your terminal, fork it and clone your fork in one step, then confirm the remotes:
    ```bash
    cd ~/HTCS_Projects
-   gh repo fork THEIR-USERNAME/git-project-THEIRNAME --clone
-   cd git-project-THEIRNAME
+   gh repo fork THEIR-USERNAME/THEIR-REPO-NAME --clone
+   cd THEIR-REPO-NAME
    git remote -v
    ```
    `origin` must be under your username (your fork) and `upstream` under theirs (the original).
@@ -103,7 +103,7 @@ Upload your filled-in `verification-table.xlsx` (or a PDF export), or paste a **
 Copy the stencil below, fill in each line, and paste it into the Canvas text box:
 
 ```
-Classmate's repository:   https://github.com/THEIR-USERNAME/git-project-THEIRNAME
-My fork and branch:       https://github.com/YOUR-USERNAME/git-project-THEIRNAME/tree/peer-review-YOURNAME
-Rename commit URL:        https://github.com/YOUR-USERNAME/git-project-THEIRNAME/commit/SHA
+Classmate's repository:   https://github.com/THEIR-USERNAME/THEIR-REPO-NAME
+My fork and branch:       https://github.com/YOUR-USERNAME/THEIR-REPO-NAME/tree/peer-review-YOURNAME
+Rename commit URL:        https://github.com/YOUR-USERNAME/THEIR-REPO-NAME/commit/SHA
 ```

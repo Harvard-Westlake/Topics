@@ -18,18 +18,18 @@
 
 ## Part 1: Verify
 
-1. Your teacher assigns you a classmate's `git-project-THEIRNAME` repository at random. It will not be the classmate you reviewed in Part 2.
+1. Your teacher assigns you a classmate's repository at random. It will not be the classmate you reviewed in Part 2.
 2. In your terminal, fork it and clone your fork in one step, then confirm the remotes:
    ```bash
    cd ~/HTCS_Projects
-   gh repo fork THEIR-USERNAME/git-project-THEIRNAME --clone
-   cd git-project-THEIRNAME
+   gh repo fork THEIR-USERNAME/THEIR-REPO-NAME --clone
+   cd THEIR-REPO-NAME
    git remote -v
    ```
    `origin` must be under your username (your fork) and `upstream` under theirs (the original).
 3. Open the folder in **VS Code**. Read their `README.md`, then the tree code: the index writer, `createTree`, and the method that builds the root tree.
-4. Get it running as best you can. If `main` does not call the tree methods, add a `Verify.java` with a `main` that does. If a hardcoded path stops it on your machine, change the path. Do not change how their methods work.
-5. Build the lesson's `tree-test/` folder and verify each of the six behaviors in the chart **one way or another**: run it and inspect `git/`, or read the code path and predict the result, then check. The lesson's [expected hashes](README.md#hashing-a-tree-by-hand) are the right answers, and its [black-box toolkit](README.md#black-box-toolkit-for-trees) has the commands.
+4. Get it running as best you can. If `main` does not call the tree methods, add a `Verify.java` with a `main` that does. If a hardcoded path stops it on your machine, change the path. If a method is broken, you may fix it so you can test the rest, and record the fix in your chart. Do not change a method that already works.
+5. Build the lesson's `tree-test/` folder and verify each of the six behaviors in the chart **one way or another**: run it and inspect `git/`, or read the code path and predict the result, then check. The lesson's [expected hashes](README.md#hashing-a-tree-by-hand) are the right answers.
 6. Commit what you added to a **new branch** in your fork, for example `tree-review-YOURNAME`, and push it:
    ```bash
    git checkout -b tree-review-YOURNAME
@@ -71,7 +71,7 @@ Their code works as well as it works. Now make it readable. On your branch, go t
 
 Rules for renaming:
 
-- **Rename only.** No logic changes, no reordering, no fixes. If you find a bug, describe it in the chart.
+- **Rename only.** No logic changes and no reordering. Fixes belong in Part 1, recorded in the chart.
 - **Use VS Code's Rename Symbol** (right-click the name → Rename Symbol, or F2) so every reference updates together.
 - **Prove nothing changed.** Re-run your `Verify.java` after renaming. The same tree hashes must come out.
 - **Commit and push** on the same branch:
@@ -106,7 +106,7 @@ Upload your filled-in `verification-table.xlsx` (or a PDF export), or paste a **
 Copy the stencil below, fill in each line, and paste it into the Canvas text box:
 
 ```
-Classmate's repository:   https://github.com/THEIR-USERNAME/git-project-THEIRNAME
-My fork and branch:       https://github.com/YOUR-USERNAME/git-project-THEIRNAME/tree/tree-review-YOURNAME
-Rename commit URL:        https://github.com/YOUR-USERNAME/git-project-THEIRNAME/commit/SHA
+Classmate's repository:   https://github.com/THEIR-USERNAME/THEIR-REPO-NAME
+My fork and branch:       https://github.com/YOUR-USERNAME/THEIR-REPO-NAME/tree/tree-review-YOURNAME
+Rename commit URL:        https://github.com/YOUR-USERNAME/THEIR-REPO-NAME/commit/SHA
 ```

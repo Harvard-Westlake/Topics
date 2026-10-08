@@ -47,14 +47,14 @@ You learned the fork workflow in [Forks and Collaboration](../../GitUsage/ForksA
 
 **Why fork instead of cloning their repository directly?** Two reasons. You have no write access to a classmate's repo, so anything you commit has nowhere to go. And you *will* need to commit something: at minimum a small `Verify.java` driver that calls their methods, because many Part 2 submissions have an empty `main`. A fork gives you a copy under your own account where all of that is allowed.
 
-1. In your terminal, inside your projects folder, fork the classmate's `git-project-THEIRNAME` and clone your fork in one step:
+1. In your terminal, inside your projects folder, fork the classmate's repository and clone your fork in one step:
    ```bash
    cd ~/HTCS_Projects
-   gh repo fork THEIR-USERNAME/git-project-THEIRNAME --clone
-   cd git-project-THEIRNAME
+   gh repo fork THEIR-USERNAME/THEIR-REPO-NAME --clone
+   cd THEIR-REPO-NAME
    git remote -v
    ```
-   Four lines: `origin` under **your** username (your fork — you can push here) and `upstream` under the classmate's (their original — fetch only). On GitHub your copy is labeled **forked from THEIR-USERNAME/git-project-THEIRNAME**.
+   Four lines: `origin` under **your** username (your fork — you can push here) and `upstream` under the classmate's (their original — fetch only). On GitHub your copy is labeled **forked from THEIR-USERNAME/THEIR-REPO-NAME**.
 2. If `origin` shows the classmate's username, you cloned the original instead of forking — delete the folder and run the `gh repo fork` line again.
 3. Open the folder in the editor you use for Java. Read their `README.md` before any `.java` file: the milestones required them to document every method, so the README is their list of claims. Your job is to check the claims.
 
@@ -65,18 +65,18 @@ You learned the fork workflow in [Forks and Collaboration](../../GitUsage/ForksA
 
 *Concept: A fork is a copy of a classmate's repository under your own account — you clone the fork, not the original, so everything you do today lands in a repository you control.*
 
-![Diagram of the fork-then-clone path: on the left, the classmate's repository git-project-THEIRNAME on GitHub; a Fork arrow copies it into your account as YOUR-USERNAME/git-project-THEIRNAME, labeled forked from the original; a gh repo fork --clone arrow brings that fork down to your laptop in HTCS_Projects, where origin points at your fork and upstream at the original. A crossed-out arrow from the laptop straight to the classmate's repository is marked push refused — you never write to their repo.](assets/fork-clone-open.svg)
+![Diagram of the fork-then-clone path: on the left, the classmate's repository THEIR-REPO-NAME on GitHub; a Fork arrow copies it into your account as YOUR-USERNAME/THEIR-REPO-NAME, labeled forked from the original; a gh repo fork --clone arrow brings that fork down to your laptop in HTCS_Projects, where origin points at your fork and upstream at the original. A crossed-out arrow from the laptop straight to the classmate's repository is marked push refused — you never write to their repo.](assets/fork-clone-open.svg)
 
 ## Task
 
-1. On GitHub, open the repository you were assigned (`git-project-THEIRNAME`). Confirm it belongs to a classmate and not to you, and note the owner's username.
+1. On GitHub, open the repository you were assigned. Confirm it belongs to a classmate and not to you, and note the owner's username.
 2. In your terminal, go to your projects folder and fork the repository and clone your fork in one step:
    ```bash
    cd ~/HTCS_Projects
-   gh repo fork THEIR-USERNAME/git-project-THEIRNAME --clone
-   cd git-project-THEIRNAME
+   gh repo fork THEIR-USERNAME/THEIR-REPO-NAME --clone
+   cd THEIR-REPO-NAME
    ```
-   On GitHub, your copy now shows **forked from THEIR-USERNAME/git-project-THEIRNAME** under its title.
+   On GitHub, your copy now shows **forked from THEIR-USERNAME/THEIR-REPO-NAME** under its title.
 3. Prove where the remotes point:
    ```bash
    git remote -v
@@ -299,7 +299,7 @@ This is the same standard this course holds its own starter code to — no singl
 
 - **In Part 1, verify — don't fix.** You may add a driver class (`Verify.java`) and you may change a hardcoded path so the code runs on your machine. You may not rewrite their methods. Anything you change goes in the chart's written answer.
 - **In Part 2, rename — only rename.** Behavior stays identical; your `Verify.java` proves it.
-- **The project rules still apply.** No AI tools, and none of their code goes into your own `git-project-YOURNAME`.
+- **The project rules still apply.** No AI tools, and none of their code goes into your own repository.
 - **Describe behavior, not people.** "A second blob appears for identical content because `writeBlob` never checks whether the file already exists" is a finding. "This is sloppy" is not.
 - **Honesty beats a clean sheet.** A chart with two rows rated **1** and pasted errors is worth more than six unexplained **5**s. Your classmate gets this chart back — make it something they can act on.
 

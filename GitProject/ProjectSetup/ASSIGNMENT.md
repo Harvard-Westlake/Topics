@@ -11,11 +11,13 @@
 
 ### Instructions
 
-1. In your terminal, create the project folder inside `HTCS_Projects` and turn it into a repository. Name it exactly `git-project-YOURNAME`, where YOURNAME is your own name. **Never rename this repository** — it is referenced throughout the project.
+1. In your terminal, create the project folder inside `HTCS_Projects` and turn it into a repository. Name it anything you like. Below, `YOUR-REPO-NAME` stands for the name you pick. Once it is on GitHub, do not rename it, because classmates will fork it later in the project.
+
+    > **Tip:** Try to come up with a fun Git pun as your repository name, such as `git-happens`, `commitment-issues`, or `git-r-done`.
 
     ```bash
     cd ~/HTCS_Projects
-    mkdir git-project-YOURNAME && cd git-project-YOURNAME
+    mkdir YOUR-REPO-NAME && cd YOUR-REPO-NAME
     git init
     ```
 
@@ -41,10 +43,10 @@
     - **Summary:** `(GP-1.1): Initialized Project`
     - **Description:** List every file you created and what its purpose is.
 
-7. Publish the repository to GitHub from your terminal — this creates `git-project-YOURNAME` under your account, connects it as `origin`, and pushes your commit in one command:
+7. Publish the repository to GitHub from your terminal — this creates `YOUR-REPO-NAME` under your account, connects it as `origin`, and pushes your commit in one command:
 
     ```bash
-    gh repo create git-project-YOURNAME --source=. --public --push
+    gh repo create YOUR-REPO-NAME --source=. --public --push
     ```
 
 8. Open it and verify all files appear correctly:
@@ -59,7 +61,7 @@
 
 Confirm each of the following before submitting:
 
-- [ ] **Repository named correctly** — `git-project-YOURNAME`, public, never renamed
+- [ ] **Repository created** — public, under your account, and not renamed after publishing
 - [ ] **`Git.java` committed** — contains a class with an empty `main` method
 - [ ] **`.gitignore` committed** — contains `/git` and `.DS_Store` entries
 - [ ] **`git/HEAD` created locally** — exists in the `git/` folder (not pushed — it is gitignored)

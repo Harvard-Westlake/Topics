@@ -2,18 +2,18 @@
 
 *Concept: A fork is a copy of a classmate's repository under your own account — you clone the fork, not the original, so everything you do today lands in a repository you control.*
 
-![Diagram of the fork-then-clone path: on the left, the classmate's repository git-project-THEIRNAME on GitHub; a Fork arrow copies it into your account as YOUR-USERNAME/git-project-THEIRNAME, labeled forked from the original; a gh repo fork --clone arrow brings that fork down to your laptop in HTCS_Projects, where origin points at your fork and upstream at the original. A crossed-out arrow from the laptop straight to the classmate's repository is marked push refused — you never write to their repo.](../assets/fork-clone-open.svg)
+![Diagram of the fork-then-clone path: on the left, the classmate's repository THEIR-REPO-NAME on GitHub; a Fork arrow copies it into your account as YOUR-USERNAME/THEIR-REPO-NAME, labeled forked from the original; a gh repo fork --clone arrow brings that fork down to your laptop in HTCS_Projects, where origin points at your fork and upstream at the original. A crossed-out arrow from the laptop straight to the classmate's repository is marked push refused — you never write to their repo.](../assets/fork-clone-open.svg)
 
 ## Task
 
-1. On GitHub, open the repository you were assigned (`git-project-THEIRNAME`). Confirm it belongs to a classmate and not to you, and note the owner's username.
+1. On GitHub, open the repository you were assigned. Confirm it belongs to a classmate and not to you, and note the owner's username.
 2. In your terminal, go to your projects folder and fork the repository and clone your fork in one step:
    ```bash
    cd ~/HTCS_Projects
-   gh repo fork THEIR-USERNAME/git-project-THEIRNAME --clone
-   cd git-project-THEIRNAME
+   gh repo fork THEIR-USERNAME/THEIR-REPO-NAME --clone
+   cd THEIR-REPO-NAME
    ```
-   On GitHub, your copy now shows **forked from THEIR-USERNAME/git-project-THEIRNAME** under its title.
+   On GitHub, your copy now shows **forked from THEIR-USERNAME/THEIR-REPO-NAME** under its title.
 3. Prove where the remotes point:
    ```bash
    git remote -v

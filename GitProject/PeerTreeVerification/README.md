@@ -13,15 +13,10 @@ You spent the last three classes turning the index into tree files: relative pat
 
 ## <font color="#388bfd">Table of Contents</font>
 
-1. [Why trees are the hardest part of the project to verify by eye](#why-verify-trees)
-2. [Fork the repository, clone your fork, and open it](#fork-clone-open)
-3. [Map the three tree milestones to the methods that do them](#reading-tree-code)
-4. [Black-box commands that show what their code left in git/](#black-box-toolkit-for-trees)
-5. [Hash a tree by hand so you know the answer before you run](#hashing-a-tree-by-hand)
-6. [Write evidence that would convince a stranger](#writing-evidence-that-convinces)
-7. [The six Part 3 behaviors you are verifying today](#what-you-are-verifying)
-8. [Rename their tree code so it says what it holds and does](#renaming-for-sense)
-9. [Rules for reviewers](#reviewer-rules)
+1. [Fork a classmate's repository and clone your fork](#fork-clone-open)
+2. [Hash a tree by hand so you know the right answer first](#hashing-a-tree-by-hand)
+3. [The six Part 3 behaviors you are verifying](#what-you-are-verifying)
+4. [Reviewer rules: what you may fix and change](#reviewer-rules)
 
 ---
 
@@ -45,11 +40,11 @@ Part 4 of this project hands you a classmate's codebase and asks you to build co
 
 The workflow is the same one you used in [Peer Code Verification](../PeerCodeVerification/). You will be assigned a different classmate this time.
 
-1. In your terminal, inside your projects folder, fork the classmate's `git-project-THEIRNAME` and clone your fork in one step:
+1. In your terminal, inside your projects folder, fork the classmate's repository and clone your fork in one step:
    ```bash
    cd ~/HTCS_Projects
-   gh repo fork THEIR-USERNAME/git-project-THEIRNAME --clone
-   cd git-project-THEIRNAME
+   gh repo fork THEIR-USERNAME/THEIR-REPO-NAME --clone
+   cd THEIR-REPO-NAME
    git remote -v
    ```
    `origin` must be under **your** username and `upstream` under theirs.
@@ -63,18 +58,18 @@ The workflow is the same one you used in [Peer Code Verification](../PeerCodeVer
 
 *Concept: A fork is a copy of a classmate's repository under your own account — you clone the fork, not the original, so everything you do today lands in a repository you control.*
 
-![Diagram of the fork-then-clone path: on the left, the classmate's repository git-project-THEIRNAME on GitHub; a Fork arrow copies it into your account as YOUR-USERNAME/git-project-THEIRNAME, labeled forked from the original; a gh repo fork --clone arrow brings that fork down to your laptop in HTCS_Projects, where origin points at your fork and upstream at the original. A crossed-out arrow from the laptop straight to the classmate's repository is marked push refused — you never write to their repo.](assets/fork-clone-open.svg)
+![Diagram of the fork-then-clone path: on the left, the classmate's repository THEIR-REPO-NAME on GitHub; a Fork arrow copies it into your account as YOUR-USERNAME/THEIR-REPO-NAME, labeled forked from the original; a gh repo fork --clone arrow brings that fork down to your laptop in HTCS_Projects, where origin points at your fork and upstream at the original. A crossed-out arrow from the laptop straight to the classmate's repository is marked push refused — you never write to their repo.](assets/fork-clone-open.svg)
 
 ## Task
 
-1. On GitHub, open the repository you were assigned (`git-project-THEIRNAME`). Confirm it belongs to a classmate, not to you, and not to the classmate whose code you reviewed in Part 2.
+1. On GitHub, open the repository you were assigned. Confirm it belongs to a classmate, not to you, and not to the classmate whose code you reviewed in Part 2.
 2. In your terminal, go to your projects folder, then fork the repository and clone your fork in one step:
    ```bash
    cd ~/HTCS_Projects
-   gh repo fork THEIR-USERNAME/git-project-THEIRNAME --clone
-   cd git-project-THEIRNAME
+   gh repo fork THEIR-USERNAME/THEIR-REPO-NAME --clone
+   cd THEIR-REPO-NAME
    ```
-   On GitHub, your copy now shows **forked from THEIR-USERNAME/git-project-THEIRNAME** under its title.
+   On GitHub, your copy now shows **forked from THEIR-USERNAME/THEIR-REPO-NAME** under its title.
 3. Prove where the remotes point:
    ```bash
    git remote -v
@@ -90,73 +85,6 @@ The workflow is the same one you used in [Peer Code Verification](../PeerCodeVer
 *(Standalone file: [activities/01-fork-clone-open.md](activities/01-fork-clone-open.md))*
 
 </details>
-
----
-
-## <font color="#388bfd">Reading Tree Code</font>
-
-Read in this order. Do not start at line 1 of `Git.java` and read to the end.
-
-1. **Start with the README and the commit log.** List every tree method the README names, and check that each milestone label `(GP-3.1)`, `(GP-3.2)`, `(GP-3.3)` has a commit.
-2. **Find the index writer.** This is the `add` (or `stage`) method from Part 2, changed in GP-3.1. Check that it writes `<hash> <relative path>`, and look for the two new checks: skip an exact duplicate, and replace the line of a file whose content changed.
-3. **Find `createTree`.** Note how it decides that an entry belongs to a directory, and what it writes on each line. The milestone asks for the type, the hash, and the **final name only**.
-4. **Find the loop.** `createTreeFromIndex` (or whatever they named it) builds the working list from the index, sorts it, and repeatedly calls `createTree` on the deepest unfinished directory. Note how it decides which directory is deepest, and what it returns.
-5. **Predict before you run.** Write down the tree hashes you expect, using the next two sections, before you run their code.
-
-These patterns deserve a note in your chart:
-
-| What you see | Why it matters |
-|---|---|
-| `File.listFiles()`, `Files.walk`, or `isDirectory()` inside the tree code | The trees come from the folder on disk, not the index. Unstaged files leak into the snapshot. |
-| `line.split(" ")` on an index line | It works, until a filename contains a space. Note it, and do not fail them for it. |
-| No call to `Collections.sort`, `.sort(`, or a `TreeMap` | Line order depends on the order files were staged, so the hash is not guaranteed to repeat. |
-| `writer.write(line + "\n")` for every line | The tree file ends with a newline, so its hash is not the hash the milestone expects. |
-| The full path written into a tree line | The most common Part 3 bug. Every ancestor tree's hash is wrong. |
-| An absolute path such as `/Users/theirname/...` | The code only runs on their machine. Change it so it runs, and record that you did. |
-
-👉 <details>
-<summary><h3>Activity: Map the Tree Methods — click to expand</h3></summary>
-
-*Concept: Part 3 is three cooperating pieces — the index format, one directory's tree, and the loop that builds every tree — and you cannot judge any of them until you know which method is which.*
-
-![Diagram of a Part 3 feature map: on the left, a source file Git.java listing methods such as add, createTree, createTreeFromIndex, and main; arrows connect each method to a row in a table of the three Part 3 milestones — GP-3.1 index stores relative paths, GP-3.2 createTree writes one directory's tree, GP-3.3 createTreeFromIndex builds the root — with columns for what the method takes in and what it writes. A red flag marks any call to File.listFiles, because trees must come from the index, never from the folder on disk.](assets/map-the-tree-methods.svg)
-
-## Task
-
-1. Open `Git.java` and any other `.java` files in your fork. Find `main`, and write down whether it does nothing, prints something, or calls the tree methods.
-2. Copy this table into your notes and fill in one row per milestone, using the **actual method names** from their code:
-
-   | Milestone | Method name(s) | Takes in | Produces or writes |
-   |---|---|---|---|
-   | GP-3.1 index stores relative paths | | | |
-   | GP-3.2 one directory's tree | | | |
-   | GP-3.3 root tree from the index | | | |
-
-3. Find where the working list is built. Note its data type (a `List<String>`? an `ArrayList` of objects? a `TreeMap`?) and the line that **sorts** it. No sort is a finding: the tree files may come out in a different order on a different run.
-4. Find how `createTree` decides which entries belong to a directory. Write down the expression, for example `path.substring(0, path.lastIndexOf('/'))`. Then find the line that writes each tree line and check whether it writes the final name or the whole path.
-5. Search the whole project for `listFiles`, `Files.walk`, and `isDirectory`. Any of these inside the tree code means it is reading the folder on disk instead of the index. Write down the method name; this is the behavior 5 trap.
-6. If `main` does not exercise these methods, create a new file `Verify.java` in your fork with a `main` that calls init, stages the test files, and calls their root-tree method. Do not edit their methods.
-
-*(Standalone file: [activities/02-map-the-tree-methods.md](activities/02-map-the-tree-methods.md))*
-
-</details>
-
----
-
-## <font color="#388bfd">Black-Box Toolkit for Trees</font>
-
-Run these in your terminal from the root of the fork, after their code has staged files and built trees.
-
-| Question | Command | What to look for |
-|---|---|---|
-| Does the index store relative paths? | `cat -e git/index` | every line is `<40 hex> <path/with/folders>$`, not a bare filename |
-| Is a file listed twice? | `cut -d' ' -f2- git/index \| sort \| uniq -d` | prints nothing; any output is a path that appears twice |
-| What is in a tree file? | `cat git/objects/<hash>` | one line per direct child: `blob` or `tree`, a hash, and a name with no `/` in it |
-| Does the tree file end in a newline? | `tail -c 1 git/objects/<hash> \| od -c` | the last byte is a letter or `.`, not `\n` |
-| Is the tree's name its own hash? | `shasum git/objects/<hash>` (macOS) or `sha1sum git/objects/<hash>` (Linux/WSL) | the 40 characters match the filename exactly |
-| Did a second run create new objects? | `ls git/objects \| wc -l` before and after | the count does not change when nothing was staged in between |
-
-> **Tip:** Delete `git/` between experiments (`rm -rf git`) and run their init again, so each test starts from a known state.
 
 ---
 
@@ -240,7 +168,7 @@ A wrong hash is useful when you know which mistake makes it:
    ```
    `93309814…` means `scratch.txt` leaked into the tree, so their code read the folder instead of the index.
 
-*(Standalone file: [activities/03-hash-a-tree-by-hand.md](activities/03-hash-a-tree-by-hand.md))*
+*(Standalone file: [activities/02-hash-a-tree-by-hand.md](activities/02-hash-a-tree-by-hand.md))*
 
 </details>
 
@@ -296,15 +224,15 @@ As in Part 2, the second half of the assignment is renaming, and only renaming, 
 | **What does this variable hold?** | Name it for its contents | `List<String> list` holding working-list lines → `workingList` · `String s` holding a directory path → `dirPath` · `String l` holding one tree line → `treeLine` |
 | **What does this method do?** | Name it for its one job | `makeTree()` that builds every tree from the index → `createTreeFromIndex()` · `getDir(String p)` that drops the final `/name` → `parentDirectory(String path)` · `helper()` that picks the next directory to collapse → `deepestUnfinishedDirectory()` |
 
-The same three rules apply. Rename only, with no logic changes. Rename with VS Code's **Rename Symbol** (F2), never find-and-replace. Prove nothing changed by running `Verify.java` again: the same tree hashes must come out.
+The same three rules apply. Rename only, with no logic changes; any fix belongs in Part 1. Rename with VS Code's **Rename Symbol** (F2), never find-and-replace. Prove nothing changed by running `Verify.java` again: the same tree hashes must come out.
 
 ---
 
 ## <font color="#388bfd">Reviewer Rules</font>
 
-- **In Part 1, verify, don't fix.** You may add `Verify.java`, and you may change a hardcoded path so the code runs on your machine. You may not rewrite their methods.
-- **In Part 2, rename, only rename.** The tree hashes before and after must be identical.
-- **The project rules still apply.** No AI tools, and none of their code goes into your own `git-project-YOURNAME`.
+- **In Part 1, fix what is broken, and only that.** You may add `Verify.java`, change a hardcoded path, and fix code that does not work so you can test the rest. You may not change how a working method does its job, even if you would have written it differently. Record every fix in the chart's **Modified** notes.
+- **In Part 2, rename, only rename.** Fixes belong in Part 1. The tree hashes before and after renaming must be identical.
+- **The project rules still apply.** No AI tools, and none of their code goes into your own repository.
 - **Describe behavior, not people.** "The `docs` tree hashes to `aa4c9c79…` because `createTree` writes a newline after the last line" is a finding. "This is wrong" is not.
 - **Expected hashes are evidence.** If you write that a hash is wrong, write the hash you expected and how you computed it.
 
@@ -315,7 +243,6 @@ The same three rules apply. Rename only, with no logic changes. Rename with VS C
 ### <font color="#79c0ff">Introductory</font>
 
 - [ ] Fork a classmate's repository, clone the fork, and confirm with `git remote -v` that `origin` points at your own account.
-- [ ] Find the methods that implement GP-3.1, GP-3.2, and GP-3.3 in a codebase you did not write.
 - [ ] Read a tree file with `cat` and say what each of its lines represents.
 
 ### <font color="#79c0ff">Intermediate</font>
@@ -323,6 +250,7 @@ The same three rules apply. Rename only, with no logic changes. Rename with VS C
 - [ ] Write a tree file by hand with `printf`, hash it in the terminal, and compare the result to a classmate's `git/objects/`.
 - [ ] Show, with commands and their output, that staging an unchanged file twice leaves one index line and staging a modified file replaces its hash.
 - [ ] Explain why a file that was never staged must not appear in any tree, and prove whether it does in a classmate's code.
+- [ ] Fix a broken method in a classmate's code only as far as needed to test the rest, and record the fix.
 - [ ] Rename a classmate's tree variables and methods using the lesson's vocabulary, without changing any tree hash.
 
 ### <font color="#79c0ff">Advanced</font>

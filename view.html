@@ -125,6 +125,9 @@
             background: var(--pre-bg); color: var(--pre-fg); tab-size: 2; }
   .md pre code { padding: 0; font-size: 100%; background: transparent; color: inherit; white-space: pre; }
   .md pre font { color: #FA7300; }   /* highlighted path in tree diagrams stays readable on black */
+  /* The repo's <font color> heading tags (#388bfd / #79c0ff) target GitHub's dark palette; GitHub strips them, and
+     here they clash with the HW theme, so headings take the theme's heading color instead. */
+  .md :is(h1, h2, h3, h4, h5, h6) font { color: inherit; }
   .md table { display: block; width: max-content; max-width: 100%; overflow: auto; border-spacing: 0; border-collapse: collapse;
               border: 1px solid var(--border); border-radius: var(--radius); }
   .md th, .md td { padding: .55rem .75rem; text-align: left; border-bottom: 1px solid var(--cell-border); vertical-align: top; }
