@@ -54,33 +54,25 @@ One-sentence description of the topic.
 
 ## Check for Understanding and Stretch Goals
 
-**Current standard (use for every new or edited lesson).** Every README (both topic indexes and individual lesson pages) must end with a Check for Understanding section placed just above the bottom navigation link. The section header is always `☑️ Check for Understanding` — the old `Skill Building` header is retired and must never come back — and its items are grouped into the three difficulty tiers:
+**Current standard (use for every new or edited lesson).** Every README (both topic indexes and individual lesson pages) must end with a Check for Understanding section placed just above the bottom navigation link, followed by a single Stretch Goal. Keep both short: **at most three checks and exactly one stretch goal**, in a condensed form.
 
 ```markdown
 ## <font color="#388bfd">☑️ Check for Understanding</font>
 
-### <font color="#79c0ff">Introductory</font>
-
-- [ ] Plain statement of an action the student can now perform.
-
-### <font color="#79c0ff">Intermediate</font>
-
+- [ ] Plain statement of the first thing the student can now do.
 - [ ] ...
-
-### <font color="#79c0ff">Advanced</font>
-
 - [ ] ...
 
 ## <font color="#388bfd">🚀 Stretch Goals</font>
 
-- [ ] ...
+- [ ] One challenge just past the lesson.
 ```
 
-- **Check for Understanding** — one `- [ ]` item per concept taught on the page, phrased as a plain imperative statement ("Create a branch and switch to it."). Never "Can you...?" questions and never an "I can ..." prefix.
-- **Tiers** — the three `### <font color="#79c0ff">...</font>` subheaders (Introductory / Intermediate / Advanced) group items by difficulty, in that order.
-- **Stretch Goals** — optional section after Check for Understanding: exploration just beyond the curriculum (a related command, tool, or idea a curious student can chase on their own). Not required, not tested, no fixed count.
+- **Check for Understanding**: never more than three `- [ ]` items. Boil the lesson down to its essence: the three steps a student must be able to do. Each item is a plain imperative statement ("Create a branch and switch to it."). Never "Can you...?" questions and never an "I can ..." prefix. The header is always `☑️ Check for Understanding`; the old `Skill Building` header is retired and must never come back.
+- **No difficulty tiers.** The old Introductory / Intermediate / Advanced `###` subheaders are retired. Lessons that still have them (most of the repo, as of 2026-10) should be cut down to three checks and one stretch goal whenever they are next edited.
+- **Stretch Goals**: exactly one item, a single concrete challenge just past the lesson (e.g. "Create the most complex tree case you can think of and verify that it works on their code."). Not required, not tested.
 - Both use plain `- [ ]` checkboxes like every other checklist in this repo (see the `- [ ]` / `- [x]` note under Content Conventions).
-- A few recently authored lessons (e.g. `ComputerSetup/InitialInstall`, `GitUsage/RepositoriesAndCommits`) intentionally use a flat, untiered "I can ..." list instead — leave those as they are unless asked.
+- A few recently authored lessons (e.g. `ComputerSetup/InitialInstall`, `GitUsage/RepositoriesAndCommits`) intentionally use a flat, untiered "I can ..." list instead. Leave those as they are unless asked.
 
 ## Topic README (parent folder)
 
@@ -618,10 +610,10 @@ LessonFolder/
 2. [Next step — builds on the prior one]
 ```
 
-**Weaving into the README:** immediately after the section whose concept the activity reinforces, embed the activity as an `Activity` header with a collapsed, togglable `<details>` block on the very next line — not just a link — so a student can do it inline without leaving the page:
+**Weaving into the README:** immediately after the section whose concept the activity reinforces, embed the activity as a numbered `Activity N` header with a collapsed, togglable `<details>` block on the very next line — not just a link — so a student can do it inline without leaving the page:
 
 ```markdown
-### <font color="#79c0ff">Activity</font>
+### <font color="#79c0ff">Activity 1</font>
 <details>
 <summary><strong>[Title]</strong></summary>
 
@@ -642,7 +634,7 @@ The `<details>` body is a **full, byte-for-byte duplicate** of the activity file
 Rules:
 
 - **Naming:** the activity file is numbered (`01-`, `02-`, ...) matching the order activities appear in the README, then a short kebab-case description, e.g. `activities/02-clone-vs-zip-challenge.md`. The embedded toggle's summary is always the bare `[Title]`, the same activity's title **before** it was turned into the kebab-case filename (e.g. file `02-clone-vs-zip-challenge.md` ↔ summary `Clone vs. ZIP Challenge`) — this is the fixed, mechanical link between a toggle you see in the README and the file it lives in, so anyone can find one from the other.
-- **Header, then dropdown, nothing between.** The `### Activity` header stands on its own line so it renders large while scrolling a lesson, and the `<details>` opens on the very next line with no blank line (the live view also removes the gap between them). The summary is just the activity's name in bold: no 👉, no "Activity:" prefix, and no "click to expand", since the arrow already says it expands. The hub's Module Editor writes and re-syncs toggles in this format automatically (`_activity_toggle` in `_admin/_hub/server.py`), and still recognizes the retired `👉 <details>` form so it can rewrite it.
+- **Header, then dropdown, nothing between.** The `### Activity N` header (N = the file's `NN-` number, so `02-…md` is **Activity 2**; activities are a significant part of a lesson and are referred to by number) stands on its own line so it renders large while scrolling a lesson, and the `<details>` opens on the very next line with no blank line (the live view also removes the gap between them). The summary is just the activity's name in bold: no 👉, no "Activity:" prefix, and no "click to expand", since the arrow already says it expands. The hub's Module Editor writes and re-syncs toggles in this format automatically (`_activity_toggle` in `_admin/_hub/server.py`), and still recognizes the retired `👉 <details>` form so it can rewrite it.
 - **The Concept line names what the student is about to do,** the top-level idea of the activity in plain words (e.g. "Grab a classmate's code without asking permission and start working from it"), not a restatement of a definition.
 - **One concept per activity.** Keep each one short enough to do in a few minutes without breaking lecture flow.
 - **Self-contained task steps.** A student should be able to follow the numbered steps without leaving the toggle (or the standalone file) for more instructions.
@@ -681,7 +673,7 @@ A lesson is a new subfolder inside a module (e.g. `Terminal/PipeAndGREP/`).
 
 **Create:**
 
-1. `ModuleName/LessonName/README.md` — centered title block + type label + all lesson content woven with `### Activity` toggles + Check for Understanding / Stretch Goals sections + bottom nav
+1. `ModuleName/LessonName/README.md` — centered title block + type label + all lesson content woven with numbered `### Activity N` toggles + Check for Understanding / Stretch Goals sections + bottom nav
 2. `ModuleName/LessonName/activities/` — one numbered file per activity break referenced from the README; see **activities/ folders**
 3. `ModuleName/LessonName/ASSIGNMENT.md` — optional; if present, add `[Assignment](ASSIGNMENT.md)` link above the nav line in the README
 4. `ModuleName/LessonName/review/` — optional; see **Add review files** below

@@ -60,7 +60,7 @@ You learned the fork workflow in [Forks and Collaboration](../../GitUsage/ForksA
 
 > **Note:** You never push to the classmate's repository and you never open a pull request to it today. Your fork is a sandbox. If you change anything to get their code running, it stays in your fork and gets recorded in your table.
 
-### <font color="#79c0ff">Activity</font>
+### <font color="#79c0ff">Activity 1</font>
 <details>
 <summary><strong>Fork, Clone, Open</strong></summary>
 
@@ -121,7 +121,7 @@ While you read, these patterns deserve a note in your table:
 | `println` where a file write should be | The output goes to the screen, not to `git/index`. |
 | Content read as a `String` with `readLine()` in a loop | Newlines are dropped and re-added; the hash may not match the original bytes. |
 
-### <font color="#79c0ff">Activity</font>
+### <font color="#79c0ff">Activity 2</font>
 <details>
 <summary><strong>Map the Features</strong></summary>
 
@@ -193,7 +193,7 @@ echo -n "sha1test" | shasum   # 12c4c60ee087ae0f12dc6abc88495e459f6f2654  (8 byt
 
 Every character changed. When a classmate's hash does not match, check `wc -c` on the test file first, then look at *how their code reads the file* — reading line by line and rebuilding the string is the classic way to lose or add a newline.
 
-### <font color="#79c0ff">Activity</font>
+### <font color="#79c0ff">Activity 3</font>
 <details>
 <summary><strong>Hash It by Hand</strong></summary>
 

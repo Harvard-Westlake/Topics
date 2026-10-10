@@ -18,12 +18,8 @@ Where you are in the project:
 ## <font color="#388bfd">Table of Contents</font>
 
 1. [Fork and clone a classmate's repository, in the terminal or in GitKraken](#1-fork-and-clone-a-classmates-repository)
-2. [Get their code running and figure out how it works](#2-get-their-code-running)
-3. [What should you verify? The six Part 3 behaviors and the mistakes behind them](#3-what-should-you-verify)
-4. [Hash a tree by hand so you know the right answer first](#4-hash-a-tree-by-hand)
-5. [Write evidence that convinces: ratings and notes for the chart](#5-write-evidence-that-convinces)
-6. [Rename their code so it makes sense](#6-rename-for-sense)
-7. [Reviewer rules: what you may fix and change](#7-reviewer-rules)
+2. [Run their code and verify the six tree behaviors: hash trees by hand and grade each behavior 1 to 5](#2-run-and-verify)
+3. [Optional: rename their code so it makes sense, and the rules for what you may fix](#3-optional-rename-and-fix)
 
 ---
 
@@ -50,7 +46,7 @@ Then open the folder in VS Code and read their `README.md` before any `.java` fi
 
 > **Note:** You never push to the classmate's repository and you never open a pull request to it. Anything you add or change stays in your fork and gets recorded in your chart.
 
-### <font color="#79c0ff">Activity</font>
+### <font color="#79c0ff">Activity 1</font>
 <details>
 <summary><strong>Fork, Clone, Open</strong></summary>
 
@@ -112,7 +108,11 @@ Then open the folder in VS Code and read their `README.md` before any `.java` fi
 
 ---
 
-## <font color="#388bfd">2. Get Their Code Running</font>
+## <font color="#388bfd">2. Run and Verify</font>
+
+Get their program running, then prove which of the six tree behaviors work. You know the right answers ahead of time because you can hash trees by hand, and you record what you find in a chart.
+
+### <font color="#79c0ff">Get Their Code Running</font>
 
 Before you can judge their trees, you need their program to run on your laptop. Work through these in order and stop to write down what you find:
 
@@ -123,9 +123,7 @@ Before you can judge their trees, you need their program to run on your laptop. 
 
 Pull up the [Index-to-Tree Visualizer](https://learnhw.web.app/static/code/widgets/index-tree/index-tree.html) in another tab. Paste in any index their code writes and watch the correct trees get built, so you can compare.
 
----
-
-## <font color="#388bfd">3. What Should You Verify?</font>
+### <font color="#79c0ff">What Should You Verify?</font>
 
 Six things. They are the Trees assignment's success criteria, and the assignment chart lists them in this order:
 
@@ -150,9 +148,7 @@ Trees are harder to judge than blobs because one wrong character in one tree cha
 
 Part 4 hands you a classmate's codebase and asks you to build commits on top of their trees. A commit stores one root tree hash, so if that hash is wrong, every commit built on it is wrong. Today is practice at catching that before you depend on it.
 
----
-
-## <font color="#388bfd">4. Hash a Tree by Hand</font>
+### <font color="#79c0ff">Hash a Tree by Hand</font>
 
 A tree file is plain text, and its name is supposed to be the SHA-1 hash of that text. That means you can check any tree their code wrote, without trusting their code:
 
@@ -198,7 +194,7 @@ A wrong hash is useful when you know which mistake makes it:
 | `048864846e5172fecc5a824fb81594ac0fcb3422` | the `docs` tree has full paths instead of names |
 | `93309814fd7fef8ce1ef9d72fccde9f3ea0df77e` | the root includes `scratch.txt`, so the trees came from the folder, not the index |
 
-### <font color="#79c0ff">Activity</font>
+### <font color="#79c0ff">Activity 2</font>
 <details>
 <summary><strong>Hash a Tree by Hand</strong></summary>
 
@@ -249,9 +245,7 @@ A wrong hash is useful when you know which mistake makes it:
 
 </details>
 
----
-
-## <font color="#388bfd">5. Write Evidence That Convinces</font>
+### <font color="#79c0ff">Grade Each Behavior in the Chart</font>
 
 Your chart has the six behaviors on the left and two answers per row, exactly like Part 2.
 
@@ -265,19 +259,27 @@ Your chart has the six behaviors on the left and two answers per row, exactly li
 | **2** | Runs, but does the wrong thing. Record what it did instead. |
 | **1** | Missing, fails, or could not be tested. Say which, and paste the error or explain how you know. |
 
-**Answer two: one written cell covering three things.** Say how their code does it, with method names and data types. Say how you verified it, with the exact commands and the output you saw. Say what you changed to test it, or "nothing".
+**Answer two: short bullets, not paragraphs.** Under three labels, write a few quick notes each:
+
+- **How:** the data structures it uses, how it reads its input, how it splits or sorts things.
+- **Verified:** the command or call you ran, and what came out.
+- **Modified:** what you changed so you could test it, or "nothing".
 
 Here is a complete row:
 
-| Behavior | 1–5 | Is it functional / verified the functionality? What was modified to get it working? |
+| Behavior | 1–5 | Notes |
 |---|---|---|
-| 4. `createTree` writes one directory's tree | 4 | **How:** `createTree(List<String> workingList, String dirPath)` keeps entries whose `path.substring(0, path.lastIndexOf('/'))` equals `dirPath`, writes `type + " " + hash + " " + name + "\n"` for each, then hashes the file with their Part 2 `sha1(String)`. **Verified:** built `tree-test/`, staged three files from `Verify.java`, called `createTree(list, "tree-test/docs")`. It returned `aa4c9c79cf6ad534fadfa67db12574cbfd4a3e21`, not the expected `d5ff240d…`. `tail -c 1 git/objects/aa4c9c79… \| od -c` printed `\n`. **Modified:** nothing beyond adding `Verify.java`. |
+| 4. `createTree` writes one directory's tree | 4 | **How:**<br>• stores the index as a `List<String> workingList`<br>• keeps lines whose parent folder equals `dirPath`<br>• writes `type hash name` per line, each ending in `\n`<br>• hashes with their Part 2 `sha1(String)`<br>**Verified:**<br>• called `createTree(list, "tree-test/docs")` from `Verify.java`<br>• got `aa4c9c79…`, expected `d5ff240d…`<br>• `tail -c 1` on that file shows `\n`: an extra newline at the end<br>**Modified:**<br>• nothing beyond adding `Verify.java` |
 
-The row names a method, shows a command and its output, and explains the gap between expected and actual. It does not say "seems fine" anywhere.
+Every bullet names a method, a command, or a hash. None of them says "seems fine".
 
 ---
 
-## <font color="#388bfd">6. Rename for Sense</font>
+## <font color="#388bfd">3. Optional: Rename and Fix</font>
+
+Once the chart is done, make their code easier to read without changing what it does.
+
+### <font color="#79c0ff">Rename for Sense</font>
 
 As in Part 2, the second half of the assignment is renaming, and only renaming, on a branch in your fork. Tree code has its own vocabulary, and good names use it:
 
@@ -288,9 +290,7 @@ As in Part 2, the second half of the assignment is renaming, and only renaming, 
 
 The same three rules apply. Rename only, with no logic changes; any fix belongs in Part 1. Rename with VS Code's **Rename Symbol** (F2), never find-and-replace. Prove nothing changed by running `Verify.java` again: the same tree hashes must come out.
 
----
-
-## <font color="#388bfd">7. Reviewer Rules</font>
+### <font color="#79c0ff">Reviewer Rules</font>
 
 - **In Part 1, fix what is broken, and only that.** You may add `Verify.java`, change a hardcoded path, and fix code that does not work so you can test the rest. You may not change how a working method does its job, even if you would have written it differently. Record every fix in the chart's **Modified** notes.
 - **In Part 2, rename, only rename.** Fixes belong in Part 1. The tree hashes before and after renaming must be identical.
@@ -302,32 +302,13 @@ The same three rules apply. Rename only, with no logic changes; any fix belongs 
 
 ## <font color="#388bfd">☑️ Check for Understanding</font>
 
-### <font color="#79c0ff">Introductory</font>
-
-- [ ] Fork a classmate's repository, clone the fork, and confirm with `git remote -v` that `origin` points at your own account.
-- [ ] Read a tree file with `cat` and say what each of its lines represents.
-
-### <font color="#79c0ff">Intermediate</font>
-
-- [ ] Get a classmate's code running, find the index it writes, and check that its paths are relative.
-- [ ] Hash a tree file from a classmate's `git/objects/` and compare the result to its filename.
-- [ ] Write a tree file by hand with `printf`, hash it in the terminal, and compare the result to a classmate's `git/objects/`.
-- [ ] Show, with commands and their output, that staging an unchanged file twice leaves one index line and staging a modified file replaces its hash.
-- [ ] Explain why a file that was never staged must not appear in any tree, and prove whether it does in a classmate's code.
-- [ ] Fix a broken method in a classmate's code only as far as needed to test the rest, and record the fix.
-- [ ] Rename a classmate's tree variables and methods using the lesson's vocabulary, without changing any tree hash.
-
-### <font color="#79c0ff">Advanced</font>
-
-- [ ] Given a wrong tree hash, work out which rule was broken by hashing the likely mistakes yourself.
-- [ ] Explain why one wrong character in the `docs` tree changes the root tree's hash.
-- [ ] Prove whether a classmate's root-tree method is deterministic by running it twice and comparing hashes and object counts.
+- [ ] Fork a classmate's repository and confirm with `git remote -v` that `origin` is yours and `upstream` is theirs.
+- [ ] Get their code running and verify the six tree behaviors against hashes you computed by hand.
+- [ ] Grade each behavior 1 to 5 in the chart, with the command you ran and what you saw.
 
 ## <font color="#388bfd">🚀 Stretch Goals</font>
 
-- [ ] Extend your `Verify.java` so it prints PASS or FAIL for all six behaviors, then run it unchanged against a second classmate's fork.
-- [ ] Paste their `git/index` into the [Index-to-Tree Visualizer](https://learnhw.web.app/static/code/widgets/index-tree/index-tree.html) and compare its tree hashes with the ones their code wrote.
-- [ ] In a real Git repository, run `git cat-file -p HEAD^{tree}` to see a real tree. Find two ways its lines differ from the tree files in this project.
+- [ ] Create the most complex tree case you can think of and verify that it works on their code.
 
 ---
 

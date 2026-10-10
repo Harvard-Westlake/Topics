@@ -42,7 +42,7 @@ By now you've seen two collaboration tools, and today adds the third. Each answe
 
 The fork is what makes open source possible: millions of people who don't trust each other can still build one project, because nobody needs write access to contribute.
 
-### <font color="#79c0ff">Activity</font>
+### <font color="#79c0ff">Activity 1</font>
 <details>
 <summary><strong>Branch, Collaborator, or Fork?</strong></summary>
 
@@ -156,7 +156,7 @@ Run this whenever the original repo gets new commits you want.
 > **Tip:**
 > Sync your fork before starting new feature work. If you branch from a stale fork, your PR will be harder to merge.
 
-### <font color="#79c0ff">Activity</font>
+### <font color="#79c0ff">Activity 2</font>
 <details>
 <summary><strong>Two Remotes, One Truth</strong></summary>
 
@@ -227,7 +227,7 @@ If changes are requested, you don't open a new PR — you push more commits to t
 > **Tip:**
 > Before contributing to any real open source project, read its `CONTRIBUTING.md` file. Maintainers spell out exactly what they want in a PR — matching it is the single biggest factor in getting merged.
 
-### <font color="#79c0ff">Activity</font>
+### <font color="#79c0ff">Activity 3</font>
 <details>
 <summary><strong>The Review Hat</strong></summary>
 

@@ -191,7 +191,7 @@ That's right, you would need approximately **99,650,041 lockers**! With this man
 
 </details>
 
-### <font color="#79c0ff">Activity</font>
+### <font color="#79c0ff">Activity 1</font>
 <details>
 <summary><strong>Calculating Hash Table Sizes</strong></summary>
 

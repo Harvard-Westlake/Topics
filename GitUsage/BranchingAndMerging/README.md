@@ -67,7 +67,7 @@ After a feature branch is merged, delete it to keep the branch list clean. The c
 > **Note:**
 > A branch is created from whatever branch you are currently on. Always check which branch you are on before branching — run `git branch` to see the current branch marked with `*`.
 
-### <font color="#79c0ff">Activity</font>
+### <font color="#79c0ff">Activity 1</font>
 <details>
 <summary><strong>The Parallel Universe</strong></summary>
 
@@ -159,7 +159,7 @@ git merge --ff-only feature-name    # merges only if fast-forward is possible, e
 > **Note:**
 > Don't confuse the mechanism with the workflow. A *fast-forward merge* is how Git technically combines branches; a *pull request* (next section) is a team process for deciding **whether** to combine them. When a PR is approved, the merge underneath might be a fast-forward, a merge commit, or a squash — that's a settings choice, not a different kind of PR.
 
-### <font color="#79c0ff">Activity</font>
+### <font color="#79c0ff">Activity 2</font>
 <details>
 <summary><strong>Break the Fast-Forward</strong></summary>
 
@@ -261,7 +261,7 @@ When you press the merge button on GitHub, a dropdown offers choices. The two th
 
 **Squash and merge** collapses your whole branch — five commits of experimentation, backtracking, and typo fixes — into a single tidy commit on main. **Regular merge** preserves every step. Neither is "correct": teams choose based on whether the journey or the destination belongs in main's history. In this course, squash-merge your PRs when your branch history is scratch work, and regular-merge when each commit is meaningful on its own.
 
-### <font color="#79c0ff">Activity</font>
+### <font color="#79c0ff">Activity 3</font>
 <details>
 <summary><strong>Squash or Preserve</strong></summary>
 

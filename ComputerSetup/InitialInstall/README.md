@@ -16,7 +16,7 @@ Choose your operating system and follow the steps in order.
 > **Important:**
 > Complete this before starting the Terminal lessons. Every lesson from here on assumes you have a working Unix terminal with Git installed.
 
-### <font color="#79c0ff">Activity</font>
+### <font color="#79c0ff">Activity 1</font>
 <details>
 <summary><strong>Environment Verification</strong></summary>
 
@@ -94,7 +94,7 @@ Think of it like "take a left out the front doors and it's the second building o
 > **Note:**
 > When programming, relative paths are usually better — if you send your project folder to a teammate, their user folder is going to be named differently than yours. A relative path ensures the code still finds the files inside the project folder no matter whose computer it's on.
 
-### <font color="#79c0ff">Activity</font>
+### <font color="#79c0ff">Activity 2</font>
 <details>
 <summary><strong>The Path Finder</strong></summary>
 

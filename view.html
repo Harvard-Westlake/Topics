@@ -149,9 +149,13 @@
   .md div[align=center] p > font:only-child { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: .78em;
           font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); background: var(--th-bg);
           border: 1px solid var(--border); }
-  /* "### Activity" header sits directly on its dropdown */
-  .md h3:has(+ details) { margin-bottom: 0; }
-  .md h3 + details { margin-top: 4px; }
+  /* "### Activity" header + its dropdown read as one card, like a table: tinted header strip on top,
+     the dropdown as the body, one gold edge down the left of both */
+  .md h3:has(+ details) { margin: 1.6em 0 0; padding: .45rem 1rem; font-size: 1.05em; letter-spacing: .04em;
+          background: var(--th-bg); border: 1px solid var(--border); border-left: 3px solid var(--hw-gold); border-bottom: 0;
+          border-radius: var(--radius) var(--radius) 0 0; }
+  .md h3 + details { margin-top: 0; border-top-left-radius: 0; border-top-right-radius: 0; padding: 10px 16px; }
+  .md h3 + details > summary { font-size: 1.1em; }
 
   /* Composed class-day blocks */
   details.lesson { background: var(--lesson-bg); border: 1px solid var(--border); border-left: 3px solid var(--hw-red); border-radius: var(--radius); padding: 10px 16px; margin-bottom: 24px; }

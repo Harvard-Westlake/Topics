@@ -2834,15 +2834,19 @@ def _parse_activity(content):
         return None, content.strip()
     return m.group(1).strip(), m.group(2).strip()
 
-ACTIVITY_HEADER = '### <font color="#79c0ff">Activity</font>'
+def _activity_header(file):
+    """'### Activity N', N from the file's NN- prefix (activities are numbered in README order)."""
+    m = re.match(r"(\d+)-", file)
+    num = f" {int(m.group(1))}" if m else ""
+    return f'### <font color="#79c0ff">Activity{num}</font>'
 # an embed's opening, old format ("👉 <details>") or current (header line + "<details>")
 _ACTIVITY_OPEN_RE = re.compile(
-    r'(?:^### <font color="#79c0ff">Activity</font>\n|👉 )?<details>', re.MULTILINE)
+    r'(?:^### <font color="#79c0ff">Activity(?: \d+)?</font>\n|👉 )?<details>', re.MULTILINE)
 
 def _activity_toggle(file, title, body):
     # "Activity" is its own large header; the dropdown right under it is named
     # for the activity — the arrow already says it expands
-    return (f"{ACTIVITY_HEADER}\n"
+    return (f"{_activity_header(file)}\n"
             "<details>\n"
             f"<summary><strong>{title}</strong></summary>\n\n"
             f"{body}\n\n"

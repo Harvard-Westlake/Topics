@@ -29,7 +29,7 @@
    `origin` must be under your username (your fork) and `upstream` under theirs (the original).
 3. Open the folder in **VS Code**. Read their `README.md`, then the tree code: the index writer, `createTree`, and the method that builds the root tree.
 4. Get it running as best you can. If `main` does not call the tree methods, add a `Verify.java` with a `main` that does. If a hardcoded path stops it on your machine, change the path. If a method is broken, you may fix it so you can test the rest, and record the fix in your chart. Do not change a method that already works.
-5. Build the lesson's `tree-test/` folder and verify each of the six behaviors in the chart **one way or another**: run it and inspect `git/`, or read the code path and predict the result, then check. The lesson's [expected hashes](README.md#4-hash-a-tree-by-hand) are the right answers.
+5. Build the lesson's `tree-test/` folder and verify each of the six behaviors in the chart **one way or another**: run it and inspect `git/`, or read the code path and predict the result, then check. The lesson's [expected hashes](README.md#hash-a-tree-by-hand) are the right answers.
 6. Commit what you added to a **new branch** in your fork, for example `tree-review-YOURNAME`, and push it:
    ```bash
    git checkout -b tree-review-YOURNAME
@@ -44,10 +44,10 @@ Get your copy of the chart: download [verification-table.xlsx](assets/verificati
 
 ## Verification Chart
 
-One row per behavior, two answers per row. The left column is fixed. Hashes are shortened here; the full values are in the lesson's [expected hashes](README.md#4-hash-a-tree-by-hand).
+One row per behavior, two answers per row. The left column is fixed. Hashes are shortened here; the full values are in the lesson's [expected hashes](README.md#hash-a-tree-by-hand).
 
 - **Rating (1–5, 5 is best):** 5 = works exactly as described and you proved it · 4 = works, one small rule broken (a trailing newline in a tree file) · 3 = partly works · 2 = runs but does the wrong thing · 1 = missing, fails, or could not be tested (say which).
-- **Notes:** **How** their code does it (method names, approach, data types) · how you **verified** it (exact commands or calls, and what you saw) · what you **modified** to test it, or "nothing".
+- **Notes:** short bullets, not paragraphs, under three labels. **How:** data structures, how it reads input, how it splits or sorts · **Verified:** the command you ran and what came out · **Modified:** what you changed to test it, or "nothing".
 
 | Behavior to verify | Rating (1–5) | Notes |
 |---|---|---|
