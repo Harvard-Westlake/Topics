@@ -9,7 +9,7 @@
 ## Table of Contents
 
 1. [Part 1: fork a classmate's Part 3, get it running, and verify it](#part-1-verify)
-2. [The verification chart you fill out — six behaviors, two answers each](#verification-chart)
+2. [The verification chart you fill out: six behaviors, two answers each](#verification-chart)
 3. [Part 2: rename their tree variables and methods so they make sense](#part-2-rename)
 4. [Four checks before you submit](#success-criteria)
 5. [What to submit on the Hub: the chart and your commit URL](#submission)
@@ -22,14 +22,14 @@
 2. In your terminal, fork it and clone your fork in one step, then confirm the remotes:
    ```bash
    cd ~/HTCS_Projects
-   gh repo fork THEIR-USERNAME/THEIR-REPO-NAME --clone
-   cd THEIR-REPO-NAME
+   gh repo fork THEIR-USERNAME/THEIR-REPO-NAME --clone --fork-name ANY-NAME-YOU-WANT
+   cd ANY-NAME-YOU-WANT
    git remote -v
    ```
    `origin` must be under your username (your fork) and `upstream` under theirs (the original).
 3. Open the folder in **VS Code**. Read their `README.md`, then the tree code: the index writer, `createTree`, and the method that builds the root tree.
 4. Get it running as best you can. If `main` does not call the tree methods, add a `Verify.java` with a `main` that does. If a hardcoded path stops it on your machine, change the path. If a method is broken, you may fix it so you can test the rest, and record the fix in your chart. Do not change a method that already works.
-5. Build the lesson's `tree-test/` folder and verify each of the six behaviors in the chart **one way or another**: run it and inspect `git/`, or read the code path and predict the result, then check. The lesson's [expected hashes](README.md#hashing-a-tree-by-hand) are the right answers.
+5. Build the lesson's `tree-test/` folder and verify each of the six behaviors in the chart **one way or another**: run it and inspect `git/`, or read the code path and predict the result, then check. The lesson's [expected hashes](README.md#4-hash-a-tree-by-hand) are the right answers.
 6. Commit what you added to a **new branch** in your fork, for example `tree-review-YOURNAME`, and push it:
    ```bash
    git checkout -b tree-review-YOURNAME
@@ -44,19 +44,19 @@ Get your copy of the chart: download [verification-table.xlsx](assets/verificati
 
 ## Verification Chart
 
-One row per behavior, two answers per row. The left column is fixed. Hashes are shortened here; the full values are in the lesson's [expected hashes](README.md#hashing-a-tree-by-hand).
+One row per behavior, two answers per row. The left column is fixed. Hashes are shortened here; the full values are in the lesson's [expected hashes](README.md#4-hash-a-tree-by-hand).
 
 - **Rating (1–5, 5 is best):** 5 = works exactly as described and you proved it · 4 = works, one small rule broken (a trailing newline in a tree file) · 3 = partly works · 2 = runs but does the wrong thing · 1 = missing, fails, or could not be tested (say which).
 - **Notes:** **How** their code does it (method names, approach, data types) · how you **verified** it (exact commands or calls, and what you saw) · what you **modified** to test it, or "nothing".
 
 | Behavior to verify | Rating (1–5) | Notes |
 |---|---|---|
-| **1. Index stores relative paths** — after staging `tree-test/docs/hello.txt`, its index line is `aaf4c61d… tree-test/docs/hello.txt`, not a bare filename. | | **How:**<br>**Verified:**<br>**Modified:** |
-| **2. No duplicate entries** — staging the same unchanged file twice leaves exactly one index line for it. | | **How:**<br>**Verified:**<br>**Modified:** |
-| **3. A modified file replaces its entry** — after `printf 'hello again'` into `hello.txt` and staging it again, its line carries `714d500f…`, the old hash is gone, and there is one line for it. | | **How:**<br>**Verified:**<br>**Modified:** |
-| **4. `createTree` writes one directory's tree** — for `tree-test/docs` it writes two lines (`blob`, hash, final name only) into `git/objects/d5ff240d…` and returns that hash. | | **How:**<br>**Verified:**<br>**Modified:** |
-| **5. Root tree from staged files only** — with `scratch.txt` never staged, the root tree is `54c35b48…` (or `60a91a23…` with one extra level) and no tree lists `scratch.txt`. | | **How:**<br>**Verified:**<br>**Modified:** |
-| **6. Deterministic** — running the root-tree method twice on an unchanged index returns the same hash, and `git/objects/` gains no files. | | **How:**<br>**Verified:**<br>**Modified:** |
+| **1. Index stores relative paths.** After staging `tree-test/docs/hello.txt`, its index line is `aaf4c61d… tree-test/docs/hello.txt`, not a bare filename. | | **How:**<br>**Verified:**<br>**Modified:** |
+| **2. No duplicate entries.** Staging the same unchanged file twice leaves exactly one index line for it. | | **How:**<br>**Verified:**<br>**Modified:** |
+| **3. A modified file replaces its entry.** After `printf 'hello again'` into `hello.txt` and staging it again, its line carries `714d500f…`, the old hash is gone, and there is one line for it. | | **How:**<br>**Verified:**<br>**Modified:** |
+| **4. `createTree` writes one directory's tree.** For `tree-test/docs` it writes two lines (`blob`, hash, final name only) into `git/objects/d5ff240d…` and returns that hash. | | **How:**<br>**Verified:**<br>**Modified:** |
+| **5. Root tree from staged files only.** With `scratch.txt` never staged, the root tree is `54c35b48…` (or `60a91a23…` with one extra level) and no tree lists `scratch.txt`. | | **How:**<br>**Verified:**<br>**Modified:** |
+| **6. Deterministic.** Running the root-tree method twice on an unchanged index returns the same hash, and `git/objects/` gains no files. | | **How:**<br>**Verified:**<br>**Modified:** |
 
 > **Note:** Behavior 3 edits `hello.txt`. Test it last, or rebuild `tree-test/` with the lesson's `printf` commands before testing behaviors 4–6, or the expected tree hashes will not match.
 
@@ -86,10 +86,10 @@ Rules for renaming:
 
 ## Success Criteria
 
-- [ ] **Forked theirs and cloned your fork of theirs** — `git remote -v` shows `origin` under your username and `upstream` under theirs
-- [ ] **Got it running and verified each behavior one way or another** — every chart row has a 1–5 and a written answer, and every wrong hash is reported next to the hash you expected
+- [ ] **Forked theirs and cloned your fork of theirs.** `git remote -v` shows `origin` under your username and `upstream` under theirs.
+- [ ] **Got it running and verified each behavior one way or another.** Every chart row has a 1–5 and a written answer, and every wrong hash is reported next to the hash you expected.
 - [ ] **Committed to a new branch after you got their code running as best you can**
-- [ ] **Renamed tree variables and methods to be sensible** — tree hashes unchanged, committed and pushed
+- [ ] **Renamed tree variables and methods to be sensible.** Tree hashes unchanged, committed and pushed.
 
 ---
 
@@ -107,6 +107,6 @@ Copy the stencil below, fill in each line, and paste it into the Canvas text box
 
 ```
 Classmate's repository:   https://github.com/THEIR-USERNAME/THEIR-REPO-NAME
-My fork and branch:       https://github.com/YOUR-USERNAME/THEIR-REPO-NAME/tree/tree-review-YOURNAME
-Rename commit URL:        https://github.com/YOUR-USERNAME/THEIR-REPO-NAME/commit/SHA
+My fork and branch:       https://github.com/YOUR-USERNAME/YOUR-FORK-NAME/tree/tree-review-YOURNAME
+Rename commit URL:        https://github.com/YOUR-USERNAME/YOUR-FORK-NAME/commit/SHA
 ```

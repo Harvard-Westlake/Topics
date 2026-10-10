@@ -42,8 +42,9 @@ By now you've seen two collaboration tools, and today adds the third. Each answe
 
 The fork is what makes open source possible: millions of people who don't trust each other can still build one project, because nobody needs write access to contribute.
 
-👉 <details>
-<summary><h3>Activity: Branch, Collaborator, or Fork? — click to expand</h3></summary>
+### <font color="#79c0ff">Activity</font>
+<details>
+<summary><strong>Branch, Collaborator, or Fork?</strong></summary>
 
 *Concept: The right collaboration tool is determined by one question — what access do you have, and what access should you have?*
 
@@ -155,8 +156,9 @@ Run this whenever the original repo gets new commits you want.
 > **Tip:**
 > Sync your fork before starting new feature work. If you branch from a stale fork, your PR will be harder to merge.
 
-👉 <details>
-<summary><h3>Activity: Two Remotes, One Truth — click to expand</h3></summary>
+### <font color="#79c0ff">Activity</font>
+<details>
+<summary><strong>Two Remotes, One Truth</strong></summary>
 
 *Concept: A fork has two remotes — origin (your copy, which you can push to) and upstream (the original, which you can only read from).*
 
@@ -225,8 +227,9 @@ If changes are requested, you don't open a new PR — you push more commits to t
 > **Tip:**
 > Before contributing to any real open source project, read its `CONTRIBUTING.md` file. Maintainers spell out exactly what they want in a PR — matching it is the single biggest factor in getting merged.
 
-👉 <details>
-<summary><h3>Activity: The Review Hat — click to expand</h3></summary>
+### <font color="#79c0ff">Activity</font>
+<details>
+<summary><strong>The Review Hat</strong></summary>
 
 *Concept: Real code review is a conversation — requested changes get pushed to the same branch, and the PR evolves until the maintainer is satisfied.*
 

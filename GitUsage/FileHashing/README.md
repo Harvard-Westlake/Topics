@@ -191,8 +191,9 @@ That's right, you would need approximately **99,650,041 lockers**! With this man
 
 </details>
 
-👉 <details>
-<summary><h3>Activity: Calculating Hash Table Sizes — click to expand</h3></summary>
+### <font color="#79c0ff">Activity</font>
+<details>
+<summary><strong>Calculating Hash Table Sizes</strong></summary>
 
 *Concept: The formula $N \geq \frac{-k(k-1)}{2\ln(P)}$ tells you exactly how many buckets a hash table needs to keep collisions below a chosen probability, and the answer grows with $k^2$.*
 

@@ -9,20 +9,136 @@
 
 ---
 
-You spent the last three classes turning the index into tree files: relative paths in GP-3.1, one directory's tree in GP-3.2, and the whole snapshot down to a root tree in GP-3.3. Today you do what you did after Part 2, with harder material. You fork a classmate's repository, get their tree code running, and find out which behaviors really work, with evidence a stranger could repeat. Trees are a better test of reading skill than blobs: one wrong character in one tree changes the hash of every tree above it. That means you can know the right answer before you run anything, by building the tree files yourself in the terminal.
+Where you are in the project:
+
+- **You can save a file in Git.** Your code turns a file's contents into a **blob** in `git/objects/`, named by its SHA-1 hash (Part 2).
+- **You can now save a whole folder.** Your code reads the **index** and writes **tree** files that list what is inside each folder (Part 3).
+- **Today you check a classmate's version.** You copy their code, get it running, and prove which parts work, with evidence anyone could repeat.
 
 ## <font color="#388bfd">Table of Contents</font>
 
-1. [Fork a classmate's repository and clone your fork](#fork-clone-open)
-2. [Hash a tree by hand so you know the right answer first](#hashing-a-tree-by-hand)
-3. [The six Part 3 behaviors you are verifying](#what-you-are-verifying)
-4. [Reviewer rules: what you may fix and change](#reviewer-rules)
+1. [Fork and clone a classmate's repository, in the terminal or in GitKraken](#1-fork-and-clone-a-classmates-repository)
+2. [Get their code running and figure out how it works](#2-get-their-code-running)
+3. [What should you verify? The six Part 3 behaviors and the mistakes behind them](#3-what-should-you-verify)
+4. [Hash a tree by hand so you know the right answer first](#4-hash-a-tree-by-hand)
+5. [Write evidence that convinces: ratings and notes for the chart](#5-write-evidence-that-convinces)
+6. [Rename their code so it makes sense](#6-rename-for-sense)
+7. [Reviewer rules: what you may fix and change](#7-reviewer-rules)
 
 ---
 
-## <font color="#388bfd">Why Verify Trees</font>
+## <font color="#388bfd">1. Fork and Clone a Classmate's Repository</font>
 
-A blob is easy to judge: the file in `git/objects/` either matches the original or it does not. A tree is harder, because its correctness is spread across three methods and a chain of hashes:
+Your teacher assigns you a classmate. You make your own copy of their repository (a **fork**), then download that copy to your laptop (a **clone**). You never need their permission, and nothing you do touches their original.
+
+Everyone forked once in Part 2, so the repository you get may already be a fork of someone else's. That is fine. You review whatever code your classmate worked on.
+
+**In the terminal:**
+
+```bash
+cd ~/HTCS_Projects
+gh repo fork THEIR-USERNAME/THEIR-REPO-NAME --clone --fork-name ANY-NAME-YOU-WANT
+cd ANY-NAME-YOU-WANT
+git remote -v
+```
+
+`origin` must be under **your** username and `upstream` under theirs.
+
+**In GitKraken:** open the classmate's repository on github.com and click **Fork**. Then in GitKraken choose **File → Clone Repo → GitHub.com**, pick your fork, and clone it into `HTCS_Projects`. GitKraken adds the classmate's original as a remote when you open the fork; if it does not, add it in the **Remote** panel with **+** and name it `upstream`.
+
+Then open the folder in VS Code and read their `README.md` before any `.java` file, because it is their list of claims.
+
+> **Note:** You never push to the classmate's repository and you never open a pull request to it. Anything you add or change stays in your fork and gets recorded in your chart.
+
+### <font color="#79c0ff">Activity</font>
+<details>
+<summary><strong>Fork, Clone, Open</strong></summary>
+
+*Concept: Grab a classmate's code without asking their permission, and start working from your own copy of it.*
+
+![Diagram of the fork-then-clone path: on the left, the classmate's repository THEIR-REPO-NAME on GitHub; a Fork arrow copies it into your account as YOUR-USERNAME/THEIR-REPO-NAME, labeled forked from the original; a gh repo fork --clone arrow brings that fork down to your laptop in HTCS_Projects, where origin points at your fork and upstream at the original. A crossed-out arrow from the laptop straight to the classmate's repository is marked push refused. You never write to their repo.](assets/fork-clone-open.svg)
+
+## Task
+
+1. Wait for your teacher to assign you a classmate. Open their repository on GitHub and confirm it belongs to that classmate, not to you, and not to the classmate whose code you reviewed in Part 2. Everyone forked once in Part 2, so the repository you get is often a fork itself. Under its name you may see a line like this:
+   ```
+   THEIR-USERNAME/THEIR-REPO-NAME
+   forked from ANOTHER-CLASSMATE/THEIR-REPO-NAME
+   ```
+   That is expected. You are reviewing the code your classmate worked on, wherever it started.
+2. In your terminal, go to your projects folder, then fork the repository and clone your fork in one step. `--fork-name` lets you call your copy whatever you want, which matters if you already have a repository with the same name:
+   ```bash
+   cd ~/HTCS_Projects
+   gh repo fork THEIR-USERNAME/THEIR-REPO-NAME --clone --fork-name ANY-NAME-YOU-WANT
+   cd ANY-NAME-YOU-WANT
+   ```
+   On GitHub, your copy now shows **forked from THEIR-USERNAME/THEIR-REPO-NAME** under its title.
+3. Prove where the remotes point:
+   ```bash
+   git remote -v
+   ```
+   You should see four lines like these:
+   ```
+   origin    git@github.com:YOUR-USERNAME/ANY-NAME-YOU-WANT.git (fetch)
+   origin    git@github.com:YOUR-USERNAME/ANY-NAME-YOU-WANT.git (push)
+   upstream  git@github.com:THEIR-USERNAME/THEIR-REPO-NAME.git (fetch)
+   upstream  git@github.com:THEIR-USERNAME/THEIR-REPO-NAME.git (push)
+   ```
+   `origin` is under **your** username (your fork) and `upstream` is under the classmate's (the original). If `origin` shows the classmate's username, you cloned the original. Delete the folder and run the fork command again.
+4. Optional: check that your classmate worked on this recently.
+   ```bash
+   git log
+   ```
+   Look at the `Date:` lines. The newest commit is at the top:
+   <pre>
+   commit 9f2c1e7a4b8d0c3e5f6a7b8c9d0e1f2a3b4c5d6e (HEAD -> main, origin/main)
+   Author: Their Name &lt;them@example.com&gt;
+   <strong><font color="#f0883e">Date:   Wed Oct 7 21:14:03 2026 -0700</font></strong>
+
+       finished root tree
+
+   commit 41d07be29c8a51f3e6b0d2a7c94e18f5b3a6d720
+   Author: Their Name &lt;them@example.com&gt;
+   <strong><font color="#f0883e">Date:   Mon Oct 5 19:02:47 2026 -0700</font></strong>
+
+       index paths
+   </pre>
+   Recent dates mean they were working on it. Do not rely on the commit messages; classmates do not always label them clearly. Press `q` to leave the log.
+5. Open the folder in VS Code and read their `README.md` first. Write down, in one line each, every tree-related method it claims exists.
+
+*(Standalone file: [activities/01-fork-clone-open.md](activities/01-fork-clone-open.md))*
+
+</details>
+
+---
+
+## <font color="#388bfd">2. Get Their Code Running</font>
+
+Before you can judge their trees, you need their program to run on your laptop. Work through these in order and stop to write down what you find:
+
+1. **Figure out how to run it.** Find their `main` method. If it does not call the tree methods, add a `Verify.java` with a `main` that does. If a hardcoded path stops it on your machine, change the path.
+2. **Give it an index.** Stage a few files with their code, then open `git/index`. Each line should be a hash and a path like `tree-test/docs/hello.txt`, not just `hello.txt`.
+3. **Check the files and folders it makes.** After it runs, `git/objects/` should hold one blob per staged file and one tree per folder.
+4. **Try one harder folder.** Make a folder a few levels deep with several files, stage it, and build the trees. If the result looks right, their code probably handles nesting. How you build that folder is up to you.
+
+Pull up the [Index-to-Tree Visualizer](https://learnhw.web.app/static/code/widgets/index-tree/index-tree.html) in another tab. Paste in any index their code writes and watch the correct trees get built, so you can compare.
+
+---
+
+## <font color="#388bfd">3. What Should You Verify?</font>
+
+Six things. They are the Trees assignment's success criteria, and the assignment chart lists them in this order:
+
+1. **Index stores relative paths.** After staging `tree-test/docs/hello.txt`, its index line reads `aaf4c61d… tree-test/docs/hello.txt`, not a bare filename.
+2. **No duplicate entries.** Staging the same unchanged file twice leaves exactly one index line for it.
+3. **A modified file replaces its entry.** After `printf 'hello again' > tree-test/docs/hello.txt` and staging it again, its line carries `714d500fdb9ddeb5b957022131ac8a13c437a3bd`, the old hash is gone, and there is still one line for it.
+4. **`createTree` writes one directory's tree.** For `tree-test/docs` it writes two lines, `blob` + hash + final name, into a file named `d5ff240dd607e36048326aaf7982a025debb0cd7`, and returns that hash.
+5. **`createTreeFromIndex` builds the root from staged files only.** With `scratch.txt` on disk but never staged, the root tree is `54c35b48…` (or `60a91a23…` with one extra level) and contains no `scratch.txt`.
+6. **Tree hashes are deterministic.** Running the root-tree method twice on an unchanged index returns the same hash, and the number of files in `git/objects/` does not change.
+
+> **Note:** Behavior 3 changes `hello.txt`, so run it last, or rebuild `tree-test/` with the `printf` commands before you test behaviors 4 through 6.
+
+Trees are harder to judge than blobs because one wrong character in one tree changes the hash of every tree above it. These are the usual mistakes and what they look like:
 
 | If this is wrong | This is what you see |
 |---|---|
@@ -32,67 +148,27 @@ A blob is easy to judge: the file in `git/objects/` either matches the original 
 | The working list is never sorted | The lines can come out in a different order, so the hash can change between runs |
 | The trees are built from the folder on disk | Files that were never staged show up in the snapshot |
 
-Part 4 of this project hands you a classmate's codebase and asks you to build commits on top of their trees. A commit stores one root tree hash. If that hash is wrong, every commit built on it is wrong. Today is practice at catching that before you depend on it.
+Part 4 hands you a classmate's codebase and asks you to build commits on top of their trees. A commit stores one root tree hash, so if that hash is wrong, every commit built on it is wrong. Today is practice at catching that before you depend on it.
 
 ---
 
-## <font color="#388bfd">Fork, Clone, Open</font>
+## <font color="#388bfd">4. Hash a Tree by Hand</font>
 
-The workflow is the same one you used in [Peer Code Verification](../PeerCodeVerification/). You will be assigned a different classmate this time.
+A tree file is plain text, and its name is supposed to be the SHA-1 hash of that text. That means you can check any tree their code wrote, without trusting their code:
 
-1. In your terminal, inside your projects folder, fork the classmate's repository and clone your fork in one step:
+1. Get their code running and find their index with `cat git/index`.
+2. Have their code build the trees from that index.
+3. Open any file in `git/objects/` whose lines start with `blob` or `tree`. That is a tree file.
+4. Hash it and compare the result to its filename:
    ```bash
-   cd ~/HTCS_Projects
-   gh repo fork THEIR-USERNAME/THEIR-REPO-NAME --clone
-   cd THEIR-REPO-NAME
-   git remote -v
+   shasum git/objects/THE-FILE-NAME     # macOS
+   sha1sum git/objects/THE-FILE-NAME    # Linux / WSL
    ```
-   `origin` must be under **your** username and `upstream` under theirs.
-2. Open the folder in VS Code. Read their `README.md` before any `.java` file, because it is their list of claims.
-3. Pull up the [Index-to-Tree Visualizer](https://learnhw.web.app/static/code/widgets/index-tree/index-tree.html) in another tab. Once their code has written an index, you can paste it in and watch the correct trees get built.
+   If the hash matches the filename, they hashed exactly what they wrote. To check that what they wrote is *right*, select all of its text, then type the lines yourself with `printf` (below) and hash that.
 
-> **Note:** You never push to the classmate's repository and you never open a pull request to it. Anything you add or change stays in your fork and gets recorded in your chart.
+Tree lines are sorted by name and joined with one newline, and there is no newline after the last line. The Docs example in [Trees](../Docs/trees.md) follows the same rule: its `scripts` tree hashes to `483b5e08…` only when the file has no trailing newline.
 
-👉 <details>
-<summary><h3>Activity: Fork, Clone, Open — click to expand</h3></summary>
-
-*Concept: A fork is a copy of a classmate's repository under your own account — you clone the fork, not the original, so everything you do today lands in a repository you control.*
-
-![Diagram of the fork-then-clone path: on the left, the classmate's repository THEIR-REPO-NAME on GitHub; a Fork arrow copies it into your account as YOUR-USERNAME/THEIR-REPO-NAME, labeled forked from the original; a gh repo fork --clone arrow brings that fork down to your laptop in HTCS_Projects, where origin points at your fork and upstream at the original. A crossed-out arrow from the laptop straight to the classmate's repository is marked push refused — you never write to their repo.](assets/fork-clone-open.svg)
-
-## Task
-
-1. On GitHub, open the repository you were assigned. Confirm it belongs to a classmate, not to you, and not to the classmate whose code you reviewed in Part 2.
-2. In your terminal, go to your projects folder, then fork the repository and clone your fork in one step:
-   ```bash
-   cd ~/HTCS_Projects
-   gh repo fork THEIR-USERNAME/THEIR-REPO-NAME --clone
-   cd THEIR-REPO-NAME
-   ```
-   On GitHub, your copy now shows **forked from THEIR-USERNAME/THEIR-REPO-NAME** under its title.
-3. Prove where the remotes point:
-   ```bash
-   git remote -v
-   ```
-   Four lines: `origin` under **your** username (your fork) and `upstream` under the classmate's (the original). If `origin` shows the classmate's username, you cloned the original — delete the folder and run the fork command again.
-4. Read the history for your first clue about what was attempted:
-   ```bash
-   git log --oneline | head -20
-   ```
-   Count the commits labeled `(GP-3.1)`, `(GP-3.2)`, and `(GP-3.3)`. A milestone with no commit is a milestone you should expect to find missing.
-5. Open the folder in the editor you use for Java and read `README.md` first. Write down, in one line each, every tree-related method it claims exists.
-
-*(Standalone file: [activities/01-fork-clone-open.md](activities/01-fork-clone-open.md))*
-
-</details>
-
----
-
-## <font color="#388bfd">Hashing a Tree by Hand</font>
-
-A tree file is plain text, so you can write it with `printf` and hash it yourself. Lines are sorted by name and joined with one newline, and there is no newline after the last line. The Docs example in [Trees](../Docs/trees.md) follows the same rule: its `scripts` tree hashes to `483b5e08…` only when the file has no trailing newline.
-
-Build this test folder at the root of the fork. Stage the first three files, and **never** stage `scratch.txt`:
+For a test with known answers, build this folder at the root of the fork. Stage the first three files, and **never** stage `scratch.txt`:
 
 ```bash
 mkdir -p tree-test/docs
@@ -122,8 +198,9 @@ A wrong hash is useful when you know which mistake makes it:
 | `048864846e5172fecc5a824fb81594ac0fcb3422` | the `docs` tree has full paths instead of names |
 | `93309814fd7fef8ce1ef9d72fccde9f3ea0df77e` | the root includes `scratch.txt`, so the trees came from the folder, not the index |
 
-👉 <details>
-<summary><h3>Activity: Hash a Tree by Hand — click to expand</h3></summary>
+### <font color="#79c0ff">Activity</font>
+<details>
+<summary><strong>Hash a Tree by Hand</strong></summary>
 
 *Concept: A tree's filename is the SHA-1 of its exact text, so you can write the tree file yourself, hash it in the terminal, and know the right answer before you run a classmate's code.*
 
@@ -174,7 +251,7 @@ A wrong hash is useful when you know which mistake makes it:
 
 ---
 
-## <font color="#388bfd">Writing Evidence That Convinces</font>
+## <font color="#388bfd">5. Write Evidence That Convinces</font>
 
 Your chart has the six behaviors on the left and two answers per row, exactly like Part 2.
 
@@ -200,22 +277,7 @@ The row names a method, shows a command and its output, and explains the gap bet
 
 ---
 
-## <font color="#388bfd">What You Are Verifying</font>
-
-The assignment chart lists these six behaviors in this order. They are the Trees assignment's success criteria.
-
-1. **Index stores relative paths.** After staging `tree-test/docs/hello.txt`, its index line reads `aaf4c61d… tree-test/docs/hello.txt`, not a bare filename.
-2. **No duplicate entries.** Staging the same unchanged file twice leaves exactly one index line for it.
-3. **A modified file replaces its entry.** After `printf 'hello again' > tree-test/docs/hello.txt` and staging it again, its line carries `714d500fdb9ddeb5b957022131ac8a13c437a3bd`, the old hash is gone, and there is still one line for it.
-4. **`createTree` writes one directory's tree.** For `tree-test/docs` it writes two lines, `blob` + hash + final name, into a file named `d5ff240dd607e36048326aaf7982a025debb0cd7`, and returns that hash.
-5. **`createTreeFromIndex` builds the root from staged files only.** With `scratch.txt` on disk but never staged, the root tree is `54c35b48…` (or `60a91a23…` with one extra level) and contains no `scratch.txt`.
-6. **Tree hashes are deterministic.** Running the root-tree method twice on an unchanged index returns the same hash, and the number of files in `git/objects/` does not change.
-
-> **Note:** Behavior 3 changes `hello.txt`, so run it last, or rebuild `tree-test/` with the `printf` commands before you test behaviors 4 through 6.
-
----
-
-## <font color="#388bfd">Renaming for Sense</font>
+## <font color="#388bfd">6. Rename for Sense</font>
 
 As in Part 2, the second half of the assignment is renaming, and only renaming, on a branch in your fork. Tree code has its own vocabulary, and good names use it:
 
@@ -228,7 +290,7 @@ The same three rules apply. Rename only, with no logic changes; any fix belongs 
 
 ---
 
-## <font color="#388bfd">Reviewer Rules</font>
+## <font color="#388bfd">7. Reviewer Rules</font>
 
 - **In Part 1, fix what is broken, and only that.** You may add `Verify.java`, change a hardcoded path, and fix code that does not work so you can test the rest. You may not change how a working method does its job, even if you would have written it differently. Record every fix in the chart's **Modified** notes.
 - **In Part 2, rename, only rename.** Fixes belong in Part 1. The tree hashes before and after renaming must be identical.
@@ -247,6 +309,8 @@ The same three rules apply. Rename only, with no logic changes; any fix belongs 
 
 ### <font color="#79c0ff">Intermediate</font>
 
+- [ ] Get a classmate's code running, find the index it writes, and check that its paths are relative.
+- [ ] Hash a tree file from a classmate's `git/objects/` and compare the result to its filename.
 - [ ] Write a tree file by hand with `printf`, hash it in the terminal, and compare the result to a classmate's `git/objects/`.
 - [ ] Show, with commands and their output, that staging an unchanged file twice leaves one index line and staging a modified file replaces its hash.
 - [ ] Explain why a file that was never staged must not appear in any tree, and prove whether it does in a classmate's code.

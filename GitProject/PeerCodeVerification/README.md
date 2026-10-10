@@ -60,8 +60,9 @@ You learned the fork workflow in [Forks and Collaboration](../../GitUsage/ForksA
 
 > **Note:** You never push to the classmate's repository and you never open a pull request to it today. Your fork is a sandbox. If you change anything to get their code running, it stays in your fork and gets recorded in your table.
 
-👉 <details>
-<summary><h3>Activity: Fork, Clone, Open — click to expand</h3></summary>
+### <font color="#79c0ff">Activity</font>
+<details>
+<summary><strong>Fork, Clone, Open</strong></summary>
 
 *Concept: A fork is a copy of a classmate's repository under your own account — you clone the fork, not the original, so everything you do today lands in a repository you control.*
 
@@ -120,8 +121,9 @@ While you read, these patterns deserve a note in your table:
 | `println` where a file write should be | The output goes to the screen, not to `git/index`. |
 | Content read as a `String` with `readLine()` in a loop | Newlines are dropped and re-added; the hash may not match the original bytes. |
 
-👉 <details>
-<summary><h3>Activity: Map the Features — click to expand</h3></summary>
+### <font color="#79c0ff">Activity</font>
+<details>
+<summary><strong>Map the Features</strong></summary>
 
 *Concept: Before you can judge whether code works, you have to know which piece of it is supposed to do what — a feature map turns a pile of methods into a checklist you can test.*
 
@@ -191,8 +193,9 @@ echo -n "sha1test" | shasum   # 12c4c60ee087ae0f12dc6abc88495e459f6f2654  (8 byt
 
 Every character changed. When a classmate's hash does not match, check `wc -c` on the test file first, then look at *how their code reads the file* — reading line by line and rebuilding the string is the classic way to lose or add a newline.
 
-👉 <details>
-<summary><h3>Activity: Hash It by Hand — click to expand</h3></summary>
+### <font color="#79c0ff">Activity</font>
+<details>
+<summary><strong>Hash It by Hand</strong></summary>
 
 *Concept: A blob's filename is the SHA-1 of its exact bytes — you can compute that hash yourself in the terminal and compare it to what the classmate's program produced.*
 

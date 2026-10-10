@@ -67,8 +67,9 @@ After a feature branch is merged, delete it to keep the branch list clean. The c
 > **Note:**
 > A branch is created from whatever branch you are currently on. Always check which branch you are on before branching — run `git branch` to see the current branch marked with `*`.
 
-👉 <details>
-<summary><h3>Activity: The Parallel Universe — click to expand</h3></summary>
+### <font color="#79c0ff">Activity</font>
+<details>
+<summary><strong>The Parallel Universe</strong></summary>
 
 *Concept: A branch is a genuinely separate line of development — files committed on it don't exist on main until you merge.*
 
@@ -158,8 +159,9 @@ git merge --ff-only feature-name    # merges only if fast-forward is possible, e
 > **Note:**
 > Don't confuse the mechanism with the workflow. A *fast-forward merge* is how Git technically combines branches; a *pull request* (next section) is a team process for deciding **whether** to combine them. When a PR is approved, the merge underneath might be a fast-forward, a merge commit, or a squash — that's a settings choice, not a different kind of PR.
 
-👉 <details>
-<summary><h3>Activity: Break the Fast-Forward — click to expand</h3></summary>
+### <font color="#79c0ff">Activity</font>
+<details>
+<summary><strong>Break the Fast-Forward</strong></summary>
 
 *Concept: A fast-forward is only possible while main holds still — one commit on main while you work forces a real merge commit.*
 
@@ -259,8 +261,9 @@ When you press the merge button on GitHub, a dropdown offers choices. The two th
 
 **Squash and merge** collapses your whole branch — five commits of experimentation, backtracking, and typo fixes — into a single tidy commit on main. **Regular merge** preserves every step. Neither is "correct": teams choose based on whether the journey or the destination belongs in main's history. In this course, squash-merge your PRs when your branch history is scratch work, and regular-merge when each commit is meaningful on its own.
 
-👉 <details>
-<summary><h3>Activity: Squash or Preserve — click to expand</h3></summary>
+### <font color="#79c0ff">Activity</font>
+<details>
+<summary><strong>Squash or Preserve</strong></summary>
 
 *Concept: Squashing collapses a messy branch into one clean commit on main — the work survives, the noise doesn't.*
 

@@ -564,7 +564,7 @@ function openNewActivity() {
   $('mfName').value = ''; $('mfName').placeholder = 'e.g. The Hidden Detective';
   $('mfConceptField').style.display = 'block';
   $('mfConcept').value = '';
-  $('mfHint').textContent = 'Creates activities/NN-<title-kebab>.md and inserts the collapsed "Activity: [Title]" toggle into the README (above Check for Understanding — move it in the README editor if it belongs elsewhere).';
+  $('mfHint').textContent = 'Creates activities/NN-<title-kebab>.md and inserts the "Activity" header and collapsed [Title] toggle into the README (above Check for Understanding — move it in the README editor if it belongs elsewhere).';
   $('mfResult').textContent = '';
   loadAiPrompt(ACTIVITY_AI_PROMPT);
   showModal('meNewFile');

@@ -287,13 +287,22 @@ def _review_paths(review_ref):
             out.append(f"{rev['module']}/{rev['path']}/review/{rev['file']}")
     return out
 
+# HW brand red, matching the hub's light-theme primary buttons. Canvas strips
+# :hover rules, so the gold hover state can't follow it into a description.
+STUB_BUTTON_BG = "#DA0016"
+_STUB_STYLE_RE = re.compile(r"da0016|218,\s*0,\s*22", re.IGNORECASE)
+
+def stub_style_current(description):
+    """True when a live-view stub already carries the current button style."""
+    return bool(_STUB_STYLE_RE.search(description or ""))
+
 def live_stub_html(url, has_homework=True):
     """The whole Canvas description: a button to the live page plus an embedded
     frame of it. Inline styles only — Canvas strips classes and scripts."""
     what = "lesson and assignment" if has_homework else "lesson"
     u = html.escape(url, quote=True)
     return (f'<p><a href="{u}" target="_blank" rel="noopener" '
-            'style="display:inline-block;background:#0969da;color:#ffffff;font-weight:600;'
+            f'style="display:inline-block;background:{STUB_BUTTON_BG};color:#ffffff;font-weight:600;'
             'padding:8px 14px;border-radius:6px;text-decoration:none">'
             f'&#128214;&nbsp;Open the {what}</a> '
             '<span style="color:#57606a;margin-left:8px">Always the current version, '
@@ -1990,10 +1999,11 @@ def _canvas_course_state(course_id, ttl):
                 "unlock_at": a.get("unlock_at"), "points": a.get("points_possible"),
                 "published": a.get("published"), "html_url": a.get("html_url"),
                 "viewer_url": viewer_url_in(desc), "viewer_ref": viewer_ref_in(desc),
+                "stub_current": stub_style_current(desc),
                 "lesson": viewer_lesson_in(desc), "quiz": quiz_id_in(desc),
                 "quiz_version": quiz_version_in(desc),
                 "new_quiz": bool(a.get("is_quiz_lti_assignment"))}
-    assignments, _, _ = cached(f"assignments_sync_v2_{course_id}", ttl, lambda: [
+    assignments, _, _ = cached(f"assignments_sync_v3_{course_id}", ttl, lambda: [
         _asgn(a) for a in canvas_paged(f"/courses/{course_id}/assignments", {"order_by": "due_at"})])
 
     def module_items(mid):
@@ -2008,7 +2018,7 @@ def _canvas_course_state(course_id, ttl):
 def _invalidate_course_caches(course_id):
     for key in [f"modules_{course_id}", f"assignments_{course_id}",
                 f"assignments_ref_{course_id}", f"assignments_sync_{course_id}",
-                f"assignments_sync_v2_{course_id}"]:
+                f"assignments_sync_v3_{course_id}"]:
         p = cache_path(key)
         if p.exists():
             p.unlink()
@@ -2051,6 +2061,8 @@ def _assignment_changes(e, a, due_at, unlock_at, options=None):
             ch.append("replace the fixed content snapshot with the live lesson view")
         elif want and a["viewer_url"] != want:
             ch.append("live view link → " + want.split("?", 1)[-1])
+        elif not a.get("stub_current"):
+            ch.append("restyle the open-lesson button")
     if e.get("quiz"):
         qz = e["quiz"]
         if a.get("quiz") != qz["quiz_id"]:
@@ -2301,7 +2313,7 @@ def _apply_module_sync(course_id, plan, ref, due_at, unlock_at, options=None):
                 payload["assignment"]["due_at"] = due_at(e["due"])
             if e.get("unlock"):
                 payload["assignment"]["unlock_at"] = unlock_at(e["unlock"])
-            if refreshed or any(ch.startswith(("replace the fixed", "live view link", "add the quiz id"))
+            if refreshed or any(ch.startswith(("replace the fixed", "live view link", "add the quiz id", "restyle the open-lesson"))
                                 for ch in u["changes"]):
                 desc = e["description"]
                 if e.get("quiz") and a.get("new_quiz"):
@@ -2575,7 +2587,7 @@ def api_schedule_sync_block(name):
             payload["assignment"]["due_at"] = _due_at(e["due"])
         if e.get("unlock"):
             payload["assignment"]["unlock_at"] = _unlock_at(e["unlock"])
-        if any(ch.startswith(("replace the fixed", "live view link")) for ch in changes):
+        if any(ch.startswith(("replace the fixed", "live view link", "restyle the open-lesson")) for ch in changes):
             payload["assignment"]["description"] = e["description"]
         r = requests.put(f"{BASE}/courses/{course_id}/assignments/{a['id']}", headers=hdrs(), json=payload)
         if r.ok:
@@ -2822,18 +2834,25 @@ def _parse_activity(content):
         return None, content.strip()
     return m.group(1).strip(), m.group(2).strip()
 
+ACTIVITY_HEADER = '### <font color="#79c0ff">Activity</font>'
+# an embed's opening, old format ("👉 <details>") or current (header line + "<details>")
+_ACTIVITY_OPEN_RE = re.compile(
+    r'(?:^### <font color="#79c0ff">Activity</font>\n|👉 )?<details>', re.MULTILINE)
+
 def _activity_toggle(file, title, body):
-    # <h3> in the summary so activity headers render larger than body text
-    return ("👉 <details>\n"
-            f"<summary><h3>Activity: {title} — click to expand</h3></summary>\n\n"
+    # "Activity" is its own large header; the dropdown right under it is named
+    # for the activity — the arrow already says it expands
+    return (f"{ACTIVITY_HEADER}\n"
+            "<details>\n"
+            f"<summary><strong>{title}</strong></summary>\n\n"
             f"{body}\n\n"
             f"*(Standalone file: [activities/{file}](activities/{file}))*\n\n"
             "</details>")
 
 def _find_activity_toggle(text, file):
-    """(start, end) of the <details> block that embeds activities/<file>, or None."""
+    """(start, end) of the header + <details> block that embeds activities/<file>, or None."""
     marker = f"(activities/{file})"
-    for m in re.finditer(r"👉 <details>", text):
+    for m in _ACTIVITY_OPEN_RE.finditer(text):
         end = text.find("</details>", m.start())
         if end == -1:
             continue

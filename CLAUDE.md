@@ -405,7 +405,7 @@ The `*Lesson: [Lesson Name](README.md)*` line is required on every ASSIGNMENT.md
 - Use fenced code blocks with `bash` syntax highlighting for all terminal commands.
 - **GitHub from the terminal goes through the GitHub CLI (`gh`)**, installed in Initial Install (`brew install gh` on Mac, `apt install gh` in WSL, then `gh auth login` over SSH). Creating a repository from a local folder is `gh repo create <name> --source=. --public --push` — never teach a hand-written `git remote add origin` + `git push -u origin main` as the way to publish (lessons may show it only as "what gh did for you"). Cloning is `gh repo clone owner/repo`; forking is `gh repo fork owner/repo --clone`, which also adds the `upstream` remote. The GitHub website and GitKraken remain the visual alternatives, shown after the terminal path.
 - Each subtopic README ends with `← prev — Next: next` navigation links using relative paths.
-- No emojis in body text, with three fixed exceptions that are structural markers, not decoration: the `👉 **Activity Break:**` callout (see "activities/ folders"), and the `☑️`/`🚀` prefixes on the Check for Understanding / Stretch Goals headers (see above). No frontmatter. No HTML unless Markdown genuinely can't express it.
+- No emojis in body text, with two fixed exceptions that are structural markers, not decoration: the `☑️`/`🚀` prefixes on the Check for Understanding / Stretch Goals headers (see above). No frontmatter. No HTML unless Markdown genuinely can't express it.
 - Audience: high school students new to CS. Be precise, not condescending.
 - Keep writing `- [ ]` / `- [x]` for every checkbox (Check for Understanding, Stretch Goals, Success Criteria) — GitHub renders these as real checkboxes natively, and the hub/planner renderer rewrites the same markers into actual `<input type="checkbox" disabled>` elements before conversion, so they also render as checkboxes in the Canvas-fidelity preview and on Canvas itself (see `_TASKLIST_RE` in `_admin/_hub/server.py` and `_admin/_coursePlannerUI/mdrender.py`). Never hand-write `<input>` checkboxes in content — the renderer already does it.
 
@@ -618,11 +618,12 @@ LessonFolder/
 2. [Next step — builds on the prior one]
 ```
 
-**Weaving into the README:** immediately after the section whose concept the activity reinforces, embed the activity as a collapsed, togglable `<details>` block — not just a link — so a student can do it inline without leaving the page:
+**Weaving into the README:** immediately after the section whose concept the activity reinforces, embed the activity as an `Activity` header with a collapsed, togglable `<details>` block on the very next line — not just a link — so a student can do it inline without leaving the page:
 
 ```markdown
-👉 <details>
-<summary><h3>Activity: [Title] — click to expand</h3></summary>
+### <font color="#79c0ff">Activity</font>
+<details>
+<summary><strong>[Title]</strong></summary>
 
 *Concept: [one sentence naming the idea this activity proves]*
 
@@ -640,8 +641,9 @@ The `<details>` body is a **full, byte-for-byte duplicate** of the activity file
 
 Rules:
 
-- **Naming:** the activity file is numbered (`01-`, `02-`, ...) matching the order activities appear in the README, then a short kebab-case description, e.g. `activities/02-clone-vs-zip-challenge.md`. The embedded toggle's summary is always `Activity: [Title]`, where `[Title]` is that same activity's title **before** it was turned into the kebab-case filename (e.g. file `02-clone-vs-zip-challenge.md` ↔ summary `Activity: Clone vs. ZIP Challenge`) — this is the fixed, mechanical link between a toggle you see in the README and the file it lives in, so anyone can find one from the other.
-- **Activity headers are always large.** The toggle's summary text is wrapped in `<h3>` (as in the template above), never plain bold — activity headers must render larger than body text so they stand out while scrolling a lesson. The hub's Module Editor writes and re-syncs toggles in this format automatically (`_activity_toggle` in `_admin/_hub/server.py`).
+- **Naming:** the activity file is numbered (`01-`, `02-`, ...) matching the order activities appear in the README, then a short kebab-case description, e.g. `activities/02-clone-vs-zip-challenge.md`. The embedded toggle's summary is always the bare `[Title]`, the same activity's title **before** it was turned into the kebab-case filename (e.g. file `02-clone-vs-zip-challenge.md` ↔ summary `Clone vs. ZIP Challenge`) — this is the fixed, mechanical link between a toggle you see in the README and the file it lives in, so anyone can find one from the other.
+- **Header, then dropdown, nothing between.** The `### Activity` header stands on its own line so it renders large while scrolling a lesson, and the `<details>` opens on the very next line with no blank line (the live view also removes the gap between them). The summary is just the activity's name in bold: no 👉, no "Activity:" prefix, and no "click to expand", since the arrow already says it expands. The hub's Module Editor writes and re-syncs toggles in this format automatically (`_activity_toggle` in `_admin/_hub/server.py`), and still recognizes the retired `👉 <details>` form so it can rewrite it.
+- **The Concept line names what the student is about to do,** the top-level idea of the activity in plain words (e.g. "Grab a classmate's code without asking permission and start working from it"), not a restatement of a definition.
 - **One concept per activity.** Keep each one short enough to do in a few minutes without breaking lecture flow.
 - **Self-contained task steps.** A student should be able to follow the numbered steps without leaving the toggle (or the standalone file) for more instructions.
 - **Say "in your terminal" in the prose.** Students run zsh, bash, or WSL — the step introducing a command block should say where to type it ("In your terminal, create the branch:"), never rely on the code fence's `bash` tag to communicate that.
@@ -679,7 +681,7 @@ A lesson is a new subfolder inside a module (e.g. `Terminal/PipeAndGREP/`).
 
 **Create:**
 
-1. `ModuleName/LessonName/README.md` — centered title block + type label + all lesson content woven with `👉 Activity Break` callouts + Check for Understanding / Stretch Goals sections + bottom nav
+1. `ModuleName/LessonName/README.md` — centered title block + type label + all lesson content woven with `### Activity` toggles + Check for Understanding / Stretch Goals sections + bottom nav
 2. `ModuleName/LessonName/activities/` — one numbered file per activity break referenced from the README; see **activities/ folders**
 3. `ModuleName/LessonName/ASSIGNMENT.md` — optional; if present, add `[Assignment](ASSIGNMENT.md)` link above the nav line in the README
 4. `ModuleName/LessonName/review/` — optional; see **Add review files** below
