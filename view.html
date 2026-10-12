@@ -4,6 +4,36 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
+<script>
+/* The viewer follows the branch too. GitHub Pages only publishes main's copy of
+   this file, so for any other ?ref= it fetches that branch's own view.html and
+   runs it instead: a branch then previews exactly as it will look, viewer
+   changes included. Skipped for main, for the hub's local preview (?src=), and
+   as a fallback (?viewer=self) when the branch has no viewer of its own. */
+(function () {
+  if (window.__viewerFromRef) return;                       // already the branch's copy
+  var q = new URLSearchParams(location.search);
+  var ref = (q.get('ref') || 'main').trim() || 'main';
+  var m = location.hostname.match(/^([^.]+)\.github\.io$/i);
+  var seg = location.pathname.split('/').filter(Boolean);
+  if (ref === 'main' || q.get('src') || q.get('viewer') === 'self' || !m || seg.length < 2) return;
+  window.__viewerHandoff = true;
+  document.documentElement.style.visibility = 'hidden';
+  var raw = 'https://raw.githubusercontent.com/' + m[1] + '/' + seg[0] + '/' +
+            ref.split('/').map(encodeURIComponent).join('/') + '/view.html';
+  function fallback() {
+    q.set('viewer', 'self');
+    location.replace(location.pathname + '?' + q.toString() + location.hash);
+  }
+  fetch(raw, {cache: 'no-cache'}).then(function (r) { return r.ok ? r.text() : null; }).then(function (html) {
+    if (!html || html.indexOf('<head>') < 0) return fallback();
+    html = html.replace('<head>', '<head><script>window.__viewerFromRef = true; window.__viewerHandoff = false;<\/script>');
+    document.open();
+    document.write(html);
+    document.close();
+  }).catch(fallback);
+})();
+</script>
 <title>Lesson</title>
 <!--
   Live lesson viewer — the serverless page that Canvas links to.
@@ -265,6 +295,7 @@ if(__exports != exports)module.exports = exports;return module.exports}));
 <script>
 (function () {
   'use strict';
+  if (window.__viewerHandoff) return;   // the branch's own viewer is loading (see <head>)
   var DEFAULT_REPO = 'Harvard-Westlake/Topics';
   var q = new URLSearchParams(location.search);
 
