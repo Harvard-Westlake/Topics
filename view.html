@@ -97,6 +97,9 @@
   /* Content panel — LearnHW .container: white, square corners, soft shadow, on the warm grey page */
   main { max-width: 1100px; margin: 20px auto 48px; padding: 24px 16px; background: var(--panel); box-shadow: var(--shadow); }
   @media (min-width: 768px) { main { margin: 32px auto 64px; padding: 40px 48px; width: min(1100px, 100% - 2rem); } }
+  /* Inside a Canvas frame the frame is the only box: no page wash, no panel card, content edge to edge */
+  html.embedded, html.embedded body { background: var(--panel); }
+  html.embedded main, html.embedded main[class] { width: 100%; max-width: none; margin: 0; padding: 20px 4px 32px; box-shadow: none; }
   .status { color: var(--muted); padding: 24px 0; }
   .error { border: 1px solid var(--border); border-left: 3px solid var(--error); border-radius: var(--radius); padding: 12px 16px; margin: 16px 0; background: #fff1f2; color: #7f1d1d; }
   :root[data-theme="dark"] .error { background: #2a1214; color: #ffb4b4; }
@@ -274,6 +277,7 @@ if(__exports != exports)module.exports = exports;return module.exports}));
   var wantDark = themeParam === 'dark' || (!themeParam && !embedded &&
     window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
   document.documentElement.setAttribute('data-theme', wantDark ? 'dark' : 'light');
+  if (embedded) document.documentElement.classList.add('embedded');
 
   // ── Where the content comes from ─────────────────────────────────────────
   function repoFromHost() {

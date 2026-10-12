@@ -1,4 +1,4 @@
-# Git-4.2: Implement GitWrapper
+# Git-4.2: Implement the Interface
 
 *Part of the [Commits](../ASSIGNMENT.md) assignment*
 
@@ -6,125 +6,37 @@
 
 ## About
 
-The `GitWrapper` provides a single standardized interface for the entire project. By routing all operations through this class, the project can be tested and graded consistently regardless of how different students structured their internals.
-
-**`GitWrapper` methods must be static.** Do not change the method signatures. Call your partner's existing methods from inside the wrapper rather than rewriting logic.
+Every project in the class was built differently on the inside. The interface is the one place anyone (a tester, your teacher, a classmate) can go to run every operation without learning how your partner's code is organized. Build it on top of their existing code rather than rewriting their logic.
 
 ---
 
-## The Wrapper
+## What to Build
 
-```java
-public class GitWrapper {
+One clear place in the program where each of these operations can be run:
 
-    /**
-     * Initializes a new Git repository.
-     * Creates git/, git/objects/, git/index, and git/HEAD.
-     */
-    public static void init() {
-        // implement here
-    }
+| Operation | Given | What happens |
+|---|---|---|
+| **Initialize** | nothing | `git/`, `git/objects/`, `git/index`, and `git/HEAD` exist. Running it again changes nothing and causes no error. |
+| **Stage a file** | a file path | The file's blob is saved and its index line is added. Staging unchanged content does nothing. Staging changed content replaces that file's line. A path that does not exist, or is a folder, is an error. |
+| **Commit** | an author and a message | Everything from [Git-4.1](Git-4-1.md): the commit file is saved, HEAD moves to it, and its hash is given back. |
+| **Check out** | a commit hash | Built in [Git-4.4](Git-4-4.md). For now it can do nothing. |
 
-    /**
-     * Stages a file for the next commit.
-     * Throws IOException if the path does not exist or is a directory.
-     * Does nothing if the file's content is already staged for that path.
-     *
-     * @param filePath The path to the file to stage.
-     */
-    public static void add(String filePath) throws IOException {
-        // implement here
-    }
+In `README.md`, show how to run each operation, with a short example someone could copy.
 
-    /**
-     * Creates a commit capturing the current state of the index.
-     * Builds trees, writes the commit file, updates HEAD.
-     *
-     * Commit format:
-     *   tree: <tree_sha>
-     *   parent: <parent_sha>   (omit line for initial commit)
-     *   author: <author>
-     *   date: <date>
-     *   message: <message>
-     *
-     * @param author  The author name.
-     * @param message The commit message.
-     * @return The SHA-1 hash of the new commit.
-     */
-    public static String commit(String author, String message) {
-        // implement here
-        return "";
-    }
-
-    /**
-     * Restores the working directory to the state of a specific commit
-     * (implemented in Git-4.4). Deletes the files the current index tracks,
-     * writes every file in the commit's tree, rebuilds the index, updates HEAD.
-     *
-     * @param commitHash The SHA-1 hash of the commit to check out.
-     */
-    public static void checkout(String commitHash) {
-        // implement here
-    }
-}
-```
-
----
-
-## The Tester
-
-```java
-public class GitTester {
-    public static void main(String[] args) throws IOException {
-        GitWrapper.init();
-        GitWrapper.add("myProgram/hello.txt");
-        GitWrapper.add("myProgram/inner/world.txt");
-        String hash = GitWrapper.commit("John Doe", "Initial commit");
-        System.out.println("Commit: " + hash);
-    }
-}
-```
-
----
-
-## Verify Each Method
-
-By running the tester above, confirm:
-
-**`init()`**
-- Creates `git/`, `git/objects/`, `git/HEAD`, `git/index`
-- Running it again leaves the existing structure intact (no error, no overwrite)
-
-**`add(filePath)`**
-- Throws an error if the path does not exist
-- Throws an error if the path is a directory
-- Stages a new file: appends to index, creates blob
-- Re-staging unchanged content does nothing
-- Re-staging modified content replaces the index entry and creates a new blob
-
-**`commit(author, message)`**
-- Builds trees from the staged index
-- Writes a commit file with the correct format
-- Returns the new commit's SHA-1 hash
-- Updates `git/HEAD` last
-- On the first commit: no `parent:` line
-- On subsequent commits: `parent:` matches the previous HEAD
-
-**`checkout(commitHash)`**
-- Leave it empty for now. You implement it in [Git-4.4](Git-4-4.md).
+**Verify:** using only the interface, initialize a repository, stage two files (one inside a folder), and commit. Every result in the table above happens.
 
 ---
 
 ## README Update
 
-Update `README.md` with answers to:
+Answer these in `README.md`:
 
-1. What bugs did you discover in your partner's code, and which ones did you fix?
-2. What functionality was missing? Did you implement it?
+1. What bugs did you find in your partner's code, and which did you fix?
+2. What was missing? Did you build it?
 
 ---
 
-**Commit summary:** `(Git-4.2): Implemented GitWrapper`
+**Commit summary:** `(Git-4.2): Implemented the Interface`
 
 ---
 

@@ -309,28 +309,24 @@ def _review_paths(review_ref):
             out.append(f"{rev['module']}/{rev['path']}/review/{rev['file']}")
     return out
 
-# HW brand red, matching the hub's light-theme primary buttons. Canvas strips
-# :hover rules, so the gold hover state can't follow it into a description.
-STUB_BUTTON_BG = "#DA0016"
-_STUB_STYLE_RE = re.compile(r"da0016|218,\s*0,\s*22", re.IGNORECASE)
+# The whole Canvas description is the live view in a borderless frame. No
+# button or header above it: the lesson always sits inside the frame, and the
+# frame's own bar has "Open full page". Stubs from before this layout (a red
+# "Open the lesson" button over a bordered frame) are re-styled by the next sync.
+_STUB_CURRENT_RE = re.compile(r"<iframe[^>]*border:\s*0", re.IGNORECASE)
 
 def stub_style_current(description):
-    """True when a live-view stub already carries the current button style."""
-    return bool(_STUB_STYLE_RE.search(description or ""))
+    """True when a live-view stub already has the current frame-only layout."""
+    d = description or ""
+    return bool(_STUB_CURRENT_RE.search(d)) and "Open the lesson" not in d
 
 def live_stub_html(url, has_homework=True):
-    """The whole Canvas description: a button to the live page plus an embedded
-    frame of it. Inline styles only — Canvas strips classes and scripts."""
-    what = "lesson and assignment" if has_homework else "lesson"
+    """The whole Canvas description: the live page in a borderless, full-width
+    frame. Inline styles only — Canvas strips classes and scripts."""
+    title = "Lesson and assignment" if has_homework else "Lesson"
     u = html.escape(url, quote=True)
-    return (f'<p><a href="{u}" target="_blank" rel="noopener" '
-            f'style="display:inline-block;background:{STUB_BUTTON_BG};color:#ffffff;font-weight:600;'
-            'padding:8px 14px;border-radius:6px;text-decoration:none">'
-            f'&#128214;&nbsp;Open the {what}</a> '
-            '<span style="color:#57606a;margin-left:8px">Always the current version, '
-            f'straight from the {html.escape(REPO_LABEL)} repo.</span></p>\n'
-            f'<iframe src="{u}" title="Lesson" width="100%" height="900" loading="lazy" allowfullscreen '
-            'style="width:100%;height:900px;border:1px solid #d0d7de;border-radius:6px;background:#ffffff">'
+    return (f'<iframe src="{u}" title="{title}" width="100%" height="1000" loading="lazy" allowfullscreen '
+            'style="display:block;width:100%;height:1000px;border:0;margin:0;background:#ffffff">'
             '</iframe>')
 
 def live_description(ref, module_dir, lesson_path, review_ref, include_assignment=True):
@@ -2048,7 +2044,7 @@ def _canvas_course_state(course_id, ttl):
                 "lesson": viewer_lesson_in(desc), "quiz": quiz_id_in(desc),
                 "quiz_version": quiz_version_in(desc),
                 "new_quiz": bool(a.get("is_quiz_lti_assignment"))}
-    assignments, _, _ = cached(f"assignments_sync_v3_{course_id}", ttl, lambda: [
+    assignments, _, _ = cached(f"assignments_sync_v4_{course_id}", ttl, lambda: [
         _asgn(a) for a in canvas_paged(f"/courses/{course_id}/assignments", {"order_by": "due_at"})])
 
     def module_items(mid):
@@ -2063,7 +2059,7 @@ def _canvas_course_state(course_id, ttl):
 def _invalidate_course_caches(course_id):
     for key in [f"modules_{course_id}", f"assignments_{course_id}",
                 f"assignments_ref_{course_id}", f"assignments_sync_{course_id}",
-                f"assignments_sync_v3_{course_id}"]:
+                f"assignments_sync_v4_{course_id}"]:
         p = cache_path(key)
         if p.exists():
             p.unlink()
@@ -2107,7 +2103,7 @@ def _assignment_changes(e, a, due_at, unlock_at, options=None):
         elif want and a["viewer_url"] != want:
             ch.append("live view link → " + want.split("?", 1)[-1])
         elif not a.get("stub_current"):
-            ch.append("restyle the open-lesson button")
+            ch.append("restyle the open-lesson frame (drop the button, edge to edge)")
     if e.get("quiz"):
         qz = e["quiz"]
         if a.get("quiz") != qz["quiz_id"]:

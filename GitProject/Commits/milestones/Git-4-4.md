@@ -6,37 +6,35 @@
 
 ## Recall
 
-Checkout takes the project back to a point in time. Real Git only deletes and rewrites files it tracks. Files that were never added, and the `git/` folder, are left alone.
+Checkout takes the project back to a point in time. Real Git only changes files it tracks. See the [Commits lesson](../README.md) for how it works.
 
 ---
 
-## Instructions
+## What to Build
 
-Implement `GitWrapper.checkout(commitHash)` in your partner's program:
+Add **Check out** to the interface. Given a commit hash, afterward:
 
-1. Read the commit file at `git/objects/<commitHash>` and take its root tree hash.
-2. Delete every file listed in the **current** `git/index`. Then delete any folders that are left empty. Never touch `git/`.
-3. Walk the commit's tree and write every blob back to its path:
-    - The blob file in `git/objects/<hash>` holds the file's contents. Copy them to the path.
-    - Create each folder before writing the files inside it.
-4. Rebuild `git/index` from the commit's tree, using your Git-4.3 method.
-5. Write `commitHash` into `git/HEAD`, last.
+- Every file in that commit's snapshot exists at its path, with that commit's contents.
+- Files that were tracked before but are not in that commit are gone, and so are folders they leave empty.
+- Files that were never staged are untouched, and so is everything in `git/`.
+- `git/index` lists exactly that commit's files, the same as regenerating it (Git-4.3).
+- `git/HEAD` holds that commit's hash.
 
 **Verify:**
 
-1. Stage `a.txt` with the text `one` and commit. Save the hash as commit A.
-2. Change `a.txt` to `two`, add a new file `docs/b.txt`, stage both, and commit as commit B.
+1. Stage `a.txt` containing `one` and commit. Call this commit A.
+2. Change `a.txt` to `two`, add `docs/b.txt`, stage both, and commit. Call this commit B.
 3. Create `scratch.txt` but do not stage it.
-4. Check out commit A. Confirm:
+4. Check out commit A:
     - `a.txt` says `one`.
     - `docs/b.txt` and the `docs` folder are gone.
-    - `scratch.txt` is still there, untouched.
-    - `git/index` lists only `a.txt`, and `git/HEAD` holds commit A's hash.
-5. Check out commit B. Every file from commit B is back, with commit B's contents.
+    - `scratch.txt` is still there.
+    - The index lists only `a.txt`, and HEAD holds commit A's hash.
+5. Check out commit B. Every file from commit B is back with commit B's contents.
 
 ---
 
-**Commit summary:** `(Git-4.4): Implemented Checkout`
+**Commit summary:** `(Git-4.4): Checked Out a Commit`
 
 ---
 

@@ -156,7 +156,7 @@ Recreate the core of Git in Java — hashing, blobs, trees, and commits — to u
 - [Peer Code Verification](GitProject/PeerCodeVerification/) — fork a classmate's Part 2, read it cold, prove which behaviors work, and rename it for readability
 - [Trees](GitProject/Trees/) — index formatting, tree files, and building trees from staged files
 - [Peer Tree Verification](GitProject/PeerTreeVerification/) — fork a classmate's Part 3, hash their trees by hand, prove which behaviors work, and rename it for readability
-- [Commits](GitProject/Commits/) — commit files, HEAD chain, and the `GitWrapper` interface
+- [Commits](GitProject/Commits/) — commit files, the HEAD chain, rebuilding the index, and checkout
 - [Branches](GitProject/Branches/) — branch pointers and HEAD *(coming soon)*
 
 **[Group Programming](GroupProgramming/)**  

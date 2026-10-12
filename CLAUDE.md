@@ -64,7 +64,8 @@ Whenever a lesson README, ASSIGNMENT.md, doc, milestone, activity, or review fil
 6. **Back links name their destination, not the shared name.** A lesson's README, docs, and assignment are often all called the same thing ("Commits"), so write `← Back to [lesson](../README.md)` or `[Back to assignment](../ASSIGNMENT.md)`.
 7. **At most three checks and exactly one stretch goal** (next section).
 8. **Success criteria read `- [ ] **Item:** one sentence.`**
-9. **The README teaches the concept; the ASSIGNMENT holds the logistics.** A lesson README covers only the behavior and functionality of the thing as it is taught in class (what a commit holds, how the chain works, the steps in order). Whose code students work in (a classmate's fork), milestones, interface rules like `GitWrapper`, grading, and submission belong in ASSIGNMENT.md and its milestones, never in the README or its Check for Understanding.
+9. **The README teaches the concept; the ASSIGNMENT holds the logistics.** A lesson README covers only the behavior and functionality of the thing as it is taught in class (what a commit holds, how the chain works, the steps in order). Whose code students work in (a classmate's fork), milestones, the shared interface, grading, and submission belong in ASSIGNMENT.md and its milestones, never in the README or its Check for Understanding.
+10. **Assignments and milestones say WHAT to build, not how.** State the behavior and the observable result (what files exist, what they contain, what HEAD holds, what counts as an error) plus a way to verify it. Do not require class names, method names, signatures, `static`, provided code templates, or step-by-step algorithms: the lesson README teaches how it works. (Later units will hand students interfaces to extend; until then, describe operations, not code.)
 
 ## Check for Understanding and Stretch Goals
 
@@ -156,7 +157,7 @@ Quiz questions never enter this public repo. They live in the private sibling **
 
 ### Live lesson view (`view.html`)
 
-**Canvas never holds rendered lesson content.** The hub used to bake each day's README, reviews, and ASSIGNMENT.md into the Canvas assignment description as HTML, which went stale the moment the repo changed. Now every assignment/page the hub creates is a short stub — a button plus an embedded frame — pointing at `view.html`, a single self-contained page at the repo root served by GitHub Pages:
+**Canvas never holds rendered lesson content.** The hub used to bake each day's README, reviews, and ASSIGNMENT.md into the Canvas assignment description as HTML, which went stale the moment the repo changed. Now every assignment/page the hub creates is a short stub, just a borderless full-width frame (no button or header above it; the frame's own bar has "Open full page"), pointing at `view.html`, a single self-contained page at the repo root served by GitHub Pages:
 
 ```
 https://harvard-westlake.github.io/Topics/view.html?ref=<git ref>&lesson=<Module>/<Lesson>[&review=<Module>/<Lesson>/review/<file>.md ...][&hw=0]
@@ -557,9 +558,10 @@ Commits/
 Rules for `docs/` folders:
 
 - **Not added to `LESSONS.md`, the root `README.md`, or module JSONs**: it is support material, like `review/` and `assets/`.
-- **Linked from the ASSIGNMENT and milestones** as relevant, and from the module `README.md`'s "Reference Documentation" table, which points straight at each lesson's `docs/` file. **Never from the lesson README:** the lesson stands on its own, and when a day shows only the lesson there should be no reference-doc link.
+- **A topic's doc and its lesson are identical.** The doc is the lesson README's teaching content (title block through the last concept section) with image paths as `../assets/…`, without Check for Understanding, Stretch Goals, the assignment link, or the nav, and ending with `← Back to [lesson](../README.md)`. When the README's teaching content changes, copy it to the doc again (`Commits/docs/commits.md` is the model).
+- **Never link a lesson's own doc from that lesson's README, ASSIGNMENT, or milestones:** the lesson is already on the page (milestones point at `../README.md` instead). A "Reference Docs" list appears only when a day pulls in *other* lessons, for example a Commits day that leans on the Trees doc. The module `README.md`'s "Reference Documentation" table still lists every doc.
 - Doc files follow the standard title format (centered `<div>` block with `#` title and a one-sentence definition) but have **no lesson type label**, **no Check for Understanding section**, and **no bottom nav**: only `← Back to [lesson](../README.md)`.
-- A doc may read like the whole lesson (e.g. `Commits/docs/commits.md`). That is fine: it lets a teacher build a different day around the same concept in the hub.
+- The doc exists so a teacher can build a different day around the same concept in the hub without pulling in that lesson's checks and assignment.
 - Doc files use the same `##` / `###` color scheme as lesson pages. Images go in the lesson's `assets/` and are linked `../assets/name.png`.
 - The hub's Module Editor shows them in a **Docs** tab row, and the "Copy for AI" bundle includes them.
 

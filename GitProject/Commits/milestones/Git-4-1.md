@@ -1,4 +1,4 @@
-# Git-4.1: Link the Commit File to the Root Tree
+# Git-4.1: Create a Commit (File and HEAD Link)
 
 *Part of the [Commits](../ASSIGNMENT.md) assignment*
 
@@ -6,53 +6,45 @@
 
 ## Recall
 
-A commit file ties the root tree, the previous commit, the author, the date, and the message together into a single object, stored in `objects/` like any blob or tree. After writing it, `git/HEAD` is updated to point to the new commit's hash. **HEAD update must always be the last step.**
-
-See [commits.md](../docs/commits.md) for the full format and step ordering.
+A commit saves the staged snapshot as one more object in `git/objects/` and links it to the commit before it. See the [Commits lesson](../README.md) for how it works.
 
 ---
 
-## Commit File Format
+## What to Build
+
+Your partner's program can make a commit from whatever is staged, given an author and a message.
+
+**A commit file** holds exactly these lines:
 
 ```
 tree: <root tree SHA-1>
 parent: <previous commit SHA-1>
 author: <author name>
-date: <current date and time>
+date: <date and time>
 message: <commit message>
 ```
 
-For the **initial commit**, omit the `parent:` line entirely. Do not leave it blank.
+- `tree` is the root tree of what is staged right now.
+- `parent` is the commit HEAD held before this one. The first commit has **no `parent:` line** at all, not a blank one.
+- `date` is when the commit was made, in any consistent format.
+- Only the author and the message come from whoever makes the commit. Everything else your program works out.
+
+**After a commit:**
+
+- The commit file is saved as `git/objects/<its SHA-1>`.
+- `git/HEAD` holds the new commit's hash.
+- The new commit's hash is given back to whoever made it.
+- If anything fails partway, HEAD still holds the old commit. It never points at a commit that was not saved.
+
+**Verify:**
+
+1. Stage a file and commit. The commit file has no `parent:` line, and HEAD holds its hash.
+2. Stage a change and commit again. The new commit's `parent:` is the first commit's hash.
+3. Open each commit's `tree:` hash in `git/objects/` and confirm it is the snapshot you staged.
 
 ---
 
-## Instructions
-
-Update your partner's program to generate commit files:
-
-**Required user inputs (provided by the caller):**
-- `author`: the name of the person committing
-- `message`: a description of the changes
-
-**Programmatically determined fields:**
-- `tree`: SHA-1 of the root tree (built from the index)
-- `parent`: current value of `git/HEAD` (empty = first commit, omit the line)
-- `date`: current timestamp in a consistent format of your choice
-
-**Steps (in order):**
-
-1. Build tree files from the index and identify the root tree's SHA-1
-2. Read `git/HEAD` to get the parent hash (empty file = initial commit)
-3. Build the commit file content using the format above
-4. Compute the SHA-1 hash of the complete commit content
-5. Write the commit file to `git/objects/<commitSHA>`
-6. Update `git/HEAD` to the new commit's SHA-1 ← **must be last**
-
-> **Note:** Only the author and message come from the caller. Tree hash, parent hash, and date are all determined by your program.
-
----
-
-**Commit summary:** `(Git-4.1): Implemented Commit with HEAD Linkage`
+**Commit summary:** `(Git-4.1): Created a Commit`
 
 ---
 

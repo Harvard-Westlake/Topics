@@ -1,34 +1,31 @@
 <div align="center">
 
 # Commits
-*<font color="#8b949e">A commit is yet another Git object, but this one captures a snapshot of the whole repository and links it to the commit before it.</font>*
+*<font color="#8b949e">Commits save a snapshot of the repository and link them into a history.</font>*
 
 </div>
 
 ---
 
-## <font color="#388bfd">What is a Commit?</font>
+![Layout of a commit file: a commit box with five lines (tree, parent, author, date, message). The tree line points to the root tree, a box listing two blobs and one subtree that make up the snapshot of every staged file. The parent line points to the commit before it, which has its own tree and parent. The first commit has no parent line.](../assets/commit-layout.svg)
 
-A **commit** is a Git object that captures the state of the entire repository at a specific moment. Like blobs and trees, it is stored in `git/objects/` under its own SHA-1 hash.
+A commit is yet another Git object, but this one captures the whole project at one moment:
 
-A commit ties together three things:
-- **The snapshot:** a root tree hash representing all files and directories
-- **The history:** a reference to the previous commit (the parent)
-- **The context:** who committed, when, and what message they wrote
+- **tree:** the root tree, the snapshot of every staged file.
+- **parent:** the commit that came before, which links the snapshots into a history.
+- **author, date, message:** who saved it, when, and why.
 
-## <font color="#388bfd">Commit File Format</font>
+## <font color="#388bfd">Table of Contents</font>
 
-```
-tree: <root tree SHA-1>
-parent: <previous commit SHA-1>
-author: <author name>
-date: <timestamp>
-message: <commit message>
-```
+1. [What a commit file holds](#what-a-commit-file-holds)
+2. [How commits chain together through HEAD](#the-chain-and-head)
+3. [The steps of making a commit, in order](#making-a-commit)
+4. [Rebuilding the index from a commit's tree](#rebuilding-the-index)
+5. [Checking out a commit to go back to that point in time](#checking-out-a-commit)
 
-For the very first commit, omit the `parent:` line entirely. The initial commit has no predecessor.
+## <font color="#388bfd">What a Commit File Holds</font>
 
-**Example commit file:**
+A commit is a small text file, stored in `git/objects/` under the SHA-1 hash of its own contents, just like a blob or a tree:
 
 ```
 tree: 8c411a89ed6d846f064ed0decdba3a857f0d1667
@@ -38,59 +35,64 @@ date: Thu Oct 09 11:56:39 PDT 2025
 message: Add initial project files
 ```
 
-## <font color="#388bfd">The Commit Chain</font>
+The very first commit has nothing before it, so it has **no `parent:` line** at all.
 
-Each commit stores a reference to the previous one. The diagram below shows three commits, each pointing to its parent and to a separate snapshot (tree):
+## <font color="#388bfd">The Chain and HEAD</font>
 
-![Three commits in a chain, each with tree, parent, author, and message fields, each pointing to a snapshot](../assets/commits-and-parents.png)
-
-
-Every commit (except the first) stores its parent's hash. This means you can start at any commit and follow the parent field backward through the entire history of the project.
+Each commit points back at the one before it. Start at the newest commit, follow `parent:` again and again, and you walk the whole history back to the first commit:
 
 ```
-  C1 ← C2 ← C3 ← C4
+C1 ← C2 ← C3 ← C4
 ```
 
-The chain never loops. You always end at the initial commit. This structure is called a **directed acyclic graph (DAG)**. The "directed" part means commits point in one direction (toward the past). The "acyclic" part means there are no loops.
+`git/HEAD` is a one-line file that holds the hash of the newest commit. That is how Git knows where the chain ends:
 
-## <font color="#388bfd">The HEAD File</font>
+- Before any commits, HEAD is empty.
+- Making a commit reads HEAD to fill in `parent:`, then writes the new commit's hash into HEAD.
 
-`git/HEAD` stores the SHA-1 hash of the most recent commit. It is a single-line text file.
+## <font color="#388bfd">Making a Commit</font>
 
-- Before any commits: HEAD is empty
-- After each commit: HEAD is updated to the new commit's hash
-- On subsequent commits: HEAD's current value becomes the new commit's `parent:` field
+1. Read `git/index` to see what is staged.
+2. Build a tree for every staged directory, deepest first, until you have the root tree hash.
+3. Read `git/HEAD` for the parent hash (empty means this is the first commit).
+4. Write the commit's lines: tree, parent (if any), author, date, message.
+5. Hash those lines with SHA-1 and save the file as `git/objects/<hash>`.
+6. Write the new hash into `git/HEAD`. **This is always last.**
 
-## <font color="#388bfd">How a Commit Is Created</font>
-
-The steps must happen in this order:
-
-1. Read `git/index` to see what is staged
-2. Build tree files for every staged directory, starting from the deepest
-3. Identify the root tree's SHA-1 hash
-4. Read `git/HEAD` to get the parent commit hash (empty = initial commit)
-5. Build the commit file content (tree, parent if any, author, date, message)
-6. Compute the SHA-1 hash of the complete commit file content
-7. Write the commit file to `git/objects/<commitSHA>`
-8. Update `git/HEAD` to the new commit's hash ← **must be last**
-
-Step 8 must always come last. If HEAD is updated before the commit file is written, any crash between steps 7 and 8 would leave HEAD pointing to a non-existent commit.
+HEAD goes last for safety. If HEAD changed first and the program crashed before the commit file was saved, HEAD would point at a commit that does not exist.
 
 ## <font color="#388bfd">Rebuilding the Index</font>
 
-After a clone or a checkout, Git writes a fresh `git/index` from a commit's tree. Walk the tree from the root: each `blob <hash> <name>` line becomes the index line `<hash> <path>`, and each `tree <hash> <name>` line is a folder to open and walk the same way, with `<name>/` added to the front of every path inside it.
+The index is the list of what is staged. Sometimes there is no good list to start from: right after someone **clones** a repository, or right after a **checkout** swaps in an older snapshot. So Git writes a fresh index from the commit's tree.
+
+The tree already has everything the index needs. Walk it from the root:
+
+- A `blob` line becomes one index line: its hash, then its path.
+- A `tree` line is a folder. Open that tree and keep walking, adding the folder's name to the front of every path inside it.
+
+For the commit in the diagram above, the root tree `8c411a…` and its `docs` tree become this index:
+
+```
+aaf4c6… README.md
+e3b0c4… Git.java
+0a4d55… docs/notes.txt
+```
+
+Every committed file is now staged exactly as it was in that commit, so committing again right away would produce the same root tree.
 
 ## <font color="#388bfd">Checking Out a Commit</font>
 
-Checkout takes the project back to the moment a commit was made:
+Checkout takes the project back to a point in time: every file looks exactly the way it did in that commit.
 
 1. Read the commit and find its root tree.
-2. Delete every file listed in the current index, then any folders left empty. Files that were never added, and `git/` itself, are left alone.
-3. Walk the commit's tree and write each blob back to its path, creating folders as needed.
+2. Delete every file listed in the **current** index, then any folders left empty.
+3. Walk the commit's tree and write each blob back to its path, creating folders as you go.
 4. Rebuild the index from that tree.
 5. Write the commit's hash into `git/HEAD`.
 
-Real Git also refuses to check out when a tracked file has changes that were never committed, since step 2 would erase them.
+Step 2 only deletes files Git tracks, not the whole folder. Files that were never added (and the `git/` folder itself) are left alone, just like real Git. Wiping the whole folder would also delete anything that was never committed.
+
+> **Note:** Real Git also refuses to check out when a tracked file has changes that were never committed, because step 2 would erase them.
 
 ---
 
