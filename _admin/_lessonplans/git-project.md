@@ -2,7 +2,7 @@
 
 *Generated from [`_modules/git-project.json`](../../_modules/git-project.json) — do not edit by hand. Regenerate with `python3 _admin/_verification/verify.py --fix` or by saving from the planner UI.*
 
-**Unit 2** · 120 pts/assignment · scale ×1.15 · updated 2026-10-10
+**Unit 2** · 120 pts/assignment · scale ×1.15 · updated 2026-10-12
 
 Program Git
 

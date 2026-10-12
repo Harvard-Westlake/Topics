@@ -160,6 +160,7 @@ async function loadSaved(slug) {
                      title: p.title, path: '', _module: '', placeholder: true};
       if (p.kind) entry.kind = p.kind;
       if (p.quiz_id) entry.quiz_id = p.quiz_id;
+      if (p.base_points) entry.base_points = p.base_points;
       if (p.review) reviewSelections[ordered.length] = Array.isArray(p.review) ? p.review : [p.review];
       ordered.push(entry); orderedChecked.push(true);
       return;
@@ -173,6 +174,7 @@ async function loadSaved(slug) {
       row.duration_override = true;
     }
     if (p.no_assignment) row.no_assignment = true;
+    if (p.base_points) row.base_points = p.base_points;
     if (p.review) reviewSelections[ordered.length] = Array.isArray(p.review) ? p.review : [p.review];
     ordered.push(row); orderedChecked.push(true);
   });
@@ -539,6 +541,8 @@ function onNoHwChange(i, checked) {
   if (checked) a.no_assignment = true; else delete a.no_assignment;
   const label = $('plnohwlabel_' + i);
   if (label) label.classList.toggle('on', checked);
+  const pts = $('plpts_' + i);   // a no-homework day is a page: no points
+  if (pts) { pts.disabled = checked; pts.title = checked ? 'No homework: a page has no points' : 'Base points for this assignment. Blank uses the default. The unit multiplier is applied at sync.'; }
 }
 
 function onDurationChange(i, value) {
@@ -552,6 +556,60 @@ function onDurationChange(i, value) {
   $('pldur_' + i).classList.toggle('overridden', !!a.duration_override);
   renumberDays();
   refreshAll();   // re-labels every row's unit.day (ranges shift below this row)
+}
+
+// ── Points column ────────────────────────────────────────────────────────────
+// Each row's BASE points. Blank = the module's default base (10 for a new
+// module, or the points_per_assignment an existing module already saved; a
+// quiz row: the quiz's own points), shown as the box's placeholder. The unit multiplier is applied only at Canvas sync;
+// the grey line under each box previews the result. Saved as base_points.
+
+function hasPoints(a) {
+  // rows that become a graded Canvas assignment
+  if (a.placeholder) return a.kind === 'quiz';
+  return !a.no_assignment;
+}
+
+function rowDefaultBase(a) {
+  if (a.placeholder && a.kind === 'quiz') {
+    const q = (quizzes || []).find(x => x.quiz_id === a.quiz_id);
+    return q && q.points ? q.points : 100;
+  }
+  return parseFloat($('fPoints').value) || 10;
+}
+
+function pointsCell(a, i) {
+  if (!hasPoints(a)) return '<span></span>';
+  const over = !!a.base_points;
+  return '<div class="pts-cell"><input type="number" min="0" step="1" id="plpts_' + i + '"' +
+    (over ? ' class="overridden" value="' + esc(String(a.base_points)) + '"' : '') +
+    ' placeholder="' + esc(String(rowDefaultBase(a))) + '"' +
+    ' title="Base points for this assignment. Blank uses the default. The unit multiplier is applied at sync."' +
+    ' onchange="Planner.onPointsChange(' + i + ', this.value)">' +
+    '<span class="pts-scaled" id="plptsx_' + i + '"></span></div>';
+}
+
+function onPointsChange(i, value) {
+  const a = assignments[i];
+  if (!a) return;
+  const n = parseFloat(value);
+  if (n > 0 && n !== rowDefaultBase(a)) a.base_points = n; else delete a.base_points;
+  const el = $('plpts_' + i);
+  if (el) { el.classList.toggle('overridden', !!a.base_points); if (!a.base_points) el.value = ''; }
+  refreshAll();
+}
+
+function refreshPointsPreview(mult) {
+  assignments.forEach((a, i) => {
+    const x = $('plptsx_' + i), inp = $('plpts_' + i);
+    if (!x) return;
+    if (inp) inp.placeholder = String(rowDefaultBase(a));
+    const base = a.base_points || rowDefaultBase(a);
+    // quiz rows without an override keep the quiz's own points, unscaled
+    const canvas = (a.placeholder && !a.base_points) ? base : smartRound(base * mult);
+    x.textContent = base + ' (' + canvas + ')';
+    x.title = base + ' raw, ' + canvas + ' on Canvas after the unit bonus';
+  });
 }
 
 function renderLessonRow(a, i, unitNum) {
@@ -582,6 +640,7 @@ function renderLessonRow(a, i, unitNum) {
         '<div class="lesson-day" id="plday_' + i + '">' + fmtDayLabel(unitNum, a) + '</div>' +
         titleCell +
         durationCell(a, i) +
+        pointsCell(a, i) +
         (a.placeholder ? '<span></span>' :
           '<label class="nohw-toggle' + (a.no_assignment ? ' on' : '') + '" id="plnohwlabel_' + i + '"' +
             ' title="No assignment due this day — Canvas sync creates a content page (lesson + reviews) instead of a homework assignment">' +
@@ -816,6 +875,7 @@ function checkedAssignments() {
                    path: a.path, _module: a._module,
                    review: (reviewSelections[i] && reviewSelections[i].length) ? reviewSelections[i] : null};
       if (sub !== null) out.sub = sub;
+      if (a.base_points && hasPoints(a)) out.base_points = a.base_points;
       if (a.placeholder) {
         out.placeholder = true;
         if (a.kind) out.kind = a.kind;
@@ -835,6 +895,7 @@ function refreshAll() {
   const mult    = Math.pow(scale, unitNum);
   $('plScaleFactor').textContent = mult.toFixed(3);
   $('plScaledPts').textContent   = smartRound(base * mult);
+  refreshPointsPreview(mult);
   assignments.forEach((a, i) => {
     const el = $('plday_' + i);
     if (el) el.textContent = fmtDayLabel(unitNum, a);
@@ -1037,6 +1098,6 @@ return {init, newModule, loadSaved, deleteModule, onNameInput, touchSlug,
         openEditorTab, setEditorMode, saveFile, markDirty, closeEditor,
         savedDragStart, savedDragOver, savedDragLeave, savedDrop, savedDragEnd,
         insertPlaceholder, removePlaceholder, onPlaceholderTitleInput, onPlaceholderKind, removeReview,
-        rowDragStart, rowDragOver, rowDragLeave, rowDrop, rowDragEnd, onShow, onNoHwChange, onPlaceholderQuiz,
+        rowDragStart, rowDragOver, rowDragLeave, rowDrop, rowDragEnd, onShow, onNoHwChange, onPointsChange, onPlaceholderQuiz,
         onDurationChange};
 })();

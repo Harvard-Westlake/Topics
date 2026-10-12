@@ -942,6 +942,7 @@ async function openSync(blockId) {
   document.getElementById('syncDays').style.display = 'none';
   document.getElementById('syncDays').innerHTML = '';
   document.getElementById('syncBranchRow').style.display = 'none';
+  document.getElementById('syncRepointGraded').checked = false;
 
   const isModule = r.type === 'module';
   document.getElementById('syncTitle').textContent = isModule
@@ -1059,7 +1060,8 @@ async function previewPlan() {
   const seq = ++planSeq;
   box.innerHTML = '<div style="color:var(--muted)">Checking what is already on Canvas…</div>';
   const body = {course_id: parseInt(courseId), block_id: syncBlockId, dry_run: true,
-                push_quizzes: !!(document.getElementById('syncPushQuizzes') || {}).checked};
+                push_quizzes: !!(document.getElementById('syncPushQuizzes') || {}).checked,
+                repoint_graded: document.getElementById('syncRepointGraded').checked};
   if (syncSelected.size) body.slots = Array.from(syncSelected).sort((a, b) => a - b);
   const res = await fetch('/api/schedules/' + encodeURIComponent(schedName) + '/sync-block', {
     method: 'POST', headers: {'Content-Type': 'application/json'},
@@ -1089,7 +1091,10 @@ async function previewPlan() {
            : 'create'));
   update.forEach(x => h += row('&#x21bb;', 'result-ok', x.title, (x.changes || []).join('; ')));
   retire.forEach(x => h += row('&#x25CC;', 'result-err', x.title, 'no longer in the schedule — unpublished, not deleted'));
-  if (same.length) h += '<div style="color:var(--muted)">' + same.length + ' item' + (same.length > 1 ? 's' : '') + ' already match</div>';
+  const held = same.filter(x => (x.changes || []).length);
+  held.forEach(x => h += row('&#x23F8;', 'result-err', x.title, (x.changes || []).join('; ') + '. Tick “Also change points on assignments that already have grades” to apply'));
+  const matching = same.length - held.length;
+  if (matching) h += '<div style="color:var(--muted)">' + matching + ' item' + (matching > 1 ? 's' : '') + ' already match</div>';
   if (p.reorder) h += '<div style="color:var(--muted)">module order will be restored</div>';
   if (p.partial) {
     const sk = p.skipped || [];
@@ -1181,7 +1186,10 @@ function renderSyncDays() {
     + '</div>';
   syncItems.forEach(it => {
     const on = syncSelected.has(it.slot);
-    const meta = (it.type === 'Page' ? 'page' : (it.points != null ? it.points + ' pts' : ''))
+    const meta = (it.type === 'Page' ? 'page'
+        : it.points == null ? ''
+        : it.points_raw != null && it.points_raw !== it.points ? it.points_raw + ' (' + it.points + ') pts'
+        : it.points + ' pts')
       + (it.due && it.type !== 'Page' ? ' &middot; due ' + fmtShort(it.due) : '');
     html += '<label class="sync-day' + (on ? ' on' : '') + '">'
       + '<input type="checkbox"' + (on ? ' checked' : '') + ' onchange="Schedule.toggleSyncDay(' + it.slot + ', this.checked)">'
@@ -1367,7 +1375,8 @@ async function doSync() {
   btn.disabled = true;
   btn.textContent = 'Syncing…';
   const body = {course_id: parseInt(courseId), block_id: syncBlockId,
-                push_quizzes: !!(document.getElementById('syncPushQuizzes') || {}).checked};
+                push_quizzes: !!(document.getElementById('syncPushQuizzes') || {}).checked,
+                repoint_graded: document.getElementById('syncRepointGraded').checked};
   if (n) body.slots = Array.from(syncSelected).sort((a, b) => a - b);
   const res = await fetch('/api/schedules/' + encodeURIComponent(schedName) + '/sync-block', {
     method: 'POST', headers: {'Content-Type': 'application/json'},

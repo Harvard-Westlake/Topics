@@ -88,6 +88,11 @@
             "type": "boolean",
             "description": "True when the teacher set this assignment's length in the Module Planner (the inline day-count dropdown), overriding the lesson's LESSONS.md duration. When absent, loading the module re-reads the duration from the repo."
           },
+          "base_points": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "description": "This assignment's base points (the Module Planner's Points column), used instead of points_per_assignment (or, for a quiz row, the quiz's own points). Canvas sync multiplies it by scale_factor^unit like every other assignment. Absent = the default."
+          },
           "no_assignment": {
             "type": "boolean",
             "description": "True when no homework is due for this day (the Planner's 'no HW' checkbox). Canvas sync creates an unpublished content Page (lesson README plus any attached reviews) instead of an assignment — no points, no due date."

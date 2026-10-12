@@ -16,7 +16,8 @@
       "title": "Project Setup",
       "path": "ProjectSetup",
       "_module": "GitProject",
-      "review": null
+      "review": null,
+      "base_points": 5
     },
     {
       "day": 2,
@@ -24,12 +25,13 @@
       "title": "Initialization and Blobs",
       "path": "InitAndBlobs",
       "_module": "GitProject",
-      "review": null
+      "review": null,
+      "base_points": 25
     },
     {
       "day": 5,
       "duration": 0.5,
-      "title": "Git Project Part 2 — Initialization and Blobs: Quiz and Self-Assessment",
+      "title": "Git Project Part 2 \u2014 Initialization and Blobs: Quiz and Self-Assessment",
       "path": "",
       "_module": "",
       "review": null,
@@ -46,6 +48,7 @@
       "_module": "GitProject",
       "review": null,
       "sub": 1,
+      "base_points": 15,
       "duration_override": true
     },
     {
@@ -54,16 +57,18 @@
       "title": "Trees",
       "path": "Trees",
       "_module": "GitProject",
-      "review": null
+      "review": null,
+      "base_points": 25
     },
     {
       "day": 9,
       "duration": 0.5,
-      "title": "Git Project Part 3 — Trees: Quiz",
+      "title": "Git Project Part 3 \u2014 Trees: Quiz",
       "path": "",
       "_module": "",
       "review": null,
       "sub": 0,
+      "base_points": 25,
       "placeholder": true,
       "kind": "quiz",
       "quiz_id": "004df05af92b7b74"
@@ -76,6 +81,7 @@
       "_module": "GitProject",
       "review": null,
       "sub": 1,
+      "base_points": 15,
       "duration_override": true
     },
     {
@@ -85,6 +91,7 @@
       "path": "Commits",
       "_module": "GitProject",
       "review": null,
+      "base_points": 50,
       "duration_override": true
     },
     {
@@ -93,8 +100,9 @@
       "title": "Branches",
       "path": "Branches",
       "_module": "GitProject",
-      "review": null
+      "review": null,
+      "base_points": 15
     }
   ],
-  "updated": "2026-10-10"
+  "updated": "2026-10-12"
 }

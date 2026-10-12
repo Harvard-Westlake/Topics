@@ -430,7 +430,7 @@ section.tab.active { display: block; }
 .saved-item .meta { font-size: 11px; color: var(--muted); margin-top: 3px; }
 .btn-new { background: transparent; border: 1px dashed var(--border); color: var(--muted); padding: 9px; border-radius: 8px; font-size: 12px; cursor: pointer; font-family: inherit; transition: border-color .15s, color .15s; }
 .btn-new:hover { border-color: var(--accent); color: var(--accent); }
-.pl-main { padding: 24px 32px; max-width: 620px; display: flex; flex-direction: column; gap: 16px; }
+.pl-main { padding: 24px 32px; max-width: 980px; display: flex; flex-direction: column; gap: 16px; }
 .pl-main .field input, .pl-main .field select, .pl-main .field textarea { background: var(--surface); }
 .scale-note { font-size: 12px; color: var(--purple); }
 .stale-note { background: #2d1e0d; color: var(--yellow); font-size: 12px; padding: 8px 12px; border-radius: 6px; }
@@ -540,7 +540,16 @@ section.tab.active { display: block; }
 /* Module Planner: drag-to-reorder rows (interleave lessons across topics).
    Extra leading column for the drag handle — planner table only; the Courses
    drawer keeps the original 4-column grid. */
-#plLessonsBlock .lesson-table-head, #plLessonRows .lesson-row { grid-template-columns: 14px 24px 44px 1fr 112px 64px 110px; }
+/* minmax(0, …) on the title so a long title wraps instead of widening its own
+   row: every row is its own grid, so any auto-sized track would drift per row */
+#plLessonsBlock .lesson-table-head, #plLessonRows .lesson-row { grid-template-columns: 14px 24px 44px minmax(0, 1fr) 112px 64px 64px 104px; }
+#plLessonRows .lesson-row > * { min-width: 0; }
+#plLessonsBlock .lesson-table-head > div:nth-child(6) { text-align: right; }
+.pts-cell { display: flex; flex-direction: column; align-items: stretch; gap: 1px; }
+.pts-cell input { width: 100%; padding: 3px 6px; font-size: 12px; text-align: right; background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 6px; font-family: inherit; }
+.pts-cell input.overridden { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.pts-cell .pts-scaled { font-size: 10px; line-height: 1.2; color: var(--muted); text-align: right; white-space: nowrap; }
+.lesson-title-cell .ph-kind { min-width: 0; }
 .nohw-toggle { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); cursor: pointer; user-select: none; white-space: nowrap; }
 .nohw-toggle input { accent-color: var(--yellow); cursor: pointer; }
 .nohw-toggle.on { color: var(--yellow); }
@@ -675,3 +684,4 @@ html[data-theme="light"] .panel { box-shadow: 0 1px 3px rgba(0,0,0,.08); }
 .sync-branch-note { font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.45; }
 .sync-branch-note .warn { color: var(--yellow); font-weight: 600; }
 .sync-branch-note code { font-size: 11px; }
+.sync-graded { display: block; font-size: 12px; margin-top: 6px; font-weight: 400; }
