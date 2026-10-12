@@ -1,87 +1,45 @@
-# Assignment — Interfacing with AI
+# Assignment - Intro to AI Coding
 
-*Lesson: [Interfacing with AI](README.md)*
+*Lesson: [Intro to AI Coding](README.md)*
 
-**Due:** End of class
-
----
-
-## Activity 0 — Create and View an HTML Page in Cursor
-
-1. Create a folder for today's work and open it in Cursor
-2. Create `index.html` and type the minimal page from the [lesson](README.md)
-3. Open the file in your browser and confirm it renders
-4. Make one visible change (edit the heading text), save, and refresh the browser to see it appear
+**Due:** Before the start of next class
 
 ---
 
-## Activity 1 — Assumptions, Assumptions...
+## What to Build
 
-1. Ask an AI chat to generate a complete single-file HTML page from this prompt, exactly as written:
+| Result | What it means |
+|---|---|
+| **A vague-prompt page** | `animal.html`, made by an AI chat from exactly this prompt: `Make me a webpage about an animal.` |
+| **Five assumptions** | A list of five decisions the AI made that you never asked for (which animal, colors, tone, images, length, and so on). |
+| **A pinned-down page** | `animal2.html`, made from your rewritten prompt that controls all five of those decisions. |
+| **A divergence analysis** | 3 to 5 sentences comparing both of your pages with a neighbor's: where the vague prompts differed most, whether the pinned-down prompts came out alike, and which assumption surprised you most. |
+| **One managed feature** | One small new feature on your hosted website, built with the manager's loop: Ask, then Plan, then Agent one piece at a time, testing each piece in the browser. |
 
-```
-Make me a webpage about an animal.
-```
+**Verify:**
 
-2. Save the result as `animal.html` and open it in your browser
-3. In a text file, list **at least five decisions the AI made that you never asked for** — for example: which animal, the color scheme, the tone of the writing, whether there are images or headings, how long the page is
-4. Now rewrite the prompt to pin down every one of those five decisions, run it again, and save the result as `animal2.html`
-
----
-
-## Activity 2 — Analysis of Divergence
-
-1. Compare your `animal.html` with a neighbor's — you both ran the *identical* prompt
-2. Record where your results diverged: content, structure, styling, length
-3. Compare your `animal2.html` pages the same way — the pinned-down prompts
-4. Write a short analysis (3–5 sentences) answering:
-   - Where did the vague prompt diverge the most?
-   - Did pinning down assumptions make the results converge?
-   - Which assumption surprised you most?
-
----
-
-## Activity 3 — Off-Topic Research
-
-Prove the research technique works on anything. Pick a topic you know nothing about — it does **not** have to be computer science (a historical event, how something in the physical world works, a sport's strategy). Run the full five-step technique from the lesson:
-
-1. Ask for the shape first
-2. Ask follow-ups on every unfamiliar term
-3. Ask for a small concrete example
-4. Have the AI quiz you with three questions
-5. Verify one claim against a primary source
-
-Record your topic, one thing the AI taught you, and the claim you verified (with the source you used).
+1. Open `animal.html` and `animal2.html` in a browser. Each of your five assumptions is visible in the first page and controlled in the second.
+2. Your Git history has a commit before each Agent step and a commit after the feature worked.
+3. Your live site shows the new feature, and the console has no errors while you use it.
 
 ---
 
 ## Success Criteria
 
-Confirm each of the following before submitting:
-
-- [ ] **HTML page renders** — `index.html` opens in a browser and shows your edited heading
-- [ ] **Five assumptions identified** — your list names five decisions the AI made without being asked
-- [ ] **Pinned-down prompt written** — your rewritten prompt explicitly controls all five decisions
-- [ ] **Divergence analysis written** — 3–5 sentences comparing your results with a neighbor's
-- [ ] **Off-topic research completed** — you ran all five steps and verified one claim against a primary source
+- [ ] **Five assumptions found:** your list names five decisions the AI made without being asked.
+- [ ] **Pinned-down prompt written:** your rewritten prompt controls all five decisions.
+- [ ] **Divergence analysis written:** 3 to 5 sentences with at least one specific difference from your neighbor's pages.
+- [ ] **Feature built by managing:** the feature is live, works, and has small commits around each Agent step.
 
 ---
 
 ## Submission
 
-Submit **one text response** on Canvas.
-
-### Text response
-
-Copy the stencil below, fill in each line, and paste it into the Canvas text box:
+Submit **text** on Canvas. Copy the stencil below, fill in each line, and paste it into the Canvas text box:
 
 ```
 Five assumptions the AI made:     1.  2.  3.  4.  5.
 Divergence analysis (3-5 sent.):  
-Off-topic research topic:         
-One thing the AI taught you:      
-Claim you verified + source:      
+Feature you built:                
+Live site URL:                    https://
 ```
-
-> **Note:**
-> The divergence analysis is the heart of this assignment — it should mention at least one specific difference between your page and your neighbor's, and whether the pinned-down prompts converged.

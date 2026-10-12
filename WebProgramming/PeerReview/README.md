@@ -1,140 +1,72 @@
 <div align="center">
 
 # Collaborative Peer Review
-*<font color="#8b949e">Test, review, and fix your partner's code — with your name attached to the result</font>*
-
-<font color="#a371f7">Reinforce</font>
+*<font color="#8b949e">A peer review is when you test someone else's code, report what is wrong, help fix it, and approve it only once it truly works.</font>*
 
 </div>
 
 ---
 
+![The review loop on one pull request with two names on it. The author opens the PR. The reviewer tests everything, then writes up findings with steps to reproduce them. Fixes are made and re-tested, looping back to testing, until the reviewer can approve. Approving is a signature: a bug you approve counts against you too. Tomorrow you present this widget: a 1-minute walkthrough, then what you tested, what you found, and what got fixed.](assets/review-loop.svg)
+
+A review is a second pair of eyes with its name on the line:
+
+- **Test:** use the widget the way a stranger would, and try to break it.
+- **Report:** write up every problem so anyone could make it happen again.
+- **Approve:** only when it works. Your approval is your signature.
+
 ## <font color="#388bfd">Table of Contents</font>
 
-**[Learning Objectives](#learning-objectives)**  
-What you should be able to do by the end of this lesson.
+1. [Why pull request reviews exist](#why-reviews-exist)
+2. [How to test like a reviewer](#testing-like-a-reviewer)
+3. [Writing it up and getting to approvable](#getting-to-approvable)
 
-**[Why Pull Request Reviews Exist](#why-pull-request-reviews-exist)**  
-Independent eyes catch what authors cannot.
+## <font color="#388bfd">Why Reviews Exist</font>
 
-**[Becoming a Collaborator](#becoming-a-collaborator)**  
-Getting Write access to your partner's fork.
+The author of a widget cannot see it fresh: they know what every button does and which path to take. A reviewer does not, so they find the problems the author's brain skips over: bugs, wrong facts, confusing screens, and edge cases nobody tried.
 
-**[The Testing Checklist](#the-testing-checklist)**  
-Functional checks and behavioral checks.
+On real teams, clicking **Approve** is not a courtesy. It means *I tested this, and I stake my name on it working.* In this class that is literal: a bug you approve counts against **your** grade too.
 
-**[The PR Write-Up](#the-pr-write-up)**  
-Six required sections, posted on their pull request.
+## <font color="#388bfd">Testing Like a Reviewer</font>
 
-**[Accountability and Getting to Approvable](#accountability-and-getting-to-approvable)**  
-Approving broken code costs you — approve only what has earned it.
+**Get access first.** The author adds you as a collaborator with **Write** access on their repository (**Settings → Collaborators → Add people**), and you accept the invite from your email or GitHub notifications. Write access lets you commit fixes, not just comment.
 
----
+Then test with the widget open and the Console showing:
 
-## <font color="#388bfd">Learning Objectives</font>
-
-By the end of this lesson, you will be able to:
-
-- Add collaborators to code bases
-- Become responsible for another person's code by attaching your name to their work as a reviewer
-
----
-
-## <font color="#388bfd">Why Pull Request Reviews Exist</font>
-
-Reviewing pull requests establishes a deliberate, auditable checkpoint for code quality. Independent eyes surface defects, security issues, performance regressions, and edge cases that original authors — subject to confirmation bias and local context — may miss. Multiple reviewers also align changes with project conventions, architectural boundaries, and style standards, preserving coherence across the codebase.
-
-In professional teams, an approval is not a courtesy — it is a signature. When you click **Approve**, you are saying: *I tested this, and I stake my reputation on it working.* Today that stops being a metaphor: bugs you approve count against **your** grade.
-
----
-
-## <font color="#388bfd">Becoming a Collaborator</font>
-
-**1) Partner assignment (teacher-chosen).** Check the posted partner list.
-
-**2) Collaborator access on the project:**
-
-- Your partner adds you as a **Write** collaborator on their fork: **Settings → Collaborators → Add people → Write**
-- Accept the invite (arrives by email and GitHub notifications)
-
-Write access means you can do more than comment — you can propose and commit fixes directly, which this assignment expects.
-
----
-
-## <font color="#388bfd">The Testing Checklist</font>
-
-Work through both halves with the widget open, the console open, and the [rubric](ASSIGNMENT.md) in mind.
-
-### <font color="#79c0ff">Functional</font>
-
-- Does the app do what it claims (happy paths)?
-- Is the behavior **correct** per docs/specs? Research the actual topic if unsure — a widget that teaches something *wrong* fails even if the code runs
-- Any console/network/server errors on load, or when using the widgets?
-
-### <font color="#79c0ff">Behavioral / user</font>
-
-- Is the UX engaging and responsive?
-- Is the UI intuitive — labels, flows, empty and error states?
-- Does the UI match the `/admin` [learn.hw.com](https://learn.hw.com) page design and theme?
-
-> **Tip:**
-> Try to break it on purpose: click things twice, refresh mid-interaction, enter nonsense in inputs, resize the window. A reviewer who only follows the happy path finds only happy-path bugs.
-
----
-
-## <font color="#388bfd">The PR Write-Up</font>
-
-Post a review comment on your partner's PR with these sections:
-
-| Section | What goes in it |
+| Kind of check | Questions to answer |
 |---|---|
-| **Functional** | Do the core flows work? What did you test? |
-| **Correctness** | Does the behavior match reality/spec? What did you verify against? |
-| **Errors** | Every console/network error you observed, with repro steps |
-| **UX** | Engagement, responsiveness, clarity of feedback and states |
-| **UI vs /admin** | Where the visuals match the `/admin` theme and where they drift |
-| **Suggestions** | Concrete improvements, ordered by impact |
+| **Functional** | Does every feature it claims actually work? |
+| **Correctness** | Is what it teaches true? Check it against a real source: a widget that teaches something wrong fails even if the code runs. |
+| **Errors** | Do any errors show in the Console on load, or while using it? |
+| **UX** | Is it engaging and quick to respond? Are the labels, paths, and empty states clear? |
+| **UI** | Does it match the look of the `/admin` page on [learn.hw.com](https://learn.hw.com)? |
 
-Include repro steps, screenshots, and links to any references you used. A finding that cannot be reproduced from your write-up does not count as reported.
+> **Tip:** Try to break it on purpose: click things twice, refresh halfway through, type nonsense, shrink the window to phone size. A reviewer who only follows the happy path only finds happy-path bugs.
 
----
+## <font color="#388bfd">Getting to Approvable</font>
 
-## <font color="#388bfd">Accountability and Getting to Approvable</font>
+Post your findings as a review on the author's pull request, with one section for each kind of check above plus **Suggestions**, ordered by how much they matter. Every problem gets **steps to reproduce** and a screenshot. A problem nobody can make happen again from your write-up does not count as reported.
 
-**Call out all non-working functions and poor UX.** Missing bugs that get merged will reduce your grade for approving them.
+Then close the loop instead of stopping at criticism:
 
-Then close the loop — do not stop at criticism:
+1. Commit fixes yourself, or formally **Request changes**.
+2. Re-test after every round of fixes.
+3. When everything passes, **Approve**.
 
-1. Propose or commit fixes (or formally request changes) until tests pass, errors are gone, and UX/UI issues are addressed
-2. Re-test quickly after each round of fixes
-3. When everything meets the checklist, **Approve** the PR
-
-"Approvable" is a real bar: working flows, correct content, silent console, coherent UX, `/admin` parity. Your signature goes on it — make it mean something.
-
----
+"Approvable" means every feature works, the content is correct, the Console is silent, and the look matches `/admin`.
 
 ## <font color="#388bfd">☑️ Check for Understanding</font>
 
-### <font color="#79c0ff">Introductory</font>
+- [ ] Explain what clicking Approve commits you to, and why reviewers find bugs authors miss.
+- [ ] Test a widget for function, correctness, errors, UX, and UI, and try to break it on purpose.
+- [ ] Write a bug report with steps a stranger could follow to make the bug happen again.
 
-- [ ] Add a collaborator with Write access to a repository and accept such an invite.
-- [ ] Name the six required sections of the PR write-up.
-- [ ] Explain what clicking Approve on a pull request commits you to.
+## <font color="#388bfd">🚀 Stretch Goals</font>
 
-### <font color="#79c0ff">Intermediate</font>
-
-- [ ] Run the full testing checklist — functional and behavioral — on someone else's widget.
-- [ ] Write a bug report with repro steps that a stranger could follow.
-- [ ] Verify a widget's content is factually correct, not just that its code runs.
-
-### <font color="#79c0ff">Advanced</font>
-
-- [ ] Explain why reviewer accountability changes how carefully people review.
-- [ ] Commit a fix to your partner's branch and re-test without breaking their work.
-- [ ] Judge when a PR has crossed from "needs changes" to genuinely approvable, and defend the call.
+- [ ] Commit a fix to the author's branch, re-test the whole widget, and confirm you broke nothing else.
 
 ---
 
 [Assignment](ASSIGNMENT.md)
 
-← [Widget Iteration from Feedback](../WidgetIteration/) — Back to [Web Programming](../)
+← [Widget Iteration from Feedback](../WidgetIteration/) | Next: [Widget Presentations](../WidgetPresentations/)

@@ -1,122 +1,75 @@
 <div align="center">
 
 # Widget Iteration from Feedback
-*<font color="#8b949e">Turning human feedback into a shrinking feedback.md and an error-free widget</font>*
-
-<font color="#a371f7">Reinforce</font>
+*<font color="#8b949e">Iterating means turning what testers told you into fixes, one at a time, until nothing on their list and nothing in the console is left.</font>*
 
 </div>
 
 ---
 
+![feedback.md over your commits. At commit 1 the file holds 10 items, at commit 4 six, at commit 7 two, and at commit 9 the file is deleted and the console shows 0 errors. Every item you fix is deleted, so the Git history proves the feedback was handled. Keep each item in the tester's exact words until it is fixed, then push: the pull request updates on its own.](assets/feedback-loop.svg)
+
+You built the widget, so you are the one person who cannot see it fresh. Iteration fixes that:
+
+- **Testers:** show you where a first-time visitor gets stuck.
+- **feedback.md:** holds every comment in their exact words, and shrinks as you fix them.
+- **A silent console:** proves nothing is quietly broken.
+
 ## <font color="#388bfd">Table of Contents</font>
 
-**[Getting Human Feedback](#getting-human-feedback)**  
-Why you cannot review your own work — and what only other humans can tell you.
-
-**[The feedback.md Workflow](#the-feedbackmd-workflow)**  
-A file that starts full and shrinks to zero as you implement.
-
-**[Quality Assurance: A Silent Console](#quality-assurance-a-silent-console)**  
-Zero errors on load, zero errors during use.
-
-**[Updating the Pull Request](#updating-the-pull-request)**  
-Your PR is a living document — keep it current.
-
----
+1. [Why you need other people to test your work](#getting-human-feedback)
+2. [The feedback.md file that shrinks to nothing](#the-feedbackmd-workflow)
+3. [A silent console and an updated pull request](#a-silent-console)
 
 ## <font color="#388bfd">Getting Human Feedback</font>
 
-How did we get useful human feedback? And why couldn't you do this on your own?
+Because you built it, you already know which parts are buttons, what order to read things in, and what every label means. Your brain fills in every confusing spot without noticing. This is the **curse of knowledge**: the better you know your own design, the worse you are at seeing its problems.
 
-Because you built the widget, you are the one person on Earth who cannot experience it fresh. You know which parts are buttons, what order the sections go in, and what every label means — so your brain autocompletes past every confusing spot. This is the **curse of knowledge**: the better you understand your own design, the worse you are at seeing its problems.
+Fresh testers are walking [heatmaps](../UXAndBehaviorTracking/). Watch where they hesitate, what they click that is not clickable, and where they ask "what now?" Write down their **exact words**, not your summary of them.
 
-Fresh users are walking [heatmaps](../UXAndBehaviorTracking/): watch where they hesitate, what they click that isn't clickable, where they ask "what now?" — and write down their *exact words*, not your interpretation of them.
-
-| You see | A fresh user sees |
+| You see | A fresh tester sees |
 |---|---|
-| The obvious start button | Three equally-weighted boxes, none saying "start" |
-| A clever minimalist icon | A mystery symbol they are afraid to click |
-| The intended order of sections | A page they read bottom-to-top on a phone |
+| The obvious start button | Three equally sized boxes, none saying "start" |
+| A clever minimal icon | A mystery symbol they are afraid to click |
+| The intended order | A page they read bottom to top on a phone |
 
-> **Note:**
-> Feedback stings precisely when it is useful. "I didn't know what to do" is not an insult — it is a reproducible bug report against your design.
-
----
+> **Note:** "I didn't know what to do" is not an insult. It is a bug report against your design.
 
 ## <font color="#388bfd">The feedback.md Workflow</font>
 
-Feedback that lives in your memory evaporates. Feedback that lives in your repository gets implemented. Today's workflow:
+Feedback that lives in your memory disappears. Feedback that lives in your repository gets fixed:
 
-1. Add a `feedback.md` file to your repository containing the **exact feedback** taken from your peers
-2. **Commit** the `feedback.md`
-3. As you continue to code, **continually reduce** the size of `feedback.md` — every implemented item gets deleted from the file
-4. When the file is empty and no longer needed, **delete it**
+1. Add `feedback.md` to your repository with every tester's comment, word for word, and commit it.
+2. Each time you fix an item, delete it from the file and commit.
+3. When the file is empty, delete it.
 
-```
-feedback.md over time:
+Anyone reading your history can watch the feedback arrive, shrink, and disappear.
 
-commit 1:  10 items   (all feedback, verbatim)
-commit 4:   6 items   (four implemented, removed)
-commit 7:   2 items   (six implemented)
-commit 9:   file deleted - every item implemented
-```
+> **Tip:** Keep each item's original words until the moment it is fixed. Rewriting "I couldn't find the quiz" as "improve discoverability" turns a specific, checkable complaint into something vague.
 
-The Git history becomes the proof of the process: anyone reading your commits can watch the feedback arrive, shrink, and disappear.
+## <font color="#388bfd">A Silent Console</font>
 
-> **Tip:**
-> Keep each item's original wording until the moment it is fixed. Rewriting "I couldn't find the quiz" into "improve discoverability" launders the specific, checkable complaint into vague self-praise.
+Open your widget with [DevTools](../DebuggingJavaScript/) and its Console showing:
 
----
+- **0 errors when the page loads.**
+- **0 errors while it is used:** click every button, try every interaction, finish every path.
 
-## <font color="#388bfd">Quality Assurance: A Silent Console</font>
+The one exception is an error that comes from the browser or an extension rather than your code. Check with your teacher before counting one.
 
-After implementing the feedback, you must inspect your widget in [DevTools](../DebuggingJavaScript/) and verify:
-
-- **0 behavioral errors happen on page load**
-- **0 errors appear as your widget is used** — click every button, run every interaction, finish every flow with the console open
-
-Fix any errors!
-
-> **Note:**
-> There is a single allowed exception: an error that comes from the browser or an installed extension rather than from your own code. If you believe an error qualifies, confirm with your teacher — every error produced by *your* code must be fixed, not explained away.
-
----
-
-## <font color="#388bfd">Updating the Pull Request</font>
-
-Your Learning Widget lives in a [pull request](../LearningWidget/), and a PR is a living document:
-
-1. Commit and push all feedback-driven changes to your branch — the PR updates automatically
-2. Add a comment to the PR summarizing what changed in response to feedback
-3. Verify the deployed site reflects the latest push (`firebase deploy` again if needed)
-
-Next lesson, a peer reviewer puts their own grade on the line by reviewing this PR — hand them something worth approving.
-
----
+Then push. Your Learning Widget's [pull request](../LearningWidget/) updates on its own with every push. Add a comment to it summarizing what changed because of feedback, and deploy again so the live site matches.
 
 ## <font color="#388bfd">☑️ Check for Understanding</font>
 
-### <font color="#79c0ff">Introductory</font>
+- [ ] Explain the curse of knowledge and why it makes self-testing unreliable.
+- [ ] Describe feedback.md from the first commit to the moment it is deleted.
+- [ ] Prove your widget has a silent console on load and through every interaction.
 
-- [ ] Explain the curse of knowledge and why it makes self-review unreliable.
-- [ ] Describe the feedback.md workflow from first commit to deletion.
-- [ ] State the two zero-error conditions your widget must meet.
+## <font color="#388bfd">🚀 Stretch Goals</font>
 
-### <font color="#79c0ff">Intermediate</font>
-
-- [ ] Record a tester's feedback verbatim without softening or interpreting it.
-- [ ] Verify a widget produces no console errors during every interaction, not just on load.
-- [ ] Update a pull request with new commits and a summary comment.
-
-### <font color="#79c0ff">Advanced</font>
-
-- [ ] Use your Git history to prove every feedback item was implemented.
-- [ ] Distinguish an error caused by your code from one caused by the browser or an extension.
-- [ ] Prioritize conflicting feedback from two testers and justify which you implemented.
+- [ ] When two testers give opposite advice, pick one, implement it, and explain your choice in the pull request.
 
 ---
 
 [Assignment](ASSIGNMENT.md)
 
-← [UX and Behavior Tracking](../UXAndBehaviorTracking/) — Next: [Collaborative Peer Review](../PeerReview/)
+← [UX and Behavior Tracking](../UXAndBehaviorTracking/) | Next: [Collaborative Peer Review](../PeerReview/)

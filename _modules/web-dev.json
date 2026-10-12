@@ -20,42 +20,26 @@
     },
     {
       "day": 2,
-      "duration": 1,
-      "title": "Interfacing with AI",
-      "path": "InterfacingWithAI",
-      "_module": "WebProgramming",
-      "review": null
-    },
-    {
-      "day": 3,
       "duration": 0.5,
-      "title": "JavaScript and Coding with Cursor",
+      "title": "JavaScript Events and Classes",
       "path": "JavaScriptAndCursor",
       "_module": "WebProgramming",
       "review": null,
-      "sub": 0,
-      "duration_override": true
+      "duration_override": true,
+      "sub": 0
     },
     {
-      "day": 3,
+      "day": 2,
       "duration": 0.5,
       "title": "Debugging JavaScript",
       "path": "DebuggingJavaScript",
       "_module": "WebProgramming",
       "review": null,
-      "sub": 1,
-      "duration_override": true
+      "duration_override": true,
+      "sub": 1
     },
     {
-      "day": 4,
-      "duration": 2,
-      "title": "The Learning Widget Project",
-      "path": "LearningWidget",
-      "_module": "WebProgramming",
-      "review": null
-    },
-    {
-      "day": 6,
+      "day": 3,
       "duration": 1,
       "title": "Persistence and Intermediate Web",
       "path": "PersistenceAndIntermediateWeb",
@@ -64,7 +48,7 @@
       "no_assignment": true
     },
     {
-      "day": 7,
+      "day": 4,
       "duration": 1,
       "title": "Databases and Collections",
       "path": "DatabasesAndCollections",
@@ -77,6 +61,22 @@
           "path": "Basics"
         }
       ]
+    },
+    {
+      "day": 5,
+      "duration": 1,
+      "title": "Intro to AI Coding",
+      "path": "InterfacingWithAI",
+      "_module": "WebProgramming",
+      "review": null
+    },
+    {
+      "day": 6,
+      "duration": 2,
+      "title": "The Learning Widget Project",
+      "path": "LearningWidget",
+      "_module": "WebProgramming",
+      "review": null
     },
     {
       "day": 8,
@@ -101,6 +101,15 @@
       "path": "PeerReview",
       "_module": "WebProgramming",
       "review": null
+    },
+    {
+      "day": 11,
+      "duration": 1,
+      "title": "Widget Presentations",
+      "path": "WidgetPresentations",
+      "_module": "WebProgramming",
+      "review": null,
+      "no_assignment": true
     }
   ],
   "updated": "2026-09-11"

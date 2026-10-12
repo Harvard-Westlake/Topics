@@ -1,51 +1,49 @@
-# Assignment — Website Hosting
+# Assignment - Website Hosting
 
 *Lesson: [Website Hosting](README.md)*
 
-**Due:** Before next class (homework)  
-**Points:** 5
+**Due:** Before the start of next class
 
 ---
 
-## Instructions
+## What to Build
 
-Complete the six steps from the [lesson](README.md):
+A personal website, live on the internet, that starts from the class template and has your own changes in it.
 
-1. Create a Firebase project named `personalwebsite-<name>` (your first name) under your personal Google account
-2. Install the Firebase CLI and run `firebase login`
-3. Run `firebase init hosting` in your project folder and answer the prompts as shown in the lesson
-4. Download the [BasicStaticWebsite template](https://github.com/HarvardWestlake/BasicStaticWebsite) and copy its contents into `public/`
-5. Make at least one visible modification of your own — change colors, fonts, or margins in the CSS, or headings and text in the HTML
-6. Run `firebase deploy`, then initialize the repository in GitKraken, push it to GitHub, and make it public
+| Result | What it means |
+|---|---|
+| **A Firebase project** | Named `personalwebsite-<your first name>`, under your personal Google account. |
+| **The template in place** | The contents of the [BasicStaticWebsite template](https://github.com/Harvard-Westlake/BasicStaticWebsite) are in your `public/` folder, not Firebase's placeholder page. |
+| **Your own changes** | At least one visible change in the CSS (colors, fonts, spacing) and one in the HTML (headings or text). |
+| **Live** | Your Hosting URL loads the personalized page for anyone. |
+| **On GitHub** | A public repository holds the same files as the live site. |
+
+**Verify:**
+
+1. Open your Hosting URL in a private or incognito window. The template loads with your changes.
+2. Make one more small change, preview it locally, deploy it, and see it at the same URL.
+3. Open your GitHub repository. Its newest commit has the change you just deployed.
 
 ---
 
 ## Success Criteria
 
-Confirm each of the following before submitting:
-
-- [ ] **Site is live** — your Hosting URL (like `https://personalwebsite-mike.web.app`) loads in a browser
-- [ ] **Template in place** — the page shows the BasicStaticWebsite structure, not Firebase's default placeholder page
-- [ ] **Personalized** — at least one modification you made is visible on the live site
-- [ ] **Verified yourself** — you opened the exact link you are submitting and watched it load
-- [ ] **Repository pushed** — your project is on GitHub as a public repository
+- [ ] **Site is live:** your Hosting URL loads in a private window.
+- [ ] **Template in place:** the page is the BasicStaticWebsite template, not Firebase's default page.
+- [ ] **Personalized:** your CSS change and your HTML change are both visible on the live site.
+- [ ] **Repository public:** your GitHub repository is public and matches the live site.
 
 ---
 
 ## Submission
 
-Submit **one text response** on Canvas: the link to your live website, for example `https://myexample.web.app`.
-
-### Text response
-
-Copy the stencil below, fill in each line, and paste it into the Canvas text box:
+Submit **text** on Canvas. Copy the stencil below, fill in each line, and paste it into the Canvas text box:
 
 ```
 Hosting URL:            https://
-Firebase project name:  personalwebsite-
+Firebase project ID:    
 One change you made:    
 GitHub repository URL:  https://github.com/
 ```
 
-> **Note:**
-> Open your Hosting URL yourself before submitting — in a private/incognito window if possible. A URL that shows Firebase's "Site Not Found" page, or the untouched default page, does not receive credit.
+> **Note:** A URL that shows Firebase's "Site Not Found" page, or the untouched default page, does not receive credit.

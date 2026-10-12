@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 330" width="760" height="330" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13">
+  <title>How a hosted website works: files on your laptop are deployed to Firebase's servers, and any browser that visits the URL gets a copy</title>
+  <rect width="760" height="330" rx="10" fill="#0d1117"/>
+  <defs>
+    <marker id="orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#f0883e"/>
+    </marker>
+    <marker id="green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#3fb950"/>
+    </marker>
+  </defs>
+
+  <!-- laptop -->
+  <text x="30" y="40" fill="#e6edf3" font-weight="700" font-size="15">Your laptop</text>
+  <text x="30" y="58" fill="#8b949e" font-size="11">only you can open these</text>
+  <rect x="30" y="70" width="200" height="130" rx="8" fill="#161b22" stroke="#388bfd" stroke-width="2"/>
+  <text x="46" y="98" fill="#79c0ff" font-weight="700">public/</text>
+  <text x="62" y="124" fill="#e6edf3">index.html</text>
+  <text x="62" y="148" fill="#e6edf3">styles.css</text>
+  <text x="62" y="172" fill="#e6edf3">script.js</text>
+
+  <!-- deploy -->
+  <line x1="236" y1="135" x2="312" y2="135" stroke="#f0883e" stroke-width="2.5" marker-end="url(#orange)"/>
+  <text x="240" y="122" fill="#f0883e" font-weight="700">firebase</text>
+  <text x="246" y="158" fill="#f0883e" font-weight="700">deploy</text>
+
+  <!-- servers -->
+  <text x="320" y="40" fill="#e6edf3" font-weight="700" font-size="15">Firebase's servers</text>
+  <text x="320" y="58" fill="#8b949e" font-size="11">always on, always connected</text>
+  <rect x="320" y="70" width="200" height="130" rx="8" fill="#161b22" stroke="#f0883e" stroke-width="2"/>
+  <text x="336" y="98" fill="#e6edf3">a copy of public/</text>
+  <text x="336" y="132" fill="#8b949e" font-size="12">served at</text>
+  <text x="336" y="156" fill="#f0883e" font-size="12">your-project-id</text>
+  <text x="336" y="176" fill="#f0883e" font-size="12">  .web.app</text>
+
+  <!-- visitors -->
+  <line x1="526" y1="110" x2="600" y2="90" stroke="#3fb950" stroke-width="2.5" marker-end="url(#green)"/>
+  <line x1="526" y1="160" x2="600" y2="180" stroke="#3fb950" stroke-width="2.5" marker-end="url(#green)"/>
+  <rect x="606" y="62" width="124" height="54" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+  <text x="668" y="94" fill="#e6edf3" text-anchor="middle">a phone</text>
+  <rect x="606" y="154" width="124" height="54" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+  <text x="668" y="186" fill="#e6edf3" text-anchor="middle">a classmate</text>
+  <text x="606" y="40" fill="#e6edf3" font-weight="700" font-size="15">Anyone</text>
+  <text x="606" y="58" fill="#8b949e" font-size="11">visits the URL</text>
+
+  <text x="30" y="250" fill="#8b949e" font-size="12">Edit on your laptop, then deploy. Visitors only ever see what you last deployed:</text>
+  <text x="30" y="272" fill="#8b949e" font-size="12">a saved change that was never deployed is still invisible to everyone else.</text>
+  <text x="30" y="306" fill="#8b949e" font-size="12">The browser asks the server for the page, the server sends the files, the browser draws them.</text>
+</svg>

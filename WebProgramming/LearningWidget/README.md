@@ -1,140 +1,82 @@
 <div align="center">
 
 # The Learning Widget Project
-*<font color="#8b949e">Research, plan, and build an educational widget for a topic you can teach better</font>*
-
-<font color="#a371f7">Reinforce</font>
+*<font color="#8b949e">A learning widget is a small interactive web page that teaches one hard idea better than it was taught to you.</font>*
 
 </div>
 
 ---
 
+![The Learning Widget path, four steps always in this order: 1 Topic, approved by your teacher; 2 PLAN.md, in your own words and committed first; 3 Build, on a branch, one piece at a time; 4 Ship, live on Firebase with a pull request open. Underneath, the Git history the project must show: a PLAN.md commit first, then several small widget-code commits, then the pull request. The plan comes before the first line of code, which is the proof the thinking is yours.](assets/widget-phases.svg)
+
+This is where everything in the unit comes together:
+
+- **You pick the idea:** one topic you struggled with, or one you can explain better than anyone taught you.
+- **You plan it yourself** before any AI touches it.
+- **You build it like a manager,** with the AI doing the typing, and ship it on your own website.
+
 ## <font color="#388bfd">Table of Contents</font>
 
-**[Background](#background)**  
-Finding the topic only you can teach this way.
+1. [Choosing a topic only you can teach this way](#choosing-a-topic)
+2. [Planning the widget before writing code](#plan-before-code)
+3. [Building and shipping it](#building-and-shipping)
+4. [What a strong widget looks like](#what-a-strong-widget-looks-like)
 
-**[Overview](#overview)**  
-What you are building and the rules it must follow.
+## <font color="#388bfd">Choosing a Topic</font>
 
-**[Phase 1: Research](#phase-1-research)**  
-Confirm your idea doesn't already exist, then get approval.
+Think back over the last year of school. Which ideas were hard to understand, explained badly, or never shown in a way you could see? Which ones can you explain more simply than whoever taught you?
 
-**[Phase 2: Plan](#phase-2-plan)**  
-Design the experience and commit a `PLAN.md` — before AI touches it.
+Give it real time. The widget is only worth building if it adds **your** angle. A proposal often sounds like one of these:
 
-**[Phase 3: Code](#phase-3-code)**  
-Build with Cursor on a branch, publish via GitHub and Firebase.
+- *"I never really understood ______ until I saw it as ______."*
+- *"I get ______. People would learn it faster if they could ______."*
 
-**[What Your Widget Will Be Judged On](#what-your-widget-will-be-judged-on)**  
-The quality bar the later review lessons will hold you to.
+Before proposing, search for tools that already do it. A widget that already exists is not a dead end, but you have to say what yours does differently. Your teacher approves the topic before you plan.
 
----
+## <font color="#388bfd">Plan Before Code</font>
 
-## <font color="#388bfd">Background</font>
+Your plan is a `PLAN.md` file in your fork of the class project repository. Write it yourself and **commit it before any AI rewrites or formats it**. That first commit is the evidence that the thinking is yours.
 
-During your recent school career — the last year or so — recall a few topics or lessons that were difficult to understand, not communicated clearly, or that you wish had been taught or visualized a different way. Or a few that you can explain more simply than anyone who taught you.
-
-Take some time and think about this now.
-
-Done already? Doubtful. Give it a good few minutes and dig a little deeper. For this project to be useful, you need to ***add*** your unique perspective and insight to it.
-
-If you need help shaping the idea, your proposal may follow one of these outlines:
-
-- *"I never could really understand ________, but then I learned it this new way which made it more understandable..."*
-- *"I have a good grasp of ________. I think I can help people learn it more easily by displaying the information like ________."*
-
----
-
-## <font color="#388bfd">Overview</font>
-
-You are going to research, design, plan out, and — with AI's help — build an **educational widget** for a topic which is not easily understood or visualized. It can be ANY topic, but it must be approved by your teacher.
-
-Two hard rules:
-
-1. **Style parity.** The look must perfectly match the styles defined at [learnhw.web.app/admin](https://learnhw.web.app/admin) — find and use the exact same styles.
-2. **Three phases, in order.** Research and approval, then a committed plan, then code. No skipping ahead: the plan must exist in Git history *before* the code does.
-
-> **Note:**
-> Your website can hold multiple things at once — add a button on your main website that links to your educational widget.
-
----
-
-## <font color="#388bfd">Phase 1: Research</font>
-
-1. After you have some ideas, go see if they already exist online
-2. Ask an AI chat to look around the web and find similar tools
-3. Once you are satisfied the idea is not already done well online, **propose it to your teacher** and get explicit approval
-
-An idea that already exists as a polished widget is not a dead end — but you must articulate what yours will do differently, and your teacher decides whether the difference is enough.
-
----
-
-## <font color="#388bfd">Phase 2: Plan</font>
-
-1. Design and lay out how you want the site to look and behave
-2. **Fork** the Harvard-Westlake project repository for this assignment (your teacher will share the link in class) — forking and pull requests were covered in [Git Usage](../../GitUsage/)
-3. Write your design as a `PLAN.md` file in your fork, and **commit the plan BEFORE using AI to rewrite or format it** — the raw, human version must appear in your Git history first
-
-Think hard about how you want the user to *learn* the material and *interact* with the site, and in what general order. A strong `PLAN.md` answers:
+A strong plan answers:
 
 | Question | Example answer |
 |---|---|
-| What does the user see first? | A one-sentence hook and a "start" button |
-| What are the interactive parts? | A slider that morphs the graph; a three-question check |
-| How do the parts connect? | Each section unlocks after the previous check is passed |
-| Why does this beat the way you were taught? | It shows the idea moving instead of describing it |
+| What does the learner see first? | A one-sentence hook and a "Start" button. |
+| What can the learner do? | Drag a slider that reshapes the graph, then answer a three-question check. |
+| How do the parts connect? | Each section unlocks after the check before it is passed. |
+| What does it remember? | Progress survives a reload; class high scores live in Firestore. |
+| Why is this better than how you were taught? | It shows the idea moving instead of describing it. |
 
-> **Warning:**
-> Committing the plan before AI touches it is not busywork — it is the evidence that the thinking is yours. A `PLAN.md` whose first committed version reads like AI wrote it defeats the point of the phase.
+## <font color="#388bfd">Building and Shipping</font>
 
----
+- **Branch first.** All widget code goes on a branch in your fork, never straight onto the default branch.
+- **Use the manager's loop** from [Intro to AI Coding](../InterfacingWithAI/): Ask, Plan, then Agent one piece at a time, and test each piece in the browser with the [console open](../DebuggingJavaScript/).
+- **Make it remember.** Use what you learned about [persistence](../PersistenceAndIntermediateWeb/) and [Firestore](../DatabasesAndCollections/): a learner's progress should survive a reload.
+- **Match the house style.** The look must match the styles at [learnhw.web.app/admin](https://learnhw.web.app/admin) exactly.
+- **Ship it.** Deploy to your Firebase site, link to it from a button on your main page, and open a pull request.
 
-## <font color="#388bfd">Phase 3: Code</font>
+## <font color="#388bfd">What a Strong Widget Looks Like</font>
 
-1. Create a **branch** in your fork and do all coding there
-2. Use Cursor — Ask, Plan, and Agent modes — to code the site, testing continuously with the [console open](../DebuggingJavaScript/)
-3. Publish it to GitHub and to your live website via Firebase
-4. Open a **pull request** containing your final submission
+The widget is not done when it deploys. It goes through [feedback](../UXAndBehaviorTracking/), [iteration](../WidgetIteration/), a [peer review](../PeerReview/), and a presentation. Build toward that from day one:
 
-Work like a manager: delegate typing to the Agent in small, testable pieces; verify each piece in the browser before requesting the next.
-
----
-
-## <font color="#388bfd">What Your Widget Will Be Judged On</font>
-
-This widget is not finished when it deploys — it will go through [feedback iteration](../WidgetIteration/) and a formal [peer review](../PeerReview/) with a published rubric. Build from day one toward that bar:
-
-- Core flows work as stated, with no blocking issues
-- Behavior is factually correct for the topic being taught
-- Zero console errors on load and during use
-- Engaging, responsive UX with clear navigation
-- Visual match with the [learnhw.web.app/admin](https://learnhw.web.app/admin) styles
-
----
+- Every flow works as described, with nothing that blocks the learner.
+- What it teaches is correct.
+- The console shows zero errors on load and during use.
+- It is engaging, works on a phone, and is easy to navigate.
+- It looks like it belongs on learnhw.
 
 ## <font color="#388bfd">☑️ Check for Understanding</font>
 
-### <font color="#79c0ff">Introductory</font>
+- [ ] Say what your widget teaches and why it beats the way you were taught.
+- [ ] Explain why `PLAN.md` must be committed before any AI touches it.
+- [ ] Describe the path your code takes: branch, small tested pieces, deploy, pull request.
 
-- [ ] State the three phases of the project and what each one produces.
-- [ ] Explain why the topic must be approved before any planning starts.
-- [ ] Name the two hard rules every widget must follow.
+## <font color="#388bfd">🚀 Stretch Goals</font>
 
-### <font color="#79c0ff">Intermediate</font>
-
-- [ ] Explain why `PLAN.md` must be committed before AI rewrites it.
-- [ ] Describe the fork-branch-pull-request path your code takes from idea to submission.
-- [ ] Check whether your idea already exists online and articulate what yours does differently.
-
-### <font color="#79c0ff">Advanced</font>
-
-- [ ] Write a plan detailed enough that a classmate could build the widget from it.
-- [ ] Match an existing site's styles exactly by inspecting its pages.
-- [ ] Break the build into Agent-sized pieces and verify each one before moving on.
+- [ ] Write a plan detailed enough that a classmate could build your widget from it without asking you a question.
 
 ---
 
 [Assignment](ASSIGNMENT.md)
 
-← [Debugging JavaScript](../DebuggingJavaScript/) — Next: [Persistence and Intermediate Web](../PersistenceAndIntermediateWeb/)
+← [Intro to AI Coding](../InterfacingWithAI/) | Next: [UX and Behavior Tracking](../UXAndBehaviorTracking/)

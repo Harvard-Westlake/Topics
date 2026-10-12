@@ -649,9 +649,14 @@ if(__exports != exports)module.exports = exports;return module.exports}));
     var readmePath = lesson + '/README.md', assignPath = lesson + '/ASSIGNMENT.md';
     var jobs = [fetchText(readmePath)];
     reviews.forEach(function (r) { jobs.push(fetchText(r)); });
-    jobs.push(homework ? fetchText(assignPath) : Promise.resolve(null));
+    // Always fetch the assignment: a day whose README is marked
+    // <!-- no-lesson --> (an in-class-only day) shows its assignment even as a
+    // no-homework page, and never shows the README itself.
+    jobs.push(fetchText(assignPath));
     Promise.all(jobs).then(function (texts) {
       var readme = texts[0], assign = texts[texts.length - 1];
+      var noLesson = readme !== null && /^\s*<!--\s*no-lesson\b/.test(readme);
+      if (!homework && !noLesson) assign = null;
       doc.innerHTML = '';
       showBar(readmePath);
       // Reviews come first: they are the warm-up before the day's new content.
@@ -661,6 +666,7 @@ if(__exports != exports)module.exports = exports;return module.exports}));
         else doc.appendChild(reviewBlock(renderMarkdown(t, dirname(r), seen)));
       });
       if (readme === null) doc.appendChild(errorBox('No README.md for this lesson on ref "' + ref + '".', readmePath));
+      else if (noLesson && assign !== null) { /* in-class day: the assignment is the whole page */ }
       else if (assign !== null) {
         // Homework day: the lesson collapses above the assignment, labeled with
         // the lesson's own title ("Lesson: Commits"), which replaces the assignment's own Lesson line.

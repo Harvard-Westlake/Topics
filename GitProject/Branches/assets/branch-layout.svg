@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 380" width="760" height="380" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13">
+  <title>Two branches sharing history: main and feature point at different commits, and HEAD points at the branch you are on</title>
+  <rect width="760" height="380" rx="10" fill="#0d1117"/>
+  <defs>
+    <marker id="back" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8b949e"/>
+    </marker>
+    <marker id="blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#388bfd"/>
+    </marker>
+    <marker id="green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#3fb950"/>
+    </marker>
+    <marker id="orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#f0883e"/>
+    </marker>
+  </defs>
+
+  <text x="40" y="36" fill="#e6edf3" font-weight="700" font-size="15">The commits (each one points back at its parent)</text>
+
+  <!-- commits -->
+  <circle cx="90"  cy="150" r="26" fill="#161b22" stroke="#8b949e" stroke-width="2"/>
+  <text x="90" y="155" fill="#e6edf3" text-anchor="middle" font-weight="700">C1</text>
+  <circle cx="230" cy="150" r="26" fill="#161b22" stroke="#8b949e" stroke-width="2"/>
+  <text x="230" y="155" fill="#e6edf3" text-anchor="middle" font-weight="700">C2</text>
+  <circle cx="370" cy="110" r="26" fill="#161b22" stroke="#388bfd" stroke-width="2"/>
+  <text x="370" y="115" fill="#e6edf3" text-anchor="middle" font-weight="700">C3</text>
+  <circle cx="370" cy="210" r="26" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+  <text x="370" y="215" fill="#e6edf3" text-anchor="middle" font-weight="700">C4</text>
+
+  <!-- parent arrows point backward -->
+  <line x1="204" y1="150" x2="120" y2="150" stroke="#8b949e" stroke-width="2" marker-end="url(#back)"/>
+  <line x1="346" y1="118" x2="258" y2="143" stroke="#8b949e" stroke-width="2" marker-end="url(#back)"/>
+  <line x1="346" y1="202" x2="258" y2="158" stroke="#8b949e" stroke-width="2" marker-end="url(#back)"/>
+
+  <!-- branch labels -->
+  <rect x="470" y="94" width="90" height="32" rx="6" fill="#161b22" stroke="#388bfd" stroke-width="2"/>
+  <text x="515" y="115" fill="#388bfd" text-anchor="middle" font-weight="700">main</text>
+  <line x1="470" y1="110" x2="400" y2="110" stroke="#388bfd" stroke-width="2" marker-end="url(#blue)"/>
+
+  <rect x="470" y="194" width="90" height="32" rx="6" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+  <text x="515" y="215" fill="#3fb950" text-anchor="middle" font-weight="700">feature</text>
+  <line x1="470" y1="210" x2="400" y2="210" stroke="#3fb950" stroke-width="2" marker-end="url(#green)"/>
+
+  <rect x="640" y="194" width="80" height="32" rx="6" fill="#161b22" stroke="#f0883e" stroke-width="2"/>
+  <text x="680" y="215" fill="#f0883e" text-anchor="middle" font-weight="700">HEAD</text>
+  <line x1="640" y1="210" x2="564" y2="210" stroke="#f0883e" stroke-width="2" marker-end="url(#orange)"/>
+
+  <!-- files -->
+  <text x="40" y="282" fill="#e6edf3" font-weight="700" font-size="15">The files behind it</text>
+  <text x="40" y="310" fill="#8b949e">.git/refs/heads/main</text>
+  <text x="300" y="310" fill="#388bfd">C3's hash</text>
+  <text x="40" y="334" fill="#8b949e">.git/refs/heads/feature</text>
+  <text x="300" y="334" fill="#3fb950">C4's hash</text>
+  <text x="40" y="358" fill="#8b949e">.git/HEAD</text>
+  <text x="300" y="358" fill="#f0883e">ref: refs/heads/feature</text>
+  <text x="510" y="334" fill="#8b949e" font-size="12">A new commit now moves</text>
+  <text x="510" y="352" fill="#8b949e" font-size="12">feature forward. main stays.</text>
+</svg>

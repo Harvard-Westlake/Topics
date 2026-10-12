@@ -1,45 +1,77 @@
 <div align="center">
 
 # Branches
-*<font color="#8b949e">Diverging lines of history — the simplest Git-compliant implementation</font>*
-
-<font color="#a371f7">Reinforce</font>
+*<font color="#8b949e">A branch is a name that points at a commit and moves forward every time you commit on it.</font>*
 
 </div>
 
 ---
 
-> **Note:**
-> This part of the Git Project has not yet been fully specced. Content will be added here when the lesson design is finalized.
+![Two branches sharing history. Commits C1 and C2 come first. C3 and C4 both have C2 as their parent. The branch main points at C3, the branch feature points at C4, and HEAD points at feature. Underneath, the files behind it: .git/refs/heads/main holds C3's hash, .git/refs/heads/feature holds C4's hash, and .git/HEAD holds ref: refs/heads/feature. A new commit now moves feature forward and leaves main where it is.](assets/branch-layout.svg)
 
-## <font color="#388bfd">What This Part Will Cover</font>
+A branch is a bookmark in the history, not a copy of the project:
 
-- How Git stores branches as files — the simplest possible representation
-- Pointing HEAD to a branch name instead of a commit hash directly
-- Creating a new branch (`git branch`) and switching to it (`git checkout`)
-- How commits advance the active branch pointer
-- How this connects to the `checkout` functionality from Part 4
+- **A branch:** a tiny file holding one commit hash.
+- **HEAD:** says which branch you are on.
+- **Committing:** moves the branch you are on to the new commit. Every other branch stays put.
+
+## <font color="#388bfd">Table of Contents</font>
+
+1. [What a branch really is](#what-a-branch-is)
+2. [How HEAD and committing move a branch](#head-and-committing)
+3. [Switching to another branch](#switching-branches)
+
+## <font color="#388bfd">What a Branch Is</font>
+
+Real Git keeps each branch as a file in `.git/refs/heads/`, named after the branch. The file holds one line: the hash of the newest commit on that branch.
+
+```
+.git/refs/heads/main      → 8c411a89ed6d846f064ed0decdba3a857f0d1667
+.git/refs/heads/feature   → 2b98fbd4f414b26b612fa50b17879f62733254e6
+```
+
+**Creating a branch** writes one new file holding the commit you are on right now. No files are copied and no commits are made, which is why branches are instant and cost almost nothing. Two branches can even point at the same commit until one of them moves.
+
+## <font color="#388bfd">HEAD and Committing</font>
+
+In the Commits lesson, `HEAD` held a commit hash. With branches, HEAD usually holds the **name** of a branch instead:
+
+```
+ref: refs/heads/feature
+```
+
+That one change is what makes branches move. When you commit:
+
+1. The new commit's `parent:` is the commit the current branch points at.
+2. The commit file is saved, exactly as before.
+3. The **branch** file is updated to the new commit's hash. HEAD does not change: it still names the same branch.
+
+Each branch grows its own line of history from the commit where it started, like C3 and C4 above.
+
+If HEAD holds a plain commit hash instead of a branch name, Git calls it a **detached HEAD**. Checking out a commit (from the Commits lesson) does this. Commits made there belong to no branch, so they are easy to lose.
+
+## <font color="#388bfd">Switching Branches</font>
+
+Checking out a branch is checking out its commit, plus one more step:
+
+1. Read the branch file to get its commit hash.
+2. Check out that commit: tracked files, the index, and the working folder now match it.
+3. Write `ref: refs/heads/<branch>` into HEAD, so the next commit moves this branch.
+
+Nothing is lost by switching. Every commit on the other branch is still in `.git/objects/`, and its branch file still points at the newest one.
 
 ## <font color="#388bfd">☑️ Check for Understanding</font>
 
-### <font color="#79c0ff">Introductory</font>
+- [ ] Say what a branch file holds, and why creating a branch copies no files.
+- [ ] Explain which file changes when you commit on a branch, and which stays the same.
+- [ ] List what changes when you check out a branch, and what a detached HEAD is.
 
-- [ ] Explain what a branch pointer is and what it stores.
-- [ ] Describe how HEAD changes meaning when branches are introduced.
-- [ ] Explain why creating a branch does not copy any files or commit objects.
+## <font color="#388bfd">🚀 Stretch Goals</font>
 
-### <font color="#79c0ff">Intermediate</font>
-
-- [ ] Implement branch creation so that the branch file stores the current HEAD commit hash.
-- [ ] Implement HEAD so it stores a branch name (e.g. `ref: refs/heads/main`) rather than a commit hash directly.
-- [ ] Switch branches and verify that HEAD now points to the new branch.
-
-### <font color="#79c0ff">Advanced</font>
-
-- [ ] Commit on two different branches and show that each branch pointer advances independently.
-- [ ] Explain what "detached HEAD" means in the context of your implementation.
-- [ ] Describe what would need to change in `commit()` to support the branch pointer update pattern.
+- [ ] Draw the history after committing twice on `main` and once on `feature`, starting from the diagram above, with every branch label and HEAD in place.
 
 ---
 
-← [Commits](../Commits/) — Back to [Git Project](../)
+[Assignment](ASSIGNMENT.md)
+
+← [Commits](../Commits/) | Next: [Coding Standards](../CodingStandards/)

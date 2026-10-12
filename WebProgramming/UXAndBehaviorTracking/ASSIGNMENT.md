@@ -1,55 +1,40 @@
-# Assignment — UX and Behavior Tracking
+# Assignment - UX and Behavior Tracking
 
 *Lesson: [UX and Behavior Tracking](README.md)*
 
-**Due:** Next class  
-**Points:** 50
+**Due:** Before the start of next class
 
 ---
 
-## Activity 1 — Explore Innovative UX/UI
+## What to Build
 
-Spend real time with at least **three** sites from the [Website Inspiration](../Docs/website-inspiration.md) collection. Interact with each until you understand not just *what* it does but *how it got you to engage*.
+A written UX analysis of three great sites, and a UX plan for your own Learning Widget.
 
----
+| Result | What it contains |
+|---|---|
+| **Three site analyses** | For three sites from the [Website Inspiration](../Docs/website-inspiration.md) collection: how fast each hooked you and which element did it, how you always knew what to do next (or didn't), the user flow from arrival to payoff, and where its click and scroll heatmaps would run hot. |
+| **Your widget's user flow** | An arrow chain from arriving to the payoff, like `arrive -> try slider -> quiz -> result`. |
+| **Your first-seconds hook** | The one thing a first-time visitor sees that makes them engage right away. |
+| **A tracking plan** | The behavior you would measure, and what the heatmap should look like if your design works. |
+| **One stolen idea** | A specific technique from one of the sites, and the exact place it lands in your widget. |
 
-## Activity 2 — UX Documentation (to turn in)
-
-Write up and submit the following:
-
-1. **Site analyses (3).** For each of your three sites, document:
-   - **Engagement speed** — how quickly it hooked you, and what specific element did it
-   - **Navigation** — how you always knew (or didn't know) what to do next
-   - **User flow** — the path it steered you along, from arrival to payoff
-   - **Predicted heatmap** — where its click and scroll heatmaps would run hot, and why
-
-2. **Your widget's UX plan.** Apply the same lenses to your own Learning Widget:
-   - The intended user flow, arrival to payoff, as a short arrow chain (like `arrive -> try slider -> quiz -> result`)
-   - The one thing a first-time user sees that makes them engage within seconds
-   - What user behavior you would track to verify the flow works, and what a heatmap of your widget *should* look like if the design succeeds
-   - One idea stolen from the inspiration sites, and where it lands in your widget
+**Verify:** every claim points at a specific element ("the depth counter keeps running as you scroll"), never a feeling ("it's fun").
 
 ---
 
 ## Success Criteria
 
-Confirm each of the following before submitting:
-
-- [ ] **Three sites analyzed** — each analysis covers engagement speed, navigation, flow, and a predicted heatmap
-- [ ] **Specific, not generic** — every claim points at a concrete element ("the depth counter"), not a vibe ("it's fun")
-- [ ] **Widget flow documented** — your widget's user flow is written as an explicit arrival-to-payoff chain
-- [ ] **Tracking plan included** — you name the behavior you would measure and what result would confirm the design works
-- [ ] **One stolen idea** — a specific technique from an inspiration site, mapped to a specific place in your widget
+- [ ] **Three sites analyzed:** each covers engagement speed, navigation, user flow, and a predicted heatmap.
+- [ ] **Specific, not vague:** every claim names a concrete element on the page.
+- [ ] **Widget flow written:** your flow is an explicit arrival-to-payoff chain.
+- [ ] **Tracking plan included:** you name the behavior to measure and the result that would prove the design works.
+- [ ] **One stolen idea:** a specific technique, mapped to a specific place in your widget.
 
 ---
 
 ## Submission
 
-Submit **one text response** on Canvas.
-
-### Text response
-
-Copy the stencil below, fill in each line, and paste it into the Canvas text box:
+Submit **text** on Canvas. Copy the stencil below, fill in each line, and paste it into the Canvas text box:
 
 ```
 Site 1 (name + analysis):        
@@ -60,6 +45,3 @@ First-seconds hook:
 Behavior I would track + why:    
 Idea I'm stealing + where:       
 ```
-
-> **Note:**
-> The analyses are the graded core of this assignment. "It was cool" earns nothing; "the deep-sea page keeps a depth meter running so scrolling itself becomes the reward" shows you saw the mechanism.

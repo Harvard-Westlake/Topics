@@ -86,16 +86,17 @@ Project Strata: build a tiny decoder-only transformer language model in Java fro
 **[Web Programming](WebProgramming/)**  
 Build and ship a live, database-backed educational widget — hosted on Firebase, styled to a production spec, and hardened through peer review — while learning to direct AI as a manager rather than lean on it.
 
-- [Interfacing with AI](WebProgramming/InterfacingWithAI/) — assumptions in prompting, AI-guided research, and first HTML pages in Cursor
-- [Website Hosting](WebProgramming/WebsiteHosting/) — HTML/CSS/JS roles and deploying a live site with the Firebase CLI
-- [JavaScript and Coding with Cursor](WebProgramming/JavaScriptAndCursor/) — web event binding, classes, and Cursor's Ask/Plan/Agent modes
+- [Website Hosting](WebProgramming/WebsiteHosting/) — HTML, CSS, and JS roles, your first page, and deploying a live site with Firebase
+- [JavaScript Events and Classes](WebProgramming/JavaScriptAndCursor/) — web events and JavaScript classes
 - [Debugging JavaScript](WebProgramming/DebuggingJavaScript/) — DevTools, console methods, and reading stack traces
-- [The Learning Widget Project](WebProgramming/LearningWidget/) — research, plan, and build an educational widget published via GitHub and Firebase
-- [Persistence and Intermediate Web](WebProgramming/PersistenceAndIntermediateWeb/) — why page state vanishes and the ladder of ways websites remember
+- [Persistence and Intermediate Web](WebProgramming/PersistenceAndIntermediateWeb/) — why page state vanishes and the ways websites remember
 - [Databases and Collections](WebProgramming/DatabasesAndCollections/) — local storage vs cookies, Firestore CRUD, and security rules
-- [UX and Behavior Tracking](WebProgramming/UXAndBehaviorTracking/) — engagement speed, navigation, user flow, and heatmaps
+- [Intro to AI Coding](WebProgramming/InterfacingWithAI/) — assumptions in prompts and Cursor's Ask, Plan, and Agent modes
+- [The Learning Widget Project](WebProgramming/LearningWidget/) — plan and build an educational widget published via GitHub and Firebase
+- [UX and Behavior Tracking](WebProgramming/UXAndBehaviorTracking/) — engagement, navigation, user flow, and heatmaps
 - [Widget Iteration from Feedback](WebProgramming/WidgetIteration/) — a shrinking feedback.md and a zero-error console
-- [Collaborative Peer Review](WebProgramming/PeerReview/) — reviewing a partner's PR with your grade attached to the approval
+- [Collaborative Peer Review](WebProgramming/PeerReview/) — reviewing a partner's widget and preparing to present it
+- [Widget Presentations](WebProgramming/WidgetPresentations/) — in-class walkthroughs of the reviewed widgets and their findings
 
 **[App Design and Planning](AppDesign/)**  
 Design a product for users before any implementation talk, converge as a class on one design, translate it into a technical specification, and plan the MVP — the exact path a real product team walks.
@@ -157,7 +158,8 @@ Recreate the core of Git in Java — hashing, blobs, trees, and commits — to u
 - [Trees](GitProject/Trees/) — index formatting, tree files, and building trees from staged files
 - [Peer Tree Verification](GitProject/PeerTreeVerification/) — fork a classmate's Part 3, hash their trees by hand, prove which behaviors work, and rename it for readability
 - [Commits](GitProject/Commits/) — commit files, the HEAD chain, rebuilding the index, and checkout
-- [Branches](GitProject/Branches/) — branch pointers and HEAD *(coming soon)*
+- [Branches](GitProject/Branches/) — branch files, HEAD, and switching branches
+- [Coding Standards](GitProject/CodingStandards/) — in-class wrap-up: the class agrees on shared coding rules
 
 **[Group Programming](GroupProgramming/)**  
 Working like an engineering team — work tracked in issues, shipped in branches, reviewed by non-authors, merged into a protected main, and handed off with documentation a stranger can continue.

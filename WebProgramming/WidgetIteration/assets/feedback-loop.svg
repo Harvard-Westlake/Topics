@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 340" width="760" height="340" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13">
+  <title>feedback.md shrinking commit by commit: ten items at the first commit, six, then two, then the file is deleted and the console shows zero errors</title>
+  <rect width="760" height="340" rx="10" fill="#0d1117"/>
+  <defs>
+    <marker id="gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8b949e"/>
+    </marker>
+  </defs>
+
+  <text x="30" y="36" fill="#e6edf3" font-weight="700" font-size="15">feedback.md over your commits</text>
+  <text x="30" y="56" fill="#8b949e" font-size="12">Every item you fix is deleted. The Git history proves the feedback was handled.</text>
+
+  <!-- commit 1 -->
+  <rect x="30" y="80" width="150" height="190" rx="8" fill="#161b22" stroke="#f0883e" stroke-width="2"/>
+  <text x="105" y="104" fill="#f0883e" text-anchor="middle" font-weight="700">commit 1</text>
+  <g fill="#e6edf3"><rect x="48" y="118" width="114" height="10" rx="2" fill="#30363d"/><rect x="48" y="134" width="114" height="10" rx="2" fill="#30363d"/><rect x="48" y="150" width="114" height="10" rx="2" fill="#30363d"/><rect x="48" y="166" width="114" height="10" rx="2" fill="#30363d"/><rect x="48" y="182" width="114" height="10" rx="2" fill="#30363d"/><rect x="48" y="198" width="114" height="10" rx="2" fill="#30363d"/><rect x="48" y="214" width="114" height="10" rx="2" fill="#30363d"/><rect x="48" y="230" width="114" height="10" rx="2" fill="#30363d"/></g>
+  <text x="105" y="260" fill="#8b949e" text-anchor="middle" font-size="12">10 items</text>
+
+  <line x1="186" y1="175" x2="214" y2="175" stroke="#8b949e" stroke-width="2" marker-end="url(#gray)"/>
+
+  <!-- commit 4 -->
+  <rect x="220" y="80" width="150" height="190" rx="8" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+  <text x="295" y="104" fill="#e3b341" text-anchor="middle" font-weight="700">commit 4</text>
+  <rect x="238" y="118" width="114" height="10" rx="2" fill="#30363d"/><rect x="238" y="134" width="114" height="10" rx="2" fill="#30363d"/><rect x="238" y="150" width="114" height="10" rx="2" fill="#30363d"/><rect x="238" y="166" width="114" height="10" rx="2" fill="#30363d"/>
+  <text x="295" y="260" fill="#8b949e" text-anchor="middle" font-size="12">6 items</text>
+
+  <line x1="376" y1="175" x2="404" y2="175" stroke="#8b949e" stroke-width="2" marker-end="url(#gray)"/>
+
+  <!-- commit 7 -->
+  <rect x="410" y="80" width="150" height="190" rx="8" fill="#161b22" stroke="#79c0ff" stroke-width="2"/>
+  <text x="485" y="104" fill="#79c0ff" text-anchor="middle" font-weight="700">commit 7</text>
+  <rect x="428" y="118" width="114" height="10" rx="2" fill="#30363d"/><rect x="428" y="134" width="114" height="10" rx="2" fill="#30363d"/>
+  <text x="485" y="260" fill="#8b949e" text-anchor="middle" font-size="12">2 items</text>
+
+  <line x1="566" y1="175" x2="594" y2="175" stroke="#8b949e" stroke-width="2" marker-end="url(#gray)"/>
+
+  <!-- done -->
+  <rect x="600" y="80" width="130" height="190" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="665" y="104" fill="#3fb950" text-anchor="middle" font-weight="700">commit 9</text>
+  <text x="665" y="150" fill="#3fb950" text-anchor="middle">file deleted</text>
+  <text x="665" y="190" fill="#e6edf3" text-anchor="middle" font-size="12">Console:</text>
+  <text x="665" y="210" fill="#3fb950" text-anchor="middle" font-size="12">0 errors</text>
+  <text x="665" y="260" fill="#8b949e" text-anchor="middle" font-size="12">done</text>
+
+  <text x="30" y="306" fill="#8b949e" font-size="12">Keep each item in the tester's exact words until the moment it is fixed.</text>
+  <text x="30" y="326" fill="#8b949e" font-size="12">Then push: the pull request updates on its own.</text>
+</svg>

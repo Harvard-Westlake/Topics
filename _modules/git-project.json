@@ -102,6 +102,15 @@
       "_module": "GitProject",
       "review": null,
       "base_points": 15
+    },
+    {
+      "day": 13,
+      "duration": 1,
+      "title": "Coding Standards",
+      "path": "CodingStandards",
+      "_module": "GitProject",
+      "review": null,
+      "no_assignment": true
     }
   ],
   "updated": "2026-10-12"

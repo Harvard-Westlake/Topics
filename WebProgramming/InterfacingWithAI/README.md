@@ -1,131 +1,78 @@
 <div align="center">
 
-# Interfacing with AI
-*<font color="#8b949e">Assumptions, prompting, and using AI to research topics you have never seen</font>*
-
-<font color="#a371f7">Learning</font>
+# Intro to AI Coding
+*<font color="#8b949e">AI coding means you decide what gets built and check every result, while the AI does the typing.</font>*
 
 </div>
 
 ---
 
+![Two ideas side by side. On the left, every prompt is what you said, for example "a quiz page about the heart", plus what you left out, such as colors, layout, how many questions, and what happens on a wrong answer; the AI decides those for you. On the right, the manager's loop: 1 Ask, 2 Plan, 3 Agent, 4 Test, then back to Ask for the next small piece. Test means the browser and the console, not the AI saying it works. The AI writes drafts; your name is on the commit.](assets/ai-coding-loop.svg)
+
+You already know HTML, CSS, JavaScript, hosting, and Firestore. Now you get a very fast assistant:
+
+- **The AI fills every gap** you leave in a prompt with its own guess.
+- **You are the manager:** you plan, you choose, and you check.
+- **Work in small pieces** and test each one in the browser before asking for the next.
+
 ## <font color="#388bfd">Table of Contents</font>
 
-**[Learning Objectives](#learning-objectives)**  
-What you should be able to do by the end of this lesson.
+1. [Assumptions: what the AI decides when you do not](#assumptions)
+2. [Ask, Plan, and Agent: picking the right mode in Cursor](#ask-plan-and-agent)
+3. [The manager's loop for building any feature](#the-managers-loop)
 
-**[Assumptions: The Silent Ingredient in Every Prompt](#assumptions-the-silent-ingredient-in-every-prompt)**  
-Why the same prompt produces wildly different results, and where the differences come from.
+## <font color="#388bfd">Assumptions</font>
 
-**[Researching a New Topic with AI](#researching-a-new-topic-with-ai)**  
-A repeatable technique for learning something you have never seen — starting with HTML.
+When you ask an AI for something, everything you **do not** say gets filled in for you. Ask for "a website about dogs" and the AI silently picks the colors, the layout, the tone, the breed in the photos, and whether there is a navigation bar. Those choices are **assumptions**: gaps in your prompt that the AI covers with its own defaults.
 
-**[Creating and Viewing HTML Pages in Cursor](#creating-and-viewing-html-pages-in-cursor)**  
-Your first hands-on step: make a real page and open it in a browser.
-
----
-
-## <font color="#388bfd">Learning Objectives</font>
-
-By the end of this lesson, you should be able to:
-
-1. Explain what an **assumption** is in the context of prompting AI, and identify the assumptions hidden in a prompt
-2. Use AI to research a topic that is new to you — and verify what it tells you
-3. Create an HTML file in Cursor and view it in a web browser
-
----
-
-## <font color="#388bfd">Assumptions: The Silent Ingredient in Every Prompt</font>
-
-When you ask an AI for something, everything you *do not* say gets filled in for you. Ask for "a website about dogs" and the AI silently decides the colors, the layout, the tone, the breed in the photos, and whether there is a navigation bar. Those decisions are **assumptions** — gaps in your prompt that the AI papers over with its own defaults.
-
-This matters for two reasons:
-
-| If you don't manage assumptions... | If you do... |
+| If you don't manage assumptions | If you do |
 |---|---|
-| Two people with the "same" idea get completely different results | You can predict and reproduce what you'll get |
-| The AI's choices quietly replace your choices | Your intent survives the trip through the AI |
-| You can't tell whether an odd result is a bug or a guess | You know exactly what you specified and what you left open |
+| Two people with the "same" idea get completely different results. | You can predict and repeat what you get. |
+| The AI's choices quietly replace yours. | Your intent survives the trip through the AI. |
+| You can't tell a bug from a guess. | You know what you specified and what you left open. |
 
-> **Note:**
-> Assumptions are not bad — you could never specify *everything*. The skill is knowing which decisions you care about and stating those explicitly, while consciously leaving the rest open.
+You could never specify everything. The skill is knowing which decisions you care about, stating those, and leaving the rest open on purpose.
 
-You will test this directly in today's activities: everyone runs a nearly identical prompt, then we analyze how — and why — the results diverge.
+## <font color="#388bfd">Ask, Plan, and Agent</font>
 
----
+Cursor's chat panel has a mode picker. Choosing the mode is a management decision:
 
-## <font color="#388bfd">Researching a New Topic with AI</font>
+| Mode | What it does | Use it when |
+|---|---|---|
+| **Ask** | Answers questions about your code. Changes nothing. | You want to **understand** what to do. |
+| **Plan** | Researches your files and writes a step-by-step plan for you to edit and approve. | You want to **decide how** it gets built. |
+| **Agent** | Edits files and runs commands to carry out the work. | You know what you want and are ready to **hand off the typing**. |
 
-AI is one of the fastest research tutors ever built — *if* you drive it correctly. Today's research topic is **HTML**, the language web pages are written in. Use this technique, and reuse it every time this course throws a new topic at you:
+Two more tools keep you in charge:
 
-1. **Ask for the shape first.** "What is HTML? Explain it to a high school student in five sentences." Get the outline before the details.
-2. **Ask follow-ups relentlessly.** Every term you don't recognize becomes your next question: "You said 'tag' — what is a tag?"
-3. **Ask for a tiny example.** "Show me the smallest complete HTML page that displays one heading."
-4. **Flip the direction: make it quiz you.** "Ask me three questions to check whether I understood." Being tested exposes what reading alone hides.
-5. **Verify one claim independently.** Pick a statement the AI made and confirm it against a primary source — for HTML, that is [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/HTML). AI answers are drafts, not verdicts.
+- **Context:** type `@` to point the AI at the exact files it should read, instead of letting it guess.
+- **Rules:** a project rules file (in `.cursor/rules/`) states your standing decisions once, like "use the learnhw styles" or "no frameworks", so you do not repeat them in every prompt.
 
-> **Tip:**
-> If the AI's answer contains a sentence you could not explain to a classmate, you are not done researching — you have just moved the mystery one layer down.
+> **Warning:** AI makes mistakes and then confidently insists it is right. It will say code works that was never run, and "fix" one bug by breaking something else. Check results in the browser and the console, never in the chat window.
 
-Skim the [HTML reference doc](../Docs/html.md) after your research and check the AI's story against it.
+## <font color="#388bfd">The Manager's Loop</font>
 
----
+Build every feature the same way:
 
-## <font color="#388bfd">Creating and Viewing HTML Pages in Cursor</font>
+1. **Ask** until you can describe the feature precisely in plain English.
+2. **Plan** the pieces: which files, which functions, which events, what data goes to Firestore.
+3. **Agent** one piece at a time, small enough to test right away. Commit before each Agent step so you can always go back.
+4. **Test** in the browser with the console open. Have the AI fix what is actually broken, not what it claims is broken.
 
-Time to make a real page. In Cursor:
-
-1. Create a folder for today's work and open it (**File → Open Folder**)
-2. Create a new file named `index.html`
-3. Type (do not paste — typing builds recognition) a minimal page:
-
-```html
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>My First Page</title>
-  </head>
-  <body>
-    <h1>Hello from Cursor</h1>
-    <p>This page was written by hand.</p>
-  </body>
-</html>
-```
-
-4. Save the file
-5. Find `index.html` in your file manager (Finder or File Explorer) and double-click it — it opens in your web browser
-
-The browser renders your text file as a page. Change the heading in Cursor, save, and refresh the browser to watch the edit appear. This edit-save-refresh loop is the basic heartbeat of all web development.
-
-> **Warning:**
-> The browser shows the file *as it was when you loaded it*. If an edit doesn't seem to appear, you almost certainly forgot to save the file or refresh the browser — check both before suspecting anything deeper.
-
-Today's activities — the assumption experiment and the divergence analysis — are in the [assignment](ASSIGNMENT.md).
-
----
+Managers who skip straight to Agent get code they do not understand, solving a problem they never defined.
 
 ## <font color="#388bfd">☑️ Check for Understanding</font>
 
-### <font color="#79c0ff">Introductory</font>
-
-- [ ] Define an assumption in the context of prompting AI and give one example.
-- [ ] Create an HTML file in Cursor and open it in a browser.
-- [ ] Name the five steps of the AI research technique.
-
-### <font color="#79c0ff">Intermediate</font>
-
 - [ ] Take a vague prompt and list three decisions the AI would have to make on its own.
-- [ ] Explain why the same prompt gives different students different results.
-- [ ] Use the edit-save-refresh loop to change a page and see the change appear.
+- [ ] Say which Cursor mode you would use to understand, to plan, and to build, and why.
+- [ ] Run one loop: ask, plan, build one small piece with Agent, and test it in the browser.
 
-### <font color="#79c0ff">Advanced</font>
+## <font color="#388bfd">🚀 Stretch Goals</font>
 
-- [ ] Rewrite a vague prompt so that two different people would get nearly identical results.
-- [ ] Verify an AI claim against a primary source and explain why that step is never optional.
-- [ ] Apply the research technique to a topic outside computer science and show it still works.
+- [ ] Write a project rules file that pins down three decisions you keep repeating, and show that the AI follows it.
 
 ---
 
 [Assignment](ASSIGNMENT.md)
 
-← Back to [Web Programming](../) — Next: [Website Hosting](../WebsiteHosting/)
+← [Databases and Collections](../DatabasesAndCollections/) | Next: [The Learning Widget Project](../LearningWidget/)

@@ -17,3 +17,4 @@ Program Git
 | 2.9.1 | Peer Tree Verification | [GitProject/PeerTreeVerification](../../GitProject/PeerTreeVerification/) | — |
 | 2.10 · 2d | Commits | [GitProject/Commits](../../GitProject/Commits/) | — |
 | 2.12 | Branches | [GitProject/Branches](../../GitProject/Branches/) | — |
+| 2.13 | Coding Standards *(no assignment)* | [GitProject/CodingStandards](../../GitProject/CodingStandards/) | — |
