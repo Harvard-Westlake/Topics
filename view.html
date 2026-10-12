@@ -598,7 +598,7 @@ if(__exports != exports)module.exports = exports;return module.exports}));
     var full = location.href;
     bar.innerHTML =
       '<span class="crumb">' + escapeHtml(crumbs(mainPath)) + '</span>' +
-      '<span class="badge' + (ref === 'main' ? '' : ' alt') + '" title="Git ref this page is showing">' + escapeHtml(ref) + '</span>' +
+      '<span class="badge' + (ref === 'main' ? '' : ' alt') + '" title="Git branch this page is showing">branch: ' + escapeHtml(ref) + '</span>' +
       (srcBase ? '<span class="badge alt" title="Reading the local working tree, not GitHub">local</span>' : '') +
       '<span class="spacer"></span>' +
       (embedded ? '<a href="' + escapeHtml(full) + '" target="_blank" rel="noopener">Open full page &#8599;</a>' : '') +
@@ -663,12 +663,12 @@ if(__exports != exports)module.exports = exports;return module.exports}));
       if (readme === null) doc.appendChild(errorBox('No README.md for this lesson on ref "' + ref + '".', readmePath));
       else if (assign !== null) {
         // Homework day: the lesson collapses above the assignment, labeled with
-        // the lesson's own title ("Lesson - Commits").
+        // the lesson's own title ("Lesson: Commits"), which replaces the assignment's own Lesson line.
         var tm = readme.match(/^#\s+(.+?)\s*$/m);
         var det = document.createElement('details');
         det.className = 'lesson';
         var sum = document.createElement('summary');
-        sum.textContent = 'Lesson - ' + (tm ? tm[1].replace(/<[^>]*>/g, '') : lesson.split('/').pop());
+        sum.textContent = 'Lesson: ' + (tm ? tm[1].replace(/<[^>]*>/g, '') : lesson.split('/').pop());
         det.appendChild(sum);
         det.appendChild(renderMarkdown(readme, lesson, seen));
         doc.appendChild(det);
