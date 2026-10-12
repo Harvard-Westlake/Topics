@@ -12,7 +12,7 @@ Checkout takes the project back to a point in time. Real Git only changes files 
 
 ## What to Build
 
-Add **Check out** to the interface. Given a commit hash, afterward:
+Fill in `checkout(commitHash)` in `GitWrapper`. Given a commit hash, afterward:
 
 - Every file in that commit's snapshot exists at its path, with that commit's contents.
 - Files that were tracked before but are not in that commit are gone, and so are folders they leave empty.

@@ -26,7 +26,7 @@ Extend their code. Do not refactor it for taste: your job is to add commits on t
 | Milestone | What it does | Commit label |
 |---|---|---|
 | [Git-4.1: Create a Commit (File and HEAD Link)](milestones/Git-4-1.md) | Save the staged snapshot as a commit and move HEAD to it | `(Git-4.1): Created a Commit` |
-| [Git-4.2: Implement the Interface](milestones/Git-4-2.md) | One place to initialize, stage, commit, and check out | `(Git-4.2): Implemented the Interface` |
+| [Git-4.2: Implement the GitWrapper Interface](milestones/Git-4-2.md) | Fill in the provided `GitWrapper` class: init, add, commit, and checkout | `(Git-4.2): Implemented the Interface` |
 | [Git-4.3: Regenerate the Index](milestones/Git-4-3.md) | Rewrite the index from any commit's snapshot | `(Git-4.3): Regenerated the Index` |
 | [Git-4.4: Check Out a Commit](milestones/Git-4-4.md) | Take the project back to any commit | `(Git-4.4): Checked Out a Commit` |
 
@@ -36,7 +36,7 @@ Extend their code. Do not refactor it for taste: your job is to add commits on t
 
 - [ ] **Commits are correct:** every commit file has the five lines, the first has no `parent:` line, and each later `parent:` is the commit before it.
 - [ ] **HEAD follows the newest commit:** after each commit or checkout, `git/HEAD` holds that commit's hash.
-- [ ] **The interface runs every operation:** initialize, stage, commit, and check out all work from one place, and `README.md` shows how.
+- [ ] **`GitWrapper` runs every operation:** `init`, `add`, `commit`, and `checkout` work through the provided class with unchanged signatures, and `README.md` shows how.
 - [ ] **The index regenerates:** emptying `git/index` and regenerating it from a commit gives back the same lines.
 - [ ] **Checkout restores a commit:** tracked files match that commit, untracked files are untouched.
 - [ ] **`README.md` updated:** bugs found and fixed, and anything missing, written down.
