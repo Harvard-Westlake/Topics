@@ -1,7 +1,6 @@
 # Assignment — Team Design and Pitch
 
-*Lesson: [Team Design and Pitch](README.md)*
-
+**Lesson:** [Team Design and Pitch](README.md)  
 **Due:** Next class (final presentation day)
 
 ---

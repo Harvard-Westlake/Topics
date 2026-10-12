@@ -72,20 +72,20 @@
 <style>
   /* Light theme = the Harvard-Westlake look of learn.hw.com (LearnHW's
      index.css brand tokens): warm #f2f0ec page, white square-cornered panel,
-     black Source Sans headings, brand-red links, khaki table heads and inline
+     black Source Sans headings, standard blue links, khaki table heads and inline
      code, gold callouts. Light is the default; dark is opt-in via the OS
      setting on a full-page visit, never inside a Canvas frame (Canvas is
      light, so a dark frame would sit in a light page). ?theme=light|dark forces one. */
   :root {
     --hw-red: #DA0016; --hw-gold: #EDA300; --hw-blue: #539ADC; --hw-khaki: #BFC299; --hw-grey: #4D4D4D;
     --bg: #f2f0ec; --panel: #ffffff; --fg: #000000; --muted: #4D4D4D; --muted-2: rgb(77 77 77 / 50%);
-    --link: #000000; --link-line: rgb(77 77 77 / 45%); --link-hover: #DA0016; --heading: #000000; --rule: #DA0016;
+    --link: #0969da; --link-line: rgb(9 105 218 / 45%); --link-hover: #0550ae; --heading: #000000; --rule: #DA0016;
     --border: rgb(77 77 77 / 20%); --shadow: 0 1px 3px rgba(0,0,0,.08);
     --code-bg: rgb(191 194 153 / 28%); --code-fg: #a31515; --code-border: rgb(77 77 77 / 18%); --pre-bg: #ffffff; --pre-fg: #000000;
     --pre-border: #e5e5e5; --tk-c: #008000; --tk-s: #a31515; --tk-n: #098658; --tk-k: #0000ff; --tk-x: #af00db; --tk-f: #795e26; --tk-t: #267f99; --tk-v: #001080;
     --quote-bg: #fffbec; --quote-border: #EDA300; --quote-fg: #000000;
     --th-bg: rgb(191 194 153 / 20%); --tr-alt: #fcfcfc; --cell-border: #f1f3f5;
-    --bar-bg: #ffffff; --bar-fg: #000000; --bar-link: #4D4D4D; --bar-hover: rgb(191 194 153 / 20%);
+    --bar-bg: #ffffff; --bar-fg: #000000; --bar-link: #0969da; --bar-hover: rgb(191 194 153 / 20%);
     --badge-bg: rgb(83 154 220 / 20%); --badge-fg: #1d4f7c; --badge-alt-bg: rgb(237 163 0 / 25%); --badge-alt-fg: #6b4a00;
     --review: #8957e5; --review-bg: #f6f3fc; --lesson-bg: #f8f7f4; --error: #DA0016;
     --activity-head-bg: rgb(237 163 0 / 22%); --activity-bg: #fffaee; --activity-edge: #EDA300;
@@ -95,13 +95,13 @@
   }
   :root[data-theme="dark"] {
     --bg: #0d1117; --panel: #0d1117; --fg: #e6edf3; --muted: #9198a1; --muted-2: #6e7681;
-    --link: #e6edf3; --link-line: rgb(145 152 161 / 55%); --link-hover: #ff6b6b; --heading: #f0f3f6; --rule: #DA0016;
+    --link: #4493f8; --link-line: rgb(68 147 248 / 55%); --link-hover: #79c0ff; --heading: #f0f3f6; --rule: #DA0016;
     --border: #3d444d; --shadow: none;
     --code-bg: #1e1e1e; --code-fg: #ce9178; --code-border: #3c3c3c; --pre-bg: #1e1e1e; --pre-fg: #d4d4d4;
     --pre-border: #3c3c3c; --tk-c: #6a9955; --tk-s: #ce9178; --tk-n: #b5cea8; --tk-k: #569cd6; --tk-x: #c586c0; --tk-f: #dcdcaa; --tk-t: #4ec9b0; --tk-v: #9cdcfe;
     --quote-bg: #1f1a0e; --quote-border: #EDA300; --quote-fg: #e6edf3;
     --th-bg: #161b22; --tr-alt: #10151c; --cell-border: #262c36;
-    --bar-bg: #010409; --bar-fg: #e6edf3; --bar-link: #9198a1; --bar-hover: #161b22;
+    --bar-bg: #010409; --bar-fg: #e6edf3; --bar-link: #4493f8; --bar-hover: #161b22;
     --badge-bg: #122a3d; --badge-fg: #79b8ff; --badge-alt-bg: #3a2a08; --badge-alt-fg: #f0b323;
     --review: #ab7df8; --review-bg: #161226; --lesson-bg: #10151c;
     --activity-head-bg: #3a2a08; --activity-bg: #1f1a0e; --activity-edge: #EDA300;
@@ -113,7 +113,7 @@
          -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
   :focus-visible { outline: none; box-shadow: 0 0 0 3px rgb(218 0 22 / 20%); }
 
-  /* Top bar — the hw-topnav: white, bottom rule, black brand, grey links with khaki hover */
+  /* Top bar — the hw-topnav: white, bottom rule, black brand, blue links with khaki hover */
   #bar { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; padding: 10px 24px; font-size: 14px;
          color: var(--bar-fg); background: var(--bar-bg); border-bottom: 1px solid var(--border); }
   #bar a { color: var(--bar-link); text-decoration: none; padding: 4px 8px; }
@@ -144,7 +144,7 @@
   .md h4 { font-size: 1.1em; font-weight: 600; }
   .md h5, .md h6 { font-size: 1em; font-weight: 700; }
   .md p, .md blockquote, .md ul, .md ol, .md dl, .md table, .md pre, .md details { margin: 0 0 .9em; }
-  /* Links read as text with an underline (not brand red everywhere); red only on hover */
+  /* Links are the standard blue everywhere (lesson, assignment, milestone, and nav links alike) */
   .md a { color: var(--link); font-weight: 500; text-decoration: underline; text-decoration-color: var(--link-line);
           text-decoration-thickness: 1px; text-underline-offset: .18em; }
   .md a:hover { color: var(--link-hover); text-decoration-color: currentColor; }
@@ -207,9 +207,6 @@
   .md h3 + details > summary { font-size: 1.25em; }
 
   /* Composed class-day blocks */
-  details.lesson { background: var(--lesson-bg); border: 1px solid var(--border); border-left: 3px solid var(--hw-red); border-radius: var(--radius); padding: 10px 16px; margin-bottom: 24px; }
-  details.lesson > summary { cursor: pointer; font-weight: 700; color: var(--fg); }
-  details.lesson > .md { margin-top: 12px; }
   .review { background: var(--review-bg); border-left: 3px solid var(--review); padding: 12px 16px; margin-bottom: 24px; border-radius: var(--radius); }
   .review > .label { font-weight: 700; color: var(--review); margin: 0 0 8px; text-transform: uppercase; letter-spacing: .06em; font-size: .85em; }
 </style>
@@ -667,25 +664,10 @@ if(__exports != exports)module.exports = exports;return module.exports}));
       });
       if (readme === null) doc.appendChild(errorBox('No README.md for this lesson on ref "' + ref + '".', readmePath));
       else if (noLesson && assign !== null) { /* in-class day: the assignment is the whole page */ }
-      else if (assign !== null) {
-        // Homework day: the lesson collapses above the assignment, labeled with
-        // the lesson's own title ("Lesson: Commits"), which replaces the assignment's own Lesson line.
-        var tm = readme.match(/^#\s+(.+?)\s*$/m);
-        var det = document.createElement('details');
-        det.className = 'lesson';
-        var sum = document.createElement('summary');
-        sum.textContent = 'Lesson: ' + (tm ? tm[1].replace(/<[^>]*>/g, '') : lesson.split('/').pop());
-        det.appendChild(sum);
-        det.appendChild(renderMarkdown(readme, lesson, seen));
-        doc.appendChild(det);
-      } else doc.appendChild(renderMarkdown(readme, lesson, seen));
-      if (assign !== null) {
-        var an = renderMarkdown(assign, lesson, seen);
-        // The assignment's "Lesson: [Name](README.md)" line points at the toggle just above; drop the repeat.
-        var first = an.querySelector('h1 ~ p');
-        if (first && /^\s*Lesson:/.test(first.textContent) && first.querySelector('a')) first.remove();
-        doc.appendChild(an);
-      }
+      else if (assign === null) doc.appendChild(renderMarkdown(readme, lesson, seen));
+      // Homework day: the assignment's own "**Lesson:** [Name](README.md)" line
+      // links to the lesson page (on the same ref), so the README is not embedded.
+      if (assign !== null) doc.appendChild(renderMarkdown(assign, lesson, seen));
       var h = doc.querySelector('h1');
       finish((h ? h.textContent.trim() : lesson) + ' · ' + ref);
     }).catch(function (e) {

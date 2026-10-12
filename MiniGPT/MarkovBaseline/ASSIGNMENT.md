@@ -1,7 +1,6 @@
 # Assignment — The Reader with One-Step Memory
 
-*Lesson: [The Reader with One-Step Memory](README.md)*
-
+**Lesson:** [The Reader with One-Step Memory](README.md)  
 **Due:** End of Week 2
 
 ---

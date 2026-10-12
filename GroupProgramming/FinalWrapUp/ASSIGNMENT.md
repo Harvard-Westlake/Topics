@@ -1,7 +1,6 @@
 # Assignment — Final Wrap-Up and Deployment
 
-*Lesson: [Final Wrap-Up and Deployment](README.md)*
-
+**Lesson:** [Final Wrap-Up and Deployment](README.md)  
 **Due:** End of class today
 
 **Points:** 25

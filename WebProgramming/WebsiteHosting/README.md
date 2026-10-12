@@ -7,7 +7,7 @@
 
 ---
 
-![How a hosted website works. On the left, your laptop holds a public/ folder with index.html, styles.css, and script.js; only you can open these. An arrow labeled firebase deploy copies the folder to Firebase's servers, which are always on and serve it at your-project-id.web.app. Arrows from the servers go to a phone and a classmate: anyone who visits the URL gets the files. Visitors only see what you last deployed, and a saved change that was never deployed stays invisible.](assets/hosting-layout.svg)
+![Animated: how a hosted website works. On the left, your laptop holds a public/ folder with index.html, styles.css, and script.js. In the middle, Firebase's servers, drawn as a cloud with a server rack inside, hold a copy and serve it at your-project-id.web.app. On the right, a phone, a classmate, and a laptop in Tokyo keep sending requests (GET /) to the servers, and each one gets back a copy of index.html, version 1. Then index.html on your laptop is saved as version 2, but the next visitor still gets version 1 because nothing was deployed. An HTML file labeled v2 then travels along the firebase deploy arrow to the servers, and from then on every visitor gets version 2.](assets/hosting-layout.svg)
 
 A website is just files. Hosting is what lets other people see them:
 

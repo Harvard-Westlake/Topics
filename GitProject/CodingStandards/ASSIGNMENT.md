@@ -1,7 +1,6 @@
 # Assignment - Coding Standards
 
-*Lesson: [Coding Standards](README.md)*
-
+**Lesson:** [Coding Standards](README.md)  
 **Due:** End of class (in-class work, nothing to submit)
 
 ---

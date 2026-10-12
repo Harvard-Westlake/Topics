@@ -1,7 +1,6 @@
 # Assignment — Following the Error Backward
 
-*Lesson: [Following the Error Backward](README.md)*
-
+**Lesson:** [Following the Error Backward](README.md)  
 **Duration:** 2 class periods  
 **Due:** End of Week 6
 

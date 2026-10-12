@@ -1,7 +1,6 @@
 # Assignment - Website Hosting
 
-*Lesson: [Website Hosting](README.md)*
-
+**Lesson:** [Website Hosting](README.md)  
 **Due:** Before the start of next class
 
 ---

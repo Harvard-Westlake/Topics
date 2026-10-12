@@ -1,7 +1,6 @@
 # Assignment - Collaborative Peer Review
 
-*Lesson: [Collaborative Peer Review](README.md)*
-
+**Lesson:** [Collaborative Peer Review](README.md)  
 **Due:** Before the start of next class
 
 ---

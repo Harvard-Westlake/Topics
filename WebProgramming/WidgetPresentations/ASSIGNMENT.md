@@ -1,7 +1,6 @@
 # Assignment - Widget Presentations
 
-*Lesson: [Widget Presentations](README.md)*
-
+**Lesson:** [Widget Presentations](README.md)  
 **Due:** End of class (in-class work, nothing to submit)
 
 ---

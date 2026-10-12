@@ -1,7 +1,6 @@
 # Assignment — Hexadecimal and Hashing
 
-*Lesson: [Hexadecimal and Hashing](README.md)*
-
+**Lesson:** [Hexadecimal and Hashing](README.md)  
 **Due:** Next class  
 **Points:** 5
 

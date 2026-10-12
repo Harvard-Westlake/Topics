@@ -1,7 +1,6 @@
 # Assignment — Ambiguity and Architecture
 
-*Lesson: [Ambiguity and Architecture](README.md)*
-
+**Lesson:** [Ambiguity and Architecture](README.md)  
 **Due:** Next class
 
 ---

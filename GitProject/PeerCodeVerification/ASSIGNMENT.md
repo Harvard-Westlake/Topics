@@ -1,7 +1,6 @@
 # Assignment — Peer Code Verification
 
-*Lesson: [Peer Code Verification](README.md)*
-
+**Lesson:** [Peer Code Verification](README.md)  
 **Due:** End of class today
 
 ---

@@ -1,7 +1,6 @@
 # Assignment — Peer Tree Verification
 
-*Lesson: [Peer Tree Verification](README.md)*
-
+**Lesson:** [Peer Tree Verification](README.md)  
 **Due:** Before the start of next class
 
 ---

@@ -1,7 +1,6 @@
 # Assignment - Commits
 
-*Lesson: [Commits](README.md)*
-
+**Lesson:** [Commits](README.md)  
 **Duration:** 2 class periods  
 **Due:** Before the start of the next lesson's class
 

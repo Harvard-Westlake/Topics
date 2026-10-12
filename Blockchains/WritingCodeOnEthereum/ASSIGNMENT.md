@@ -1,7 +1,6 @@
 # Assignment — Writing Code on Ethereum
 
-*Lesson: [Writing Code on Ethereum](README.md)*
-
+**Lesson:** [Writing Code on Ethereum](README.md)  
 **Due:** Next class
 **Points:** 50
 

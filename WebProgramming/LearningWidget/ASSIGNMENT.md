@@ -1,7 +1,6 @@
 # Assignment - The Learning Widget Project
 
-*Lesson: [The Learning Widget Project](README.md)*
-
+**Lesson:** [The Learning Widget Project](README.md)  
 **Duration:** 2 class periods  
 **Due:** Before the start of the next lesson's class
 

@@ -1,7 +1,6 @@
 # Assignment — Trees
 
-*Lesson: [Trees](README.md)*
-
+**Lesson:** [Trees](README.md)  
 **Duration:** 3 class periods  
 **Due:** End of this block
 

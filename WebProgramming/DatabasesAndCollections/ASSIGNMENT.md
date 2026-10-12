@@ -1,7 +1,6 @@
 # Assignment - Databases and Collections
 
-*Lesson: [Databases and Collections](README.md)*
-
+**Lesson:** [Databases and Collections](README.md)  
 **Due:** Before the start of next class
 
 ---

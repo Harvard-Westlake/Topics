@@ -1,14 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 330" width="760" height="330" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13">
-  <title>How a hosted website works: files on your laptop are deployed to Firebase's servers, and any browser that visits the URL gets a copy</title>
-  <rect width="760" height="330" rx="10" fill="#0d1117"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 360" width="900" height="360" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13">
+  <title>How a hosted website works: visitors keep asking Firebase's servers for the page and get a copy of index.html; when you deploy a new version from your laptop, every visit after that gets the new file</title>
+  <style>.tok,.lap2,.srv2,.savedNote,.depGlow,.cap1,.cap2,.cap3,.glow{opacity:0} @keyframes rq0{0%{opacity:0;transform:translate(686px,92px)}1.40%{opacity:0;transform:translate(686px,92px)}2.00%{opacity:1;transform:translate(686px,92px)}8.00%{opacity:1;transform:translate(578px,105px)}8.60%{opacity:0;transform:translate(578px,105px)}100%{opacity:0;transform:translate(578px,105px)}} .rq0{animation:rq0 14s ease-in-out infinite} @keyframes rs0{0%{opacity:0;transform:translate(568px,105px)}7.90%{opacity:0;transform:translate(568px,105px)}8.50%{opacity:1;transform:translate(568px,105px)}14.50%{opacity:1;transform:translate(694px,92px)}15.10%{opacity:0;transform:translate(694px,92px)}100%{opacity:0;transform:translate(694px,92px)}} .rs0{animation:rs0 14s ease-in-out infinite} @keyframes gl0{0.00%{opacity:0} 13.90%{opacity:0} 14.50%{opacity:1} 18.00%{opacity:1} 18.60%{opacity:0} 100.00%{opacity:0}} .gl0{animation:gl0 14s linear infinite} @keyframes rq1{0%{opacity:0;transform:translate(686px,172px)}9.40%{opacity:0;transform:translate(686px,172px)}10.00%{opacity:1;transform:translate(686px,172px)}16.00%{opacity:1;transform:translate(578px,135px)}16.60%{opacity:0;transform:translate(578px,135px)}100%{opacity:0;transform:translate(578px,135px)}} .rq1{animation:rq1 14s ease-in-out infinite} @keyframes rs1{0%{opacity:0;transform:translate(568px,135px)}15.90%{opacity:0;transform:translate(568px,135px)}16.50%{opacity:1;transform:translate(568px,135px)}22.50%{opacity:1;transform:translate(694px,172px)}23.10%{opacity:0;transform:translate(694px,172px)}100%{opacity:0;transform:translate(694px,172px)}} .rs1{animation:rs1 14s ease-in-out infinite} @keyframes gl1{0.00%{opacity:0} 21.90%{opacity:0} 22.50%{opacity:1} 26.00%{opacity:1} 26.60%{opacity:0} 100.00%{opacity:0}} .gl1{animation:gl1 14s linear infinite} @keyframes rq2{0%{opacity:0;transform:translate(686px,252px)}29.40%{opacity:0;transform:translate(686px,252px)}30.00%{opacity:1;transform:translate(686px,252px)}36.00%{opacity:1;transform:translate(578px,165px)}36.60%{opacity:0;transform:translate(578px,165px)}100%{opacity:0;transform:translate(578px,165px)}} .rq2{animation:rq2 14s ease-in-out infinite} @keyframes rs2{0%{opacity:0;transform:translate(568px,165px)}35.90%{opacity:0;transform:translate(568px,165px)}36.50%{opacity:1;transform:translate(568px,165px)}42.50%{opacity:1;transform:translate(694px,252px)}43.10%{opacity:0;transform:translate(694px,252px)}100%{opacity:0;transform:translate(694px,252px)}} .rs2{animation:rs2 14s ease-in-out infinite} @keyframes gl2{0.00%{opacity:0} 41.90%{opacity:0} 42.50%{opacity:1} 46.00%{opacity:1} 46.60%{opacity:0} 100.00%{opacity:0}} .gl2{animation:gl2 14s linear infinite} @keyframes rq3{0%{opacity:0;transform:translate(686px,92px)}61.40%{opacity:0;transform:translate(686px,92px)}62.00%{opacity:1;transform:translate(686px,92px)}68.00%{opacity:1;transform:translate(578px,105px)}68.60%{opacity:0;transform:translate(578px,105px)}100%{opacity:0;transform:translate(578px,105px)}} .rq3{animation:rq3 14s ease-in-out infinite} @keyframes rs3{0%{opacity:0;transform:translate(568px,105px)}67.90%{opacity:0;transform:translate(568px,105px)}68.50%{opacity:1;transform:translate(568px,105px)}74.50%{opacity:1;transform:translate(694px,92px)}75.10%{opacity:0;transform:translate(694px,92px)}100%{opacity:0;transform:translate(694px,92px)}} .rs3{animation:rs3 14s ease-in-out infinite} @keyframes gl3{0.00%{opacity:0} 73.90%{opacity:0} 74.50%{opacity:1} 78.00%{opacity:1} 78.60%{opacity:0} 100.00%{opacity:0}} .gl3{animation:gl3 14s linear infinite} @keyframes rq4{0%{opacity:0;transform:translate(686px,172px)}69.40%{opacity:0;transform:translate(686px,172px)}70.00%{opacity:1;transform:translate(686px,172px)}76.00%{opacity:1;transform:translate(578px,135px)}76.60%{opacity:0;transform:translate(578px,135px)}100%{opacity:0;transform:translate(578px,135px)}} .rq4{animation:rq4 14s ease-in-out infinite} @keyframes rs4{0%{opacity:0;transform:translate(568px,135px)}75.90%{opacity:0;transform:translate(568px,135px)}76.50%{opacity:1;transform:translate(568px,135px)}82.50%{opacity:1;transform:translate(694px,172px)}83.10%{opacity:0;transform:translate(694px,172px)}100%{opacity:0;transform:translate(694px,172px)}} .rs4{animation:rs4 14s ease-in-out infinite} @keyframes gl4{0.00%{opacity:0} 81.90%{opacity:0} 82.50%{opacity:1} 86.00%{opacity:1} 86.60%{opacity:0} 100.00%{opacity:0}} .gl4{animation:gl4 14s linear infinite} @keyframes rq5{0%{opacity:0;transform:translate(686px,252px)}77.40%{opacity:0;transform:translate(686px,252px)}78.00%{opacity:1;transform:translate(686px,252px)}84.00%{opacity:1;transform:translate(578px,165px)}84.60%{opacity:0;transform:translate(578px,165px)}100%{opacity:0;transform:translate(578px,165px)}} .rq5{animation:rq5 14s ease-in-out infinite} @keyframes rs5{0%{opacity:0;transform:translate(568px,165px)}83.90%{opacity:0;transform:translate(568px,165px)}84.50%{opacity:1;transform:translate(568px,165px)}90.50%{opacity:1;transform:translate(694px,252px)}91.10%{opacity:0;transform:translate(694px,252px)}100%{opacity:0;transform:translate(694px,252px)}} .rs5{animation:rs5 14s ease-in-out infinite} @keyframes gl5{0.00%{opacity:0} 89.90%{opacity:0} 90.50%{opacity:1} 94.00%{opacity:1} 94.60%{opacity:0} 100.00%{opacity:0}} .gl5{animation:gl5 14s linear infinite} @keyframes dep{0%{opacity:0;transform:translate(240px,135px)}45.40%{opacity:0;transform:translate(240px,135px)}46.00%{opacity:1;transform:translate(240px,135px)}58.00%{opacity:1;transform:translate(336px,135px)}58.60%{opacity:0;transform:translate(336px,135px)}100%{opacity:0;transform:translate(336px,135px)}} .dep{animation:dep 14s ease-in-out infinite} @keyframes lap1{0.00%{opacity:1} 24.00%{opacity:1} 24.60%{opacity:0} 100.00%{opacity:0}} .lap1{animation:lap1 14s linear infinite} @keyframes lap2{0.00%{opacity:0} 23.40%{opacity:0} 24.00%{opacity:1} 100.00%{opacity:1}} .lap2{animation:lap2 14s linear infinite} @keyframes srv1{0.00%{opacity:1} 58.00%{opacity:1} 58.60%{opacity:0} 100.00%{opacity:0}} .srv1{animation:srv1 14s linear infinite} @keyframes srv2{0.00%{opacity:0} 57.40%{opacity:0} 58.00%{opacity:1} 100.00%{opacity:1}} .srv2{animation:srv2 14s linear infinite} @keyframes savedNote{0.00%{opacity:0} 23.40%{opacity:0} 24.00%{opacity:1} 46.00%{opacity:1} 46.60%{opacity:0} 100.00%{opacity:0}} .savedNote{animation:savedNote 14s linear infinite} @keyframes depGlow{0.00%{opacity:0} 45.40%{opacity:0} 46.00%{opacity:1} 58.00%{opacity:1} 58.60%{opacity:0} 100.00%{opacity:0}} .depGlow{animation:depGlow 14s linear infinite} @keyframes cap0{0.00%{opacity:1} 24.00%{opacity:1} 24.60%{opacity:0} 100.00%{opacity:0}} .cap0{animation:cap0 14s linear infinite} @keyframes cap1{0.00%{opacity:0} 23.40%{opacity:0} 24.00%{opacity:1} 46.00%{opacity:1} 46.60%{opacity:0} 100.00%{opacity:0}} .cap1{animation:cap1 14s linear infinite} @keyframes cap2{0.00%{opacity:0} 45.40%{opacity:0} 46.00%{opacity:1} 58.00%{opacity:1} 58.60%{opacity:0} 100.00%{opacity:0}} .cap2{animation:cap2 14s linear infinite} @keyframes cap3{0.00%{opacity:0} 57.40%{opacity:0} 58.00%{opacity:1} 100.00%{opacity:1}} .cap3{animation:cap3 14s linear infinite} @keyframes blink{0%,60%{opacity:1}61%,100%{opacity:.25}} .led{animation:blink 1.1s steps(1) infinite} .led1{animation-delay:-.4s} .led2{animation-delay:-.8s} @media (prefers-reduced-motion: reduce){*{animation:none!important}}</style>
   <defs>
-    <marker id="orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
-      <path d="M0,0 L10,5 L0,10 z" fill="#f0883e"/>
-    </marker>
-    <marker id="green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
-      <path d="M0,0 L10,5 L0,10 z" fill="#3fb950"/>
-    </marker>
+    <marker id="orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#f0883e"/></marker>
   </defs>
+  <rect width="900" height="360" rx="10" fill="#0d1117"/>
 
   <!-- laptop -->
   <text x="30" y="40" fill="#e6edf3" font-weight="700" font-size="15">Your laptop</text>
@@ -18,32 +14,73 @@
   <text x="62" y="124" fill="#e6edf3">index.html</text>
   <text x="62" y="148" fill="#e6edf3">styles.css</text>
   <text x="62" y="172" fill="#e6edf3">script.js</text>
+  <text class="lap1" x="160" y="124" fill="#79c0ff" font-weight="700">v1</text>
+  <text class="lap2" x="160" y="124" fill="#e3b341" font-weight="700">v2</text>
+  <text class="savedNote" x="30" y="222" fill="#e3b341" font-size="12">saved, not deployed</text>
 
   <!-- deploy -->
-  <line x1="236" y1="135" x2="312" y2="135" stroke="#f0883e" stroke-width="2.5" marker-end="url(#orange)"/>
-  <text x="240" y="122" fill="#f0883e" font-weight="700">firebase</text>
-  <text x="246" y="158" fill="#f0883e" font-weight="700">deploy</text>
+  <line x1="236" y1="135" x2="340" y2="135" stroke="#f0883e" stroke-width="2.5" marker-end="url(#orange)"/>
+  <line class="depGlow" x1="236" y1="135" x2="312" y2="135" stroke="#f0883e" stroke-width="7" stroke-opacity=".35"/>
+  <text x="254" y="108" fill="#f0883e" font-weight="700">firebase</text>
+  <text x="262" y="172" fill="#f0883e" font-weight="700">deploy</text>
 
-  <!-- servers -->
-  <text x="320" y="40" fill="#e6edf3" font-weight="700" font-size="15">Firebase's servers</text>
-  <text x="320" y="58" fill="#8b949e" font-size="11">always on, always connected</text>
-  <rect x="320" y="70" width="200" height="130" rx="8" fill="#161b22" stroke="#f0883e" stroke-width="2"/>
-  <text x="336" y="98" fill="#e6edf3">a copy of public/</text>
-  <text x="336" y="132" fill="#8b949e" font-size="12">served at</text>
-  <text x="336" y="156" fill="#f0883e" font-size="12">your-project-id</text>
-  <text x="336" y="176" fill="#f0883e" font-size="12">  .web.app</text>
+  <!-- servers: a cloud with a server rack inside -->
+  <text x="350" y="40" fill="#e6edf3" font-weight="700" font-size="15">Firebase's servers</text>
+  <text x="350" y="58" fill="#8b949e" font-size="11">always on, holding a copy of public/</text>
+  <path d="M378,212 A32,32 0 0 1 350,160 A30,30 0 0 1 384,118 A44,44 0 0 1 462,80 A40,40 0 0 1 530,104 A34,34 0 0 1 548,170 A28,28 0 0 1 530,212 Z" fill="#161b22" stroke="#f0883e" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="428" y="88" width="64" height="13" rx="3" fill="#0d1117" stroke="#f0883e" stroke-width="1.5"/>
+  <line x1="436" y1="94.5" x2="462" y2="94.5" stroke="#6e7681" stroke-width="1.5"/>
+  <circle class="led led0" cx="482" cy="94.5" r="2.5" fill="#3fb950"/>
+  <rect x="428" y="104" width="64" height="13" rx="3" fill="#0d1117" stroke="#f0883e" stroke-width="1.5"/>
+  <line x1="436" y1="110.5" x2="462" y2="110.5" stroke="#6e7681" stroke-width="1.5"/>
+  <circle class="led led1" cx="482" cy="110.5" r="2.5" fill="#3fb950"/>
+  <rect x="428" y="120" width="64" height="13" rx="3" fill="#0d1117" stroke="#f0883e" stroke-width="1.5"/>
+  <line x1="436" y1="126.5" x2="462" y2="126.5" stroke="#6e7681" stroke-width="1.5"/>
+  <circle class="led led2" cx="482" cy="126.5" r="2.5" fill="#3fb950"/>
+  <text x="382" y="158" fill="#8b949e" font-size="12">serving index.html</text>
+  <text class="srv1" x="524" y="158" fill="#79c0ff" font-weight="700">v1</text>
+  <text class="srv2" x="524" y="158" fill="#e3b341" font-weight="700">v2</text>
+  <text x="372" y="184" fill="#f0883e" font-size="12">your-project-id.web.app</text>
 
   <!-- visitors -->
-  <line x1="526" y1="110" x2="600" y2="90" stroke="#3fb950" stroke-width="2.5" marker-end="url(#green)"/>
-  <line x1="526" y1="160" x2="600" y2="180" stroke="#3fb950" stroke-width="2.5" marker-end="url(#green)"/>
-  <rect x="606" y="62" width="124" height="54" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
-  <text x="668" y="94" fill="#e6edf3" text-anchor="middle">a phone</text>
-  <rect x="606" y="154" width="124" height="54" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
-  <text x="668" y="186" fill="#e6edf3" text-anchor="middle">a classmate</text>
-  <text x="606" y="40" fill="#e6edf3" font-weight="700" font-size="15">Anyone</text>
-  <text x="606" y="58" fill="#8b949e" font-size="11">visits the URL</text>
+  <text x="712" y="40" fill="#e6edf3" font-weight="700" font-size="15">Anyone</text>
+  <text x="712" y="58" fill="#8b949e" font-size="11">visits the URL</text>
+  <line x1="552" y1="105" x2="712" y2="92" stroke="#3fb950" stroke-width="1.5" stroke-dasharray="4 5" stroke-opacity=".7"/>
+  <line x1="552" y1="135" x2="712" y2="172" stroke="#3fb950" stroke-width="1.5" stroke-dasharray="4 5" stroke-opacity=".7"/>
+  <line x1="552" y1="165" x2="712" y2="252" stroke="#3fb950" stroke-width="1.5" stroke-dasharray="4 5" stroke-opacity=".7"/>
+  <rect x="712" y="70" width="150" height="44" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+  <rect class="glow gl0" x="712" y="70" width="150" height="44" rx="8" fill="#79c0ff" fill-opacity=".18" stroke="#79c0ff" stroke-width="2"/>
+  <rect class="glow gl3" x="712" y="70" width="150" height="44" rx="8" fill="#e3b341" fill-opacity=".18" stroke="#e3b341" stroke-width="2"/>
+  <text x="787" y="97" fill="#e6edf3" text-anchor="middle">a phone</text>
+  <rect x="712" y="150" width="150" height="44" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+  <rect class="glow gl1" x="712" y="150" width="150" height="44" rx="8" fill="#79c0ff" fill-opacity=".18" stroke="#79c0ff" stroke-width="2"/>
+  <rect class="glow gl4" x="712" y="150" width="150" height="44" rx="8" fill="#e3b341" fill-opacity=".18" stroke="#e3b341" stroke-width="2"/>
+  <text x="787" y="177" fill="#e6edf3" text-anchor="middle">a classmate</text>
+  <rect x="712" y="230" width="150" height="44" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+  <rect class="glow gl2" x="712" y="230" width="150" height="44" rx="8" fill="#79c0ff" fill-opacity=".18" stroke="#79c0ff" stroke-width="2"/>
+  <rect class="glow gl5" x="712" y="230" width="150" height="44" rx="8" fill="#e3b341" fill-opacity=".18" stroke="#e3b341" stroke-width="2"/>
+  <text x="787" y="257" fill="#e6edf3" text-anchor="middle">a laptop in Tokyo</text>
 
-  <text x="30" y="250" fill="#8b949e" font-size="12">Edit on your laptop, then deploy. Visitors only ever see what you last deployed:</text>
-  <text x="30" y="272" fill="#8b949e" font-size="12">a saved change that was never deployed is still invisible to everyone else.</text>
-  <text x="30" y="306" fill="#8b949e" font-size="12">The browser asks the server for the page, the server sends the files, the browser draws them.</text>
+  <!-- moving requests and files -->
+  <g class="tok rq0"><rect x="-24" y="-10" width="48" height="20" rx="10" fill="#0d1117" stroke="#3fb950" stroke-width="1.5"/><text x="0" y="4" fill="#3fb950" font-size="10" text-anchor="middle" font-weight="700">GET /</text></g>
+  <g class="tok rs0"><path d="M-14,-18 h20 l8,8 v28 h-28 z" fill="#0d1117" stroke="#79c0ff" stroke-width="2"/><path d="M6,-18 v8 h8" fill="none" stroke="#79c0ff" stroke-width="1.5"/><text x="0" y="3" fill="#79c0ff" font-size="9" text-anchor="middle" font-weight="700">html</text><text x="0" y="14" fill="#79c0ff" font-size="9" text-anchor="middle" font-weight="700">v1</text></g>
+  <g class="tok rq1"><rect x="-24" y="-10" width="48" height="20" rx="10" fill="#0d1117" stroke="#3fb950" stroke-width="1.5"/><text x="0" y="4" fill="#3fb950" font-size="10" text-anchor="middle" font-weight="700">GET /</text></g>
+  <g class="tok rs1"><path d="M-14,-18 h20 l8,8 v28 h-28 z" fill="#0d1117" stroke="#79c0ff" stroke-width="2"/><path d="M6,-18 v8 h8" fill="none" stroke="#79c0ff" stroke-width="1.5"/><text x="0" y="3" fill="#79c0ff" font-size="9" text-anchor="middle" font-weight="700">html</text><text x="0" y="14" fill="#79c0ff" font-size="9" text-anchor="middle" font-weight="700">v1</text></g>
+  <g class="tok rq2"><rect x="-24" y="-10" width="48" height="20" rx="10" fill="#0d1117" stroke="#3fb950" stroke-width="1.5"/><text x="0" y="4" fill="#3fb950" font-size="10" text-anchor="middle" font-weight="700">GET /</text></g>
+  <g class="tok rs2"><path d="M-14,-18 h20 l8,8 v28 h-28 z" fill="#0d1117" stroke="#79c0ff" stroke-width="2"/><path d="M6,-18 v8 h8" fill="none" stroke="#79c0ff" stroke-width="1.5"/><text x="0" y="3" fill="#79c0ff" font-size="9" text-anchor="middle" font-weight="700">html</text><text x="0" y="14" fill="#79c0ff" font-size="9" text-anchor="middle" font-weight="700">v1</text></g>
+  <g class="tok rq3"><rect x="-24" y="-10" width="48" height="20" rx="10" fill="#0d1117" stroke="#3fb950" stroke-width="1.5"/><text x="0" y="4" fill="#3fb950" font-size="10" text-anchor="middle" font-weight="700">GET /</text></g>
+  <g class="tok rs3"><path d="M-14,-18 h20 l8,8 v28 h-28 z" fill="#0d1117" stroke="#e3b341" stroke-width="2"/><path d="M6,-18 v8 h8" fill="none" stroke="#e3b341" stroke-width="1.5"/><text x="0" y="3" fill="#e3b341" font-size="9" text-anchor="middle" font-weight="700">html</text><text x="0" y="14" fill="#e3b341" font-size="9" text-anchor="middle" font-weight="700">v2</text></g>
+  <g class="tok rq4"><rect x="-24" y="-10" width="48" height="20" rx="10" fill="#0d1117" stroke="#3fb950" stroke-width="1.5"/><text x="0" y="4" fill="#3fb950" font-size="10" text-anchor="middle" font-weight="700">GET /</text></g>
+  <g class="tok rs4"><path d="M-14,-18 h20 l8,8 v28 h-28 z" fill="#0d1117" stroke="#e3b341" stroke-width="2"/><path d="M6,-18 v8 h8" fill="none" stroke="#e3b341" stroke-width="1.5"/><text x="0" y="3" fill="#e3b341" font-size="9" text-anchor="middle" font-weight="700">html</text><text x="0" y="14" fill="#e3b341" font-size="9" text-anchor="middle" font-weight="700">v2</text></g>
+  <g class="tok rq5"><rect x="-24" y="-10" width="48" height="20" rx="10" fill="#0d1117" stroke="#3fb950" stroke-width="1.5"/><text x="0" y="4" fill="#3fb950" font-size="10" text-anchor="middle" font-weight="700">GET /</text></g>
+  <g class="tok rs5"><path d="M-14,-18 h20 l8,8 v28 h-28 z" fill="#0d1117" stroke="#e3b341" stroke-width="2"/><path d="M6,-18 v8 h8" fill="none" stroke="#e3b341" stroke-width="1.5"/><text x="0" y="3" fill="#e3b341" font-size="9" text-anchor="middle" font-weight="700">html</text><text x="0" y="14" fill="#e3b341" font-size="9" text-anchor="middle" font-weight="700">v2</text></g>
+  <g class="tok dep"><path d="M-14,-18 h20 l8,8 v28 h-28 z" fill="#0d1117" stroke="#e3b341" stroke-width="2"/><path d="M6,-18 v8 h8" fill="none" stroke="#e3b341" stroke-width="1.5"/><text x="0" y="3" fill="#e3b341" font-size="9" text-anchor="middle" font-weight="700">html</text><text x="0" y="14" fill="#e3b341" font-size="9" text-anchor="middle" font-weight="700">v2</text></g>
+
+  <!-- captions -->
+  <text class="cap0" x="30" y="268" fill="#e6edf3" font-size="13">Firebase answers every visit with the files it has: v1.</text>
+  <text class="cap1" x="30" y="268" fill="#e6edf3" font-size="13">You saved v2 on your laptop. Visitors still get v1: nothing was deployed.</text>
+  <text class="cap2" x="30" y="268" fill="#e6edf3" font-size="13">firebase deploy copies your public/ folder up to the servers.</text>
+  <text class="cap3" x="30" y="268" fill="#e6edf3" font-size="13">Deployed. Every new visit now gets v2.</text>
+  <text x="30" y="304" fill="#8b949e" font-size="12">The browser asks the server for the page (GET /), the server sends the files, the browser draws them.</text>
+  <text x="30" y="326" fill="#8b949e" font-size="12">Visitors only ever see what you last deployed.</text>
 </svg>

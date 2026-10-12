@@ -1,7 +1,6 @@
 # Assignment — File Hashing
 
-*Lesson: [File Hashing](README.md)*
-
+**Lesson:** [File Hashing](README.md)  
 **Due:** Next class
 
 ---

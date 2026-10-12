@@ -1,7 +1,6 @@
 # Assignment — Mempool and Wallet Programming
 
-*Lesson: [Mempool and Wallet Programming](README.md)*
-
+**Lesson:** [Mempool and Wallet Programming](README.md)  
 **Due:** Next class
 **Points:** 25
 

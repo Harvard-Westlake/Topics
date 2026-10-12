@@ -1,7 +1,6 @@
 # Assignment — Project Setup
 
-*Lesson: [Project Setup](README.md)*
-
+**Lesson:** [Project Setup](README.md)  
 **Duration:** 1 class period  
 **Due:** Before the next class
 

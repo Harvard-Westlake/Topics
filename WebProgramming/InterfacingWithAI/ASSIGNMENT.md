@@ -1,7 +1,6 @@
 # Assignment - Intro to AI Coding
 
-*Lesson: [Intro to AI Coding](README.md)*
-
+**Lesson:** [Intro to AI Coding](README.md)  
 **Due:** Before the start of next class
 
 ---

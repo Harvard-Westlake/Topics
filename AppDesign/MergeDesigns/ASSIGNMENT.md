@@ -1,7 +1,6 @@
 # Assignment — Merging Designs
 
-*Lesson: [Merging Designs](README.md)*
-
+**Lesson:** [Merging Designs](README.md)  
 **Due:** End of class
 
 ---

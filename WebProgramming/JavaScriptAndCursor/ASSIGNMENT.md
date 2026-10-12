@@ -1,7 +1,6 @@
 # Assignment - JavaScript Events and Classes
 
-*Lesson: [JavaScript Events and Classes](README.md)*
-
+**Lesson:** [JavaScript Events and Classes](README.md)  
 **Due:** Before the start of next class
 
 ---

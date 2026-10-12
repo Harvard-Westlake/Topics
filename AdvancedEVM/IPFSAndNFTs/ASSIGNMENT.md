@@ -1,7 +1,6 @@
 # Assignment — IPFS and NFTs
 
-*Lesson: [IPFS and NFTs](README.md)*
-
+**Lesson:** [IPFS and NFTs](README.md)  
 **Due:** Next class
 **Points:** 100
 

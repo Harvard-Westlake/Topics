@@ -1,7 +1,6 @@
 # Assignment - UX and Behavior Tracking
 
-*Lesson: [UX and Behavior Tracking](README.md)*
-
+**Lesson:** [UX and Behavior Tracking](README.md)  
 **Due:** Before the start of next class
 
 ---

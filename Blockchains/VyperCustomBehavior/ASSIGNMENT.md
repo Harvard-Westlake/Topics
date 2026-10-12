@@ -1,7 +1,6 @@
 # Assignment — Vyper with Custom Behavior
 
-*Lesson: [Vyper with Custom Behavior](README.md)*
-
+**Lesson:** [Vyper with Custom Behavior](README.md)  
 **Due:** Next class
 **Points:** 100
 

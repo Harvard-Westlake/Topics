@@ -1,7 +1,6 @@
 # Assignment — Staging and Committing
 
-*Lesson: [Staging and Committing](README.md)*
-
+**Lesson:** [Staging and Committing](README.md)  
 **Due:** Next class
 
 ---

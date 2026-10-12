@@ -1,7 +1,6 @@
 # Assignment - Branches
 
-*Lesson: [Branches](README.md)*
-
+**Lesson:** [Branches](README.md)  
 **Due:** Before the start of next class
 
 ---

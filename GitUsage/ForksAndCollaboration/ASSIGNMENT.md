@@ -1,7 +1,6 @@
 # Assignment — Forks and Collaboration
 
-*Lesson: [Forks and Collaboration](README.md)*
-
+**Lesson:** [Forks and Collaboration](README.md)  
 **Due:** Next class
 
 ---
