@@ -2,111 +2,64 @@
 
 *Lesson: [Peer Tree Verification](README.md)*
 
-**Due:** End of class today
+**Due:** Before the start of next class
 
 ---
 
-## Table of Contents
+## Your Homework
 
-1. [Part 1: fork a classmate's Part 3, get it running, and verify it](#part-1-verify)
-2. [The verification chart you fill out: six behaviors, two answers each](#verification-chart)
-3. [Part 2: rename their tree variables and methods so they make sense](#part-2-rename)
-4. [Four checks before you submit](#success-criteria)
-5. [What to submit on the Hub: the chart and your commit URL](#submission)
+Copy the table below, fill in a rating and how you identified it for each of the six behaviors, and paste it into the Canvas text box. That is the whole assignment.
 
----
-
-## Part 1: Verify
-
-1. Your teacher assigns you a classmate's repository at random. It will not be the classmate you reviewed in Part 2.
-2. In your terminal, fork it and clone your fork in one step, then confirm the remotes:
-   ```bash
-   cd ~/HTCS_Projects
-   gh repo fork THEIR-USERNAME/THEIR-REPO-NAME --clone --fork-name ANY-NAME-YOU-WANT
-   cd ANY-NAME-YOU-WANT
-   git remote -v
-   ```
-   `origin` must be under your username (your fork) and `upstream` under theirs (the original).
-3. Open the folder in **VS Code**. Read their `README.md`, then the tree code: the index writer, `createTree`, and the method that builds the root tree.
-4. Get it running as best you can. If `main` does not call the tree methods, add a `Verify.java` with a `main` that does. If a hardcoded path stops it on your machine, change the path. If a method is broken, you may fix it so you can test the rest, and record the fix in your chart. Do not change a method that already works.
-5. Build the lesson's `tree-test/` folder and verify each of the six behaviors in the chart **one way or another**: run it and inspect `git/`, or read the code path and predict the result, then check. The lesson's [expected hashes](README.md#hash-a-tree-by-hand) are the right answers.
-6. Commit what you added to a **new branch** in your fork, for example `tree-review-YOURNAME`, and push it:
-   ```bash
-   git checkout -b tree-review-YOURNAME
-   git add .
-   git commit -m "Add Verify.java driver to run THEIRNAME's Part 3"
-   git push -u origin tree-review-YOURNAME
-   ```
-
-Get your copy of the chart: download [verification-table.xlsx](assets/verification-table.xlsx) and open it in Excel, Numbers, or Google Sheets (**File → Import**), or copy the table below into a document. The rows are identical either way.
+1. Fork and clone the classmate's repository your teacher assigned you, and get their code running. The lesson's [Fork and Clone](README.md#1-fork-and-clone-a-classmates-repository) and [Run and Verify](README.md#2-run-and-verify) sections walk through it.
+2. Select the whole **Verification Table** below, copy it, and paste it into the Canvas text box. It pastes as a table you can type into.
+3. For each row, test the behavior, then fill in the two empty columns.
 
 ---
 
-## Verification Chart
+## Verification Table
 
-One row per behavior, two answers per row. The left column is fixed. Hashes are shortened here; the full values are in the lesson's [expected hashes](README.md#hash-a-tree-by-hand).
+**What is a root tree?** A tree is a list of what is inside one folder. The **root tree** is the list for the top folder, the one that holds everything else.
 
-- **Rating (1–5, 5 is best):** 5 = works exactly as described and you proved it · 4 = works, one small rule broken (a trailing newline in a tree file) · 3 = partly works · 2 = runs but does the wrong thing · 1 = missing, fails, or could not be tested (say which).
-- **Notes:** short bullets, not paragraphs, under three labels. **How:** data structures, how it reads input, how it splits or sorts · **Verified:** the command you ran and what came out · **Modified:** what you changed to test it, or "nothing".
+Trees are built from the bottom up. The deepest folder gets its tree first, then its parent, and so on up to the root. A parent's list includes each child folder's tree hash, so the root always comes last. In the test folder: `tree-test/docs` becomes `d5ff240d…`, then `tree-test` lists `tree d5ff240d… docs` and becomes `54c35b48…`, the root.
 
-| Behavior to verify | Rating (1–5) | Notes |
+| Behavior | Rating (1–5) | How you identified it |
 |---|---|---|
-| **1. Index stores relative paths.** After staging `tree-test/docs/hello.txt`, its index line is `aaf4c61d… tree-test/docs/hello.txt`, not a bare filename. | | **How:**<br>**Verified:**<br>**Modified:** |
-| **2. No duplicate entries.** Staging the same unchanged file twice leaves exactly one index line for it. | | **How:**<br>**Verified:**<br>**Modified:** |
-| **3. A modified file replaces its entry.** After `printf 'hello again'` into `hello.txt` and staging it again, its line carries `714d500f…`, the old hash is gone, and there is one line for it. | | **How:**<br>**Verified:**<br>**Modified:** |
-| **4. `createTree` writes one directory's tree.** For `tree-test/docs` it writes two lines (`blob`, hash, final name only) into `git/objects/d5ff240d…` and returns that hash. | | **How:**<br>**Verified:**<br>**Modified:** |
-| **5. Root tree from staged files only.** With `scratch.txt` never staged, the root tree is `54c35b48…` (or `60a91a23…` with one extra level) and no tree lists `scratch.txt`. | | **How:**<br>**Verified:**<br>**Modified:** |
-| **6. Deterministic.** Running the root-tree method twice on an unchanged index returns the same hash, and `git/objects/` gains no files. | | **How:**<br>**Verified:**<br>**Modified:** |
+| **1. Index stores relative paths**<br>(Example: staging `hello.txt` writes `aaf4c61d… tree-test/docs/hello.txt`) | | |
+| **2. No duplicate entries**<br>(Example: stage `hello.txt` twice, still one line) | | |
+| **3. A modified file replaces its entry**<br>(Example: edit `hello.txt` and restage, one line with `714d500f…`) | | |
+| **4. `createTree` writes one directory's tree**<br>(Example: `tree-test/docs` becomes `d5ff240d…`) | | |
+| **5. Root tree from staged files only**<br>(Example: root is `54c35b48…` or `60a91a23…`, no `scratch.txt`) | | |
+| **6. Deterministic**<br>(Example: run it twice, same hash, no new files) | | |
 
-> **Note:** Behavior 3 edits `hello.txt`. Test it last, or rebuild `tree-test/` with the lesson's `printf` commands before testing behaviors 4–6, or the expected tree hashes will not match.
+**Rating (5 is best):**
 
----
+| Rating | Meaning |
+|---|---|
+| **5** | Works exactly as described, and you proved it. |
+| **4** | Works, but one small rule is broken, such as a trailing newline in a tree file. |
+| **3** | Partly works. |
+| **2** | Runs, but does the wrong thing. |
+| **1** | Missing, fails, or could not be tested. Say which. |
 
-## Part 2: Rename
+**How you identified it:** a few short bullets, not a paragraph. The command or call you ran, what came out, and anything you changed to test it. The full expected hashes are in the lesson's [Hash a Tree by Hand](README.md#hash-a-tree-by-hand) section, and the lesson shows [a complete example row](README.md#grade-each-behavior-in-the-table).
 
-Their code works as well as it works. Now make it readable. On your branch, go through every variable and method name in the tree code and ask two questions:
-
-- **"What does this variable hold?"** The answer is its name. A `List<String> list` of working-list lines is `workingList`. A `String s` holding a directory is `dirPath`. A `String l` holding one tree line is `treeLine`.
-- **"What does this method do?"** That is what it should be called. A `getDir(String p)` that drops the final `/name` is `parentDirectory(String path)`. A `helper()` that picks the next directory to collapse is `deepestUnfinishedDirectory()`.
-
-Rules for renaming:
-
-- **Rename only.** No logic changes and no reordering. Fixes belong in Part 1, recorded in the chart.
-- **Use VS Code's Rename Symbol** (right-click the name → Rename Symbol, or F2) so every reference updates together.
-- **Prove nothing changed.** Re-run your `Verify.java` after renaming. The same tree hashes must come out.
-- **Commit and push** on the same branch:
-  ```bash
-  git add .
-  git commit -m "Rename tree variables and methods so they say what they hold and do"
-  git push
-  ```
-  On GitHub, open your fork → **Commits** → this commit, and copy its URL for the submission.
+> **Note:** Behavior 3 edits `hello.txt`. Test it last, or rebuild `tree-test/` with the lesson's `printf` commands before testing behaviors 4 through 6, or the expected tree hashes will not match.
 
 ---
 
 ## Success Criteria
 
-- [ ] **Forked theirs and cloned your fork of theirs.** `git remote -v` shows `origin` under your username and `upstream` under theirs.
-- [ ] **Got it running and verified each behavior one way or another.** Every chart row has a 1–5 and a written answer, and every wrong hash is reported next to the hash you expected.
-- [ ] **Committed to a new branch after you got their code running as best you can**
-- [ ] **Renamed tree variables and methods to be sensible.** Tree hashes unchanged, committed and pushed.
+- [ ] **Every row is filled in.** Each behavior has a rating from 1 to 5 and at least one bullet saying how you identified it.
+- [ ] **Wrong hashes are explained.** Any hash that does not match is written next to the hash you expected.
+- [ ] **Their repository is untouched.** Anything you added or fixed is in your fork, never pushed to theirs.
 
 ---
 
 ## Submission
 
-Submit **both** on the Hub: the entire chart and the URL of your rename commit.
-
-### Chart
-
-Upload your filled-in `verification-table.xlsx` (or a PDF export), or paste a **view-only** link to your Google Sheet copy.
-
-### Text response
-
-Copy the stencil below, fill in each line, and paste it into the Canvas text box:
+Submit **text** on Canvas: your filled-in table, with these two lines above it:
 
 ```
 Classmate's repository:   https://github.com/THEIR-USERNAME/THEIR-REPO-NAME
-My fork and branch:       https://github.com/YOUR-USERNAME/YOUR-FORK-NAME/tree/tree-review-YOURNAME
-Rename commit URL:        https://github.com/YOUR-USERNAME/YOUR-FORK-NAME/commit/SHA
+My fork:                  https://github.com/YOUR-USERNAME/YOUR-FORK-NAME
 ```

@@ -34,7 +34,7 @@ The project is designed around reading unfamiliar code. After the first part, ea
 1. **No AI-generated code.** Using any AI tool to produce code is prohibited.
 2. **No sharing code with classmates.** Work individually. Copied code is subject to honor board review.
 3. **Small snippets from online resources are permitted**, as long as you cite them in a code comment and they help build a single function — do not copy a complete Git implementation.
-4. **Commit summaries must use the milestone label.** Every commit begins with the milestone tag, e.g. `(GP-2.1): Initialize Repository`. This is required — a cluttered commit history affects your grade.
+4. **Commit summaries must use the milestone label.** Every commit begins with the milestone tag, e.g. `(Git-2.1): Initialize Repository`. This is required — a cluttered commit history affects your grade.
 5. **Never commit directly to `main`.** Create a feature branch for each milestone and merge via pull request.
 
 ---
@@ -45,10 +45,10 @@ Read the doc for each concept before starting the part that uses it.
 
 | Document | Read before | Covers |
 |---|---|---|
-| [BLOBs](Docs/blobs.md) | Part 2 | Content-addressed file storage |
-| [Index File](Docs/index-file.md) | Part 2 | Staging and the index |
-| [Trees](Docs/trees.md) | Part 3 | Directory snapshots |
-| [Commits](Docs/commits.md) | Part 4 | Commit files and the HEAD chain |
+| [BLOBs](InitAndBlobs/docs/blobs.md) | Part 2 | Content-addressed file storage |
+| [Index File](InitAndBlobs/docs/index-file.md) | Part 2 | Staging and the index |
+| [Trees](Trees/docs/trees.md) | Part 3 | Directory snapshots |
+| [Commits](Commits/docs/commits.md) | Part 4 | Commit files and the HEAD chain |
 
 ---
 
@@ -61,8 +61,8 @@ Read the doc for each concept before starting the part that uses it.
 | 5 | [Peer Code Verification](PeerCodeVerification/) | Fork a classmate's Part 2, read it cold, verify six behaviors, rename it for readability |
 | 6–8 | [Trees](Trees/) | Index formatting, trees from the working list, root tree from the index |
 | 9 | [Peer Tree Verification](PeerTreeVerification/) | Fork a classmate's Part 3, hash their trees by hand, verify six behaviors, rename it for readability |
-| 10–13 | [Commits](Commits/) | Root tree, commit files, HEAD chain, `GitWrapper` |
-| TBD | [Branches](Branches/) | Branch files, HEAD pointers *(coming soon)* |
+| 10–11 | [Commits](Commits/) | Root tree, commit files, HEAD chain, `GitWrapper` |
+| 12 | [Branches](Branches/) | Branch files, HEAD pointers *(coming soon)* |
 
 ---
 
@@ -82,6 +82,6 @@ Read the doc for each concept before starting the part that uses it.
 
 ### <font color="#79c0ff">Advanced</font>
 
-- [ ] Explain why the working list algorithm in GP-3.3 produces trees bottom-up rather than top-down.
+- [ ] Explain why the working list algorithm in Git-3.3 produces trees bottom-up rather than top-down.
 - [ ] Implement `checkout` — restoring the working directory to the exact state of any prior commit.
 - [ ] Explain what a directed acyclic graph is and why the commit chain is one.

@@ -2,7 +2,7 @@
 
 *Generated from [`_modules/git-project.json`](../../_modules/git-project.json) — do not edit by hand. Regenerate with `python3 _admin/_verification/verify.py --fix` or by saving from the planner UI.*
 
-**Unit 2** · 120 pts/assignment · scale ×1.15 · updated 2026-10-08
+**Unit 2** · 120 pts/assignment · scale ×1.15 · updated 2026-10-10
 
 Program Git
 
@@ -16,3 +16,4 @@ Program Git
 | 2.9.0 | Git Project Part 3 — Trees: Quiz | *quiz `004df05af92b7b74` — content in the private Exams repo* | — |
 | 2.9.1 | Peer Tree Verification | [GitProject/PeerTreeVerification](../../GitProject/PeerTreeVerification/) | — |
 | 2.10 · 2d | Commits | [GitProject/Commits](../../GitProject/Commits/) | — |
+| 2.12 | Branches | [GitProject/Branches](../../GitProject/Branches/) | — |

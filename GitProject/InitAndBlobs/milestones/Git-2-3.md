@@ -1,4 +1,4 @@
-# GP-2.3 — Create BLOB Files
+# Git-2.3 — Create BLOB Files
 
 *Part of the [Initialization and Blobs](../ASSIGNMENT.md) assignment*
 
@@ -8,7 +8,7 @@
 
 A blob is a copy of a file stored under the name of its SHA-1 hash in the `objects/` directory. The filename is the hash. The content is exactly what the original file contained.
 
-See [Docs/blobs.md](../../Docs/blobs.md) for details.
+See [blobs.md](../docs/blobs.md) for details.
 
 ---
 
@@ -24,7 +24,7 @@ Implement a method that creates a blob for a given file:
 
 ---
 
-## Stretch Goal — GP-2.3.1
+## Stretch Goal — Git-2.3.1
 
 In your tester:
 
@@ -33,7 +33,7 @@ In your tester:
 
 ---
 
-## Stretch Goal — GP-2.3.2 (Optional)
+## Stretch Goal — Git-2.3.2 (Optional)
 
 In real Git, file content is compressed before the SHA-1 hash is computed, and the blob stores the compressed data.
 
@@ -45,8 +45,8 @@ Implement this compression behavior:
 
 ---
 
-**Commit summary:** `(GP-2.3): Create BLOB Files`
+**Commit summary:** `(Git-2.3): Create BLOB Files`
 
 ---
 
-← [GP-2.2](gp-2-2.md) — [Back to assignment](../ASSIGNMENT.md) — Next: [GP-2.4](gp-2-4.md) →
+← [Git-2.2](Git-2-2.md) — [Back to assignment](../ASSIGNMENT.md) — Next: [Git-2.4](Git-2-4.md) →

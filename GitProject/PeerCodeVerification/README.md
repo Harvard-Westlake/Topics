@@ -93,7 +93,7 @@ You learned the fork workflow in [Forks and Collaboration](../../GitUsage/ForksA
    ```bash
    git log --oneline | head -20
    ```
-   Count how many commits carry a `(GP-2.x)` label. A milestone with no commit is a milestone you should expect to find missing.
+   Count how many commits carry a `(Git-2.x)` label. A milestone with no commit is a milestone you should expect to find missing.
 
 *(Standalone file: [activities/01-fork-clone-open.md](activities/01-fork-clone-open.md))*
 
@@ -107,7 +107,7 @@ Do not start at line 1 and read to the end. Read with a purpose, in this order:
 
 1. **Start with the README.** Write down every method it names. This is the author's claim of what exists.
 2. **Find the entry point.** Open `Git.java` and locate `main`. Does it call anything? Many Part 2 programs have an empty `main` and were tested by hand — that tells you how you will have to test them too.
-3. **Build the feature map.** For each of the four milestones — GP-2.1 `init`, GP-2.2 hash, GP-2.3 blob, GP-2.4 index — find the method that does it. Note the signature: what does it take in (a `String` path? a `File`?) and what does it return or write?
+3. **Build the feature map.** For each of the four milestones — Git-2.1 `init`, Git-2.2 hash, Git-2.3 blob, Git-2.4 index — find the method that does it. Note the signature: what does it take in (a `String` path? a `File`?) and what does it return or write?
 4. **Follow one call all the way down.** Pick the method that stages a file and trace it: read the content → hash it → write the blob → write the index line. At each step, note the data shape (`String` vs `byte[]`), how the path to `git/objects/<hash>` is built, and what happens when something already exists.
 5. **Gauge before you run.** Predict what will happen when you stage two files with identical content at different paths. Write the prediction down. Then run it. A prediction that comes true is the strongest evidence there is; a prediction that fails tells you exactly where to look.
 
@@ -127,7 +127,7 @@ While you read, these patterns deserve a note in your table:
 
 *Concept: Before you can judge whether code works, you have to know which piece of it is supposed to do what — a feature map turns a pile of methods into a checklist you can test.*
 
-![Diagram of a feature map: on the left, a source file Git.java listing methods such as main, initRepo, sha1, writeBlob, and addToIndex; arrows connect each method to a row on the right in a table of the four Part 2 milestones — GP-2.1 init, GP-2.2 hash, GP-2.3 blob, GP-2.4 index — with columns for what the method takes in and what it writes. main is marked empty with a note to add a Verify.java driver.](assets/map-the-features.svg)
+![Diagram of a feature map: on the left, a source file Git.java listing methods such as main, initRepo, sha1, writeBlob, and addToIndex; arrows connect each method to a row on the right in a table of the four Part 2 milestones — Git-2.1 init, Git-2.2 hash, Git-2.3 blob, Git-2.4 index — with columns for what the method takes in and what it writes. main is marked empty with a note to add a Verify.java driver.](assets/map-the-features.svg)
 
 ## Task
 
@@ -136,10 +136,10 @@ While you read, these patterns deserve a note in your table:
 
    | Milestone | Method name(s) | Takes in | Produces or writes |
    |---|---|---|---|
-   | GP-2.1 init | | | |
-   | GP-2.2 hash | | | |
-   | GP-2.3 blob | | | |
-   | GP-2.4 index | | | |
+   | Git-2.1 init | | | |
+   | Git-2.2 hash | | | |
+   | Git-2.3 blob | | | |
+   | Git-2.4 index | | | |
 
 3. Pick the method that stages a file (blob plus index) and read it top to bottom. Note where the file content is held (a `String`? a `byte[]`?), how the path to `git/objects/<hash>` is built, and what happens if a blob with that name already exists.
 4. Highlight anything that would stop the code from running on your machine — an absolute path such as `/Users/theirname/...`, a file that is assumed to exist, an empty `main`. Write it down **before** you change anything; it goes in your table.

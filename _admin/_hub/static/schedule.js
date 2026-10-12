@@ -16,6 +16,7 @@ let courses = null, favoriteIds = new Set();
 let saveTimer = null;
 let editingFinal = null;
 let syncBlockId = null;
+let branchInfo = null;         // /api/branches — which branches GitHub has (for the Sync dialog)
 let syncItems = [];            // /sync-items rows for the block open in the sync dialog
 let syncSelected = new Set();  // slot indexes ticked in the sync dialog (empty = whole unit)
 let syncPlanBySlot = {};       // slot -> what the dry run says Sync would do to that day
@@ -250,12 +251,13 @@ function peekLink(s) {
   else if (s.lesson_ref && s.lesson_ref.module && s.lesson_ref.path) lesson = s.lesson_ref.module + '/' + s.lesson_ref.path;
   if (!lesson) return '';
   const params = {lesson};
+  if (s.ref) params.ref = s.ref;   // a unit or day pointed at another branch
   if (s.lesson && s.lesson.no_assignment) params.hw = '0';
   const revs = s.lesson ? (Array.isArray(s.lesson.review) ? s.lesson.review : (s.lesson.review ? [s.lesson.review] : [])) : [];
   const url = new URL(studentUrl(params));
   revs.forEach(r => { if (r && r.module && r.path && r.file) url.searchParams.append('review', r.module + '/' + r.path + '/review/' + r.file); });
   return '<a class="peek" href="' + esc(url.href.replace(/%2F/g, '/')) + '" target="_blank" rel="noopener"' +
-         ' title="Student view — the live page this day\'s Canvas item opens (ref ' + esc(scheduleRef()) + ')">&#8599;</a>';
+         ' title="Student view — the live page this day\'s Canvas item opens (ref ' + esc(s.ref || scheduleRef()) + ')">&#8599;</a>';
 }
 
 // ── Class calendar (imported .ics) ────────────────────────────────────────────
@@ -630,6 +632,8 @@ function slotRow(blk, s, num, slotIdx) {
     : ' class="slot-title' + (s.kind === 'gap' ? ' gap' : '') + '"';
   const from = s.lesson && s.lesson._module ? ' <span class="from">' + esc(s.lesson._module) + '/' + esc(s.lesson.path || '') + '</span>'
     : (s.lesson_ref ? ' <span class="from">' + esc(s.lesson_ref.module) + '/' + esc(s.lesson_ref.path) + '</span>' : '');
+  const refTag = s.ref && s.ref !== scheduleRef() && slotLessonKey(s)
+    ? ' <span class="ref-tag" title="Students see this day from branch ' + esc(s.ref) + '">' + esc(s.ref) + '</span>' : '';
   const timeTip = s.time
     ? ' title="Class ' + s.time.start + '–' + s.time.end +
       (s.next_date ? ' · HW due 11:59 PM the night before ' + fmtShort(s.next_date) : '') + '"'
@@ -639,7 +643,7 @@ function slotRow(blk, s, num, slotIdx) {
     '<span class="slot-date"' + timeTip + '>' + fmtD(s.date) + '</span>' +
     '<span class="slot-num">' + num + '</span>' +
     '<span>' + badge + '</span>' +
-    '<span' + titleAttr + '>' + esc(s.title) + from + '</span>' +
+    '<span' + titleAttr + '>' + esc(s.title) + from + refTag + '</span>' +
     '<span class="slot-controls">' + (later ? '' : peekLink(s)) + controls + '</span>' +
   '</div>';
 }
@@ -937,6 +941,7 @@ async function openSync(blockId) {
   syncPlanBySlot = {};
   document.getElementById('syncDays').style.display = 'none';
   document.getElementById('syncDays').innerHTML = '';
+  document.getElementById('syncBranchRow').style.display = 'none';
 
   const isModule = r.type === 'module';
   document.getElementById('syncTitle').textContent = isModule
@@ -991,6 +996,8 @@ async function openSync(blockId) {
       syncItems = d.items || [];
       renderSyncDays();
     }
+    await loadBranches();
+    renderSyncBranch();
     await loadCourses();
   } catch (e) {
     sel.innerHTML = '';
@@ -1179,7 +1186,9 @@ function renderSyncDays() {
     html += '<label class="sync-day' + (on ? ' on' : '') + '">'
       + '<input type="checkbox"' + (on ? ' checked' : '') + ' onchange="Schedule.toggleSyncDay(' + it.slot + ', this.checked)">'
       + glyph(syncPlanBySlot[it.slot])
-      + '<span class="sync-day-title" title="' + esc(it.title) + '">' + esc(it.title) + '</span>'
+      + '<span class="sync-day-title" title="' + esc(it.title) + '">' + esc(it.title)
+      + (it.content && it.ref && it.ref !== scheduleRef()
+         ? ' <span class="ref-tag">' + esc(it.ref) + '</span>' : '') + '</span>'
       + '<span class="sync-day-meta">' + meta + '</span>'
       + '<button type="button" class="sync-day-from" title="Select this day and every day after it" '
       + 'onclick="Schedule.selectSyncFrom(' + it.slot + ')">from here &darr;</button>'
@@ -1188,6 +1197,99 @@ function renderSyncDays() {
   box.innerHTML = html;
   box.style.display = 'flex';
   updateSyncButton();
+  renderSyncBranch();
+}
+
+// ── Branch overrides ─────────────────────────────────────────────────────────
+// The Sync dialog's Branch picker points the whole unit (no days ticked) or just
+// the ticked days at another git branch. Saved in the schedule — a unit's
+// `branch` and the schedule's `lesson_refs` {"Module/Lesson": branch} — so the
+// status dot, later syncs, and the board's student-view links all agree.
+// Most specific wins: day → unit → the schedule's ref.
+
+async function loadBranches() {
+  try { branchInfo = await fetch('/api/branches').then(r => r.json()); }
+  catch (e) { branchInfo = {branches: []}; }
+}
+
+function slotLessonKey(s) {
+  if (s.lesson && s.lesson._module && s.lesson.path) return s.lesson._module + '/' + s.lesson.path;
+  if (s.lesson_ref && s.lesson_ref.module && s.lesson_ref.path) return s.lesson_ref.module + '/' + s.lesson_ref.path;
+  return null;
+}
+
+function seqBlock(id) { return (schedule.sequence || []).find(b => b.id === id); }
+
+function renderSyncBranch() {
+  const row = document.getElementById('syncBranchRow');
+  const r = resolvedById(syncBlockId);
+  if (!r || !branchInfo || !(r.slots || []).some(slotLessonKey)) { row.style.display = 'none'; return; }
+  row.style.display = 'block';
+  const n = syncSelected.size;
+  let cur;
+  if (n) {
+    const refs = new Set(Array.from(syncSelected).map(i => (r.slots[i] || {}).ref).filter(Boolean));
+    cur = refs.size === 1 ? Array.from(refs)[0] : '';
+  } else {
+    cur = (seqBlock(syncBlockId) || {}).branch || scheduleRef();
+  }
+  const list = (branchInfo.branches || []).slice();
+  if (cur && !list.some(b => b.name === cur)) list.push({name: cur, status: 'unknown'});
+  const suffix = {'local-only': ' (not on GitHub)', 'differs': ' (not pushed)', 'unknown': ' (not found)'};
+  let opts = n && !cur ? '<option value="" selected>(days differ)</option>' : '';
+  list.forEach(b => {
+    opts += '<option value="' + esc(b.name) + '"' + (b.name === cur ? ' selected' : '') + '>'
+      + esc(b.name) + (b.name === scheduleRef() ? ' (schedule default)' : '') + esc(suffix[b.status] || '') + '</option>';
+  });
+  const sel = document.getElementById('syncBranch');
+  sel.innerHTML = opts;
+  document.getElementById('syncBranchLabel').textContent = n
+    ? 'Branch for the ' + n + ' ticked day' + (n > 1 ? 's' : '')
+    : 'Branch for the whole unit';
+  const info = list.find(b => b.name === cur) || {};
+  const notes = [];
+  if (info.status === 'local-only')
+    notes.push('<span class="warn">“' + esc(cur) + '” is not on GitHub yet, so students would see nothing. '
+      + 'Commit, then in your terminal: <code>git push -u origin ' + esc(cur) + '</code></span>');
+  else if (info.status === 'differs')
+    notes.push('<span class="warn">This machine’s “' + esc(cur) + '” is not what GitHub has. '
+      + 'Students see GitHub’s copy until you <code>git push</code>.</span>');
+  else if (info.status === 'unknown')
+    notes.push('<span class="warn">No branch named “' + esc(cur) + '” here or on GitHub.</span>');
+  if (cur && branchInfo.current === cur && branchInfo.dirty)
+    notes.push('<span class="warn">' + branchInfo.dirty + ' uncommitted change' + (branchInfo.dirty > 1 ? 's' : '')
+      + ' on “' + esc(cur) + '” will not reach students until committed and pushed.</span>');
+  notes.push('Saved in this schedule only. A day’s branch beats its unit’s, which beats the schedule’s (<b>'
+    + esc(scheduleRef()) + '</b>). Other teachers’ courses are not affected.');
+  document.getElementById('syncBranchNote').innerHTML = notes.join('<br>');
+}
+
+async function setSyncBranch(value) {
+  const r = resolvedById(syncBlockId);
+  const b = seqBlock(syncBlockId);
+  if (!r || !b || !value) return;
+  const n = syncSelected.size;
+  const refs = Object.assign({}, schedule.lesson_refs || {});
+  const keys = (n ? Array.from(syncSelected).map(i => r.slots[i] || {}) : (r.slots || []))
+    .map(slotLessonKey).filter(Boolean);
+  if (n) {
+    const unit = b.branch || scheduleRef();
+    keys.forEach(k => { if (value === unit) delete refs[k]; else refs[k] = value; });
+  } else {
+    if (value === scheduleRef()) delete b.branch; else b.branch = value;
+    keys.forEach(k => delete refs[k]);   // the whole unit means every day in it
+  }
+  if (Object.keys(refs).length) schedule.lesson_refs = refs; else delete schedule.lesson_refs;
+  clearTimeout(saveTimer);
+  setPill('saving');
+  await doSave();
+  // the per-day rows carry each day's branch; re-plan against Canvas with the new links
+  const d = await fetch('/api/schedules/' + encodeURIComponent(schedName) +
+                        '/sync-items?block_id=' + encodeURIComponent(syncBlockId)).then(r => r.json()).catch(() => ({}));
+  if (d.items) syncItems = d.items;
+  renderSyncDays();
+  renderSyncBranch();
+  previewPlan();
 }
 
 function selectionChanged() {
@@ -1352,6 +1454,6 @@ return {init, onShow: loadPalette, pickSchedule, newSchedule, loadPalette, toggl
         addNoSchool, removeNoSchool, toggleTopic, toggleBlock, removeBlock,
         stepBlock, setBlockPoints, removeInsert, stepInsert, setInsertPoints,
         editBlockTitle, editInsertTitle, openSync, closeSync, doSync, onSyncCourseChange,
-        previewPlan, toggleSyncDay, selectSyncFrom, selectSyncDays, togglePick,
+        previewPlan, toggleSyncDay, selectSyncFrom, selectSyncDays, togglePick, setSyncBranch,
         newFinal, openFinalEditor, closeFinalEditor, saveFinal, deleteFinal};
 })();

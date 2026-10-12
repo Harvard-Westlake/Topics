@@ -28,20 +28,20 @@ Replace with: "Because the hash is the filename, Git can retrieve any file in on
 
 ## Structural Clarity
 
-**7. The `git/` vs `.git/` distinction is buried in a warning inside GP-2.1.**  
+**7. The `git/` vs `.git/` distinction is buried in a warning inside Git-2.1.**  
 This is the single most confusing thing for students starting the project. It should appear prominently in the ProjectSetup lesson and again at the top of the Init milestone. Students will accidentally commit the `git/` folder to GitHub if they don't understand why the `.gitignore` is critical.
 
 **8. HEAD is created in Part 1 but its purpose isn't explained until Part 4.**  
-When students create `git/HEAD` in GP-1.1, they don't know why it exists. A one-sentence explanation at the point of creation — "This file will eventually store the hash of your most recent commit" — removes the mystery and connects Part 1 to Part 4.
+When students create `git/HEAD` in Git-1.1, they don't know why it exists. A one-sentence explanation at the point of creation — "This file will eventually store the hash of your most recent commit" — removes the mystery and connects Part 1 to Part 4.
 
-**9. GP-3.2 and GP-3.3 implement two separate tree methods. The reason is never stated.**  
-Students will wonder: "Why am I doing this twice?" The distinction should be explicit in the lesson README: GP-3.2 creates trees from any directory path (useful for testing), GP-3.3 creates trees only from staged files (what commit actually uses). Without this, students often conflate the two.
+**9. Git-3.2 and Git-3.3 implement two separate tree methods. The reason is never stated.**  
+Students will wonder: "Why am I doing this twice?" The distinction should be explicit in the lesson README: Git-3.2 creates trees from any directory path (useful for testing), Git-3.3 creates trees only from staged files (what commit actually uses). Without this, students often conflate the two.
 
-**10. The working list algorithm in GP-3.3 explains HOW without explaining WHY.**  
+**10. The working list algorithm in Git-3.3 explains HOW without explaining WHY.**  
 Students need to understand why the bottom-up process is necessary before they can implement it correctly. Add one paragraph before the step-by-step: "Trees must be built from the inside out because a parent directory's tree file needs to include each child's hash. You can't hash a parent until all its children are already written. The working list is the data structure that tracks which directories are fully resolved."
 
 **11. The partner handoff in Part 4 does not explain logistics.**  
-GP-4.1 says "run your partner's tester" but doesn't tell students how they receive the partner's code. Add explicit instructions: fork and clone the assigned repository, read the README before touching any code, document bugs before fixing them.
+Git-4.1 says "run your partner's tester" but doesn't tell students how they receive the partner's code. Add explicit instructions: fork and clone the assigned repository, read the README before touching any code, document bugs before fixing them.
 
 ---
 
@@ -50,8 +50,8 @@ GP-4.1 says "run your partner's tester" but doesn't tell students how they recei
 **12. The wrapper class is called both `GitWrapper` and `GitInterface` in different places.**  
 Standardize on `GitWrapper` everywhere. (The "next year" notes also flag this.)
 
-**13. The GP-X.0 labels are used for learning objective headers, not milestones.**  
-Students may try to use `(GP-2.0)` as a commit label. Clarify once, prominently: X.0 labels are section headers in the curriculum only. Commit labels start at X.1.
+**13. The Git-X.0 labels are used for learning objective headers, not milestones.**  
+Students may try to use `(Git-2.0)` as a commit label. Clarify once, prominently: X.0 labels are section headers in the curriculum only. Commit labels start at X.1.
 
 **14. Commit format has minor inconsistencies across documents.**  
 Some places show `parent:` as blank for the initial commit; others say to omit the line entirely. The rubric says "empty or blank." The correct behavior (and what the rubric tests for) is to **omit the line entirely** for the initial commit. Make this consistent everywhere.
@@ -63,21 +63,21 @@ In standard Git, "working directory" means the files you're currently editing. I
 
 ## Ordering and Sequencing
 
-**16. The grading rubric appears at the end of the GP-4 section but should be accessible throughout the project.**  
+**16. The grading rubric appears at the end of the Git-4 section but should be accessible throughout the project.**  
 Students benefit from knowing what they're being graded on from the start. Consider linking to the rubric from every ASSIGNMENT.md, or moving it to the module README.
 
 **17. Stretch goals are sometimes referenced by later required milestones.**  
-GP-2.3.2 (compression) is optional, but students who skip it may have different blob content than those who implement it, potentially breaking the later integration tests. The stretch goal should clearly state: "Do not implement this unless you are certain your partner in Part 4 will also implement it."
+Git-2.3.2 (compression) is optional, but students who skip it may have different blob content than those who implement it, potentially breaking the later integration tests. The stretch goal should clearly state: "Do not implement this unless you are certain your partner in Part 4 will also implement it."
 
 **18. The "next year" structural changes that were applied to this version:**  
 For future reference, these changes from the original notes were incorporated:
-- HEAD file initialization moved from Part 2 to Part 1 (GP-1.1)
+- HEAD file initialization moved from Part 2 to Part 1 (Git-1.1)
 - Initial `README.md` blob creation added to Part 1
 - `GitWrapper` methods updated to static
 - HEAD update explicitly documented as the final step in the commit sequence
 
 **19. The note "In Part 3, move Milestone 2 after 4" could not be resolved from the available materials.**  
-The original Part 3 appears to have had 4 milestones, but only 3 were available in the source. If a GP-3.4 exists, it should be reinserted and the ordering reviewed. The current ordering (GP-3.1 index formatting → GP-3.2 basic tree → GP-3.3 tree from index) is pedagogically sound as written.
+The original Part 3 appears to have had 4 milestones, but only 3 were available in the source. If a Git-3.4 exists, it should be reinserted and the ordering reviewed. The current ordering (Git-3.1 index formatting → Git-3.2 basic tree → Git-3.3 tree from index) is pedagogically sound as written.
 
 ---
 

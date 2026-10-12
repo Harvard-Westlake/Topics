@@ -1,4 +1,4 @@
-# GP-3.3 — Create a Tree from the Index
+# Git-3.3 — Create a Tree from the Index
 
 *Part of the [Trees](../ASSIGNMENT.md) assignment*
 
@@ -6,7 +6,7 @@
 
 ## Recall
 
-GP-3.2 wrote one tree file for one directory from the working list. This milestone builds the working list from the **staged files in the index** and calls `createTree` on every directory, deepest first, until only the root tree remains — the version `commit()` will use. Only staged files appear in the resulting snapshot.
+Git-3.2 wrote one tree file for one directory from the working list. This milestone builds the working list from the **staged files in the index** and calls `createTree` on every directory, deepest first, until only the root tree remains — the version `commit()` will use. Only staged files appear in the resulting snapshot.
 
 **Index-to-Tree Visualizer:** https://learnhw.web.app/static/code/widgets/index-tree/index-tree.html
 
@@ -14,7 +14,7 @@ GP-3.2 wrote one tree file for one directory from the working list. This milesto
 
 ## The Working List
 
-As introduced in GP-3.2, a **working list** starts as a copy of the index with `blob` prefixed on each line. It is then compressed directory by directory until only the root tree entry remains. The working list is a runtime data structure — it does not need to be saved to disk permanently.
+As introduced in Git-3.2, a **working list** starts as a copy of the index with `blob` prefixed on each line. It is then compressed directory by directory until only the root tree entry remains. The working list is a runtime data structure — it does not need to be saved to disk permanently.
 
 **Why the working list exists:** Trees must be built bottom-up. You cannot hash a parent directory until all its children are resolved. The working list lets you track which directories are fully resolved and which still have unprocessed children.
 
@@ -35,7 +35,7 @@ blob 4a5d9f8b10c2de34567890abcdef1234567890ab myProgram/sample.txt
 
 **Step 2 — Find the leaf-most directory**
 
-The first two entries share `myProgram/docs`. Call your GP-3.2 `createTree(workingList, "myProgram/docs")` — it writes this tree file:
+The first two entries share `myProgram/docs`. Call your Git-3.2 `createTree(workingList, "myProgram/docs")` — it writes this tree file:
 
 ```
 blob 0a4d55a8d778e5022fab701977c5d840bbc486d0 Hello.txt
@@ -73,15 +73,15 @@ Collapse again. Continue until only one entry remains — the root tree.
 Implement the working list algorithm described above. Your method should:
 
 1. Build a working list from the index (prefix `blob`, sort by path)
-2. Repeatedly find the leaf-most directory and call your GP-3.2 `createTree` on it to write its tree file in `git/objects/`
+2. Repeatedly find the leaf-most directory and call your Git-3.2 `createTree` on it to write its tree file in `git/objects/`
 3. Collapse that directory's entries into a single `tree <hash> <dirname>` entry using the returned hash
 4. Repeat until only a root tree entry remains
 5. Return or store the root tree's SHA-1 hash — `commit()` in Part 4 will need it
 
 ---
 
-**Commit summary:** `(GP-3.3): Created Tree from Index`
+**Commit summary:** `(Git-3.3): Created Tree from Index`
 
 ---
 
-← [GP-3.2](gp-3-2.md) — [Back to assignment](../ASSIGNMENT.md)
+← [Git-3.2](Git-3-2.md) — [Back to assignment](../ASSIGNMENT.md)

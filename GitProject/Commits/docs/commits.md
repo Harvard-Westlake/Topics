@@ -42,7 +42,7 @@ message: Add initial project files
 
 Each commit stores a reference to the previous one. The diagram below shows three commits — each pointing to its parent and to a separate snapshot (tree):
 
-![Three commits in a chain, each with tree, parent, author, and message fields, each pointing to a snapshot](assets/commits-and-parents.png)
+![Three commits in a chain, each with tree, parent, author, and message fields, each pointing to a snapshot](../assets/commits-and-parents.png)
 
 
 Every commit (except the first) stores its parent's hash. This means you can start at any commit and follow the parent field backward through the entire history of the project.
@@ -78,4 +78,4 @@ Step 8 must always come last. If HEAD is updated before the commit file is writt
 
 ---
 
-← Back to [Docs](README.md) | [Git Project](../../)
+← Back to [Commits](../README.md)

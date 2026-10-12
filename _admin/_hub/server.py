@@ -73,7 +73,7 @@ NEW_QUIZZES_BASE = BASE.replace("/api/v1", "/api/quiz/v1")
 
 SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 NAME_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9 _\-]*$")
-FILE_RE = re.compile(r"^(review/|activities/|milestones/)?[A-Za-z0-9._-]+\.md$|^demos/[A-Za-z0-9._-]+\.html$")
+FILE_RE = re.compile(r"^(review/|activities/|milestones/|docs/)?[A-Za-z0-9._-]+\.md$|^demos/[A-Za-z0-9._-]+\.html$")
 
 # ── Markdown helpers (Canvas upload rendering) ─────────────────────────────────
 
@@ -254,6 +254,28 @@ def schedule_ref(sched):
     """Git ref a schedule's Canvas links follow (default: the repo's main branch)."""
     ref = (sched or {}).get("ref") or ""
     return ref.strip() if REF_RE.match(ref.strip() or "") else GITHUB_BRANCH
+
+# Branch overrides. A teacher can point part of a schedule at a different ref
+# than the schedule's own, without touching anyone else's course: a module
+# block's "branch" moves the whole unit, and the schedule's "lesson_refs"
+# ({"Module/Lesson": ref}) moves single days. Days are keyed by lesson, not by
+# slot index, so an override survives days being inserted or renumbered.
+# Most specific wins: lesson_refs → block branch → schedule ref.
+
+def _clean_ref(value):
+    """A valid git ref name, or None."""
+    v = (value or "").strip() if isinstance(value, str) else ""
+    return v if v and REF_RE.match(v) else None
+
+def _slot_lesson_key(s):
+    """'Module/Lesson' a schedule slot links to, or None (quiz, test, gap …)."""
+    a = s.get("lesson") or {}
+    if a.get("_module") and a.get("path"):
+        return f"{a['_module']}/{a['path']}"
+    lr = s.get("lesson_ref") or {}
+    if lr.get("module") and lr.get("path"):
+        return f"{lr['module']}/{lr['path']}"
+    return None
 
 def viewer_url(ref, lesson=None, path=None, reviews=(), homework=True, local=False):
     """URL of view.html for one lesson day or one file.
@@ -1158,6 +1180,7 @@ def lesson_file_listing(module, path):
         "review": [f"review/{f}" for f in review_files(module, path)],
         "activities": [f"activities/{f}" for f in _sub_md_files(module, path, "activities")],
         "milestones": [f"milestones/{f}" for f in _sub_md_files(module, path, "milestones")],
+        "docs": [f"docs/{f}" for f in _sub_md_files(module, path, "docs")],
         "demos": [f"demos/{f}" for f in demo_files(module, path)],
         "assets": asset_files(module, path),
         "can_create": [] if "ASSIGNMENT.md" in files else ["ASSIGNMENT.md"],
@@ -1577,6 +1600,8 @@ def resolve_schedule(sched):
     if sched.get("show_day0_syllabus") and dates:
         day0_date, dates = dates[0], dates[1:]
     blocks, warnings, idx, unit = [], [], 0, 0
+    sched_ref = schedule_ref(sched)
+    lesson_refs = sched.get("lesson_refs") or {}
     cal, cls = schedule_calendar_class(sched)
     if sched.get("calendar_class") and not cls:
         warnings.append(f"Calendar class '{sched.get('calendar_class')}' not found in "
@@ -1618,7 +1643,11 @@ def resolve_schedule(sched):
                    "file": block.get("file"), "points": block.get("points"),
                    "slots": _insert_slots(block)}
         day_num, last_date = -1, None  # first day in a block is day_num 0, matching Unit 0
+        out["branch"] = _clean_ref(block.get("branch"))
+        block_ref = out["branch"] or sched_ref
         for s in out["slots"]:
+            key = _slot_lesson_key(s)
+            s["ref"] = (_clean_ref(lesson_refs.get(key)) if key else None) or block_ref
             if s.get("co_day"):
                 s["date"] = last_date          # shares the class day of the slot above
             else:
@@ -1679,6 +1708,20 @@ def api_schedule(name):
         sched["ref"] = (sched.get("ref") or "").strip() or GITHUB_BRANCH
         if not REF_RE.match(sched["ref"]):
             return jsonify({"error": f"invalid git ref '{sched['ref']}' — use a branch or tag name"}), 400
+        for b in sched.get("sequence") or []:
+            if "branch" in b:
+                if not b["branch"]:
+                    del b["branch"]
+                elif not _clean_ref(b["branch"]):
+                    return jsonify({"error": f"invalid branch '{b['branch']}' on a unit"}), 400
+        lrefs = {k: v for k, v in (sched.get("lesson_refs") or {}).items() if v}
+        bad = [v for v in lrefs.values() if not _clean_ref(v)]
+        if bad:
+            return jsonify({"error": f"invalid branch '{bad[0]}' on a day"}), 400
+        if lrefs:
+            sched["lesson_refs"] = lrefs
+        else:
+            sched.pop("lesson_refs", None)
         sched["updated"] = datetime.now().isoformat(timespec="seconds")
         SCHEDULES_DIR.mkdir(parents=True, exist_ok=True)
         schedule_path(name).write_text(json.dumps(sched, indent=2) + "\n")
@@ -1920,17 +1963,19 @@ def _expected_block_items(block, ref):
         return dated[-1] if dated else s.get("date")
 
     cur_slot = [0]   # index of the slot being expanded — the key the Sync dialog's per-day checkboxes use
+    default_ref = ref
 
     def item(title, type_, identity, points=None, due=None, unlock=None, description="", content=False):
         return {"title": title, "type": type_, "identity": identity, "base_title": _base_title(title),
                 "points": points, "due": due, "unlock": unlock, "description": description,
-                "content": content, "slot": cur_slot[0]}
+                "content": content, "slot": cur_slot[0], "ref": ref}
 
     expected = []
     for i, s in enumerate(slots):
         if s.get("part", 1) != 1:
             continue  # later day of a multi-day item — covered by its first day
         cur_slot[0] = i
+        ref = s.get("ref") or default_ref   # this day's branch override, if any (see resolve_schedule)
         day_num = s.get("day_num", i + 1)
         kind = s.get("kind")
         if kind == "lesson" and s.get("lesson"):
@@ -2391,6 +2436,7 @@ def _standalone_expected(block, ref):
     """The one assignment a standalone test / final / lesson block syncs to."""
     kind = block["type"]
     first = block["slots"][0] if block.get("slots") else {}
+    ref = first.get("ref") or ref
     title = first.get("base_title") or block.get("title") or kind.title()
     if kind in ("test", "final"):
         label = "final exam" if kind == "final" else "test"
@@ -2476,6 +2522,43 @@ def api_schedule_sync_status(name):
                                                              + ". Sync updates in place."})
     return jsonify({"course_id": course_id, "statuses": statuses})
 
+# ── Git branches (for per-unit / per-day overrides) ───────────────────────────
+# The live view reads from GitHub, so a branch only shows students anything once
+# it is pushed. The Sync dialog lists branches with that status so a teacher
+# can see why a day would show old content.
+
+def _git(*args):
+    r = subprocess.run(["git", "-C", str(TOPICS), *args], capture_output=True, text=True, timeout=20)
+    return r.stdout if r.returncode == 0 else ""
+
+@app.route("/api/branches")
+def api_branches():
+    """Branches the hub knows about: each with whether GitHub has it and
+    whether this machine has commits GitHub doesn't. Also the checked-out
+    branch and its count of uncommitted files (they never reach students)."""
+    remote = {}
+    for line in _git("ls-remote", "--heads", "origin").splitlines():
+        sha, _, name = line.partition("\t")
+        if name.startswith("refs/heads/"):
+            remote[name[len("refs/heads/"):]] = sha
+    local = {}
+    for line in _git("for-each-ref", "--format=%(objectname) %(refname:short)", "refs/heads").splitlines():
+        sha, _, name = line.partition(" ")
+        local[name] = sha
+    current = _git("branch", "--show-current").strip()
+    dirty = len([l for l in _git("status", "--porcelain").splitlines() if l.strip()])
+    out = []
+    for name in sorted(set(remote) | set(local), key=lambda n: (n != GITHUB_BRANCH, n.lower())):
+        if name not in remote:
+            status = "local-only"      # never pushed: the live view cannot show it
+        elif name in local and local[name] != remote[name]:
+            status = "differs"         # pushed, but this machine's copy is not what GitHub has
+        else:
+            status = "pushed"
+        out.append({"name": name, "status": status, "current": name == current})
+    return jsonify({"branches": out, "current": current, "dirty": dirty,
+                    "default": GITHUB_BRANCH, "remote_ok": bool(remote)})
+
 @app.route("/api/schedules/<name>/sync-items")
 def api_schedule_sync_items(name):
     """The Canvas items a module block would sync, one per class day, so the
@@ -2492,7 +2575,7 @@ def api_schedule_sync_items(name):
         return jsonify({"error": "block not found in schedule"}), 404
     if block["type"] != "module" or block.get("missing"):
         return jsonify({"items": []})
-    keys = ("slot", "title", "type", "points", "due")
+    keys = ("slot", "title", "type", "points", "due", "ref", "content")
     return jsonify({"items": [{k: e[k] for k in keys}
                               for e in _expected_block_items(block, schedule_ref(sched))]})
 
@@ -2932,6 +3015,8 @@ def api_editor_bundle():
 
     add("LESSON README", lesson_dir / "README.md")
     add("ASSIGNMENT", lesson_dir / "ASSIGNMENT.md")
+    for f in _sub_md_files(topic, path, "docs"):
+        add(f"DOC: {f}", lesson_dir / "docs" / f)
     for f in _sub_md_files(topic, path, "milestones"):
         add(f"MILESTONE: {f}", lesson_dir / "milestones" / f)
     for f in _sub_md_files(topic, path, "review"):

@@ -68,4 +68,4 @@ The index lists **files only** — not directories. Directory structure is deriv
 
 ---
 
-← Back to [Docs](README.md) | [Git Project](../../)
+← Back to [Init and Blobs](../README.md)

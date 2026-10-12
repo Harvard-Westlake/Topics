@@ -2,14 +2,14 @@
 
 *Lesson: [Commits](README.md)*
 
-**Duration:** 4 class periods  
+**Duration:** 2 class periods  
 **Due:** End of this block
 
 ---
 
 ## Reference Docs
 
-- [Commits — file format, HEAD chain, step ordering](../Docs/commits.md)
+- [Commits — file format, HEAD chain, step ordering](docs/commits.md)
 
 ---
 
@@ -30,15 +30,15 @@ If their program does not compile or run correctly, document the issue and fix i
 
 | Milestone | What you'll build | Commit label |
 |---|---|---|
-| [GP-4.1 — Identify the Root Tree](milestones/gp-4-1.md) | Trace and verify partner's object graph | `(GP-4.1): Verified Root Tree Structure` |
-| [GP-4.2 — Link the Commit File](milestones/gp-4-2.md) | Commit files and HEAD chain | `(GP-4.2): Implemented Commit with HEAD Linkage` |
-| [GP-4.3 — Implement GitWrapper](milestones/gp-4-3.md) | Standardized static interface | `(GP-4.3): Implemented GitWrapper` |
+| [Git-4.1 — Identify the Root Tree](milestones/Git-4-1.md) | Trace and verify partner's object graph | `(Git-4.1): Verified Root Tree Structure` |
+| [Git-4.2 — Link the Commit File](milestones/Git-4-2.md) | Commit files and HEAD chain | `(Git-4.2): Implemented Commit with HEAD Linkage` |
+| [Git-4.3 — Implement GitWrapper](milestones/Git-4-3.md) | Standardized static interface | `(Git-4.3): Implemented GitWrapper` |
 
 ---
 
 ## Overall Success Criteria
 
-- [ ] **GP-4.1 complete** — root tree verified manually, any bugs documented and fixed
+- [ ] **Git-4.1 complete** — root tree verified manually, any bugs documented and fixed
 - [ ] **`commit()` writes correct file format** — all required fields present, parent line omitted on first commit
 - [ ] **Commit stored in `objects/`** — file exists at `git/objects/<commitSHA>`
 - [ ] **HEAD updated correctly** — `git/HEAD` contains the new commit's hash after each commit
@@ -46,7 +46,7 @@ If their program does not compile or run correctly, document the issue and fix i
 - [ ] **`commit()` returns the hash** — confirmed via `GitTester` output
 - [ ] **`GitWrapper` uses static methods** — method signatures unchanged from the provided template
 - [ ] **`README.md` updated** — bug log and missing functionality documented
-- [ ] **Each milestone committed separately** — summary begins with the correct GP label
+- [ ] **Each milestone committed separately** — summary begins with the correct Git label
 
 ---
 

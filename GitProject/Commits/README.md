@@ -13,15 +13,15 @@
 
 | Milestone | Whose code | What it does |
 |---|---|---|
-| GP-4.1 | Your classmate's | Run their tester, trace the root tree, verify the snapshot |
-| GP-4.2 | Your classmate's | Add `commit()` — build trees from index, write commit file, update HEAD |
-| GP-4.3 | Your classmate's | Wrap everything in `GitWrapper` with a standardized interface |
+| Git-4.1 | Your classmate's | Run their tester, trace the root tree, verify the snapshot |
+| Git-4.2 | Your classmate's | Add `commit()` — build trees from index, write commit file, update HEAD |
+| Git-4.3 | Your classmate's | Wrap everything in `GitWrapper` with a standardized interface |
 
 All work in this part happens in a classmate's codebase. You will clone their repository, read their code, understand their design decisions, and add the commit functionality on top.
 
 ## <font color="#388bfd">Read Before Starting</font>
 
-- [Commits](../Docs/commits.md) — commit file format, the HEAD chain, step ordering
+- [Commits](docs/commits.md) — commit file format, the HEAD chain, step ordering
 
 ## <font color="#388bfd">Working in Someone Else's Code</font>
 
@@ -45,7 +45,7 @@ The final milestone wraps everything in a single class with a fixed interface. T
 
 In the commit sequence, `git/HEAD` must be updated as the very last step. Writing HEAD before the commit file is saved would leave HEAD pointing to a file that does not yet exist if anything fails in between.
 
-See [Docs/commits.md](../Docs/commits.md) for the full ordered sequence.
+See [commits.md](docs/commits.md) for the full ordered sequence.
 
 ## <font color="#388bfd">☑️ Check for Understanding</font>
 

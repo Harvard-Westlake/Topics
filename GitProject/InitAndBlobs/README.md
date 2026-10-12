@@ -13,10 +13,10 @@
 
 | Milestone | What it does |
 |---|---|
-| GP-2.1 | `init()` — creates the `git/`, `git/objects/`, `git/index`, and `git/HEAD` structure |
-| GP-2.2 | `hashFile()` — computes SHA-1 hash of any file's contents |
-| GP-2.3 | `addBlob()` — stores a file in `objects/` under its hash |
-| GP-2.4 | `updateIndex()` — records the hash and path in the index file |
+| Git-2.1 | `init()` — creates the `git/`, `git/objects/`, `git/index`, and `git/HEAD` structure |
+| Git-2.2 | `hashFile()` — computes SHA-1 hash of any file's contents |
+| Git-2.3 | `addBlob()` — stores a file in `objects/` under its hash |
+| Git-2.4 | `updateIndex()` — records the hash and path in the index file |
 
 By the end of this part, running your program should:
 1. Create the `git/` directory structure
@@ -25,8 +25,8 @@ By the end of this part, running your program should:
 
 ## <font color="#388bfd">Read Before Starting</font>
 
-- [BLOBs](../Docs/blobs.md) — how content-addressed storage works
-- [Index File](../Docs/index-file.md) — what the index tracks and its format
+- [BLOBs](docs/blobs.md) — how content-addressed storage works
+- [Index File](docs/index-file.md) — what the index tracks and its format
 
 ## <font color="#388bfd">Design Note: git/ Stays Out of .git/</font>
 

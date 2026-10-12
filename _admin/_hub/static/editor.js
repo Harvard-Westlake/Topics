@@ -140,6 +140,7 @@ function buildTabs() {
 
   const lesson = (listing.files || []).map(f => btn(f, f)).join('') +
                  (listing.can_create || []).map(f => btn(f, '+ ' + f, ' create')).join('');
+  const docs = (listing.docs || []).map(f => btn(f, f.replace('docs/', ''))).join('');
   const milestones = (listing.milestones || []).map(f => btn(f, f.replace('milestones/', ''))).join('');
   const activities = (listing.activities || []).map(f => btn(f, f.replace('activities/', ''))).join('') +
                      newBtn('+ new activity', 'openNewActivity');
@@ -149,7 +150,7 @@ function buildTabs() {
   const materials = btn('::assets', 'Uploads (' + (listing.assets || []).length + ')');
 
   $('meTabs').innerHTML =
-    row('Lesson', lesson) + row('Milestones', milestones) +
+    row('Lesson', lesson) + row('Docs', docs) + row('Milestones', milestones) +
     row('Activities', activities) + row('Reviews', reviews) +
     row('Demos', demos) + row('Materials', materials);
 }

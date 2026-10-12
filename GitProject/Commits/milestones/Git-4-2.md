@@ -1,4 +1,4 @@
-# GP-4.2 — Link the Commit File to the Root Tree
+# Git-4.2 — Link the Commit File to the Root Tree
 
 *Part of the [Commits](../ASSIGNMENT.md) assignment*
 
@@ -8,7 +8,7 @@
 
 A commit file ties the root tree, the previous commit, the author, the date, and the message together into a single object — stored in `objects/` like any blob or tree. After writing it, `git/HEAD` is updated to point to the new commit's hash. **HEAD update must always be the last step.**
 
-See [Docs/commits.md](../../Docs/commits.md) for the full format and step ordering.
+See [commits.md](../docs/commits.md) for the full format and step ordering.
 
 ---
 
@@ -52,8 +52,8 @@ Update your partner's program to generate commit files:
 
 ---
 
-**Commit summary:** `(GP-4.2): Implemented Commit with HEAD Linkage`
+**Commit summary:** `(Git-4.2): Implemented Commit with HEAD Linkage`
 
 ---
 
-← [GP-4.1](gp-4-1.md) — [Back to assignment](../ASSIGNMENT.md) — Next: [GP-4.3](gp-4-3.md) →
+← [Git-4.1](Git-4-1.md) — [Back to assignment](../ASSIGNMENT.md) — Next: [Git-4.3](Git-4-3.md) →

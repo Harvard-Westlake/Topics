@@ -1,4 +1,4 @@
-# GP-2.4 — Update the Index File
+# Git-2.4 — Update the Index File
 
 *Part of the [Initialization and Blobs](../ASSIGNMENT.md) assignment*
 
@@ -8,7 +8,7 @@
 
 The index is a plain text file at `git/index` that lists every staged file. Each line contains a SHA-1 hash, a single space, and the file's relative path. Staging is manual — files must be explicitly added.
 
-See [Docs/index-file.md](../../Docs/index-file.md) for details.
+See [index-file.md](../docs/index-file.md) for details.
 
 ---
 
@@ -29,7 +29,7 @@ Each line: SHA-1 hash, one space, relative path. Nothing else.
 
 ---
 
-## Stretch Goal — GP-2.4.1
+## Stretch Goal — Git-2.4.1
 
 Write a test suite that:
 
@@ -39,7 +39,7 @@ Write a test suite that:
 
 ---
 
-## Stretch Goal — GP-2.4.2
+## Stretch Goal — Git-2.4.2
 
 Update your cleanup method to:
 
@@ -48,8 +48,8 @@ Update your cleanup method to:
 
 ---
 
-**Commit summary:** `(GP-2.4): Updated Index File`
+**Commit summary:** `(Git-2.4): Updated Index File`
 
 ---
 
-← [GP-2.3](gp-2-3.md) — [Back to assignment](../ASSIGNMENT.md)
+← [Git-2.3](Git-2-3.md) — [Back to assignment](../ASSIGNMENT.md)

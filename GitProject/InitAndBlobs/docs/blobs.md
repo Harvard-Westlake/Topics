@@ -42,7 +42,7 @@ When you compute the SHA-1 hash of a file and write a copy of that file to `obje
 
 The file below has a SHA-1 hash that becomes its filename in `objects/`. The content is stored exactly as-is inside that file:
 
-![A blob file: filename is the SHA-1 hash, content is the raw file text](assets/blob-example.png)
+![A blob file: filename is the SHA-1 hash, content is the raw file text](../assets/blob-example.png)
 
 ## <font color="#388bfd">In Your Implementation</font>
 
@@ -57,4 +57,4 @@ The blob file's name is the hash. The blob file's content is exactly what the or
 
 ---
 
-← Back to [Docs](README.md) | [Git Project](../../)
+← Back to [Init and Blobs](../README.md)

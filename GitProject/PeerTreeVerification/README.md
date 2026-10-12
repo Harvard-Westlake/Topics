@@ -44,7 +44,7 @@ git remote -v
 
 Then open the folder in VS Code and read their `README.md` before any `.java` file, because it is their list of claims.
 
-> **Note:** You never push to the classmate's repository and you never open a pull request to it. Anything you add or change stays in your fork and gets recorded in your chart.
+> **Note:** You never push to the classmate's repository and you never open a pull request to it. Anything you add or change stays in your fork and gets recorded in your table.
 
 ### <font color="#79c0ff">Activity 1</font>
 <details>
@@ -110,7 +110,7 @@ Then open the folder in VS Code and read their `README.md` before any `.java` fi
 
 ## <font color="#388bfd">2. Run and Verify</font>
 
-Get their program running, then prove which of the six tree behaviors work. You know the right answers ahead of time because you can hash trees by hand, and you record what you find in a chart.
+Get their program running, then prove which of the six tree behaviors work. You know the right answers ahead of time because you can hash trees by hand, and you record what you find in a table.
 
 ### <font color="#79c0ff">Get Their Code Running</font>
 
@@ -125,7 +125,7 @@ Pull up the [Index-to-Tree Visualizer](https://learnhw.web.app/static/code/widge
 
 ### <font color="#79c0ff">What Should You Verify?</font>
 
-Six things. They are the Trees assignment's success criteria, and the assignment chart lists them in this order:
+Six things. They are the Trees assignment's success criteria, and the assignment table lists them in this order:
 
 1. **Index stores relative paths.** After staging `tree-test/docs/hello.txt`, its index line reads `aaf4c61d… tree-test/docs/hello.txt`, not a bare filename.
 2. **No duplicate entries.** Staging the same unchanged file twice leaves exactly one index line for it.
@@ -162,7 +162,7 @@ A tree file is plain text, and its name is supposed to be the SHA-1 hash of that
    ```
    If the hash matches the filename, they hashed exactly what they wrote. To check that what they wrote is *right*, select all of its text, then type the lines yourself with `printf` (below) and hash that.
 
-Tree lines are sorted by name and joined with one newline, and there is no newline after the last line. The Docs example in [Trees](../Docs/trees.md) follows the same rule: its `scripts` tree hashes to `483b5e08…` only when the file has no trailing newline.
+Tree lines are sorted by name and joined with one newline, and there is no newline after the last line. The Docs example in [Trees](../Trees/docs/trees.md) follows the same rule: its `scripts` tree hashes to `483b5e08…` only when the file has no trailing newline.
 
 For a test with known answers, build this folder at the root of the fork. Stage the first three files, and **never** stage `scratch.txt`:
 
@@ -245,9 +245,9 @@ A wrong hash is useful when you know which mistake makes it:
 
 </details>
 
-### <font color="#79c0ff">Grade Each Behavior in the Chart</font>
+### <font color="#79c0ff">Grade Each Behavior in the Table</font>
 
-Your chart has the six behaviors on the left and two answers per row, exactly like Part 2.
+Your table has the six behaviors on the left. For each one you fill in two things: a rating and how you identified it.
 
 **Answer one: how well does it work, 1 to 5.**
 
@@ -259,7 +259,7 @@ Your chart has the six behaviors on the left and two answers per row, exactly li
 | **2** | Runs, but does the wrong thing. Record what it did instead. |
 | **1** | Missing, fails, or could not be tested. Say which, and paste the error or explain how you know. |
 
-**Answer two: short bullets, not paragraphs.** Under three labels, write a few quick notes each:
+**Answer two: how you identified it, in short bullets, not paragraphs.** Under three labels, write a few quick notes each:
 
 - **How:** the data structures it uses, how it reads its input, how it splits or sorts things.
 - **Verified:** the command or call you ran, and what came out.
@@ -267,7 +267,7 @@ Your chart has the six behaviors on the left and two answers per row, exactly li
 
 Here is a complete row:
 
-| Behavior | 1–5 | Notes |
+| Behavior | Rating (1–5) | How you identified it |
 |---|---|---|
 | 4. `createTree` writes one directory's tree | 4 | **How:**<br>• stores the index as a `List<String> workingList`<br>• keeps lines whose parent folder equals `dirPath`<br>• writes `type hash name` per line, each ending in `\n`<br>• hashes with their Part 2 `sha1(String)`<br>**Verified:**<br>• called `createTree(list, "tree-test/docs")` from `Verify.java`<br>• got `aa4c9c79…`, expected `d5ff240d…`<br>• `tail -c 1` on that file shows `\n`: an extra newline at the end<br>**Modified:**<br>• nothing beyond adding `Verify.java` |
 
@@ -277,23 +277,23 @@ Every bullet names a method, a command, or a hash. None of them says "seems fine
 
 ## <font color="#388bfd">3. Optional: Rename and Fix</font>
 
-Once the chart is done, make their code easier to read without changing what it does.
+Once the table is done, make their code easier to read without changing what it does.
 
 ### <font color="#79c0ff">Rename for Sense</font>
 
-As in Part 2, the second half of the assignment is renaming, and only renaming, on a branch in your fork. Tree code has its own vocabulary, and good names use it:
+This is not graded. If you want to go further, rename things, and only rename them, on a branch in your fork. Tree code has its own vocabulary, and good names use it:
 
 | Ask | Fix | Example |
 |---|---|---|
 | **What does this variable hold?** | Name it for its contents | `List<String> list` holding working-list lines → `workingList` · `String s` holding a directory path → `dirPath` · `String l` holding one tree line → `treeLine` |
 | **What does this method do?** | Name it for its one job | `makeTree()` that builds every tree from the index → `createTreeFromIndex()` · `getDir(String p)` that drops the final `/name` → `parentDirectory(String path)` · `helper()` that picks the next directory to collapse → `deepestUnfinishedDirectory()` |
 
-The same three rules apply. Rename only, with no logic changes; any fix belongs in Part 1. Rename with VS Code's **Rename Symbol** (F2), never find-and-replace. Prove nothing changed by running `Verify.java` again: the same tree hashes must come out.
+The same three rules apply. Rename only, with no logic changes; fixes are a separate step. Rename with VS Code's **Rename Symbol** (F2), never find-and-replace. Prove nothing changed by running `Verify.java` again: the same tree hashes must come out.
 
 ### <font color="#79c0ff">Reviewer Rules</font>
 
-- **In Part 1, fix what is broken, and only that.** You may add `Verify.java`, change a hardcoded path, and fix code that does not work so you can test the rest. You may not change how a working method does its job, even if you would have written it differently. Record every fix in the chart's **Modified** notes.
-- **In Part 2, rename, only rename.** Fixes belong in Part 1. The tree hashes before and after renaming must be identical.
+- **While verifying, fix what is broken, and only that.** You may add `Verify.java`, change a hardcoded path, and fix code that does not work so you can test the rest. You may not change how a working method does its job, even if you would have written it differently. Record every fix in the table's **Modified** notes.
+- **While renaming, rename only.** Fixes belong in the verifying step. The tree hashes before and after renaming must be identical.
 - **The project rules still apply.** No AI tools, and none of their code goes into your own repository.
 - **Describe behavior, not people.** "The `docs` tree hashes to `aa4c9c79…` because `createTree` writes a newline after the last line" is a finding. "This is wrong" is not.
 - **Expected hashes are evidence.** If you write that a hash is wrong, write the hash you expected and how you computed it.
@@ -304,7 +304,7 @@ The same three rules apply. Rename only, with no logic changes; any fix belongs 
 
 - [ ] Fork a classmate's repository and confirm with `git remote -v` that `origin` is yours and `upstream` is theirs.
 - [ ] Get their code running and verify the six tree behaviors against hashes you computed by hand.
-- [ ] Grade each behavior 1 to 5 in the chart, with the command you ran and what you saw.
+- [ ] Grade each behavior 1 to 5 in the table, with the command you ran and what you saw.
 
 ## <font color="#388bfd">🚀 Stretch Goals</font>
 

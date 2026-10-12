@@ -1,4 +1,4 @@
-# GP-4.3 — Implement GitWrapper
+# Git-4.3 — Implement GitWrapper
 
 *Part of the [Commits](../ASSIGNMENT.md) assignment*
 
@@ -123,8 +123,8 @@ Update `README.md` with answers to:
 
 ---
 
-**Commit summary:** `(GP-4.3): Implemented GitWrapper`
+**Commit summary:** `(Git-4.3): Implemented GitWrapper`
 
 ---
 
-← [GP-4.2](gp-4-2.md) — [Back to assignment](../ASSIGNMENT.md)
+← [Git-4.2](Git-4-2.md) — [Back to assignment](../ASSIGNMENT.md)

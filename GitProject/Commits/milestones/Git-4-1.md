@@ -1,4 +1,4 @@
-# GP-4.1 — Identify the Root Tree
+# Git-4.1 — Identify the Root Tree
 
 *Part of the [Commits](../ASSIGNMENT.md) assignment*
 
@@ -8,7 +8,7 @@
 
 After Part 3, the program generates tree files and stores the root tree hash. Before building commit support, you need to verify that your partner's tree structure is correct. This manual tracing step confirms you understand the data and reveals any bugs before you build on top of them.
 
-See [Docs/trees.md](../../Docs/trees.md) for a refresher on tree file format.
+See [trees.md](../../Trees/docs/trees.md) for a refresher on tree file format.
 
 ---
 
@@ -33,8 +33,8 @@ See [Docs/trees.md](../../Docs/trees.md) for a refresher on tree file format.
 
 ---
 
-**Commit summary:** `(GP-4.1): Verified Root Tree Structure`
+**Commit summary:** `(Git-4.1): Verified Root Tree Structure`
 
 ---
 
-← [Back to assignment](../ASSIGNMENT.md) — Next: [GP-4.2](gp-4-2.md) →
+← [Back to assignment](../ASSIGNMENT.md) — Next: [Git-4.2](Git-4-2.md) →

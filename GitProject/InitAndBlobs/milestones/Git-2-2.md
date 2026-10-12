@@ -1,4 +1,4 @@
-# GP-2.2 — Create a Hash Function
+# Git-2.2 — Create a Hash Function
 
 *Part of the [Initialization and Blobs](../ASSIGNMENT.md) assignment*
 
@@ -28,9 +28,9 @@ Git uses SHA-1 to give every file a unique identifier based on its content. SHA-
 
 ---
 
-**Commit summary:** `(GP-2.2): Created a Hash Function`  
+**Commit summary:** `(Git-2.2): Created a Hash Function`  
 **Commit description:** Explain how you implemented SHA-1, what your method takes as input, and what helper methods it uses.
 
 ---
 
-← [GP-2.1](gp-2-1.md) — [Back to assignment](../ASSIGNMENT.md) — Next: [GP-2.3](gp-2-3.md) →
+← [Git-2.1](Git-2-1.md) — [Back to assignment](../ASSIGNMENT.md) — Next: [Git-2.3](Git-2-3.md) →

@@ -56,7 +56,7 @@ The `objects/` directory ends up with five files: two tree files and three blob 
 
 The diagram below shows the full object graph for this example — the root tree (`myProgram/`) references the `scripts/` tree and two blob files, and the `scripts/` tree references `Cat.java`'s blob:
 
-![Tree diagram showing myProgram/ root tree referencing blobs and a scripts/ subtree](assets/trees.png)
+![Tree diagram showing myProgram/ root tree referencing blobs and a scripts/ subtree](../assets/trees.png)
 
 ## <font color="#388bfd">Trees Must Be Built Bottom-Up</font>
 
@@ -64,8 +64,8 @@ A parent directory's tree file needs to include the hash of each subdirectory. B
 
 This means: **always create the innermost (deepest) trees first, then work outward toward the root.**
 
-In GP-3.2, you write one tree file for one directory from the working list — a runtime copy of the index.
-In GP-3.3, you build the working list from the index and collapse it, deepest directory first, until only the root tree remains — because the index is flat (no directory structure), and you need to derive the hierarchy from file paths.
+In Git-3.2, you write one tree file for one directory from the working list — a runtime copy of the index.
+In Git-3.3, you build the working list from the index and collapse it, deepest directory first, until only the root tree remains — because the index is flat (no directory structure), and you need to derive the hierarchy from file paths.
 
 ## <font color="#388bfd">The Root Tree</font>
 
@@ -73,4 +73,4 @@ The **root tree** is the topmost tree — it represents the outermost tracked di
 
 ---
 
-← Back to [Docs](README.md) | [Git Project](../../)
+← Back to [Trees](../README.md)

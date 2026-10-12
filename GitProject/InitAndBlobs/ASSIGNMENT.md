@@ -11,8 +11,8 @@
 
 Read before starting any milestone:
 
-- [BLOBs — how content-addressed storage works](../Docs/blobs.md)
-- [Index File — what the index tracks and its format](../Docs/index-file.md)
+- [BLOBs — how content-addressed storage works](docs/blobs.md)
+- [Index File — what the index tracks and its format](docs/index-file.md)
 
 ---
 
@@ -20,10 +20,10 @@ Read before starting any milestone:
 
 | Milestone | What you'll build | Commit label |
 |---|---|---|
-| [GP-2.1 — Initialize a Repository](milestones/gp-2-1.md) | `git/`, `objects/`, `index`, `HEAD` | `(GP-2.1): Program Can Initialize Repository` |
-| [GP-2.2 — Create a Hash Function](milestones/gp-2-2.md) | SHA-1 hash from file contents | `(GP-2.2): Created a Hash Function` |
-| [GP-2.3 — Create BLOB Files](milestones/gp-2-3.md) | Store files in `objects/` by hash | `(GP-2.3): Create BLOB Files` |
-| [GP-2.4 — Update the Index File](milestones/gp-2-4.md) | Write `hash path` entries to `git/index` | `(GP-2.4): Updated Index File` |
+| [Git-2.1 — Initialize a Repository](milestones/Git-2-1.md) | `git/`, `objects/`, `index`, `HEAD` | `(Git-2.1): Program Can Initialize Repository` |
+| [Git-2.2 — Create a Hash Function](milestones/Git-2-2.md) | SHA-1 hash from file contents | `(Git-2.2): Created a Hash Function` |
+| [Git-2.3 — Create BLOB Files](milestones/Git-2-3.md) | Store files in `objects/` by hash | `(Git-2.3): Create BLOB Files` |
+| [Git-2.4 — Update the Index File](milestones/Git-2-4.md) | Write `hash path` entries to `git/index` | `(Git-2.4): Updated Index File` |
 
 ---
 
@@ -38,7 +38,7 @@ Confirm each of the following across all four milestones before submitting:
 - [ ] **Index entries are correctly formatted** — `<hash> <relativePath>`, no trailing spaces, no blank final line
 - [ ] **Modified file re-staging works** — staging a modified file replaces the old hash in the index
 - [ ] **`README.md` updated** — documents all methods added in this part
-- [ ] **Each milestone committed separately** — summary begins with the correct GP label
+- [ ] **Each milestone committed separately** — summary begins with the correct Git label
 
 ---
 

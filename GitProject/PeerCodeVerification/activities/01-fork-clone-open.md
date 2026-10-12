@@ -29,4 +29,4 @@
    ```bash
    git log --oneline | head -20
    ```
-   Count how many commits carry a `(GP-2.x)` label. A milestone with no commit is a milestone you should expect to find missing.
+   Count how many commits carry a `(Git-2.x)` label. A milestone with no commit is a milestone you should expect to find missing.

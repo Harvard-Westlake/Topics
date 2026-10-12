@@ -1,4 +1,4 @@
-# GP-2.1 — Initialize a Repository
+# Git-2.1 — Initialize a Repository
 
 *Part of the [Initialization and Blobs](../ASSIGNMENT.md) assignment*
 
@@ -35,7 +35,7 @@ Update your `README.md` with the method name(s) that initialize the repository a
 
 ---
 
-## Stretch Goal — GP-2.1.1
+## Stretch Goal — Git-2.1.1
 
 Create a comprehensive testing class that:
 
@@ -45,12 +45,12 @@ Create a comprehensive testing class that:
 4. Runs multiple initialization and cleanup cycles to ensure there are no resource or stream leaks
 5. Updates `README.md` with your testing methodology and edge cases considered
 
-**Commit summary:** `(GP-2.1.1): Repository Initialization Testing`
+**Commit summary:** `(Git-2.1.1): Repository Initialization Testing`
 
 ---
 
-**Commit summary:** `(GP-2.1): Program Can Initialize Repository`
+**Commit summary:** `(Git-2.1): Program Can Initialize Repository`
 
 ---
 
-← [Back to assignment](../ASSIGNMENT.md) — Next: [GP-2.2](gp-2-2.md) →
+← [Back to assignment](../ASSIGNMENT.md) — Next: [Git-2.2](Git-2-2.md) →

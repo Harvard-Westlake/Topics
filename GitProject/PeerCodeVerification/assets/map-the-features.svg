@@ -36,20 +36,20 @@
     <text x="482" y="96" fill="#8b949e" font-weight="600">Method</text>
     <text x="600" y="96" fill="#8b949e" font-weight="600">Writes</text>
 
-    <text x="392" y="140" fill="#a371f7" font-weight="600">GP-2.1 init</text>
+    <text x="392" y="140" fill="#a371f7" font-weight="600">Git-2.1 init</text>
     <text x="482" y="140" fill="#e6edf3" font-family="Menlo, Consolas, monospace" font-size="11">initRepo()</text>
     <text x="600" y="134" fill="#e6edf3">git/, objects/,</text>
     <text x="600" y="150" fill="#e6edf3">index, HEAD</text>
 
-    <text x="392" y="185" fill="#a371f7" font-weight="600">GP-2.2 hash</text>
+    <text x="392" y="185" fill="#a371f7" font-weight="600">Git-2.2 hash</text>
     <text x="482" y="185" fill="#e6edf3" font-family="Menlo, Consolas, monospace" font-size="11">sha1(File)</text>
     <text x="600" y="185" fill="#e6edf3">a 40-char String</text>
 
-    <text x="392" y="230" fill="#a371f7" font-weight="600">GP-2.3 blob</text>
+    <text x="392" y="230" fill="#a371f7" font-weight="600">Git-2.3 blob</text>
     <text x="482" y="230" fill="#e6edf3" font-family="Menlo, Consolas, monospace" font-size="11">writeBlob(File)</text>
     <text x="600" y="230" fill="#e6edf3">git/objects/&lt;hash&gt;</text>
 
-    <text x="392" y="275" fill="#a371f7" font-weight="600">GP-2.4 index</text>
+    <text x="392" y="275" fill="#a371f7" font-weight="600">Git-2.4 index</text>
     <text x="482" y="269" fill="#e6edf3" font-family="Menlo, Consolas, monospace" font-size="11">addToIndex(</text>
     <text x="482" y="283" fill="#e6edf3" font-family="Menlo, Consolas, monospace" font-size="11">  hash, path)</text>
     <text x="600" y="275" fill="#e6edf3">one line in git/index</text>

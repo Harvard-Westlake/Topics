@@ -249,6 +249,11 @@ try {
       <label>Course</label>
       <select id="syncCourse" onchange="Schedule.onSyncCourseChange()"></select>
     </div>
+    <div id="syncBranchRow" style="display:none">
+      <label id="syncBranchLabel" for="syncBranch">Branch for the whole unit</label>
+      <select id="syncBranch" onchange="Schedule.setSyncBranch(this.value)"></select>
+      <div id="syncBranchNote" class="sync-branch-note"></div>
+    </div>
     <div id="syncCourseWarn" style="display:none;color:var(--yellow);font-size:12px;font-weight:600;margin-top:-4px"></div>
     <div class="preview-box" id="syncPreview"></div>
     <div class="sync-days" id="syncDays" style="display:none"></div>

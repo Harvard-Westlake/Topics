@@ -7,7 +7,7 @@
 
 ---
 
-## Milestone GP-1.1: Create the Repository
+## Milestone Git-1.1: Create the Repository
 
 ### Instructions
 
@@ -40,7 +40,7 @@
     > The `HEAD` file inside `git/` is your program's HEAD, not GitHub's. Your `.gitignore` entry for `/git` means this file will never be pushed to GitHub.
 
 6. Commit your changes with the required label format:
-    - **Summary:** `(GP-1.1): Initialized Project`
+    - **Summary:** `(Git-1.1): Initialized Project`
     - **Description:** List every file you created and what its purpose is.
 
 7. Publish the repository to GitHub from your terminal — this creates `YOUR-REPO-NAME` under your account, connects it as `origin`, and pushes your commit in one command:
@@ -65,7 +65,7 @@ Confirm each of the following before submitting:
 - [ ] **`Git.java` committed** — contains a class with an empty `main` method
 - [ ] **`.gitignore` committed** — contains `/git` and `.DS_Store` entries
 - [ ] **`git/HEAD` created locally** — exists in the `git/` folder (not pushed — it is gitignored)
-- [ ] **Commit uses label format** — summary begins with `(GP-1.1):`
+- [ ] **Commit uses label format** — summary begins with `(Git-1.1):`
 - [ ] **Published with `gh repo create --source=. --public --push`** — `git remote -v` shows `origin` under your account. This first commit lives on `main` so GitHub's default branch is right; every later milestone goes on a feature branch, never directly on `main`
 
 ---

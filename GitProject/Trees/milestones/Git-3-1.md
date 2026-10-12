@@ -1,4 +1,4 @@
-# GP-3.1 — Update the Index Format
+# Git-3.1 — Update the Index Format
 
 *Part of the [Trees](../ASSIGNMENT.md) assignment*
 
@@ -65,8 +65,8 @@ ca2cb4da9485e7bbce664bf4f5ee2216a36af4fb myProgram/Hello.txt
 
 ---
 
-**Commit summary:** `(GP-3.1): Updated Index to Store Relative Paths`
+**Commit summary:** `(Git-3.1): Updated Index to Store Relative Paths`
 
 ---
 
-← [Back to assignment](../ASSIGNMENT.md) — Next: [GP-3.2](gp-3-2.md) →
+← [Back to assignment](../ASSIGNMENT.md) — Next: [Git-3.2](Git-3-2.md) →

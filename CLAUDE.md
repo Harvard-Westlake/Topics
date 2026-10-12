@@ -153,6 +153,7 @@ The page fetches the markdown from `raw.githubusercontent.com` for that ref and 
 
 - **Content edits reach Canvas the moment they're pushed** — no re-sync is needed for prose changes. Re-sync when titles, points, dates, or the set of days change (the sync-status dot tracks those); Sync updates posted items in place, so re-syncing is always safe.
 - **Per-teacher branches:** a schedule's `ref` is the branch or tag its students see. Two teachers can run different branches of this one repo; a teacher takes main's changes by merging main into their branch (or by moving a tag). Only the ref named in the URL is ever shown — `main` is never silently substituted.
+- **Branch overrides (one unit or one day on another branch):** the Sync dialog's **Branch** picker points the whole unit (no days ticked) or only the ticked days at another branch, for this teacher's schedule only. Stored as a sequence block's `"branch"` and the schedule's `"lesson_refs": {"Module/Lesson": "<branch>"}` (keyed by lesson so renumbering can't break it); most specific wins: day → unit → schedule `ref`. `resolve_schedule` stamps each slot's effective `ref`, which `_expected_block_items` uses for its live-view link, so the status dot, Sync, and the board's student-view links agree, and the board tags overridden days. `/api/branches` reports which branches GitHub has: a branch that was never pushed (or whose newest commits weren't) shows students nothing new, and the picker says so.
 - **Building URLs:** always go through `viewer_url` / `live_description` in `_admin/_hub/server.py`; never hand-assemble a viewer link. `_admin/_configuration/course.json`'s `pages_url` is the Pages root (`PAGES_URL` in `mdrender.py`).
 - **Previewing the working tree:** the hub serves `/view.html` and `/raw/<path>` (markdown + images only, never dotfiles), and the Module Planner / Module Editor **Student View** button opens `view.html?src=/raw/&…` — the real page, reading saved files from this machine before they're pushed. `src` is honored only when same-origin, so nobody can render foreign HTML on the Pages domain; the viewer also strips scripts and event handlers from whatever it renders. Canvas Preview (server-side python-markdown) remains for editing a single file; the standalone `_admin/_coursePlannerUI` planner still previews the old baked form and is not used for sync.
 - **Sync-status** parses the ref out of each assignment's live-view link (`viewer_ref_in`) and reports drift against the schedule's `ref`; a description with no viewer link (a pre-live-view snapshot) is reported the same way.
@@ -388,7 +389,7 @@ When converting old-format assignments (pasted from Notion or elsewhere), always
 3. Specify exactly what the screenshot must show (and what disqualifies it)
 4. Clarify any ambiguous criteria with a `> [!NOTE]` callout
 
-The `*Lesson: [Lesson Name](README.md)*` line is required on every ASSIGNMENT.md — it's how a student looks up the day's context from inside Canvas. When the hub pushes this assignment to Canvas, the Canvas description is only a link to (and frame of) the live lesson view, which shows the README collapsed under "View the lesson for this assignment" above the reviews and this file (see "Live lesson view" and `live_description` in `_admin/_hub/server.py`) — that's pipeline behavior, not something to hand-author. Milestone files (`milestones/gp-X-N.md`) don't need their own lesson link — they already link to their parent ASSIGNMENT.md, which links to the lesson.
+The `*Lesson: [Lesson Name](README.md)*` line is required on every ASSIGNMENT.md — it's how a student looks up the day's context from inside Canvas. When the hub pushes this assignment to Canvas, the Canvas description is only a link to (and frame of) the live lesson view, which shows the README collapsed under "View the lesson for this assignment" above the reviews and this file (see "Live lesson view" and `live_description` in `_admin/_hub/server.py`) — that's pipeline behavior, not something to hand-author. Milestone files (`milestones/Git-X-N.md`) don't need their own lesson link — they already link to their parent ASSIGNMENT.md, which links to the lesson.
 
 ## Content conventions
 
@@ -444,9 +445,9 @@ When an assignment contains multiple distinct milestones (typically multi-day wo
 LessonName/
   ASSIGNMENT.md            — menu only (links to docs + each milestone)
   milestones/
-    gp-X-1.md              — one file per milestone
-    gp-X-2.md
-    gp-X-3.md
+    Git-X-1.md              — one file per milestone
+    Git-X-2.md
+    Git-X-3.md
 ```
 
 **`ASSIGNMENT.md` menu format:**
@@ -465,7 +466,7 @@ LessonName/
 
 | Doc | Read before |
 |---|---|
-| [Doc Name](../Docs/doc-name.md) | Starting this assignment |
+| [Doc Name](docs/doc-name.md) | Starting this assignment |
 
 ---
 
@@ -473,8 +474,8 @@ LessonName/
 
 | Milestone | Description |
 |---|---|
-| [GP-X.1](milestones/gp-X-1.md) | One-line description |
-| [GP-X.2](milestones/gp-X-2.md) | One-line description |
+| [Git-X.1](milestones/Git-X-1.md) | One-line description |
+| [Git-X.2](milestones/Git-X-2.md) | One-line description |
 
 ---
 
@@ -486,7 +487,7 @@ LessonName/
 **Individual milestone file format:**
 
 ```markdown
-# GP-X.N — Milestone Title
+# Git-X.N — Milestone Title
 
 *Part of the [LessonName](../ASSIGNMENT.md) assignment*
 
@@ -500,11 +501,11 @@ LessonName/
 
 ---
 
-**Commit summary:** `(GP-X.N): Short Description`
+**Commit summary:** `(Git-X.N): Short Description`
 
 ---
 
-← [GP-X.prev](gp-X-prev.md) — [Back to assignment](../ASSIGNMENT.md) — Next: [GP-X.next](gp-X-next.md) →
+← [Git-X.prev](Git-X-prev.md) — [Back to assignment](../ASSIGNMENT.md) — Next: [Git-X.next](Git-X-next.md) →
 ```
 
 Rules:
@@ -518,32 +519,34 @@ Rules:
 **When adding milestone files to an existing lesson (Common Operations checklist):**
 
 1. Create `LessonName/milestones/` folder
-2. Create `milestones/gp-X-N.md` for each milestone
+2. Create `milestones/Git-X-N.md` for each milestone
 3. Rewrite `LessonName/ASSIGNMENT.md` as a menu (links to docs + milestones table + overall success criteria)
 
 ---
 
-## Docs/ folders
+## docs/ folders (documentation lives with its lesson)
 
-A module may contain a `Docs/` folder for standalone reference documentation — conceptual explanations, data format specs, or key concept summaries that students consult throughout the module. These are not day lessons.
+**Documentation about a concept lives inside the lesson that teaches it**, in a lowercase `docs/` subfolder: everything about commits is in `GitProject/Commits/docs/`, everything about trees in `GitProject/Trees/docs/`. Never collect a module's concept docs into a separate top-level folder. (Moved 2026-10: `GitProject/Docs/` → `InitAndBlobs/docs/blobs.md`, `InitAndBlobs/docs/index-file.md`, `Trees/docs/trees.md`, `Commits/docs/commits.md`.)
 
-Rules for `Docs/` folders:
+```
+Commits/
+  README.md
+  ASSIGNMENT.md
+  docs/
+    commits.md        (one file per concept, kebab-case)
+  assets/
+    commits-and-parents.png   (doc images share the lesson's assets/, linked as ../assets/…)
+```
 
-- **Not added to `LESSONS.md`** — it is not a day lesson
-- **Not listed as a subtopic bullet in the root `README.md`** — it is not a course topic
-- **Linked from the module `README.md`** under a "Reference Documentation" section or table
-- **Linked from individual lesson READMEs** as relevant
-- The index file inside `Docs/` is named **`README.md`** (GitHub renders it automatically when browsing the folder)
-- Individual doc files use lowercase kebab-case: `blobs.md`, `index-file.md`
-- Doc files follow the standard title format (centered `<div>` block with `#` title and italic subtitle) but have **no lesson type label**, **no Check for Understanding section**, and **no bottom nav** — only a simple `← Back to [Docs](README.md)` link
-- Doc files use the same `##` / `###` color scheme as lesson pages
+Rules for `docs/` folders:
 
-**When adding a new module with reference documentation:**
+- **Not added to `LESSONS.md`, the root `README.md`, or module JSONs**: it is support material, like `review/` and `assets/`.
+- **Linked from the lesson's README and ASSIGNMENT** (and milestones) as relevant, and from the module `README.md`'s "Reference Documentation" table, which points straight at each lesson's `docs/` file.
+- Doc files follow the standard title format (centered `<div>` block with `#` title and italic subtitle) but have **no lesson type label**, **no Check for Understanding section**, and **no bottom nav**: only `← Back to [Lesson](../README.md)`.
+- Doc files use the same `##` / `###` color scheme as lesson pages. Images go in the lesson's `assets/` and are linked `../assets/name.png`.
+- The hub's Module Editor shows them in a **Docs** tab row, and the "Copy for AI" bundle includes them.
 
-1. Create `ModuleName/Docs/README.md` — index of all docs in the folder
-2. Create individual doc files: `ModuleName/Docs/concept-name.md`
-3. Add a "Reference Documentation" table to `ModuleName/README.md` linking each doc file
-4. Do NOT add `Docs/` to `LESSONS.md` or the root `README.md`
+**Legacy module-level `Docs/` folders.** `WebProgramming/Docs/`, `AppDesign/Docs/`, and `MiniGPT/Docs/` still hold module-wide references (HTML/CSS/JS references, grading, design rationale) that several lessons share. Leave them until each is moved into the lesson it belongs to; `verify.py` still skips a folder named `Docs` when listing lessons.
 
 ---
 

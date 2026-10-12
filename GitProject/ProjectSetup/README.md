@@ -36,8 +36,8 @@ You are building `git/` from scratch. The `.git/` folder already exists and is m
 Every commit in this project must begin with the milestone label in its summary:
 
 ```
-(GP-1.1): Initialized Project
-(GP-2.3): Create BLOB Files
+(Git-1.1): Initialized Project
+(Git-2.3): Create BLOB Files
 ```
 
 This format is required throughout the entire project. A commit history without these labels is incomplete and will affect your grade.
@@ -53,7 +53,7 @@ This format is required throughout the entire project. A commit history without 
 ### <font color="#79c0ff">Intermediate</font>
 
 - [ ] Explain what the `HEAD` file stores and why it is part of `init()`.
-- [ ] Describe the role of the commit label convention (GP-X.Y) and why a consistent history matters.
+- [ ] Describe the role of the commit label convention (Git-X.Y) and why a consistent history matters.
 - [ ] Verify that your `.gitignore` is working by checking that `git/` does not appear in `git status`.
 
 ### <font color="#79c0ff">Advanced</font>

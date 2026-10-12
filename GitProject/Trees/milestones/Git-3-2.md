@@ -1,4 +1,4 @@
-# GP-3.2 — Create a Tree from the Working List
+# Git-3.2 — Create a Tree from the Working List
 
 *Part of the [Trees](../ASSIGNMENT.md) assignment*
 
@@ -10,7 +10,7 @@ A tree file represents a directory. Each line identifies a blob (file) or anothe
 
 Git never builds a tree by reading the file system. The file system holds everything on disk, including files that were never staged, and a commit must contain only what is in the index. So trees are built from a **working list** — a runtime copy of the index — and this milestone builds one tree from it.
 
-See [Docs/trees.md](../../Docs/trees.md) for the file format and a worked example.
+See [trees.md](../docs/trees.md) for the file format and a worked example.
 
 ---
 
@@ -27,7 +27,7 @@ blob 4a5d9f8b10c2de34567890abcdef1234567890ab myProgram/sample.txt
 
 Every entry is `<type> <hash> <path>`. The directory an entry belongs to is its path with the final `/name` removed — `myProgram/docs/Hello.txt` belongs to `myProgram/docs`.
 
-As each directory is turned into a tree file, its entries are replaced by a single `tree` line (GP-3.3 does the replacing). Once `myProgram/docs` is done, the list looks like:
+As each directory is turned into a tree file, its entries are replaced by a single `tree` line (Git-3.3 does the replacing). Once `myProgram/docs` is done, the list looks like:
 
 ```
 tree d7d25fb30eba405a2c705f5a48f20dd423beb30f myProgram/docs
@@ -53,18 +53,18 @@ Implement `createTree(workingList, dirPath)`. Given the working list and the pat
     ```
 3. Hash the tree file's content, name the file by that hash, and return the hash.
 
-**Precondition:** every subdirectory inside `dirPath` has already been collapsed into a single `tree` entry, so nothing under `dirPath` is more than one level deep. GP-3.3 guarantees this by always picking the deepest unfinished directory first.
+**Precondition:** every subdirectory inside `dirPath` has already been collapsed into a single `tree` entry, so nothing under `dirPath` is more than one level deep. Git-3.3 guarantees this by always picking the deepest unfinished directory first.
 
 No blobs are created here. Every file in the working list was written to `git/objects/` when it was staged in Part 2 — the hash is already on the line.
 
 **Test it by hand:** build a small working list in code (three `blob` lines across two directories is enough), call `createTree` on the deeper directory, and check that the file in `git/objects/` matches the format above and that a second call returns the same hash.
 
-> **Note:** This method writes one tree for one directory and never reads the file system, so a file that sits in the folder but was never staged cannot appear in a tree. In GP-3.3 you build the loop that calls it for every directory, deepest first, until only the root tree remains.
+> **Note:** This method writes one tree for one directory and never reads the file system, so a file that sits in the folder but was never staged cannot appear in a tree. In Git-3.3 you build the loop that calls it for every directory, deepest first, until only the root tree remains.
 
 ---
 
-**Commit summary:** `(GP-3.2): Created Tree from Working List`
+**Commit summary:** `(Git-3.2): Created Tree from Working List`
 
 ---
 
-← [GP-3.1](gp-3-1.md) — [Back to assignment](../ASSIGNMENT.md) — Next: [GP-3.3](gp-3-3.md) →
+← [Git-3.1](Git-3-1.md) — [Back to assignment](../ASSIGNMENT.md) — Next: [Git-3.3](Git-3-3.md) →

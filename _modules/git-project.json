@@ -29,7 +29,7 @@
     {
       "day": 5,
       "duration": 0.5,
-      "title": "Git Project Part 2 \u2014 Initialization and Blobs: Quiz and Self-Assessment",
+      "title": "Git Project Part 2 — Initialization and Blobs: Quiz and Self-Assessment",
       "path": "",
       "_module": "",
       "review": null,
@@ -59,7 +59,7 @@
     {
       "day": 9,
       "duration": 0.5,
-      "title": "Git Project Part 3 \u2014 Trees: Quiz",
+      "title": "Git Project Part 3 — Trees: Quiz",
       "path": "",
       "_module": "",
       "review": null,
@@ -86,7 +86,15 @@
       "_module": "GitProject",
       "review": null,
       "duration_override": true
+    },
+    {
+      "day": 12,
+      "duration": 1,
+      "title": "Branches",
+      "path": "Branches",
+      "_module": "GitProject",
+      "review": null
     }
   ],
-  "updated": "2026-10-08"
+  "updated": "2026-10-10"
 }
