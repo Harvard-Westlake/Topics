@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 360" width="760" height="360" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13">
+  <title>Layout of a commit file pointing to its root tree and its parent commit</title>
+  <rect width="760" height="360" rx="10" fill="#0d1117"/>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8b949e"/>
+    </marker>
+    <marker id="arrowOrange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#f0883e"/>
+    </marker>
+    <marker id="arrowPurple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#a371f7"/>
+    </marker>
+  </defs>
+
+  <!-- the new commit -->
+  <text x="40" y="38" fill="#e6edf3" font-weight="700" font-size="15">commit  a7c3e9…</text>
+  <text x="40" y="56" fill="#8b949e" font-size="11">git/objects/a7c3e9…   (HEAD holds this hash)</text>
+  <rect x="40" y="68" width="320" height="170" rx="8" fill="#161b22" stroke="#388bfd" stroke-width="2"/>
+  <text x="58" y="98"  fill="#f0883e" font-weight="700">tree:</text>
+  <text x="122" y="98" fill="#e6edf3">8c411a…</text>
+  <text x="58" y="128" fill="#a371f7" font-weight="700">parent:</text>
+  <text x="122" y="128" fill="#e6edf3">2b98fb…</text>
+  <text x="58" y="158" fill="#79c0ff" font-weight="700">author:</text>
+  <text x="122" y="158" fill="#e6edf3">Mr. Theiss</text>
+  <text x="58" y="188" fill="#79c0ff" font-weight="700">date:</text>
+  <text x="122" y="188" fill="#e6edf3">Thu Oct 09 2025</text>
+  <text x="58" y="218" fill="#79c0ff" font-weight="700">message:</text>
+  <text x="138" y="218" fill="#e6edf3">Add commit()</text>
+
+  <!-- tree pointer -->
+  <path d="M190,94 C300,94 330,70 440,70" fill="none" stroke="#f0883e" stroke-width="2" marker-end="url(#arrowOrange)"/>
+  <text x="440" y="38" fill="#e6edf3" font-weight="700" font-size="15">root tree  8c411a…</text>
+  <text x="440" y="56" fill="#8b949e" font-size="11">the snapshot of every staged file</text>
+  <rect x="440" y="62" width="300" height="96" rx="8" fill="#161b22" stroke="#f0883e" stroke-width="2"/>
+  <text x="456" y="90"  fill="#3fb950">blob</text><text x="498" y="90" fill="#e6edf3">aaf4c6…  README.md</text>
+  <text x="456" y="116" fill="#3fb950">blob</text><text x="498" y="116" fill="#e6edf3">e3b0c4…  Git.java</text>
+  <text x="456" y="142" fill="#f0883e">tree</text><text x="498" y="142" fill="#e6edf3">d5ff24…  docs</text>
+
+  <!-- parent pointer -->
+  <path d="M200,124 C300,124 360,250 440,250" fill="none" stroke="#a371f7" stroke-width="2" marker-end="url(#arrowPurple)"/>
+  <rect x="440" y="196" width="300" height="96" rx="8" fill="#161b22" stroke="#a371f7" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="456" y="224" fill="#e6edf3" font-weight="700">commit  2b98fb…</text>
+  <text x="456" y="248" fill="#8b949e">the commit before this one</text>
+  <text x="456" y="272" fill="#8b949e">(it has its own tree and parent)</text>
+
+  <text x="40" y="322" fill="#8b949e" font-size="12">tree: what the project looked like.  parent: which commit came before.</text>
+  <text x="40" y="342" fill="#8b949e" font-size="12">The first commit has no parent line.</text>
+</svg>

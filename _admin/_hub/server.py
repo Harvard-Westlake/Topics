@@ -2834,12 +2834,12 @@ def _rewrite_claude_topics_line(topic, assignments):
 
 def _nav_line(topic_title, prev_a, next_a):
     if prev_a and next_a:
-        return (f"← [{prev_a['title']}](../{prev_a['path']}/) — "
+        return (f"← [{prev_a['title']}](../{prev_a['path']}/) | "
                 f"Next: [{next_a['title']}](../{next_a['path']}/)")
     if next_a:
-        return f"← Back to [{topic_title}](../) — Next: [{next_a['title']}](../{next_a['path']}/)"
+        return f"← Back to [{topic_title}](../) | Next: [{next_a['title']}](../{next_a['path']}/)"
     if prev_a:
-        return f"← [{prev_a['title']}](../{prev_a['path']}/) — Back to [{topic_title}](../)"
+        return f"← [{prev_a['title']}](../{prev_a['path']}/) | Back to [{topic_title}](../)"
     return f"← Back to [{topic_title}](../)"
 
 def _rewrite_navs(topic, assignments):
@@ -2912,7 +2912,7 @@ def _sync_all_indexes(topic, assignments):
 # ── activity toggle sync (README <details> embeds) ─────────────────────────────
 
 def _parse_activity(content):
-    m = re.match(r"# Activity — (.+?)\n(.*)", content, re.DOTALL)
+    m = re.match(r"# Activity\s*[—:-]\s*(.+?)\n(.*)", content, re.DOTALL)   # "-" now; "—" in older files
     if not m:
         return None, content.strip()
     return m.group(1).strip(), m.group(2).strip()
@@ -3239,7 +3239,7 @@ def api_editor_review():
         if target.exists():
             return jsonify({"error": f"review/{file} already exists"}), 409
         target.parent.mkdir(exist_ok=True)
-        target.write_text(f"""# Review — {concept}
+        target.write_text(f"""# Review - {concept}
 
 *Originally covered in [{_lesson_title(topic, path)}](../README.md)*
 
@@ -3295,7 +3295,7 @@ def api_editor_activity():
         target = act_dir / file
         if target.exists():
             return jsonify({"error": f"activities/{file} already exists"}), 409
-        content = f"""# Activity — {title}
+        content = f"""# Activity - {title}
 
 *Concept: {concept}*
 
@@ -3318,7 +3318,7 @@ def api_editor_activity():
             content += "\n"
         title, act_body = _parse_activity(content)
         if not title:
-            return jsonify({"error": "activity must start with '# Activity — [Title]'"}), 400
+            return jsonify({"error": "activity must start with '# Activity - [Title]'"}), 400
         act_dir.mkdir(exist_ok=True)
         (act_dir / file).write_text(content)
         synced = _sync_activity_toggle(topic, path, file, title, act_body)

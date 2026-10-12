@@ -1,130 +1,37 @@
-# Git-4.3 — Implement GitWrapper
+# Git-4.3: Regenerate the Index
 
 *Part of the [Commits](../ASSIGNMENT.md) assignment*
 
 ---
 
-## About
+## Recall
 
-The `GitWrapper` provides a single standardized interface for the entire project. By routing all operations through this class, the project can be tested and graded consistently regardless of how different students structured their internals.
-
-**`GitWrapper` methods must be static.** Do not change the method signatures. Call your partner's existing methods from inside the wrapper rather than rewriting logic.
+The index is the list of what is staged, one `<hash> <path>` line per file. A commit's tree holds the same information as nested folders. After a clone or a checkout, Git throws the old index away and writes a new one from the commit's tree.
 
 ---
 
-## The Wrapper
+## Instructions
 
-```java
-public class GitWrapper {
+Add a method to your partner's program that rebuilds `git/index` from a commit:
 
-    /**
-     * Initializes a new Git repository.
-     * Creates git/, git/objects/, git/index, and git/HEAD.
-     */
-    public static void init() {
-        // implement here
-    }
+1. Read the commit file at `git/objects/<commitHash>` and take the hash from its `tree:` line.
+2. Walk that root tree, one line at a time:
+    - `blob <hash> <name>`: add the index line `<hash> <path>`, where the path is every folder walked so far, then the name (for example `docs/notes.txt`).
+    - `tree <hash> <name>`: open `git/objects/<hash>` and walk it the same way, with `<name>/` added to the front of every path inside.
+3. Replace the contents of `git/index` with the lines you collected.
 
-    /**
-     * Stages a file for the next commit.
-     * Throws IOException if the path does not exist or is a directory.
-     * Does nothing if the file's content is already staged for that path.
-     *
-     * @param filePath The path to the file to stage.
-     */
-    public static void add(String filePath) throws IOException {
-        // implement here
-    }
+**Verify:**
 
-    /**
-     * Creates a commit capturing the current state of the index.
-     * Builds trees, writes the commit file, updates HEAD.
-     *
-     * Commit format:
-     *   tree: <tree_sha>
-     *   parent: <parent_sha>   (omit line for initial commit)
-     *   author: <author>
-     *   date: <date>
-     *   message: <message>
-     *
-     * @param author  The author name.
-     * @param message The commit message.
-     * @return The SHA-1 hash of the new commit.
-     */
-    public static String commit(String author, String message) {
-        // implement here
-        return "";
-    }
-
-    /**
-     * EXTRA CREDIT: Restores the working directory to the state of a specific commit.
-     * Traces the commit's root tree and recreates all files and directories.
-     *
-     * @param commitHash The SHA-1 hash of the commit to check out.
-     */
-    public static void checkout(String commitHash) {
-        // implement here
-    }
-}
-```
+1. Stage a few files, including one inside a folder, and commit.
+2. Copy `git/index` somewhere safe, then empty it.
+3. Rebuild the index from the commit hash in `git/HEAD`.
+4. Confirm the rebuilt index has the same lines as your copy (the order may differ).
+5. Commit again right away. The new commit's `tree:` hash must match the first commit's.
 
 ---
 
-## The Tester
-
-```java
-public class GitTester {
-    public static void main(String[] args) throws IOException {
-        GitWrapper.init();
-        GitWrapper.add("myProgram/hello.txt");
-        GitWrapper.add("myProgram/inner/world.txt");
-        String hash = GitWrapper.commit("John Doe", "Initial commit");
-        System.out.println("Commit: " + hash);
-    }
-}
-```
+**Commit summary:** `(Git-4.3): Regenerated Index from Commit Tree`
 
 ---
 
-## Verify Each Method
-
-By running the tester above, confirm:
-
-**`init()`**
-- Creates `git/`, `git/objects/`, `git/HEAD`, `git/index`
-- Running it again leaves the existing structure intact (no error, no overwrite)
-
-**`add(filePath)`**
-- Throws an error if the path does not exist
-- Throws an error if the path is a directory
-- Stages a new file: appends to index, creates blob
-- Re-staging unchanged content does nothing
-- Re-staging modified content replaces the index entry and creates a new blob
-
-**`commit(author, message)`**
-- Builds trees from the staged index
-- Writes a commit file with the correct format
-- Returns the new commit's SHA-1 hash
-- Updates `git/HEAD` last
-- On the first commit: no `parent:` line
-- On subsequent commits: `parent:` matches the previous HEAD
-
-**`checkout(commitHash)` — Extra Credit**
-- Restores the working directory to match the snapshot at that commit
-
----
-
-## README Update
-
-Update `README.md` with answers to:
-
-1. What bugs did you discover in your partner's code, and which ones did you fix?
-2. What functionality was missing? Did you implement it?
-
----
-
-**Commit summary:** `(Git-4.3): Implemented GitWrapper`
-
----
-
-← [Git-4.2](Git-4-2.md) — [Back to assignment](../ASSIGNMENT.md)
+← [Git-4.2](Git-4-2.md) | [Back to assignment](../ASSIGNMENT.md) | Next: [Git-4.4](Git-4-4.md) →

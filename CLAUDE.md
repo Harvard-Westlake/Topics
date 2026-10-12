@@ -52,6 +52,20 @@ One-sentence description of the topic.
 - [Subtopic](TopicFolder/Subtopic/) — one-line summary
 ```
 
+## Lesson writing rules (cross-check on every edit)
+
+Whenever a lesson README, ASSIGNMENT.md, doc, milestone, activity, or review file is created or modified, check the **whole file** against every rule below and the rest of this file, not just the lines you touched. Most lessons written before 2026-10 break some of these; `GitProject/Commits` is the reference lesson, and the rest are brought in line once it is approved. Until then, fix whatever file you touch.
+
+1. **No long dashes (—) in student-facing text**, including titles, tables, and nav lines. Use a colon, a period, or a comma; where a separator is needed use ` - ` in titles and ` | ` in nav lines. (Day ranges such as `2–4` keep their en dash.)
+2. **Titles:** `# Assignment - [Lesson Name]`, `# Activity - [Title]`, `# Review - [Concept Name]`, `# Git-X.N: Milestone Title`.
+3. **The title block's italic line is a one-sentence plain definition** of what the thing is (e.g. "Commits save a snapshot of the repository and link them into a history."; a doc may start "A commit is yet another Git object, but this one captures…"). No lesson type label (see Lesson classifications).
+4. **Explain like I'm five first**, technical detail after; minimal text; about three consolidated sections per lesson.
+5. **Duration and Due never contradict.** `**Due:**` is almost always before the class where the next assignment starts: "Before the start of next class" for a one-day lesson, "Before the start of the next lesson's class" when there is a `**Duration:**`. Never "End of this block" next to a Duration.
+6. **Back links name their destination, not the shared name.** A lesson's README, docs, and assignment are often all called the same thing ("Commits"), so write `← Back to [lesson](../README.md)` or `[Back to assignment](../ASSIGNMENT.md)`.
+7. **At most three checks and exactly one stretch goal** (next section).
+8. **Success criteria read `- [ ] **Item:** one sentence.`**
+9. **The README teaches the concept; the ASSIGNMENT holds the logistics.** A lesson README covers only the behavior and functionality of the thing as it is taught in class (what a commit holds, how the chain works, the steps in order). Whose code students work in (a classmate's fork), milestones, interface rules like `GitWrapper`, grading, and submission belong in ASSIGNMENT.md and its milestones, never in the README or its Check for Understanding.
+
 ## Check for Understanding and Stretch Goals
 
 **Current standard (use for every new or edited lesson).** Every README (both topic indexes and individual lesson pages) must end with a Check for Understanding section placed just above the bottom navigation link, followed by a single Stretch Goal. Keep both short: **at most three checks and exactly one stretch goal**, in a condensed form.
@@ -149,7 +163,7 @@ https://harvard-westlake.github.io/Topics/view.html?ref=<git ref>&lesson=<Module
 https://harvard-westlake.github.io/Topics/view.html?ref=<git ref>&path=<Module>/<Lesson>/README.md
 ```
 
-The page fetches the markdown from `raw.githubusercontent.com` for that ref and renders it in the browser (marked, inlined — no build step, no server, no CDN except MathJax, loaded only when a page contains math). `lesson=` composes a class day exactly the way the hub used to: README (collapsed above the homework when there is an ASSIGNMENT.md), each `review=` fragment as a purple block, then ASSIGNMENT.md unless `hw=0`. `path=` shows one file; relative links to `.md` files and folders stay inside the viewer on the same ref, images load from raw GitHub, other files link to github.com. The repo is derived from the Pages host, so the file works unmodified in a fork.
+The page fetches the markdown from `raw.githubusercontent.com` for that ref and renders it in the browser (marked, inlined — no build step, no server, no CDN except MathJax, loaded only when a page contains math). `lesson=` composes a class day: each `review=` fragment first as a purple block labeled **Review (Before New Content)**, then the README (collapsed into a toggle titled `Lesson - <lesson title>` when there is an ASSIGNMENT.md), then ASSIGNMENT.md unless `hw=0`, minus its `*Lesson: …*` line since the toggle right above already names the lesson. `path=` shows one file; relative links to `.md` files and folders stay inside the viewer on the same ref, images load from raw GitHub, other files link to github.com. The repo is derived from the Pages host, so the file works unmodified in a fork.
 
 - **Content edits reach Canvas the moment they're pushed** — no re-sync is needed for prose changes. Re-sync when titles, points, dates, or the set of days change (the sync-status dot tracks those); Sync updates posted items in place, so re-syncing is always safe.
 - **Per-teacher branches:** a schedule's `ref` is the branch or tag its students see. Two teachers can run different branches of this one repo; a teacher takes main's changes by merging main into their branch (or by moving a tag). Only the ref named in the URL is ever shown — `main` is never silently substituted.
@@ -227,7 +241,9 @@ Column definitions:
 
 ## Lesson classifications
 
-Every README title block includes a lesson type label directly below the italic subtitle, inside the `<div align="center">` block. There are four labels that map to three colors:
+**Retired for lesson pages (2026-10).** Lesson README title blocks no longer carry a type label: remove it whenever a lesson is edited, and the live view hides any that remain. A day that has review fragments attached gets the label **Review (Before New Content)** on each review block instead, and the live view shows those reviews before the lesson and assignment. The labels below still group topics in the root README's Table of Contents.
+
+There are four labels that map to three colors:
 
 | Label | Color | Hex | Meaning |
 | --- | --- | --- | --- |
@@ -259,7 +275,7 @@ Every README must open with a centered title block, followed by a rule, then bod
 <div align="center">
 
 # Page Title
-*Short italic subtitle*
+*One plain sentence saying what this is.*
 
 </div>
 
@@ -294,7 +310,7 @@ When an `ASSIGNMENT.md` exists in the same folder as a `README.md`, the README m
 ```markdown
 [Assignment](ASSIGNMENT.md)
 
-← [Prev](../Prev/) — Next: [Next](../Next/)
+← [Prev](../Prev/) | Next: [Next](../Next/)
 ```
 
 Never add a placeholder link if no `ASSIGNMENT.md` exists — only include it when the file is actually present in that folder.
@@ -315,7 +331,7 @@ LessonFolder/
 **review file format:**
 
 ```markdown
-# Review — [Concept Name]
+# Review - [Concept Name]
 
 *Originally covered in [Lesson](../README.md)*
 
@@ -347,7 +363,7 @@ Rules for review files:
 Every assignment file follows this structure:
 
 ```markdown
-# Assignment — [Lesson Name]
+# Assignment - [Lesson Name]
 
 *Lesson: [Lesson Name](README.md)*
 
@@ -359,8 +375,8 @@ Every assignment file follows this structure:
 
 Confirm each of the following before submitting:
 
-- [ ] **Item** — one-sentence description of what "done" looks like
-- [ ] **Item** — ...
+- [ ] **Item:** one-sentence description of what "done" looks like.
+- [ ] **Item:** ...
 
 ---
 
@@ -389,7 +405,7 @@ When converting old-format assignments (pasted from Notion or elsewhere), always
 3. Specify exactly what the screenshot must show (and what disqualifies it)
 4. Clarify any ambiguous criteria with a `> [!NOTE]` callout
 
-The `*Lesson: [Lesson Name](README.md)*` line is required on every ASSIGNMENT.md — it's how a student looks up the day's context from inside Canvas. When the hub pushes this assignment to Canvas, the Canvas description is only a link to (and frame of) the live lesson view, which shows the README collapsed under "View the lesson for this assignment" above the reviews and this file (see "Live lesson view" and `live_description` in `_admin/_hub/server.py`) — that's pipeline behavior, not something to hand-author. Milestone files (`milestones/Git-X-N.md`) don't need their own lesson link — they already link to their parent ASSIGNMENT.md, which links to the lesson.
+The `*Lesson: [Lesson Name](README.md)*` line is required on every ASSIGNMENT.md — it's how a student looks up the day's context from inside Canvas. When the hub pushes this assignment to Canvas, the Canvas description is only a link to (and frame of) the live lesson view, which shows the reviews, then the README collapsed under "Lesson - <title>", then this file (see "Live lesson view" and `live_description` in `_admin/_hub/server.py`) — that's pipeline behavior, not something to hand-author. Milestone files (`milestones/Git-X-N.md`) don't need their own lesson link — they already link to their parent ASSIGNMENT.md, which links to the lesson.
 
 ## Content conventions
 
@@ -417,10 +433,10 @@ Applies to every file under a lesson's `starter/` folder, in any language — st
 When an assignment spans more than one class period, add a `**Duration:**` field on the line immediately after the title, before `**Due:**`:
 
 ```markdown
-# Assignment — [Lesson Name]
+# Assignment - [Lesson Name]
 
 **Duration:** 3 class periods  
-**Due:** [due date or relative deadline]
+**Due:** Before the start of the next lesson's class
 ```
 
 In `LESSONS.md`, show the day range in the Day column using an en dash:
@@ -453,7 +469,7 @@ LessonName/
 **`ASSIGNMENT.md` menu format:**
 
 ```markdown
-# Assignment — [Lesson Name]
+# Assignment - [Lesson Name]
 
 *Lesson: [Lesson Name](README.md)*
 
@@ -481,13 +497,13 @@ LessonName/
 
 ## Success Criteria
 
-- [ ] **Item** — what "done" looks like overall
+- [ ] **Item:** what "done" looks like overall.
 ```
 
 **Individual milestone file format:**
 
 ```markdown
-# Git-X.N — Milestone Title
+# Git-X.N: Milestone Title
 
 *Part of the [LessonName](../ASSIGNMENT.md) assignment*
 
@@ -505,7 +521,7 @@ LessonName/
 
 ---
 
-← [Git-X.prev](Git-X-prev.md) — [Back to assignment](../ASSIGNMENT.md) — Next: [Git-X.next](Git-X-next.md) →
+← [Git-X.prev](Git-X-prev.md) | [Back to assignment](../ASSIGNMENT.md) | Next: [Git-X.next](Git-X-next.md) →
 ```
 
 Rules:
@@ -541,8 +557,9 @@ Commits/
 Rules for `docs/` folders:
 
 - **Not added to `LESSONS.md`, the root `README.md`, or module JSONs**: it is support material, like `review/` and `assets/`.
-- **Linked from the lesson's README and ASSIGNMENT** (and milestones) as relevant, and from the module `README.md`'s "Reference Documentation" table, which points straight at each lesson's `docs/` file.
-- Doc files follow the standard title format (centered `<div>` block with `#` title and italic subtitle) but have **no lesson type label**, **no Check for Understanding section**, and **no bottom nav**: only `← Back to [Lesson](../README.md)`.
+- **Linked from the ASSIGNMENT and milestones** as relevant, and from the module `README.md`'s "Reference Documentation" table, which points straight at each lesson's `docs/` file. **Never from the lesson README:** the lesson stands on its own, and when a day shows only the lesson there should be no reference-doc link.
+- Doc files follow the standard title format (centered `<div>` block with `#` title and a one-sentence definition) but have **no lesson type label**, **no Check for Understanding section**, and **no bottom nav**: only `← Back to [lesson](../README.md)`.
+- A doc may read like the whole lesson (e.g. `Commits/docs/commits.md`). That is fine: it lets a teacher build a different day around the same concept in the hub.
 - Doc files use the same `##` / `###` color scheme as lesson pages. Images go in the lesson's `assets/` and are linked `../assets/name.png`.
 - The hub's Module Editor shows them in a **Docs** tab row, and the "Copy for AI" bundle includes them.
 
@@ -603,7 +620,7 @@ LessonFolder/
 **Activity file format:**
 
 ```markdown
-# Activity — [Title]
+# Activity - [Title]
 
 *Concept: [one sentence naming the idea this activity proves]*
 
@@ -632,7 +649,7 @@ LessonFolder/
 </details>
 ```
 
-The `<details>` body is a **full, byte-for-byte duplicate** of the activity file's content (everything below its own `# Activity — [Title]` line) — GitHub markdown has no way to transclude another file, so this is the only way to get an inline toggle. This means every activity's content is intentionally maintained in two places; when you edit one, edit the other to match. **The one permitted divergence is asset paths:** an activity's diagram lives in the lesson's `assets/` folder, which the standalone file reaches as `../assets/…` and the README embed as `assets/…` — the hub's toggle auto-sync rewrites the prefix automatically (`_sync_activity_toggle` in `_admin/_hub/server.py`).
+The `<details>` body is a **full, byte-for-byte duplicate** of the activity file's content (everything below its own `# Activity - [Title]` line) — GitHub markdown has no way to transclude another file, so this is the only way to get an inline toggle. This means every activity's content is intentionally maintained in two places; when you edit one, edit the other to match. **The one permitted divergence is asset paths:** an activity's diagram lives in the lesson's `assets/` folder, which the standalone file reaches as `../assets/…` and the README embed as `assets/…` — the hub's toggle auto-sync rewrites the prefix automatically (`_sync_activity_toggle` in `_admin/_hub/server.py`).
 
 Rules:
 
@@ -676,7 +693,7 @@ A lesson is a new subfolder inside a module (e.g. `Terminal/PipeAndGREP/`).
 
 **Create:**
 
-1. `ModuleName/LessonName/README.md` — centered title block + type label + all lesson content woven with numbered `### Activity N` toggles + Check for Understanding / Stretch Goals sections + bottom nav
+1. `ModuleName/LessonName/README.md` — centered title block (one-sentence definition, no type label) + all lesson content woven with numbered `### Activity N` toggles + Check for Understanding / Stretch Goals sections + bottom nav
 2. `ModuleName/LessonName/activities/` — one numbered file per activity break referenced from the README; see **activities/ folders**
 3. `ModuleName/LessonName/ASSIGNMENT.md` — optional; if present, add `[Assignment](ASSIGNMENT.md)` link above the nav line in the README
 4. `ModuleName/LessonName/review/` — optional; see **Add review files** below
@@ -699,7 +716,7 @@ Review files are composable fragments in `LessonFolder/review/`. The module impo
 **Create:**
 
 1. `LessonFolder/review/descriptive-name.md` — named for what it covers, e.g. `branch-and-merge-basics.md` (add a `-N` suffix only when two files in the set cover the identical topic)
-   - Title: `# Review — [Concept Name]`
+   - Title: `# Review - [Concept Name]`
    - Source link: `*Originally covered in [Lesson Title](../README.md)*`
    - Terse reference table (commands/syntax only — no explanations)
    - `## Tasks` numbered list (concrete actions, not "Can you…" checkboxes)
@@ -757,19 +774,19 @@ When updating content inside an existing lesson:
 Bottom nav lines use this pattern. Adapt based on position in the module:
 
 ```markdown
-← [Prev Lesson](../PrevLesson/) — Next: [Next Lesson](../NextLesson/)
+← [Prev Lesson](../PrevLesson/) | Next: [Next Lesson](../NextLesson/)
 ```
 
 First lesson in a module (no prev):
 
 ```markdown
-← Back to [Module Name](../) — Next: [NextLesson](../NextLesson/)
+← Back to [Module Name](../) | Next: [NextLesson](../NextLesson/)
 ```
 
 Last lesson in a module (no next):
 
 ```markdown
-← [PrevLesson](../PrevLesson/) — Back to [Module Name](../)
+← [PrevLesson](../PrevLesson/) | Back to [Module Name](../)
 ```
 
 When an `ASSIGNMENT.md` is present, the assignment link goes on the line immediately above the nav line with a blank line between them:
@@ -777,5 +794,5 @@ When an `ASSIGNMENT.md` is present, the assignment link goes on the line immedia
 ```markdown
 [Assignment](ASSIGNMENT.md)
 
-← [Prev](../Prev/) — Next: [Next](../Next/)
+← [Prev](../Prev/) | Next: [Next](../Next/)
 ```

@@ -160,10 +160,9 @@
   .md div[align=center] h1 { margin-bottom: .2em; }
   .md div[align=center] p { margin-bottom: .5em; }
   .md div[align=center] + hr { background: var(--rule); height: 2px; }
-  /* Lesson-type label (<font color> on its own line in the title block): a quiet badge, not GitHub's purple/green/yellow */
-  .md div[align=center] p > font:only-child { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: .78em;
-          font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); background: var(--th-bg);
-          border: 1px solid var(--border); }
+  /* Lesson-type label (<font color> on its own line in the title block): retired, never shown. A day's
+     attached reviews carry their own "Review (Before New Content)" label instead. */
+  .md div[align=center] p > font:only-child { display: none; }
   /* "### Activity N" header + its dropdown read as one card: a large gold-tinted header strip, a warm
      tinted body, and heavy gold rules on the top and bottom so activities stand out while scrolling */
   .md h3:has(+ details) { margin: 2.2em 0 0; padding: .6rem 1.1rem; font-size: 1.6em; font-weight: 900;
@@ -605,7 +604,7 @@ if(__exports != exports)module.exports = exports;return module.exports}));
   function reviewBlock(node) {
     var wrap = document.createElement('div');
     wrap.className = 'review';
-    wrap.innerHTML = '<p class="label">&#9997;&nbsp;Review</p>';
+    wrap.innerHTML = '<p class="label">Review (Before New Content)</p>';
     wrap.appendChild(node);
     return wrap;
   }
@@ -620,22 +619,32 @@ if(__exports != exports)module.exports = exports;return module.exports}));
       var readme = texts[0], assign = texts[texts.length - 1];
       doc.innerHTML = '';
       showBar(readmePath);
-      if (readme === null) doc.appendChild(errorBox('No README.md for this lesson on ref "' + ref + '".', readmePath));
-      else if (assign !== null) {
-        // Homework day: the lesson collapses above the assignment, the way the
-        // hub used to present it on Canvas.
-        var det = document.createElement('details');
-        det.className = 'lesson';
-        det.innerHTML = '<summary>&#128214;&nbsp;View the lesson for this assignment</summary>';
-        det.appendChild(renderMarkdown(readme, lesson, seen));
-        doc.appendChild(det);
-      } else doc.appendChild(renderMarkdown(readme, lesson, seen));
+      // Reviews come first: they are the warm-up before the day's new content.
       reviews.forEach(function (r, i) {
         var t = texts[i + 1];
         if (t === null) doc.appendChild(errorBox('Review fragment not found on ref "' + ref + '".', r));
         else doc.appendChild(reviewBlock(renderMarkdown(t, dirname(r), seen)));
       });
-      if (assign !== null) doc.appendChild(renderMarkdown(assign, lesson, seen));
+      if (readme === null) doc.appendChild(errorBox('No README.md for this lesson on ref "' + ref + '".', readmePath));
+      else if (assign !== null) {
+        // Homework day: the lesson collapses above the assignment, labeled with
+        // the lesson's own title ("Lesson - Commits").
+        var tm = readme.match(/^#\s+(.+?)\s*$/m);
+        var det = document.createElement('details');
+        det.className = 'lesson';
+        var sum = document.createElement('summary');
+        sum.textContent = 'Lesson - ' + (tm ? tm[1].replace(/<[^>]*>/g, '') : lesson.split('/').pop());
+        det.appendChild(sum);
+        det.appendChild(renderMarkdown(readme, lesson, seen));
+        doc.appendChild(det);
+      } else doc.appendChild(renderMarkdown(readme, lesson, seen));
+      if (assign !== null) {
+        var an = renderMarkdown(assign, lesson, seen);
+        // The assignment's "Lesson: [Name](README.md)" line points at the toggle just above; drop the repeat.
+        var first = an.querySelector('h1 ~ p');
+        if (first && /^\s*Lesson:/.test(first.textContent) && first.querySelector('a')) first.remove();
+        doc.appendChild(an);
+      }
       var h = doc.querySelector('h1');
       finish((h ? h.textContent.trim() : lesson) + ' · ' + ref);
     }).catch(function (e) {

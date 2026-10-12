@@ -1,59 +1,131 @@
-# Git-4.2 — Link the Commit File to the Root Tree
+# Git-4.2: Implement GitWrapper
 
 *Part of the [Commits](../ASSIGNMENT.md) assignment*
 
 ---
 
-## Recall
+## About
 
-A commit file ties the root tree, the previous commit, the author, the date, and the message together into a single object — stored in `objects/` like any blob or tree. After writing it, `git/HEAD` is updated to point to the new commit's hash. **HEAD update must always be the last step.**
+The `GitWrapper` provides a single standardized interface for the entire project. By routing all operations through this class, the project can be tested and graded consistently regardless of how different students structured their internals.
 
-See [commits.md](../docs/commits.md) for the full format and step ordering.
+**`GitWrapper` methods must be static.** Do not change the method signatures. Call your partner's existing methods from inside the wrapper rather than rewriting logic.
 
 ---
 
-## Commit File Format
+## The Wrapper
 
+```java
+public class GitWrapper {
+
+    /**
+     * Initializes a new Git repository.
+     * Creates git/, git/objects/, git/index, and git/HEAD.
+     */
+    public static void init() {
+        // implement here
+    }
+
+    /**
+     * Stages a file for the next commit.
+     * Throws IOException if the path does not exist or is a directory.
+     * Does nothing if the file's content is already staged for that path.
+     *
+     * @param filePath The path to the file to stage.
+     */
+    public static void add(String filePath) throws IOException {
+        // implement here
+    }
+
+    /**
+     * Creates a commit capturing the current state of the index.
+     * Builds trees, writes the commit file, updates HEAD.
+     *
+     * Commit format:
+     *   tree: <tree_sha>
+     *   parent: <parent_sha>   (omit line for initial commit)
+     *   author: <author>
+     *   date: <date>
+     *   message: <message>
+     *
+     * @param author  The author name.
+     * @param message The commit message.
+     * @return The SHA-1 hash of the new commit.
+     */
+    public static String commit(String author, String message) {
+        // implement here
+        return "";
+    }
+
+    /**
+     * Restores the working directory to the state of a specific commit
+     * (implemented in Git-4.4). Deletes the files the current index tracks,
+     * writes every file in the commit's tree, rebuilds the index, updates HEAD.
+     *
+     * @param commitHash The SHA-1 hash of the commit to check out.
+     */
+    public static void checkout(String commitHash) {
+        // implement here
+    }
+}
 ```
-tree: <root tree SHA-1>
-parent: <previous commit SHA-1>
-author: <author name>
-date: <current date and time>
-message: <commit message>
+
+---
+
+## The Tester
+
+```java
+public class GitTester {
+    public static void main(String[] args) throws IOException {
+        GitWrapper.init();
+        GitWrapper.add("myProgram/hello.txt");
+        GitWrapper.add("myProgram/inner/world.txt");
+        String hash = GitWrapper.commit("John Doe", "Initial commit");
+        System.out.println("Commit: " + hash);
+    }
+}
 ```
 
-For the **initial commit**, omit the `parent:` line entirely — do not leave it blank.
+---
+
+## Verify Each Method
+
+By running the tester above, confirm:
+
+**`init()`**
+- Creates `git/`, `git/objects/`, `git/HEAD`, `git/index`
+- Running it again leaves the existing structure intact (no error, no overwrite)
+
+**`add(filePath)`**
+- Throws an error if the path does not exist
+- Throws an error if the path is a directory
+- Stages a new file: appends to index, creates blob
+- Re-staging unchanged content does nothing
+- Re-staging modified content replaces the index entry and creates a new blob
+
+**`commit(author, message)`**
+- Builds trees from the staged index
+- Writes a commit file with the correct format
+- Returns the new commit's SHA-1 hash
+- Updates `git/HEAD` last
+- On the first commit: no `parent:` line
+- On subsequent commits: `parent:` matches the previous HEAD
+
+**`checkout(commitHash)`**
+- Leave it empty for now. You implement it in [Git-4.4](Git-4-4.md).
 
 ---
 
-## Instructions
+## README Update
 
-Update your partner's program to generate commit files:
+Update `README.md` with answers to:
 
-**Required user inputs (provided by the caller):**
-- `author` — the name of the person committing
-- `message` — a description of the changes
-
-**Programmatically determined fields:**
-- `tree` — SHA-1 of the root tree (built from the index)
-- `parent` — current value of `git/HEAD` (empty = first commit, omit the line)
-- `date` — current timestamp in a consistent format of your choice
-
-**Steps (in order):**
-
-1. Build tree files from the index and identify the root tree's SHA-1
-2. Read `git/HEAD` to get the parent hash (empty file = initial commit)
-3. Build the commit file content using the format above
-4. Compute the SHA-1 hash of the complete commit content
-5. Write the commit file to `git/objects/<commitSHA>`
-6. Update `git/HEAD` to the new commit's SHA-1 ← **must be last**
-
-> **Note:** Only the author and message come from the caller. Tree hash, parent hash, and date are all determined by your program.
+1. What bugs did you discover in your partner's code, and which ones did you fix?
+2. What functionality was missing? Did you implement it?
 
 ---
 
-**Commit summary:** `(Git-4.2): Implemented Commit with HEAD Linkage`
+**Commit summary:** `(Git-4.2): Implemented GitWrapper`
 
 ---
 
-← [Git-4.1](Git-4-1.md) — [Back to assignment](../ASSIGNMENT.md) — Next: [Git-4.3](Git-4-3.md) →
+← [Git-4.1](Git-4-1.md) | [Back to assignment](../ASSIGNMENT.md) | Next: [Git-4.3](Git-4-3.md) →

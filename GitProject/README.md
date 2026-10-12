@@ -48,7 +48,7 @@ Read the doc for each concept before starting the part that uses it.
 | [BLOBs](InitAndBlobs/docs/blobs.md) | Part 2 | Content-addressed file storage |
 | [Index File](InitAndBlobs/docs/index-file.md) | Part 2 | Staging and the index |
 | [Trees](Trees/docs/trees.md) | Part 3 | Directory snapshots |
-| [Commits](Commits/docs/commits.md) | Part 4 | Commit files and the HEAD chain |
+| [Commits](Commits/docs/commits.md) | Part 4 | Commit files, the HEAD chain, rebuilding the index, checkout |
 
 ---
 
@@ -61,7 +61,7 @@ Read the doc for each concept before starting the part that uses it.
 | 5 | [Peer Code Verification](PeerCodeVerification/) | Fork a classmate's Part 2, read it cold, verify six behaviors, rename it for readability |
 | 6–8 | [Trees](Trees/) | Index formatting, trees from the working list, root tree from the index |
 | 9 | [Peer Tree Verification](PeerTreeVerification/) | Fork a classmate's Part 3, hash their trees by hand, verify six behaviors, rename it for readability |
-| 10–11 | [Commits](Commits/) | Root tree, commit files, HEAD chain, `GitWrapper` |
+| 10–11 | [Commits](Commits/) | Commit files, HEAD chain, `GitWrapper`, rebuilding the index, checkout |
 | 12 | [Branches](Branches/) | Branch files, HEAD pointers *(coming soon)* |
 
 ---
