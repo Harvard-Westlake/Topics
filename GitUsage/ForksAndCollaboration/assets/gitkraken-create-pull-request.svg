@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 668 164" width="668" height="164" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="18">
+  <title>GitKraken's left panel: hover the Pull Requests row and click the green plus button labeled Create Pull Request</title>
+  <rect width="668" height="164" rx="8" fill="#23272e"/>
+  <rect x="0" y="0" width="416" height="164" rx="8" fill="#2b3038"/>
+  <!-- row: Cloud Patches -->
+  <text x="22" y="34" fill="#8b949e" font-size="16">&#8250;</text>
+  <text x="92" y="35" fill="#c9d1d9" font-weight="700" letter-spacing="1">CLOUD PATCHES</text>
+  <text x="372" y="35" fill="#79c0ff" font-weight="700">0</text>
+  <!-- row: Pull Requests (hovered) -->
+  <rect x="0" y="58" width="416" height="46" fill="#343a44"/>
+  <text x="22" y="89" fill="#c9d1d9" font-size="16">&#8250;</text>
+  <text x="92" y="90" fill="#e6edf3" font-weight="700" letter-spacing="1">PULL REQUESTS</text>
+  <rect x="352" y="64" width="38" height="34" rx="5" fill="#3f9a4f"/>
+  <text x="371" y="89" fill="#ffffff" font-size="26" text-anchor="middle">+</text>
+  <!-- tooltip -->
+  <path d="M400,81 L410,74 L410,88 z" fill="#000000"/>
+  <rect x="410" y="62" width="246" height="40" rx="6" fill="#000000"/>
+  <text x="533" y="89" fill="#ffffff" font-size="19" text-anchor="middle">Create Pull Request</text>
+  <!-- row: Issues -->
+  <text x="22" y="143" fill="#8b949e" font-size="16">&#8250;</text>
+  <text x="92" y="144" fill="#c9d1d9" font-weight="700" letter-spacing="1">ISSUES</text>
+</svg>

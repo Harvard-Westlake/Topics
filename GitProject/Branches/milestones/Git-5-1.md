@@ -6,7 +6,7 @@
 
 ## Recall
 
-Branching builds on commits and checkout. If those do not work, nothing in Git-5.2 will. See the [Commits reference](../../Commits/docs/commits.md) for how they work, and the [Forks and Collaboration](../../../GitUsage/ForksAndCollaboration/README.md#contributing-back-with-pull-requests) lesson for pull requests across forks.
+Branching builds on commits and checkout. If those do not work, nothing in Git-5.2 will. See the [Commits reference](../../Commits/docs/commits.md) for how they work, and the [Pull Requests Across Forks](../../../GitUsage/ForksAndCollaboration/review/pull-requests-across-forks.md) review for the merge.
 
 ---
 

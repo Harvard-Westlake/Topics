@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 622 500" width="622" height="500" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="22">
+  <title>A repository page on GitHub: the Fork button's count and the About sidebar's forks line both open the list of every fork</title>
+  <rect width="622" height="500" rx="8" fill="#0d1117"/>
+  <!-- top buttons -->
+  <rect x="112" y="22" width="230" height="56" rx="8" fill="#21262d" stroke="#30363d" stroke-width="2"/>
+  <circle cx="148" cy="42" r="4" fill="#c9d1d9"/><circle cx="166" cy="42" r="4" fill="#c9d1d9"/><circle cx="157" cy="60" r="4" fill="#c9d1d9"/>
+  <path d="M148,46 L148,52 Q148,56 152,56 L162,56 Q166,56 166,52 L166,46 M157,56 L157,60" fill="none" stroke="#c9d1d9" stroke-width="2"/>
+  <text x="182" y="58" fill="#e6edf3" font-weight="600">Fork</text>
+  <rect x="232" y="35" width="38" height="30" rx="15" fill="#30363d"/>
+  <text x="251" y="57" fill="#e6edf3" text-anchor="middle" font-size="19">5</text>
+  <line x1="292" y1="30" x2="292" y2="70" stroke="#30363d" stroke-width="2"/>
+  <text x="318" y="57" fill="#c9d1d9" text-anchor="middle" font-size="16">&#9662;</text>
+  <rect x="356" y="22" width="230" height="56" rx="8" fill="#21262d" stroke="#30363d" stroke-width="2"/>
+  <text x="392" y="60" fill="#c9d1d9" font-size="24">&#9734;</text>
+  <text x="424" y="58" fill="#e6edf3" font-weight="600">Star</text>
+  <rect x="478" y="35" width="38" height="30" rx="15" fill="#30363d"/>
+  <text x="497" y="57" fill="#e6edf3" text-anchor="middle" font-size="19">0</text>
+  <line x1="536" y1="30" x2="536" y2="70" stroke="#30363d" stroke-width="2"/>
+  <text x="562" y="57" fill="#c9d1d9" text-anchor="middle" font-size="16">&#9662;</text>
+  <line x1="0" y1="110" x2="622" y2="110" stroke="#30363d" stroke-width="2"/>
+  <!-- About sidebar -->
+  <text x="40" y="170" fill="#e6edf3" font-weight="700" font-size="30">About</text>
+  <text x="552" y="172" fill="#8b949e" font-size="26">&#9881;</text>
+  <text x="40" y="215" fill="#8b949e" font-style="italic">No description, website, or topics provided.</text>
+  <g fill="#c9d1d9">
+    <text x="88" y="268">Readme</text>
+    <text x="88" y="318">Activity</text>
+    <text x="88" y="368"><tspan font-weight="700">0</tspan> stars</text>
+    <text x="88" y="418"><tspan font-weight="700">0</tspan> watching</text>
+  </g>
+  <rect x="80" y="440" width="112" height="38" rx="4" fill="#2f4f7a"/>
+  <text x="88" y="468" fill="#e6edf3"><tspan font-weight="700">5</tspan> forks</text>
+  <!-- small icons -->
+  <g fill="none" stroke="#8b949e" stroke-width="2">
+    <path d="M44,254 L72,254 L72,274 L44,274 z M58,254 L58,274"/>
+    <path d="M44,312 L52,312 L56,302 L62,322 L66,312 L72,312"/>
+    <path d="M58,352 L62,362 L72,362 L64,368 L67,378 L58,372 L49,378 L52,368 L44,362 L54,362 z"/>
+    <path d="M44,412 Q58,398 72,412 Q58,426 44,412 z"/>
+    <circle cx="52" cy="450" r="3"/><circle cx="66" cy="450" r="3"/><circle cx="59" cy="470" r="3"/>
+    <path d="M52,453 L52,458 Q52,462 56,462 L62,462 Q66,462 66,458 L66,453 M59,462 L59,467"/>
+  </g>
+</svg>

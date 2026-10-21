@@ -1,6 +1,7 @@
 # Assignment - Branches
 
 **Lesson:** [Branches](README.md)  
+**Review:** [Pull Requests Across Forks](../../GitUsage/ForksAndCollaboration/review/pull-requests-across-forks.md)  
 **Due:** Before the start of next class
 
 ---
@@ -10,7 +11,7 @@
 Since Part 2, every part of this project was built on a fork of a classmate's repository, so the newest version of your code, with Part 4 finished, lives in a fork of a fork of your original. None of it was ever sent back to you. **Before writing any code**, get it into your own `main`:
 
 1. Find the fork of a fork that holds your Part 4, and the branch it was done on. On GitHub, your repository's **Insights → Forks** lists every fork, and each fork's page says what it was forked from; follow that chain to the newest one. Ask the classmates who had your code if you are not sure.
-2. Open a pull request across forks from that branch into your repository's `main`, then merge it. The [Forks and Collaboration](../../GitUsage/ForksAndCollaboration/README.md#contributing-back-with-pull-requests) lesson shows the compare-across-forks picker on GitHub and in GitKraken.
+2. Open a pull request across forks from that branch into your repository's `main`, then merge it. The review linked above shows the three steps in GitKraken and on GitHub.
 3. In your terminal, pull `main` and run it. [Git-5.1](milestones/Git-5-1.md) proves every Part 4 operation works.
 4. If something broke along the way, write the issue and the fix in `README.md`. You get credit for bugs you find and fix. Label those commits clearly.
 

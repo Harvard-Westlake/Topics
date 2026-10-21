@@ -66,7 +66,7 @@ Whenever a lesson README, ASSIGNMENT.md, doc, milestone, activity, or review fil
 8. **Success criteria read `- [ ] **Item:** one sentence.`**
 9. **The README teaches the concept; the ASSIGNMENT holds the logistics.** A lesson README covers only the behavior and functionality of the thing as it is taught in class (what a commit holds, how the chain works, the steps in order). Whose code students work in (a classmate's fork), milestones, the shared interface, grading, and submission belong in ASSIGNMENT.md and its milestones, never in the README or its Check for Understanding.
 10. **Assignments and milestones say WHAT to build, not how.** State the behavior and the observable result (what files exist, what they contain, what HEAD holds, what counts as an error) plus a way to verify it. Do not require class names, method names, signatures, `static`, provided code templates, or step-by-step algorithms: the lesson README teaches how it works. (Later units will hand students interfaces to extend; until then, describe operations, not code.) **One exception:** the Git Project's shared `GitWrapper` class (`GitProject/Commits/milestones/Git-4-2.md`) is provided verbatim as a Java code block, and students must keep its class name and signatures, since it is the one standard way the whole class runs and grades every project.
-11. **Assignments open with `**Lesson:** [Name](README.md)`** on its own line above `**Duration:**`/`**Due:**`, the same bold-label format, never an italic `*Lesson: …*` line and never a dropdown.
+11. **Assignments open with `**Lesson:** [Name](README.md)`** on its own line above `**Duration:**`/`**Due:**`, the same bold-label format, never an italic `*Lesson: …*` line and never a dropdown. A day that revisits an earlier concept adds `**Review:** [Concept Name](../../Topic/Lesson/review/file.md)` on the very next line, linking the review fragment; the fragment is never pasted into the page (see "review/ folder").
 12. **Links are the standard blue everywhere** (the viewer styles every link the same: lesson, milestone, page-to-page, and nav). Never color a link with `<font>` or inline styles.
 13. **Commits are purple in diagrams** (`#a371f7` outline): a commit and the parent it points to use the same color. Trees are orange, blobs green; in branch diagrams a commit circle may take its branch's color.
 
@@ -113,7 +113,7 @@ Folders whose names begin with `_` (e.g. `_admin/`, `_modules/`) are **ignored b
 
 ## Curated modules and course planning
 
-`_modules/<slug>.json` files are saved unit plans: an ordered selection of lessons (possibly spanning topics) with optional review fragments attached, plus unit number, base points, and scale factor. Format: `_admin/_configuration/module.schema.json`. Review fragments are stored as **references** (`{module, path, file}`), never inline content — the repo's markdown stays the single source of truth and the hub resolves content at import time. An assignment's `review` field holds one reference (legacy saves) **or a list of references** — several reviews can stack on a single day, each rendered as its own purple block in order; every consumer goes through `_review_refs` in `_admin/_hub/server.py` so both shapes work. In the Planner, attached reviews render as chips with a per-chip ✕; the three pickers are purely an "add another" tool and always reset after a pick.
+`_modules/<slug>.json` files are saved unit plans: an ordered selection of lessons (possibly spanning topics) with optional review fragments attached, plus unit number, base points, and scale factor. Format: `_admin/_configuration/module.schema.json`. Review fragments are stored as **references** (`{module, path, file}`), never inline content — the repo's markdown stays the single source of truth and the hub resolves content at import time. An assignment's `review` field holds one reference (legacy saves) **or a list of references** — several reviews can stack on a single day, each rendered as its own purple block in order; every consumer goes through `_review_refs` in `_admin/_hub/server.py` so both shapes work. In the Planner, attached reviews render as chips with a per-chip ✕; the three pickers are purely an "add another" tool and always reset after a pick. Attaching a review this way is legacy since 2026-10-21: new days link their review from the ASSIGNMENT.md header instead (see "review/ folder").
 
 - **The hub has two themes.** Dark is the default; the **Light theme** button at the top right switches to the HW look (learn.hw.com tokens: white surfaces over a khaki wash, black Source Sans type, brand-red primary buttons that turn gold, secondary-blue info accents). It is `<html data-theme="light">`, remembered in localStorage (`hubTheme`) and forceable with `?theme=light|dark`; every rule lives in `_admin/_hub/static/app.css` under `html[data-theme="light"]`. New hub CSS must use the `--bg/--surface/--border/--accent/--text/--muted` variables, and any hard-coded dark fill needs a light override in that block.
 - **The course hub** (`python3 _admin/_hub/server.py` → <http://127.0.0.1:5050>) is the one UI for everything: the **Module Planner** tab creates/edits `_modules/*.json` (with the same lesson file editor and Canvas-fidelity preview as the standalone planner), the **Year Schedule** tab drags modules/tests/finals onto real class dates (`_admin/_schedules/<teacher>.json`, one file per teacher), and the **Courses** tab talks to Canvas using the teacher's own token from the gitignored root `.env`.
@@ -324,7 +324,7 @@ Never add a placeholder link if no `ASSIGNMENT.md` exists — only include it wh
 
 ### review/ folder
 
-Every lesson folder may contain a `review/` subfolder. Inside it, any number of `.md` files can exist — one per concept being reviewed. These files are **composable review components**: the module importer can inject one or more of them at the beginning or end of any assignment, in any module, not just the one they live in.
+Every lesson folder may contain a `review/` subfolder. Inside it, any number of `.md` files can exist — one per concept being reviewed. These files are **composable review components**, reusable by any class day in any module, not just the one they live in. **Standard since 2026-10-21: a day uses a review by linking it**, with a `**Review:** [Concept Name](../../Topic/Lesson/review/file.md)` line directly under `**Lesson:**` in its ASSIGNMENT.md, so students (and the live view) get a link to the fragment instead of a copy pasted into the page. The Module Planner's `review` references in `_modules/*.json`, which the live view renders as inline purple blocks, are the legacy mechanism: they still work for days that already use them, but new days link instead.
 
 ```
 LessonFolder/
@@ -373,6 +373,7 @@ Every assignment file follows this structure:
 # Assignment - [Lesson Name]
 
 **Lesson:** [Lesson Name](README.md)  
+**Review:** [Concept Name](../../Topic/Lesson/review/concept-name.md)  
 **Due:** [due date or relative deadline]
 
 ---
@@ -412,6 +413,8 @@ When converting old-format assignments (pasted from Notion or elsewhere), always
 4. Clarify any ambiguous criteria with a `> [!NOTE]` callout
 
 The `**Lesson:** [Lesson Name](README.md)` line is required on every ASSIGNMENT.md, as the first line of the metadata block right under the title, formatted exactly like `**Duration:**` and `**Due:**` (bold label, colon, then the lesson name as the link; two trailing spaces end each line so they stack). It's how a student opens the day's lesson from inside Canvas. When the hub pushes this assignment to Canvas, the Canvas description is only a link to (and frame of) the live lesson view, which shows the reviews, then this file (the lesson is reached through that link, not embedded) (see "Live lesson view" and `live_description` in `_admin/_hub/server.py`) — that's pipeline behavior, not something to hand-author. Milestone files (`milestones/Git-X-N.md`) don't need their own lesson link — they already link to their parent ASSIGNMENT.md, which links to the lesson.
+
+The `**Review:**` line is optional and sits directly under `**Lesson:**`, in the same bold-label format: it appears only on a day that revisits an earlier concept, and links the review fragment (in the `review/` folder of the lesson that taught it, often in another topic). **Since 2026-10-21 this link is how a review reaches a class day**: students and the live view get a link to the fragment, never a copy of it pasted into the page.
 
 ## Content conventions
 
@@ -729,6 +732,7 @@ Review files are composable fragments in `LessonFolder/review/`. The module impo
    - `## Tasks` numbered list (concrete actions, not "Can you…" checkboxes)
    - Cumulative scope: cover content up to and including this lesson plus all prior lessons in the module
    - Progressive complexity: each file in a set must be harder than the last
+2. Link it from the ASSIGNMENT.md of each day that uses it: `**Review:** [Concept Name](<relative path to the file>)` directly under `**Lesson:**`. Do not attach it in the Module Planner as well, or the live view shows it twice.
 
 **No other files need updating.**
 

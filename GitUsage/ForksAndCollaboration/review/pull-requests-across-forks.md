@@ -4,26 +4,29 @@
 
 ---
 
-| Where | What |
-|---|---|
-| Your repository → **Insights → Forks** | Every fork of your code; a fork's own page says `forked from OWNER/REPO` |
-| `gh repo view THEM/REPO --json parent -q .parent.nameWithOwner` | What a fork was forked from, from the terminal |
-| Your repository → **Pull requests → New pull request → compare across forks** | base: your repository, `main`; head: their fork, their branch |
-| `gh pr create --repo YOU/REPO --base main --head THEM:their-branch --title "Bring in THEM's work"` | The same pull request from the terminal |
-| GitKraken: left panel **Pull Requests → +**, or drag their branch onto your `main` | **From:** their fork and branch; **To:** your repository, `main` |
-| `gh pr list --repo YOU/REPO` | Open pull requests and their numbers |
-| **Files changed** tab | Every line the merge would add or remove |
-| `gh pr merge NUMBER --repo YOU/REPO --merge` | Merge it (same as the green **Merge pull request** button) |
-| `git pull` on `main` | Bring the merged work down into your clone |
+A pull request across forks moves work **from** a fork **to** the repository it was forked from. Three steps.
 
-A pull request across forks moves work from a fork (the head) into the repository it came from (the base). Whoever can push to the base can open it and merge it, even when the fork is a fork of a fork.
+**1. Find the fork.** On your repository's GitHub page, the fork count opens the list of every fork. Follow each fork's `forked from` line to the newest one.
+
+![A repository page on GitHub. The Fork button at the top shows a count of 5, and the About sidebar lists Readme, Activity, 0 stars, 0 watching, and a highlighted "5 forks" line. Either count opens the list of forks.](../assets/github-fork-count.svg)
+
+**2. Start the pull request.** In GitKraken, open your own repository, hover **Pull Requests** in the left panel, and click the green **+**. No plus button means GitHub is not connected yet: **Preferences → Integrations → GitHub**.
+
+![GitKraken's left panel with the rows Cloud Patches, Pull Requests, and Issues. The Pull Requests row is hovered and shows a green plus button with the tooltip "Create Pull Request".](../assets/gitkraken-create-pull-request.svg)
+
+**3. Point it at yourself.** **From Repo** is their fork and the branch they worked on. **To Repo** is your repository and `main`. Create it, merge it on GitHub, then pull `main` in your terminal.
+
+![GitKraken's Create Pull Request form. On the left, From Repo reads THEM/YOUR-REPO with Branch their-branch. An arrow points right to To Repo, which reads YOU/YOUR-REPO with Branch main.](../assets/gitkraken-pull-request-from-to.svg)
+
+| Without GitKraken | How |
+|---|---|
+| GitHub | Your repository → **Pull requests → New pull request → compare across forks**: head is their fork and branch, base is your `main` |
+| Terminal | `gh pr create --repo YOU/YOUR-REPO --base main --head THEM:their-branch --title "Bring in THEM's work"` |
 
 ---
 
 ## Tasks
 
-1. Open your repository's fork list and write down every fork and what each was forked from. Pick the one with the newest work on your code and note the branch it was done on.
-2. Open a pull request across forks from that branch into your `main`, titled with whose work it brings in. Before you create it, confirm the base is your repository and the head is their fork.
-3. In **Files changed**, find one file that changed and say in one sentence what the change does. If GitHub says it cannot merge automatically, name the file with the conflict.
-4. Merge it. In your terminal, pull `main` and confirm the merge commit is at the top of `git log --oneline -3`.
-5. If a second classmate also worked on your code, bring their branch in the same way. Where both changed the same lines, keep the version that compiles and say so in the merge commit message.
+1. Open your repository's fork list and follow the `forked from` chain to the fork of a fork with the newest work on your code. Note its owner and branch.
+2. In GitKraken, create the pull request: **From** their fork and branch, **To** your repository and `main`. Check that the arrow points at you before you create it.
+3. Merge it on GitHub, then in your terminal pull `main` and confirm the merge commit is at the top of `git log --oneline -3`.

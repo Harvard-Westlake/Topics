@@ -100,14 +100,7 @@
       "title": "Branches",
       "path": "Branches",
       "_module": "GitProject",
-      "review": [
-        {
-          "module": "GitUsage",
-          "path": "ForksAndCollaboration",
-          "file": "pull-requests-across-forks.md",
-          "label": "Pull Requests Across Forks"
-        }
-      ],
+      "review": null,
       "base_points": 15
     },
     {
@@ -120,5 +113,5 @@
       "no_assignment": true
     }
   ],
-  "updated": "2026-10-12"
+  "updated": "2026-10-21"
 }
