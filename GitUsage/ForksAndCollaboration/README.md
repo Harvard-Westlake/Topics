@@ -206,7 +206,9 @@ After pushing a feature branch to your fork, open a pull request to the **origin
    - How can the maintainer test it?
 6. Click **Create pull request**
 
-**In GitKraken:** create the PR from your fork and check the direction carefully — the **To Repo** must be the original repository and the **From Repo** your fork.
+The same picker works in the other direction. If you own the original and want work that was done on a fork (or on a fork of a fork), open **New pull request** on your own repository, choose **compare across forks**, and pick the fork and its branch as the head. The base is your `main`, and you can merge it yourself.
+
+**In GitKraken:** hover **Pull Requests** in the left panel and click **+**, or drag your branch onto `upstream/main` in the graph and choose **Start a pull request**. Check the direction carefully in the form: **From** is your fork and your branch, **To** is the original repository and `main`. Add a title and click **Create Pull Request**. Bringing a fork's work into a repository you own is the same form the other way around: add the fork as a remote first, then set **From** to the fork's branch and **To** to your own `main`.
 
 > **Note:**
 > You cannot merge your own PR into someone else's repository — that is the maintainer's decision. Your job is to make the PR easy to understand and review.

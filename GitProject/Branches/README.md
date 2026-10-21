@@ -48,7 +48,7 @@ That one change is what makes branches move. When you commit:
 
 Each branch grows its own line of history from the commit where it started, like C3 and C4 above.
 
-If HEAD holds a plain commit hash instead of a branch name, Git calls it a **detached HEAD**. Checking out a commit (from the Commits lesson) does this. Commits made there belong to no branch, so they are easy to lose.
+If HEAD holds a plain commit hash instead of a branch name, Git calls it a **detached HEAD**. Checking out a commit by its hash, which is every checkout in the Commits lesson, does this. Detached does not mean you are on some unknown branch: you are on no branch at all. The commit may sit on `main`, on `feature`, or on several branches, but none of them is selected. If you commit now, HEAD moves to the new commit and no branch moves with it, so that commit is easy to lose.
 
 ## <font color="#388bfd">Switching Branches</font>
 
@@ -59,6 +59,8 @@ Checking out a branch is checking out its commit, plus one more step:
 3. Write `ref: refs/heads/<branch>` into HEAD, so the next commit moves this branch.
 
 Nothing is lost by switching. Every commit on the other branch is still in `.git/objects/`, and its branch file still points at the newest one.
+
+![Two animated panels comparing checkouts. Left, checking out a commit hash: the HEAD label leaves main and attaches directly to commit C2, a yellow notice says detached HEAD, you are on no branch at all, and a new commit C5 appears under C2 with HEAD moving to it while main still points at C3. Right, checking out the branch feature: HEAD moves from main to the feature label, a new commit C5 appears after C4, and the feature label moves forward to C5 with HEAD following while main stays at C3.](assets/checkout-hash-vs-branch.svg)
 
 ## <font color="#388bfd">☑️ Check for Understanding</font>
 

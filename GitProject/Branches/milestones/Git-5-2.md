@@ -36,6 +36,8 @@ A simpler version of real Git's branches, inside your `git/` folder.
 | **Create a branch** | a branch name | A new branch file holds the commit you are on. HEAD does not change. It is an error if that branch already exists, or if there are no commits yet. |
 | **Check out a branch** | a branch name | Everything from checking out that branch's commit (Git-4.4), then HEAD holds `ref: refs/heads/<name>`. It is an error if the branch does not exist. |
 
+The interface's `checkout` now takes a branch name as well as a commit hash. A hash still leaves HEAD holding that hash, detached, exactly as in Part 4. Any other name is an error, unless you take on the assignment's [stretch goal](../ASSIGNMENT.md#stretch-goal).
+
 Show both new operations in `README.md`, with a short example someone could copy.
 
 **Verify:**

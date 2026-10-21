@@ -16,5 +16,5 @@ Program Git
 | 2.9.0 | Git Project Part 3 — Trees: Quiz | *quiz `004df05af92b7b74` — content in the private Exams repo* | — |
 | 2.9.1 | Peer Tree Verification | [GitProject/PeerTreeVerification](../../GitProject/PeerTreeVerification/) | — |
 | 2.10 · 2d | Commits | [GitProject/Commits](../../GitProject/Commits/) | — |
-| 2.12 | Branches | [GitProject/Branches](../../GitProject/Branches/) | — |
+| 2.12 | Branches | [GitProject/Branches](../../GitProject/Branches/) | [Pull Requests Across Forks](../../GitUsage/ForksAndCollaboration/review/pull-requests-across-forks.md) |
 | 2.13 | Coding Standards *(no assignment)* | [GitProject/CodingStandards](../../GitProject/CodingStandards/) | — |

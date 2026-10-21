@@ -68,10 +68,10 @@ public class GitWrapper {
 
     /**
      * Checks out a specific commit given its hash.
-     * This method should read the HEAD file to determine the "checked out" commit.
-     * Then it should update the working directory to match the
-     * state of the repository at that commit by tracing through the root tree and
-     * all its children.
+     * This method should read the HEAD file to determine the currently "checked out" commit,
+     * then update the working directory and the index file to match the
+     * state of the repository at the given commit by tracing through the root tree and
+     * all its children, and finally write the given hash into the HEAD file.
      *
      * @param commitHash The SHA1 hash of the commit to check out.
      */

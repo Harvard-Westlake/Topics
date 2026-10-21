@@ -25,7 +25,7 @@ The project is designed around reading unfamiliar code. After the first part, ea
 | 3 | Your own | Index formatting, tree files, trees from index |
 | Peer check | A random classmate's fork | A verification chart of their Part 3 tree behaviors, then a rename-for-readability commit on your fork |
 | 4 | A classmate's codebase | Commit files, HEAD chain, a shared interface, rebuilding the index, checkout |
-| 5 | An assigned classmate's codebase | Branch files, HEAD naming a branch, creating and checking out branches |
+| 5 | Your own, after pulling the fork of a fork that holds your Part 4 back into `main` | Bring your code home, then branch files, HEAD naming a branch, creating and checking out branches |
 | Wrap-up | In class, in groups | The class's coding standards: the rules that would have made swapping code easy |
 
 ---
@@ -64,7 +64,7 @@ Read the doc for each concept before starting the part that uses it.
 | 6–8 | [Trees](Trees/) | Index formatting, trees from the working list, root tree from the index |
 | 9 | [Peer Tree Verification](PeerTreeVerification/) | Fork a classmate's Part 3, hash their trees by hand, verify six behaviors, rename it for readability |
 | 10–11 | [Commits](Commits/) | Commit files, HEAD chain, a shared interface, rebuilding the index, checkout |
-| 12 | [Branches](Branches/) | Branch files, HEAD naming a branch, creating and checking out branches |
+| 12 | [Branches](Branches/) | Bring your code home from the fork of a fork, then branch files, HEAD naming a branch, creating and checking out branches |
 | 13 | [Coding Standards](CodingStandards/) | In class, no homework: agree on the rules every shared project should follow |
 
 ---
