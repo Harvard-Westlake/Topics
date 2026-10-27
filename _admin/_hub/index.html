@@ -255,9 +255,9 @@ try {
       <div id="syncBranchNote" class="sync-branch-note"></div>
     </div>
     <div id="syncPointsRow">
-      <label class="sync-graded"><input type="checkbox" id="syncRepointGraded" onchange="Schedule.previewPlan()">
-        Also change points on assignments that already have grades</label>
-      <div class="sync-branch-note">Off by default: Canvas keeps every score's raw points, so changing the total shifts every percentage already in the gradebook. Set points in the Module Planner's Points column.</div>
+      <label class="sync-graded" title="Canvas keeps each score's raw points, so a new total changes every percentage already in the gradebook. Points are set in the Module Planner's Points column."><input type="checkbox" id="syncRepointGraded" onchange="Schedule.previewPlan()">
+        Also change points on days that already have grades</label>
+      <div class="sync-branch-note">Off by default so existing grades keep their percentages.</div>
     </div>
     <div id="syncCourseWarn" style="display:none;color:var(--yellow);font-size:12px;font-weight:600;margin-top:-4px"></div>
     <div class="preview-box" id="syncPreview"></div>

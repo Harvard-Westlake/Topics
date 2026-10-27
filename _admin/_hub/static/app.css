@@ -670,7 +670,8 @@ html[data-theme="light"] .panel { box-shadow: 0 1px 3px rgba(0,0,0,.08); }
 .sync-days-links a, .sync-day-from { color: var(--accent); cursor: pointer; background: none; border: 0; font: inherit; padding: 0; }
 .sync-days-links a:hover, .sync-day-from:hover { text-decoration: underline; }
 .sync-days-note { color: var(--muted); margin-bottom: 6px; }
-.sync-day { display: flex; align-items: center; gap: 8px; padding: 3px 4px; border-radius: 5px; cursor: pointer; }
+/* `.modal-body label` (block, muted) would otherwise win over these rows: title, points and date ran together */
+.modal-body .sync-day { display: flex; align-items: center; gap: 8px; padding: 3px 4px; margin: 0; border-radius: 5px; cursor: pointer; color: var(--text); font-weight: 400; }
 .sync-day:hover { background: var(--surface2); }
 .sync-day.on { background: rgba(79, 142, 247, .12); }
 .sync-day input { margin: 0; accent-color: var(--accent); }
@@ -684,4 +685,5 @@ html[data-theme="light"] .panel { box-shadow: 0 1px 3px rgba(0,0,0,.08); }
 .sync-branch-note { font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.45; }
 .sync-branch-note .warn { color: var(--yellow); font-weight: 600; }
 .sync-branch-note code { font-size: 11px; }
-.sync-graded { display: block; font-size: 12px; margin-top: 6px; font-weight: 400; }
+.modal-body .sync-graded { display: block; font-size: 12px; margin-top: 6px; font-weight: 400; color: var(--text); }
+#syncModal { width: 600px; }
