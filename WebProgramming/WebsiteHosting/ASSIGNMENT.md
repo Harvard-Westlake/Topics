@@ -11,7 +11,7 @@ A personal website, live on the internet, that starts from the class template an
 
 | Result | What it means |
 |---|---|
-| **A Firebase project** | Named `personalwebsite-<your first name>`, under your personal Google account. |
+| **A Firebase project** | Under your personal Google account, named with a unique public website name of your choice, so your address is `<unique-public-website-name>.web.app` (for example `chocolateparty.web.app`). |
 | **The template in place** | The contents of the [BasicStaticWebsite template](https://github.com/Harvard-Westlake/BasicStaticWebsite) are in your `public/` folder, not Firebase's placeholder page. |
 | **Your own changes** | At least one visible change in the CSS (colors, fonts, spacing) and one in the HTML (headings or text). |
 | **Live** | Your Hosting URL loads the personalized page for anyone. |

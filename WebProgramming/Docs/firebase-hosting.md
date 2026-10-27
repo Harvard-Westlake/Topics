@@ -26,7 +26,7 @@ Official CLI documentation: [firebase.google.com/docs/cli](https://firebase.goog
 After `firebase init hosting`, your folder contains:
 
 ```
-personalwebsite-<name>/
+<unique-public-website-name>/
   firebase.json      — hosting configuration (which folder is public, rewrites)
   .firebaserc        — which Firebase project this folder deploys to
   public/            — THE WEBSITE: everything here becomes live on deploy
