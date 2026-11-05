@@ -91,7 +91,7 @@ Build and ship a live, database-backed educational widget — hosted on Firebase
 - [Debugging JavaScript](WebProgramming/DebuggingJavaScript/) — DevTools, console methods, and reading stack traces
 - [Persistence and Intermediate Web](WebProgramming/PersistenceAndIntermediateWeb/) — why page state vanishes and the ways websites remember
 - [Databases and Collections](WebProgramming/DatabasesAndCollections/) — local storage vs cookies, Firestore CRUD, and security rules
-- [Intro to AI Coding](WebProgramming/InterfacingWithAI/) — assumptions in prompts and Cursor's Ask, Plan, and Agent modes
+- [Intro to AI Coding](WebProgramming/InterfacingWithAI/) — Codex CLI setup and permissions, assumptions in prompts, and running Codex CLI as Ask, Plan, and Agent
 - [The Learning Widget Project](WebProgramming/LearningWidget/) — plan and build an educational widget published via GitHub and Firebase
 - [UX and Behavior Tracking](WebProgramming/UXAndBehaviorTracking/) — engagement, navigation, user flow, and heatmaps
 - [Widget Iteration from Feedback](WebProgramming/WidgetIteration/) — a shrinking feedback.md and a zero-error console
