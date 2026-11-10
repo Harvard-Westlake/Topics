@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The JSON Explorer</title>
+<style>
+  :root {
+    --bg: #ffffff; --surface: #f6f8fa; --border: #d0d7de; --text: #1f2328; --muted: #59636e;
+    --key: #0969da; --string: #1a7f37; --number: #bc4c00; --boolean: #8250df; --null: #59636e;
+    --bracket: #9a6700; --good: #1a7f37; --bad: #cf222e; --focus: #0969da;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0d1117; --surface: #161b22; --border: #30363d; --text: #e6edf3; --muted: #8b949e;
+      --key: #388bfd; --string: #3fb950; --number: #f0883e; --boolean: #a371f7; --null: #8b949e;
+      --bracket: #e3b341; --good: #3fb950; --bad: #f85149; --focus: #388bfd;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 20px 16px 40px; background: var(--bg); color: var(--text);
+         font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; line-height: 1.5; }
+  main { max-width: 1000px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin: 0 0 4px; }
+  h2 { font-size: 1rem; margin: 0 0 8px; }
+  p { margin: 0 0 12px; }
+  .muted { color: var(--muted); }
+  .buttons { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 8px; align-items: center; }
+  .buttons span { color: var(--muted); font-size: 0.85rem; min-width: 90px; }
+  button { font: inherit; font-size: 0.9rem; padding: 6px 12px; border-radius: 6px; cursor: pointer;
+           border: 1px solid var(--border); background: var(--surface); color: var(--text); }
+  button:hover { border-color: var(--focus); }
+  button:focus-visible, textarea:focus-visible, .node:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px; }
+  @media (max-width: 760px) { .columns { grid-template-columns: 1fr; } }
+  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px; min-width: 0; }
+  textarea { width: 100%; min-height: 330px; resize: vertical; padding: 10px; border-radius: 6px;
+             border: 1px solid var(--border); background: var(--bg); color: var(--text);
+             font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.9rem; line-height: 1.5; tab-size: 2; }
+  #status { margin: 10px 0 0; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border); font-size: 0.9rem; }
+  #status.good { border-color: var(--good); color: var(--good); }
+  #status.bad { border-color: var(--bad); color: var(--bad); }
+  #status strong { display: block; }
+  #tree { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.9rem; min-height: 200px; overflow-x: auto; white-space: nowrap; }
+  #tree.stale { opacity: 0.45; }
+  .row { padding: 1px 0; }
+  .node { border-radius: 4px; padding: 1px 4px; cursor: pointer; border: 1px solid transparent; }
+  .node:hover, .node.picked { border-color: var(--focus); }
+  .key { color: var(--key); }
+  .string { color: var(--string); } .number { color: var(--number); } .boolean { color: var(--boolean); }
+  .null { color: var(--null); } .bracket { color: var(--bracket); } .punct { color: var(--muted); }
+  #detail { margin-top: 12px; padding: 10px; border-radius: 6px; border: 1px dashed var(--border); font-size: 0.9rem; min-height: 86px; }
+  #detail code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.85rem; margin-bottom: 10px; }
+  .legend b { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-weight: 600; }
+</style>
+</head>
+<body>
+<main>
+  <h1>The JSON Explorer</h1>
+  <p class="muted">Edit the JSON on the left. The right side shows how a computer reads it. Select any value to see its type and how to reach it in JavaScript.</p>
+
+  <div class="buttons" role="group" aria-label="Load an example">
+    <span>Examples:</span>
+    <button type="button" data-example="flat">A taste, flat</button>
+    <button type="button" data-example="list">With a list</button>
+    <button type="button" data-example="nested">With an object inside</button>
+  </div>
+  <div class="buttons" role="group" aria-label="Break the JSON on purpose">
+    <span>Break it:</span>
+    <button type="button" data-break="comma">Extra comma at the end</button>
+    <button type="button" data-break="single">Single quotes</button>
+    <button type="button" data-break="barekey">Key with no quotes</button>
+    <button type="button" data-break="missing">Missing comma</button>
+  </div>
+
+  <div class="columns">
+    <section class="panel" aria-labelledby="editor-title">
+      <h2 id="editor-title">The text (JSON)</h2>
+      <textarea id="editor" spellcheck="false" aria-describedby="status"></textarea>
+      <div id="status" role="status" aria-live="polite"></div>
+    </section>
+    <section class="panel" aria-labelledby="tree-title">
+      <h2 id="tree-title">What the computer sees</h2>
+      <div class="legend" aria-hidden="true">
+        <span><b class="key">"key"</b></span><span><b class="string">"text"</b></span><span><b class="number">number</b></span>
+        <span><b class="boolean">true / false</b></span><span><b class="null">null</b></span><span><b class="bracket">[ list ] { object }</b></span>
+      </div>
+      <div id="tree" role="tree" aria-label="Parsed JSON"></div>
+      <div id="detail" role="status" aria-live="polite">Select a value in the tree above, with a click or with Tab and Enter.</div>
+    </section>
+  </div>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  var examples = {
+    flat: {
+      game: "Wordle",
+      why: "one puzzle a day, the same one for everyone",
+      rating: 9,
+      stillPlaying: true
+    },
+    list: {
+      game: "Wordle",
+      rating: 9,
+      mechanics: ["daily streak", "share your grid", "six tries"],
+      dislikes: []
+    },
+    nested: {
+      game: "Wordle",
+      rating: 9,
+      stillPlaying: true,
+      mechanics: ["daily streak", "share your grid"],
+      session: { minutes: 5, device: "phone", sound: null }
+    }
+  };
+
+  var breakers = {
+    comma: {
+      apply: function (text) { return text.replace(/\s*\}\s*$/, ",\n}"); },
+      why: "The last pair has a comma after it. JSON puts commas between pairs, never after the last one."
+    },
+    single: {
+      apply: function (text) { return text.replace(/"/g, "'"); },
+      why: "JSON only accepts double quotes. 'Wordle' is fine in JavaScript and invalid in JSON."
+    },
+    barekey: {
+      apply: function (text) { return text.replace(/"([A-Za-z]+)":/, "$1:"); },
+      why: "The first key lost its quotes. In JSON every key is text in double quotes, even though JavaScript lets you skip them."
+    },
+    missing: {
+      apply: function (text) { return text.replace(/,\n/, "\n"); },
+      why: "Two pairs have no comma between them, so the computer cannot tell where one ends and the next begins."
+    }
+  };
+
+  var editor = document.getElementById("editor");
+  var statusBox = document.getElementById("status");
+  var tree = document.getElementById("tree");
+  var detail = document.getElementById("detail");
+  var hint = "";
+
+  function typeOf(value) {
+    if (value === null) { return "null"; }
+    if (Array.isArray(value)) { return "list"; }
+    if (typeof value === "object") { return "object"; }
+    if (typeof value === "string") { return "text"; }
+    return typeof value;
+  }
+
+  function span(className, text) {
+    var element = document.createElement("span");
+    element.className = className;
+    element.textContent = text;
+    return element;
+  }
+
+  function describe(value, path) {
+    var kind = typeOf(value);
+    var summary;
+    if (kind === "list") { summary = "a list of " + value.length + (value.length === 1 ? " value" : " values") + ", in order, counted from 0"; }
+    else if (kind === "object") { summary = "an object with " + Object.keys(value).length + " key and value pair(s)"; }
+    else if (kind === "text") { summary = "text, always in double quotes"; }
+    else if (kind === "number") { summary = "a number, written with no quotes"; }
+    else if (kind === "boolean") { summary = "true or false, written with no quotes"; }
+    else { summary = "null, which means: no value here"; }
+    detail.textContent = "";
+    var lineOne = document.createElement("div");
+    lineOne.append("Type: ", span("", kind), " (" + summary + ")");
+    lineOne.querySelector("span").style.fontWeight = "700";
+    var lineTwo = document.createElement("div");
+    var code = document.createElement("code");
+    code.textContent = path;
+    lineTwo.append("Reach it in JavaScript with: ", code);
+    detail.append(lineOne, lineTwo);
+  }
+
+  function pathStep(path, key, parentIsList) {
+    if (parentIsList) { return path + "[" + key + "]"; }
+    return /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(key) ? path + "." + key : path + "[" + JSON.stringify(key) + "]";
+  }
+
+  function pick(node, value, path) {
+    var previous = tree.querySelector(".picked");
+    if (previous) { previous.classList.remove("picked"); }
+    node.classList.add("picked");
+    describe(value, path);
+  }
+
+  function valueNode(value, path) {
+    var kind = typeOf(value);
+    var text;
+    var className;
+    if (kind === "list") { text = "[ list of " + value.length + " ]"; className = "bracket"; }
+    else if (kind === "object") { text = "{ object }"; className = "bracket"; }
+    else if (kind === "text") { text = JSON.stringify(value); className = "string"; }
+    else { text = String(value); className = kind; }
+    var node = span("node " + className, text);
+    node.tabIndex = 0;
+    node.setAttribute("role", "treeitem");
+    node.setAttribute("aria-label", kind + " " + text + " at " + path);
+    node.addEventListener("click", function () { pick(node, value, path); });
+    node.addEventListener("keydown", function (event) {
+      if (event.key === "Enter" || event.key === " ") { event.preventDefault(); pick(node, value, path); }
+    });
+    return node;
+  }
+
+  function render(value, path, depth, label, parent) {
+    var row = document.createElement("div");
+    row.className = "row";
+    row.style.paddingLeft = (depth * 22) + "px";
+    if (label !== null) {
+      row.append(span(label.isIndex ? "punct" : "key", label.isIndex ? label.text : JSON.stringify(label.text)), span("punct", ": "));
+    }
+    row.append(valueNode(value, path));
+    parent.append(row);
+    var kind = typeOf(value);
+    if (kind === "list") {
+      value.forEach(function (entry, position) {
+        render(entry, pathStep(path, position, true), depth + 1, { text: String(position), isIndex: true }, parent);
+      });
+    } else if (kind === "object") {
+      Object.keys(value).forEach(function (key) {
+        render(value[key], pathStep(path, key, false), depth + 1, { text: key, isIndex: false }, parent);
+      });
+    }
+  }
+
+  function lineOfError(message, text) {
+    var match = /position (\d+)/.exec(message);
+    if (!match) {
+      match = /line (\d+)/.exec(message);
+      return match ? Number(match[1]) : null;
+    }
+    return text.slice(0, Number(match[1])).split("\n").length;
+  }
+
+  function update() {
+    var text = editor.value;
+    var parsed;
+    try {
+      parsed = JSON.parse(text);
+    } catch (error) {
+      statusBox.className = "bad";
+      statusBox.textContent = "";
+      var title = document.createElement("strong");
+      var line = lineOfError(error.message, text);
+      title.textContent = "Not valid JSON" + (line ? ", near line " + line : "") + ".";
+      statusBox.append(title, hint || "Check for a missing or extra comma, single quotes, or a key without double quotes.");
+      tree.classList.add("stale");
+      return;
+    }
+    hint = "";
+    statusBox.className = "good";
+    statusBox.textContent = "Valid JSON. The top level is " + (typeOf(parsed) === "object" ? "an object" : typeOf(parsed) === "list" ? "a list" : typeOf(parsed)) + ".";
+    tree.classList.remove("stale");
+    tree.textContent = "";
+    detail.textContent = "Select a value in the tree above, with a click or with Tab and Enter.";
+    render(parsed, "data", 0, null, tree);
+  }
+
+  function load(name) {
+    hint = "";
+    editor.value = JSON.stringify(examples[name], null, 2);
+    update();
+  }
+
+  document.querySelectorAll("[data-example]").forEach(function (button) {
+    button.addEventListener("click", function () { load(button.dataset.example); });
+  });
+
+  document.querySelectorAll("[data-break]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      var breaker = breakers[button.dataset.break];
+      try { JSON.parse(editor.value); } catch (error) { load("flat"); }
+      editor.value = breaker.apply(editor.value);
+      hint = breaker.why + " Fix it in the text to see the tree update.";
+      update();
+    });
+  });
+
+  editor.addEventListener("input", function () { hint = ""; update(); });
+  load("nested");
+}());
+</script>
+</body>
+</html>

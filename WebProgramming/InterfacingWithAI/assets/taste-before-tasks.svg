@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 360" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <title>The same request, build me a game, lands on a generic page when the AI knows nothing about you and on a page that fits you after it has interviewed you about your tastes</title>
+  <rect width="760" height="360" rx="10" fill="#0d1117"/>
+  <text x="30" y="36" fill="#e6edf3" font-size="17" font-weight="700">Taste before tasks: the same request, before and after the AI knows you</text>
+
+  <!-- before -->
+  <rect x="30" y="56" width="340" height="250" rx="8" fill="#161b22" stroke="#f85149"/>
+  <text x="46" y="80" fill="#f85149" font-size="13" font-weight="700">BEFORE: IT KNOWS NOTHING ABOUT YOU</text>
+  <rect x="46" y="94" width="308" height="30" rx="6" fill="#0d1117" stroke="#30363d"/>
+  <text x="58" y="114" fill="#e6edf3" font-size="12" font-family="ui-monospace, Menlo, monospace">Build me a game.</text>
+  <text x="200" y="146" fill="#8b949e" font-size="16" text-anchor="middle">&#8595;</text>
+  <rect x="46" y="156" width="308" height="100" rx="6" fill="#0d1117" stroke="#30363d"/>
+  <text x="58" y="178" fill="#8b949e" font-size="12">The AI's favorite, not yours:</text>
+  <text x="58" y="200" fill="#e6edf3" font-size="12">a blue page, a number-guessing game,</text>
+  <text x="58" y="218" fill="#e6edf3" font-size="12">a "Play again" button, confetti.</text>
+  <text x="58" y="242" fill="#8b949e" font-size="12">Every gap filled with its own guess.</text>
+  <text x="46" y="286" fill="#8b949e" font-size="12">You spend the next hour correcting it.</text>
+
+  <!-- after -->
+  <rect x="390" y="56" width="340" height="250" rx="8" fill="#161b22" stroke="#3fb950"/>
+  <text x="406" y="80" fill="#3fb950" font-size="13" font-weight="700">AFTER: IT INTERVIEWED YOU FIRST</text>
+  <rect x="406" y="94" width="308" height="60" rx="6" fill="#0d1117" stroke="#a371f7"/>
+  <text x="418" y="113" fill="#a371f7" font-size="12" font-weight="700">TASTES.md</text>
+  <text x="418" y="130" fill="#e6edf3" font-size="11">short rounds, one more try, dark and quiet,</text>
+  <text x="418" y="145" fill="#e6edf3" font-size="11">hates timers, loves a puzzle that clicks</text>
+  <rect x="406" y="162" width="308" height="26" rx="6" fill="#0d1117" stroke="#30363d"/>
+  <text x="418" y="180" fill="#e6edf3" font-size="12" font-family="ui-monospace, Menlo, monospace">Build me a game.</text>
+  <text x="560" y="204" fill="#8b949e" font-size="16" text-anchor="middle">&#8595;</text>
+  <rect x="406" y="212" width="308" height="62" rx="6" fill="#0d1117" stroke="#30363d"/>
+  <text x="418" y="234" fill="#e6edf3" font-size="12">A dark, quiet puzzle with short rounds,</text>
+  <text x="418" y="252" fill="#e6edf3" font-size="12">no timer, and a reason to try once more.</text>
+  <text x="406" y="294" fill="#8b949e" font-size="12">Its guesses now land near what you meant.</text>
+
+  <text x="30" y="336" fill="#8b949e" font-size="12">Today's rule: no building. The AI only gets to know your tastes, likes, and dislikes.</text>
+</svg>

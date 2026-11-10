@@ -43,7 +43,7 @@ Real websites remember. A cart survives a refresh, and settings survive a restar
 - **Browser storage** (cookies and local storage) remembers *this visitor on this machine*: preferences, progress, a "welcome back" message.
 - **A database** remembers for the whole site: every visitor reads and writes the same records. That is what makes leaderboards, comments, and anything shared possible.
 
-Picking a rung is a design choice. Ask what your site should remember, and who should see it. Next lesson, [Databases and Collections](../DatabasesAndCollections/), builds both kinds of storage for real.
+Picking a rung is a design choice. Ask what your site should remember, and who should see it. [Databases and Collections](../DatabasesAndCollections/) builds the shared kind for real.
 
 ## <font color="#388bfd">Trying It in the Console</font>
 
@@ -81,4 +81,4 @@ The variable died with the old page. The local storage entry did not, because it
 
 ---
 
-← [Debugging JavaScript](../DebuggingJavaScript/) | Next: [Databases and Collections](../DatabasesAndCollections/)
+← [JavaScript on the Web](../JavaScriptAndCursor/) | Next: [Intro to AI Coding](../InterfacingWithAI/)

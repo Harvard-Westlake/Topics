@@ -7,18 +7,22 @@
 
 ---
 
-This lesson takes two class days. Day 1 puts an AI agent, OpenAI's **Codex CLI**, into your terminal and teaches you what it is allowed to touch. Day 2 is about managing Codex CLI, or any AI that writes code for you: the assumptions it makes, and the loop that keeps you in charge.
+This lesson puts an AI agent, OpenAI's **Codex CLI**, into your terminal and teaches you what it is allowed to touch. Then it asks what learning is, in a brain and in an AI, and why both have to squeeze everything into words. That is why, before the AI builds anything for you, you teach it your tastes. The last sections are for the days you do build: the assumptions an AI makes, and the loop that keeps you in charge.
 
 ## <font color="#388bfd">Table of Contents</font>
 
-1. [Day 1: Codex in your terminal, signed in to ChatGPT Plus on a model that lasts the month](#day-1-codex-in-your-terminal)
+1. [Codex in your terminal, signed in to ChatGPT Plus on a model that lasts the month](#codex-in-your-terminal)
 2. [What Codex may touch: permissions, the real dangers, and the risky commands](#what-codex-may-touch)
 3. [Interview your repository: the first prompt is the folder you start in](#interview-your-repository)
-4. [Day 2: assumptions, what the AI decides when you do not](#day-2-assumptions)
-5. [Ask, Plan, and Agent: picking the right way to run Codex CLI](#ask-plan-and-agent)
-6. [The manager's loop for building any feature](#the-managers-loop)
+4. [How a brain learns: pathways, plasticity, and pruning](#how-a-brain-learns)
+5. [Everything becomes language: words for you, tokens for an AI](#everything-becomes-language)
+6. [The question: what are you training?](#the-question)
+7. [Taste before tasks: teach the AI what you enjoy before it builds anything](#taste-before-tasks)
+8. [Assumptions: what the AI decides when you do not](#assumptions)
+9. [Ask, Plan, and Agent: picking the right way to run Codex CLI](#ask-plan-and-agent)
+10. [The manager's loop for building any feature](#the-managers-loop)
 
-## <font color="#388bfd">Day 1: Codex in Your Terminal</font>
+## <font color="#388bfd">Codex in Your Terminal</font>
 
 So far you have used AI through a chat window: you paste, it answers, you copy. **Codex** is a program that lives in your terminal. You start it inside a folder, it reads what is there, and it can run commands and change files when you let it. Today it only reads and explains.
 
@@ -166,7 +170,8 @@ Every command, including the cosmetic ones, gets one plain sentence in the [Code
 3. Type `/permissions` and read the options. If the selection is not the middle, workspace level (Codex may call it **Auto**), move it there. Never pick the full-access level.
 4. Ask Codex, in plain English:
    ```
-   Create a file named codex-test.txt in this folder containing the single word hello.
+   Create a file named codex-test.txt in this folder containing the single
+   word hello.
    ```
    Watch what happens: inside the workspace Codex may do it directly or ask first. Run `ls` in your other terminal to confirm the file exists.
 5. Now ask it to step outside the fence:
@@ -222,12 +227,14 @@ After every answer that names a file, open the file. Checking is not an insult t
    ```
 2. Ask the opening question the Codex docs suggest:
    ```
-   Tell me about this project. What does it do, and which file does most of the work?
+   Tell me about this project. What does it do, and which file does most of
+   the work?
    ```
    Watch the lines it prints while it works (`Explored`, `List`, `Read`, file names). Those are the files it opened before answering.
 3. Ask something only a reader of the code could answer, for example:
    ```
-   Which method computes the SHA-1 hash of a blob, and exactly what bytes go into the hash?
+   Which method computes the SHA-1 hash of a blob, and exactly what bytes
+   go into the hash?
    ```
 4. Open the file it named in VS Code and check the claim line by line. Write down one thing it got right and one thing it got wrong, vague, or invented. If everything checks out, ask a harder question until something does not.
 5. Ask for an opinion:
@@ -241,11 +248,160 @@ After every answer that names a file, open the file. Checking is not an insult t
 
 </details>
 
-## <font color="#388bfd">Day 2: Assumptions</font>
+## <font color="#388bfd">How a Brain Learns</font>
+
+![A computer reconstruction of about one cubic millimeter of human brain, a piece the size of a grain of sand taken from the temporal lobe of the cerebral cortex. Thousands of neurons are drawn as glowing, branching threads in pink, orange, green, blue, and yellow, tangled so densely that the block looks like a ball of colored lightning. Each large cell body sends one long trunk upward and a spray of fine branches in every direction, and every branch touches many others.](../assets/neurons-cubic-millimeter.jpg)
+
+*<font color="#8b949e">One cubic millimeter of human cerebral cortex: about 57,000 cells and 150 million connections. Image: Google Research and the Lichtman Lab, Harvard University.</font>*
+
+That grain of brain is about one millionth of yours. A whole human brain has about 86 billion **neurons**, and each one connects to thousands of others. The connection points are **synapses**, and you have roughly 100 trillion of them.
+
+![A single neuron in white at the center, with a rounded cell body and thick branches reaching up and out. Thousands of thin blue fibers, the axons of other neurons, weave past and touch it. Small green dots mark each synapse, the point where one of those fibers connects to this neuron. There are thousands of green dots on this one cell.](../assets/one-neuron-synapses.jpg)
+
+*<font color="#8b949e">One neuron (white), about 5,600 incoming fibers from other neurons (blue), and the synapses where they connect (green). Image: Google Research and the Lichtman Lab, Harvard University.</font>*
+
+**What a pathway is.** A neuron fires an electrical pulse down its fiber (the **axon**). At the synapse the pulse cannot jump the gap, so the neuron releases a chemical, a **neurotransmitter**, most often **glutamate**. Glutamate crosses the gap and fits into **receptors** on the next neuron, which open and let charged sodium atoms in. Enough of that and the next neuron fires too. A pathway is a chain of neurons that fire one after another.
+
+**How a pathway is reinforced.** A synapse is not fixed. It gets stronger when it is used at the right moment:
+
+1. **The coincidence detector.** The receiving neuron has a second receptor, the **NMDA receptor**, plugged by a magnesium ion. The plug only pops out when the receiving neuron is already firing. So this receptor opens only when the sender and the receiver are active at the same time.
+2. **Calcium is the signal.** When it opens, calcium flows in. Calcium switches on enzymes (one is called CaMKII) that push more of the ordinary receptors (AMPA receptors) into the synapse. Within minutes the same pulse now produces a bigger response. This is **long-term potentiation**, LTP.
+3. **Repetition makes it physical.** Repeat it and the signal reaches the cell's nucleus, genes switch on, new proteins are built, and the synapse grows larger or a new one sprouts. That change can last for years.
+4. **Unused connections weaken.** A synapse that fires out of step with its neighbor lets in only a trickle of calcium, which removes receptors. This is **long-term depression**, LTD.
+5. **Reward marks what to keep.** When something turns out better than expected, a burst of **dopamine** tells recently active synapses to strengthen. That is why what you enjoy is what you get good at.
+6. **Used pathways get faster.** Support cells wrap busy axons in a fatty insulation, **myelin**, which can speed the signal up many times over. Sleep then replays the day's pathways and stabilizes them.
+
+The short version, from the scientist Donald Hebb: **neurons that fire together wire together.** So to **learn** is not to save a file somewhere. Learning is a physical change in which connections exist, how strong they are, and how fast they carry a signal. The memory is the wiring.
+
+**Neuroplasticity** is the brain's ability to rewire itself this way, and it lasts your whole life. It is strongest during **critical periods**, windows when one region is especially easy to shape: vision in the first years, the sounds of a language in the first year, language itself through childhood. After a window closes you can still learn, but it costs more practice.
+
+**Pruning** is the other half. A young brain builds far more synapses than it will keep: a toddler has about half again as many as an adult in some regions. Then the brain removes the ones that are not being used. Weak synapses get tagged with marker proteins, and cleanup cells called **microglia** digest them. This is not damage. It makes the pathways that remain faster and cheaper to run. The rule is **use it or lose it**, and what you spend your time doing decides which connections stay.
+
+![Animated side view of a human brain, front on the left, with its regions lighting up in the order they are pruned. First, seeing and hearing: the occipital lobe at the back and the auditory cortex on the temporal lobe, busiest from about ages 1 to 6 and done near 11 or 12. Second, touch and movement: the sensory and motor strips across the top, through childhood, about ages 2 to 10. Third, language: Broca's area in the frontal lobe and Wernicke's area at the back of the temporal lobe, from about age 3 to the early teens. Fourth, space, memory, and meaning: the parietal and temporal lobes, about ages 10 to 18. Fifth and last, planning and self-control: the prefrontal cortex at the very front, from about age 12 into the mid to late twenties. The cerebellum and brain stem are shown in grey. A caption says the last region to finish is the one you use to plan, judge, and decide, and you are in those years right now.](../assets/pruning-order.svg)
+
+| When (approximate) | What is being pruned | What it runs |
+|---|---|---|
+| Ages 1 to 6, finished near 11 or 12 | Visual and auditory cortex | Seeing and hearing |
+| Ages 2 to 10 | Sensory and motor strips | Touch and movement |
+| Age 3 to the early teens | Language areas | Speech and understanding |
+| Ages 10 to 18 | Parietal and temporal lobes | Space, memory, meaning |
+| Age 12 to the mid or late 20s | Prefrontal cortex | Planning, judgment, self-control |
+
+> **Note:** These ages come from counting synapses in donated brains and from brain scans. They differ from person to person and the stages overlap. The order, back of the brain to front, is the dependable part.
+
+An AI model learns by a cousin of the same idea. Its "synapses" are billions of numbers called **weights**. During training, every weight that helped produce a good answer is nudged up and every weight that hurt is nudged down, over and over. Nobody types the knowledge in. As in your brain, the knowledge is the strengths of the connections.
+
+## <font color="#388bfd">Everything Becomes Language</font>
+
+Here is the strange part. Whatever is happening inside a brain or an AI, the only way out is words.
+
+- **In you:** a thought is a pattern of activity across millions of synapses at once. To share it you must pick words, one after another, from the words you know.
+- **In an AI:** each step holds thousands of numbers spread over dozens of layers. To answer, it must pick one **token** (a word or a piece of a word) at a time, from a fixed list of about 100,000 to 200,000 tokens.
+
+Either way, something enormous is squeezed through something narrow. Whatever does not fit the vocabulary does not come out. Three examples:
+
+1. **A two-year-old sees the ocean for the first time.** Wind, noise, salt, a horizon with no end, and maybe 200 words to work with. What comes out: "Big water!" The experience was not small. The vocabulary was.
+2. **Koko, a gorilla taught about 1,000 hand signs,** lost her pet kitten in 1984. Her caretakers reported that she signed "cry," "sad," and "frown." Scientists still argue about how much apes mean by their signs, but something large was clearly going on behind three small words.
+3. **An AI looks at the brain picture above.** More than a million pixels become millions of numbers inside it. Asked to describe it in five words, it says "glowing, tangled, colorful neuron branches." Whether an AI experiences anything is an open question. What is certain is that almost everything inside it never reaches the page.
+
+The same experience, at three sizes of vocabulary:
+
+![Animated diagram of one experience squeezed through three vocabularies. On the left, a sunset over the ocean is drawn as a dense web of colored connections: millions of synapses firing in a brain, or thousands of numbers per token in an AI. It passes through three openings of different widths. About 50 words or tokens, a toddler or a tiny model, gives: Big. Pretty. More! About 5,000, a ten-year-old or a small model, gives: The sky went orange and pink. I felt calm, and kind of sad when it was over. About 50,000 or more, a well-read adult or a large model, gives: Amber light draining into violet, and the ache of watching something beautiful that does not need you. A caption says the experience never changed, only the words available to carry it out did.](../assets/language-bottleneck.svg)
+
+| Vocabulary | Who has it | What comes out |
+|---|---|---|
+| About 50 words or tokens | A toddler, or a tiny AI model | "Big. Pretty. More!" |
+| About 5,000 | A ten-year-old, or a small model | "The sky went orange and pink. I felt calm, and kind of sad when it was over." |
+| About 50,000 or more | A well-read adult, or a large model | "Amber light draining into violet, and the ache of watching something beautiful that does not need you." |
+
+This works in both directions. The AI knows only the part of you that you put into words. And you see only the part of the AI that fits into tokens. A richer vocabulary, on either side, lets more of the real thing through.
+
+### <font color="#79c0ff">Activity 5</font>
+<details>
+<summary><strong>One Experience, Three Vocabularies</strong></summary>
+
+*Concept: Describe one thing you love on the web with 5 words, then 25, then 100, and see how much of you gets through each time.*
+
+![Animated diagram of one experience squeezed through three vocabularies. On the left, a sunset over the ocean is drawn as a dense web of colored connections: millions of synapses firing in a brain, or thousands of numbers per token in an AI. It passes through three openings of different widths. About 50 words or tokens, a toddler or a tiny model, gives: Big. Pretty. More! About 5,000, a ten-year-old or a small model, gives: The sky went orange and pink. I felt calm, and kind of sad when it was over. About 50,000 or more, a well-read adult or a large model, gives: Amber light draining into violet, and the ache of watching something beautiful that does not need you. A caption says the experience never changed, only the words available to carry it out did.](../assets/language-bottleneck.svg)
+
+## Task
+
+1. Pick one web experience you genuinely love: a game, a site, a feed, a single feature.
+2. Write why you love it in exactly 5 words. Then in about 25 words. Then in about 100 words.
+3. In a new AI chat, paste only the 5-word version and ask: `From this alone, what do you know about my tastes?` Save the answer.
+4. In another new chat, do the same with the 100-word version. Compare the two answers: which one sounds like you, and which could be anyone?
+5. Write down one thing about the experience that did not fit even in 100 words. That is the part of you the AI still cannot see.
+
+*(Standalone file: [activities/05-one-experience-three-vocabularies.md](../activities/05-one-experience-three-vocabularies.md))*
+
+</details>
+
+## <font color="#388bfd">The Question</font>
+
+Put the two halves together:
+
+- Your brain keeps the pathways you use and prunes the ones you do not.
+- The region being pruned in you right now is the one that plans, judges, and decides.
+- An AI will happily do your planning, judging, and deciding for you, in words, as often as you ask.
+
+> **So:** every time you hand a kind of thinking to an AI, which of your own pathways are you choosing to strengthen, and which are you letting go quiet? If an AI can only know the you that fits into words, what does it need to hear from you, and what should you keep doing yourself, so that it becomes more of who you are and not a replacement for it?
+
+There is no single right answer, and it is yours to work out. Start by making sure the AI actually knows you. That is the next section, and it is today's assignment.
+
+## <font color="#388bfd">Taste Before Tasks</font>
+
+Ask a stranger to pick a movie for you and you get their favorite, not yours. An AI that builds for you is that stranger until you tell it who you are.
+
+- **Your taste** is what you find entertaining, engaging, enjoyable, and interesting, and why.
+- **The more the AI knows** about your likes, dislikes, and preferences, the closer its work lands to what you actually meant.
+- **Do not ask it to build anything yet.** First it gets to know you.
+
+![Two panels showing the same request, Build me a game. Before, the AI knows nothing about you: it returns its own favorite, a blue page with a number-guessing game, a Play again button, and confetti, every gap filled with its own guess, and you spend the next hour correcting it. After, the AI interviewed you first and holds a file named TASTES.md that says short rounds, one more try, dark and quiet, hates timers, loves a puzzle that clicks: the same request now returns a dark, quiet puzzle with short rounds, no timer, and a reason to try once more. A footer gives today's rule: no building, the AI only gets to know your tastes, likes, and dislikes.](../assets/taste-before-tasks.svg)
+
+The fastest way to explain your taste is to let the AI interview you: ask it to question you about the web experiences you enjoy, to dig into **why** you enjoy them, and to keep a permanent record. In Codex, started inside your website folder, that record can be a file, `TASTES.md`, that you can open and correct. In ChatGPT it is the chat's memory. Then test it with one question: **"What do you know about my tastes?"** A good answer describes you so well that a classmate could tell who it is with no name on it.
+
+> **Warning:** Describe your tastes, not your identity. No names, schools, addresses, or anything about other people: everything you type is sent to OpenAI and may be kept.
+
+### <font color="#79c0ff">Activity 6</font>
+<details>
+<summary><strong>Teach the AI Your Taste</strong></summary>
+*Concept: Let the AI interview you about what you enjoy on the web, so it knows your tastes before you ever ask it to build something.*
+
+![Two panels showing the same request, Build me a game. Before, the AI knows nothing about you: it returns its own favorite, a blue page with a number-guessing game, a Play again button, and confetti, every gap filled with its own guess, and you spend the next hour correcting it. After, the AI interviewed you first and holds a file named TASTES.md that says short rounds, one more try, dark and quiet, hates timers, loves a puzzle that clicks: the same request now returns a dark, quiet puzzle with short rounds, no timer, and a reason to try once more. A footer gives today's rule: no building, the AI only gets to know your tastes, likes, and dislikes.](../assets/taste-before-tasks.svg)
+
+## Task
+
+1. In your terminal, start Codex inside your website folder, so the record of your tastes is saved next to your site:
+   ```bash
+   cd ~/HTCS_Projects/YOUR-WEBSITE
+   codex
+   ```
+2. Paste this prompt, or write your own version of it:
+   ```
+   Ask me about what I find enjoyable about web experiences, and the
+   mechanisms and features on the web that I enjoy. Pry and discover the
+   nuance of what makes my tastes unique. Discover why my tastes are the
+   way they are and what I find genuinely interesting. Ask one question at
+   a time, do not build anything, and keep a permanent record of my tastes
+   in a file named TASTES.md.
+   ```
+3. Answer every question honestly and in detail. When your answer is "it's just fun", keep going until you can say why. Describe tastes, not identity: no names, schools, or addresses.
+4. After at least ten questions, ask:
+   ```
+   What do you know about my tastes?
+   ```
+5. Read the answer like a stranger would. Tell the AI one thing it got wrong and one thing it missed, then ask the question again. Could a classmate tell it is you, with no name on it?
+6. Open `TASTES.md` in VS Code and check that it matches. Type `/quit`.
+
+*(Standalone file: [activities/06-teach-the-ai-your-taste.md](../activities/06-teach-the-ai-your-taste.md))*
+
+</details>
+
+## <font color="#388bfd">Assumptions</font>
 
 ![Two ideas side by side. On the left, every prompt is what you said, for example "a quiz page about the heart", plus what you left out, such as colors, layout, how many questions, and what happens on a wrong answer; the AI decides those for you. On the right, the manager's loop: 1 Ask, 2 Plan, 3 Agent, 4 Test, then back to Ask for the next small piece. Test means the browser and the console, not the AI saying it works. The AI writes drafts; your name is on the commit.](../assets/ai-coding-loop.svg)
 
-You already know HTML, CSS, JavaScript, hosting, and Firestore. Now you get a very fast assistant:
+Taste covers what you like. Each request still has gaps, and when you do ask the AI to build, you are working with a very fast assistant:
 
 - **The AI fills every gap** you leave in a prompt with its own guess.
 - **You are the manager:** you plan, you choose, and you check.
@@ -269,7 +425,7 @@ Codex CLI has three ways to run, and choosing one is a management decision:
 |---|---|---|---|
 | **Ask** | `/permissions` on the read-only level | Answers questions about your code. Changes nothing. | You want to **understand** what to do. |
 | **Plan** | `/plan` | Researches your files and writes a step-by-step plan for you to edit and approve, without touching a file. | You want to **decide how** it gets built. |
-| **Agent** | `/permissions` on the workspace level, Day 1's default | Edits files and runs commands to carry out the work, inside the folder it was started in. | You know what you want and are ready to **hand off the typing**. |
+| **Agent** | `/permissions` on the workspace level, the default | Edits files and runs commands to carry out the work, inside the folder it was started in. | You know what you want and are ready to **hand off the typing**. |
 
 Two more tools keep you in charge:
 
@@ -291,4 +447,4 @@ Managers who skip straight to Agent get code they do not understand, solving a p
 
 ---
 
-← Back to [lesson](../README.md)
+← Back to [lesson](../../README.md)

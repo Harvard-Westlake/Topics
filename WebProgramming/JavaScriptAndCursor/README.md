@@ -1,29 +1,79 @@
 <div align="center">
 
-# JavaScript Events and Classes
-*<font color="#8b949e">JavaScript makes a page react: when something happens, a function you wrote runs and changes the page.</font>*
+# JavaScript on the Web
+*<font color="#8b949e">JavaScript is the code that runs inside a page: it waits for something to happen, then changes the tree or draws on the screen.</font>*
 
 </div>
 
 ---
 
-![How a page reacts, in four steps. 1: something happens, such as a click, a key press, mouse movement, or a timer firing. 2: it happens on an element, here a button with id clicker that is listening for click. 3: the function attached to it runs, adding one to clickCount and writing the new count into the page. 4: the page changes and now shows 3 clicks. The pattern is pick an element, name an event, attach a function, written as button.addEventListener("click", () => { ... }).](assets/event-flow.svg)
+Last class you saw that a page is one HTML file, a tree, and that the tree points at a `.js` file. Today that file does something:
 
-HTML is the page and CSS is its look. JavaScript is what happens next:
-
-- **An event:** something happens, like a click, a key press, or a timer going off.
-- **A listener:** a function you attach to an element for one kind of event.
-- **A class:** a blueprint that keeps related data and functions together once the page does more than one thing.
+- **It runs inside the page.** The browser downloads the file the tree names, runs it top to bottom, then waits.
+- **It waits for events.** A click, a key, a tick of a clock. You attach a function to an event, and the browser calls it every time the event happens.
+- **It can draw.** A `<canvas>` tag is a blank rectangle you paint with code. Paint it again and again, a little different each time, and you have animation.
 
 ## <font color="#388bfd">Table of Contents</font>
 
-1. [Making the page react to an event](#making-the-page-react)
-2. [The four families of events](#the-four-families-of-events)
-3. [Organizing the code with classes](#organizing-code-with-classes)
+1. [How code gets into a page: scripts, the console, and packages other people wrote](#code-in-the-page)
+2. [Events: the page reacts to clicks, keys, and timers](#events-the-page-reacts)
+3. [Canvas and animation: drawing frames with code](#canvas-and-animation)
 
-## <font color="#388bfd">Making the Page React</font>
+## <font color="#388bfd">Code in the Page</font>
 
-Every reaction follows the same three steps: pick an element, name an event, attach a function. The function runs every time the event fires.
+The browser fetched `scripts/main.js` on Day 1 because a tag in `head` named it:
+
+```html
+<script defer src="scripts/main.js"></script>
+```
+
+`defer` means "build the tree first, then run this." Without it the script runs before `<body>` exists, and every element it looks for comes back `null`. Once it runs, the code can reach into the tree and change it:
+
+```javascript
+const heading = document.getElementById("title");
+heading.textContent = "Changed by JavaScript";
+console.log("heading is now:", heading.textContent);
+```
+
+- **`document` is the tree.** `getElementById` walks it and hands back one node. `.textContent` is that node's text, and assigning to it changes the page instantly. The Elements panel shows the new tree, the file on disk is unchanged, and a refresh starts over.
+- **The console is where the code talks to you.** `console.log` prints a value in the Console panel of DevTools (`Cmd+Option+J` on Mac, `Ctrl+Shift+J` on Windows). You can also type JavaScript straight into it and run it on the open page. Every error lands there too.
+- **Most code on a page was written by someone else.** A **package** is a folder of code someone published for everyone to use, and a **package manager** is the app store that fetches it. You have used one already: Homebrew on Mac, or `apt` in WSL, installed `git` and `gh`. JavaScript's is **npm**, a registry of over two million packages. In a project with a build step, `npm install canvas-confetti` downloads the package into `node_modules/` and writes its name and version into `package.json`, the project's shopping list, so a teammate can run `npm install` and get exactly the same code.
+
+Your site has no build step, so you load a package the way the browser already loads your own files: one more `<script>` tag with an address. A **CDN** (content delivery network) such as jsDelivr serves every npm package straight to browsers:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+```
+
+Pin the version (`@1.9.3`) so your site does not change when the package does. After that tag loads, the package's function `confetti()` exists on your page, exactly like a function you wrote.
+
+![Animated diagram of where a package comes from. On the left, the npm registry holds canvas-confetti 1.9.3 among two million packages. A CDN, jsDelivr, copies it to servers near every visitor. In the middle, your index.html tree gains one script tag whose src is the CDN address. On the right, the browser loads that file along with your own, and the function confetti() exists on your page: typing confetti() in the console fires confetti. A box glides from the registry through the CDN into the tree, and then confetti bursts on the page.](assets/package-flow.svg)
+
+### <font color="#79c0ff">Activity 1</font>
+<details>
+<summary><strong>Borrow a Package</strong></summary>
+
+*Concept: Add code you did not write to your page with one script tag, then call it from the console.*
+
+![Animated diagram of where a package comes from. On the left, the npm registry holds canvas-confetti 1.9.3 among two million packages. A CDN, jsDelivr, copies it to servers near every visitor. In the middle, your index.html tree gains one script tag whose src is the CDN address. On the right, the browser loads that file along with your own, and the function confetti() exists on your page: typing confetti() in the console fires confetti. A box glides from the registry through the CDN into the tree, and then confetti bursts on the page.](assets/package-flow.svg)
+
+## Task
+
+1. In VS Code, open your site's `public/index.html` and add this tag inside `<head>`, above your own `<script>` tag, because your code can only call `confetti()` after the package has loaded:
+   ```html
+   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+   ```
+2. Save and open the page in your browser. Open the Console (`Cmd+Option+J` on Mac, `Ctrl+Shift+J` on Windows), type `confetti()` and press Return. Confetti falls. That function came from the package, not from you.
+3. Type `confetti({ particleCount: 300, spread: 120 })`. Packages take options, and the package's page on [npmjs.com](https://www.npmjs.com/package/canvas-confetti) lists every one. Find one more option there and try it.
+4. Open the Network panel and refresh. Find the row for `confetti.browser.min.js`: its address is the CDN, not your site. Click it and open **Response**. That is the code you borrowed, squeezed onto a few lines so it downloads fast. People read the source on npm or GitHub, never here.
+
+*(Standalone file: [activities/01-borrow-a-package.md](activities/01-borrow-a-package.md))*
+
+</details>
+
+## <font color="#388bfd">Events: the Page Reacts</font>
+
+Every reaction follows the same three steps: pick an element, name an event, attach a function. The browser calls the function every time the event fires.
 
 ```html
 <button id="clicker">Click me</button>
@@ -41,24 +91,16 @@ button.addEventListener("click", () => {
 });
 ```
 
-Keep JavaScript in its own file and link it from the HTML, just before `</head>`:
+![How a page reacts, in four steps. 1: something happens, such as a click, a key press, mouse movement, or a timer firing. 2: it happens on an element, here a button with id clicker that is listening for click. 3: the function attached to it runs, adding one to clickCount and writing the new count into the page. 4: the page changes and now shows 3 clicks. The pattern is pick an element, name an event, attach a function, written as button.addEventListener("click", () => { ... }).](assets/event-flow.svg)
 
-```html
-<script src="clicker.js" defer></script>
-```
-
-`defer` waits until the whole page has loaded before running the file, so `getElementById` finds the button instead of `null`.
-
-## <font color="#388bfd">The Four Families of Events</font>
-
-Every like button, game, and autocomplete you have used is some mix of these:
+Every like button, game, and autocomplete you have used is some mix of four families:
 
 | Family | Examples | Typical use |
 |---|---|---|
 | **Element** | `click`, `input`, `submit` | Buttons, forms, text boxes |
 | **Keyboard** | `keydown`, `keyup` | Game controls, shortcuts |
 | **Mouse** | `mousemove`, `mousedown`, `mouseover` | Drawing, hover effects, dragging |
-| **Timers** | `setTimeout`, `setInterval` | Animation, countdowns, auto-updates |
+| **Timers** | `setTimeout`, `setInterval` | Countdowns, auto-updates, slow animation |
 
 Keyboard events listen on the whole page, and `event.key` says which key:
 
@@ -77,53 +119,101 @@ const tick = setInterval(() => console.log("Tick"), 1000);   // every second...
 clearInterval(tick);                                          // ...until you stop it
 ```
 
-## <font color="#388bfd">Organizing Code with Classes</font>
+### <font color="#79c0ff">Activity 2</font>
+<details>
+<summary><strong>Wire Up the Page</strong></summary>
 
-Once a page does more than one thing, loose variables and functions turn into spaghetti. A **class** bundles related data and behavior into one named blueprint:
+*Concept: Attach a function to a click, a key press, and a timer, and watch the page react to each one.*
 
-```javascript
-class ScoreKeeper {
-  constructor(playerName) {
-    this.playerName = playerName;
-    this.score = 0;
-  }
+![How a page reacts, in four steps. 1: something happens, such as a click, a key press, mouse movement, or a timer firing. 2: it happens on an element, here a button with id clicker that is listening for click. 3: the function attached to it runs, adding one to clickCount and writing the new count into the page. 4: the page changes and now shows 3 clicks. The pattern is pick an element, name an event, attach a function, written as button.addEventListener("click", () => { ... }).](assets/event-flow.svg)
 
-  addPoints(points) {
-    this.score += points;
-  }
+## Task
 
-  display() {
-    return this.playerName + ": " + this.score;
-  }
-}
+1. Add the button and paragraph from the lesson to `public/index.html`, and the click counter to `scripts/main.js`. Refresh and click: the number climbs.
+2. Inside the click function, add `if (clickCount % 5 === 0) confetti();`. Every fifth click now fires the package from Activity 1. Your code and borrowed code call each other the same way.
+3. Add a `keydown` listener on `document` that writes `event.key` into the paragraph. Press letters, arrows, Shift, and the space bar: every key has a name, and `"ArrowLeft"` is how a game knows you pressed left.
+4. Add a `setInterval` that adds one to a `seconds` variable every 1000 ms and shows it on the page. Then refresh. It restarts at 0, because a refresh throws the page's memory away. A later lesson fixes that.
 
-const alice = new ScoreKeeper("Alice");
-alice.addPoints(10);
-console.log(alice.display());   // Alice: 10
+*(Standalone file: [activities/02-wire-up-the-page.md](activities/02-wire-up-the-page.md))*
+
+</details>
+
+## <font color="#388bfd">Canvas and Animation</font>
+
+A `<canvas>` is one node in the tree that is a blank rectangle. HTML and CSS cannot draw inside it. Only JavaScript can, through a **context**, the pen you draw with:
+
+```html
+<canvas id="stage" width="400" height="300"></canvas>
 ```
 
-| Piece | What it is |
-|---|---|
-| `class ScoreKeeper` | The blueprint |
-| `constructor` | Runs once when `new` builds an instance, and sets up its starting data |
-| `this` | The one instance being worked on right now |
-| `addPoints`, `display` | Methods: behavior every instance can do |
-| `new ScoreKeeper("Alice")` | An **instance**: one real object built from the blueprint |
+```javascript
+const stage = document.getElementById("stage");
+const pen = stage.getContext("2d");
 
-Two instances never share data: `new ScoreKeeper("Bo")` starts at 0 no matter what Alice scored. That is why a game's score, timer, and board each deserve their own class.
+pen.fillStyle = "#388bfd";
+pen.fillRect(20, 20, 100, 60);           // a rectangle: x, y, width, height
+pen.beginPath();
+pen.arc(200, 150, 30, 0, Math.PI * 2);   // a circle: center x, center y, radius
+pen.fill();
+```
+
+The top-left corner is `(0, 0)`. `x` grows to the right and `y` grows **downward**, the opposite of a math graph.
+
+Animation is a flip book. Each frame you wipe the canvas, draw everything slightly moved, and ask the browser for the next frame. `requestAnimationFrame(draw)` calls `draw` once, right before the screen next repaints, about 60 times a second:
+
+```javascript
+let x = 50;
+let speed = 3;
+
+function draw() {
+  pen.clearRect(0, 0, stage.width, stage.height);      // 1. wipe the frame
+  pen.beginPath();
+  pen.arc(x, 150, 20, 0, Math.PI * 2);                 // 2. draw the ball
+  pen.fill();
+  x += speed;                                          // 3. move it for next time
+  if (x < 20 || x > stage.width - 20) speed = -speed;  //    bounce at the edges
+  requestAnimationFrame(draw);                         // 4. ask for the next frame
+}
+
+draw();
+```
+
+![Animated diagram of the animation loop. On the left, four steps in a cycle that light up in turn: 1 clear the canvas, 2 draw everything, 3 move everything a little, 4 ask for the next frame with requestAnimationFrame. On the right, a canvas where a ball slides across and bounces off the edges while a frame counter climbs. A caption explains that the browser runs the cycle about 60 times a second and your eye turns the still frames into movement.](assets/animation-loop.svg)
+
+Each frame is a still picture with a tiny change. The browser shows sixty of them a second and your eye does the rest: every spinner, game, and growing chart you have seen on a web page is this loop. Events and the loop combine naturally. A `keydown` listener changes `speed`, the next frame uses it, and that is a game.
+
+### <font color="#79c0ff">Activity 3</font>
+<details>
+<summary><strong>Bouncing Ball</strong></summary>
+
+*Concept: Draw a frame, move the ball a little, and let the browser call you again until it looks like motion.*
+
+![Animated diagram of the animation loop. On the left, four steps in a cycle that light up in turn: 1 clear the canvas, 2 draw everything, 3 move everything a little, 4 ask for the next frame with requestAnimationFrame. On the right, a canvas where a ball slides across and bounces off the edges while a frame counter climbs. A caption explains that the browser runs the cycle about 60 times a second and your eye turns the still frames into movement.](assets/animation-loop.svg)
+
+## Task
+
+1. Add `<canvas id="stage" width="400" height="300"></canvas>` to `public/index.html`, create `scripts/ball.js` with the bouncing ball code from the lesson, and link it with its own `<script defer src="scripts/ball.js"></script>` tag. Refresh: the ball bounces.
+2. Change `speed` to 8, then to 1. Change the ball's `fillStyle`. Each edit, save, refresh shows a different animation from the same loop.
+3. Comment out the `clearRect` line and refresh. The ball leaves a trail, because every frame now draws on top of the last one. Put the line back.
+4. Add a `keydown` listener: `ArrowUp` makes `speed` 1.5 times bigger and `ArrowDown` 1.5 times smaller. The next frame uses the new value. An event changing what the loop draws is the whole idea of a game.
+5. In your terminal, run `firebase deploy --only hosting` and open your live address. The ball bounces for anyone, on any device.
+
+*(Standalone file: [activities/03-bouncing-ball.md](activities/03-bouncing-ball.md))*
+
+</details>
 
 ## <font color="#388bfd">☑️ Check for Understanding</font>
 
-- [ ] Attach a click listener to a button and change text on the page when it fires.
-- [ ] Name the four families of events with one example each, and choose between `setTimeout` and `setInterval` for a countdown.
-- [ ] Write a class with a constructor and two methods, and show that two instances keep their own data.
+- [ ] Add a package to a page with one script tag and call its function from the console.
+- [ ] Attach a function to a click, a key press, and a timer, and change the page from each.
+- [ ] Draw on a canvas and animate it with a loop that clears, draws, moves, and asks for the next frame.
 
 ## <font color="#388bfd">🚀 Stretch Goals</font>
 
-- [ ] Combine a keyboard event, a timer, and a class into one small game, such as moving a square with the arrow keys before the clock runs out.
+- [ ] Turn the ball into a game: the arrow keys move a paddle, the ball bounces off it, and a miss shows the score on the page.
 
 ---
 
 [Assignment](ASSIGNMENT.md)
 
-← [Website Hosting](../WebsiteHosting/) | Next: [Debugging JavaScript](../DebuggingJavaScript/)
+← [DOM Events and Local Storage](../DOMEventsAndStorage/) | Next: [Persistence and Intermediate Web](../PersistenceAndIntermediateWeb/)

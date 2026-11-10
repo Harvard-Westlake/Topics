@@ -102,4 +102,4 @@ Here, line 12 called `.addEventListener` on the result of a `getElementById` tha
 
 ---
 
-← [JavaScript Events and Classes](../JavaScriptAndCursor/) | Next: [Persistence and Intermediate Web](../PersistenceAndIntermediateWeb/)
+← Back to [Web Programming](../)

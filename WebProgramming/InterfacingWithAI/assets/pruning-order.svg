@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" width="900" height="470" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12">
+<title>Side view of the human brain with regions lighting up in the order their synapses are pruned: seeing and hearing first, then touch and movement, then language, then the parietal and temporal lobes, and the prefrontal cortex last, into the mid to late twenties</title>
+<style>@keyframes r0{0%{opacity:0} 3%{opacity:0} 5%{opacity:.85} 21%{opacity:.85} 23%{opacity:.28} 96%{opacity:.28} 99%{opacity:0} 100%{opacity:0}} .r0{opacity:0;animation:r0 20s linear infinite} @keyframes t0{0%{opacity:.35} 3%{opacity:.35} 5%{opacity:1} 21%{opacity:1} 23%{opacity:.6} 100%{opacity:.6}} .t0{opacity:.35;animation:t0 20s linear infinite} @keyframes r1{0%{opacity:0} 21%{opacity:0} 23%{opacity:.85} 39%{opacity:.85} 41%{opacity:.28} 96%{opacity:.28} 99%{opacity:0} 100%{opacity:0}} .r1{opacity:0;animation:r1 20s linear infinite} @keyframes t1{0%{opacity:.35} 21%{opacity:.35} 23%{opacity:1} 39%{opacity:1} 41%{opacity:.6} 100%{opacity:.6}} .t1{opacity:.35;animation:t1 20s linear infinite} @keyframes r2{0%{opacity:0} 39%{opacity:0} 41%{opacity:.85} 57%{opacity:.85} 59%{opacity:.28} 96%{opacity:.28} 99%{opacity:0} 100%{opacity:0}} .r2{opacity:0;animation:r2 20s linear infinite} @keyframes t2{0%{opacity:.35} 39%{opacity:.35} 41%{opacity:1} 57%{opacity:1} 59%{opacity:.6} 100%{opacity:.6}} .t2{opacity:.35;animation:t2 20s linear infinite} @keyframes r3{0%{opacity:0} 57%{opacity:0} 59%{opacity:.85} 75%{opacity:.85} 77%{opacity:.28} 96%{opacity:.28} 99%{opacity:0} 100%{opacity:0}} .r3{opacity:0;animation:r3 20s linear infinite} @keyframes t3{0%{opacity:.35} 57%{opacity:.35} 59%{opacity:1} 75%{opacity:1} 77%{opacity:.6} 100%{opacity:.6}} .t3{opacity:.35;animation:t3 20s linear infinite} @keyframes r4{0%{opacity:0} 75%{opacity:0} 77%{opacity:.85} 93%{opacity:.85} 95%{opacity:.28} 96%{opacity:.28} 99%{opacity:0} 100%{opacity:0}} .r4{opacity:0;animation:r4 20s linear infinite} @keyframes t4{0%{opacity:.35} 75%{opacity:.35} 77%{opacity:1} 93%{opacity:1} 95%{opacity:.6} 100%{opacity:.6}} .t4{opacity:.35;animation:t4 20s linear infinite} @media (prefers-reduced-motion: reduce){*{animation:none!important} .reg{opacity:.6!important} .row{opacity:1!important}}</style>
+<defs><clipPath id="cer"><path d="M 90 250 C 50 200, 70 120, 150 90 C 230 55, 360 55, 440 90 C 510 120, 540 190, 520 250 C 505 290, 460 300, 420 295 L 300 290 C 250 300 200 300 160 285 C 120 280 100 270 90 250 Z"/></clipPath></defs>
+<rect width="900" height="470" rx="10" fill="#0d1117"/>
+<text x="30" y="36" fill="#e6edf3" font-size="17" font-weight="700">Pruning runs from the back of the brain to the front</text>
+<text x="30" y="56" fill="#8b949e">Each region overgrows connections, then trims the ones that go unused. Ages are approximate and overlap.</text>
+
+<!-- brain stem and cerebellum -->
+<path d="M 362 300 L 404 300 L 424 398 Q 404 410 386 402 Z" fill="#161b22" stroke="#6e7681" stroke-width="1.5"/>
+<ellipse cx="462" cy="328" rx="62" ry="38" fill="#161b22" stroke="#6e7681" stroke-width="1.5"/>
+<path d="M 410 318 Q 462 300 514 318 M 404 332 Q 462 316 520 332 M 410 346 Q 462 332 514 346" fill="none" stroke="#30363d"/>
+<!-- cerebrum -->
+<path d="M 90 250 C 50 200, 70 120, 150 90 C 230 55, 360 55, 440 90 C 510 120, 540 190, 520 250 C 505 290, 460 300, 420 295 L 300 290 C 250 300 200 300 160 285 C 120 280 100 270 90 250 Z" fill="#161b22" stroke="#6e7681" stroke-width="2"/>
+<g clip-path="url(#cer)">
+  <polygon class="reg r4" points="40,40 200,40 175,310 40,310" fill="#a371f7"/>
+  <polygon class="reg r1" points="265,40 300,40 290,310 250,310" fill="#388bfd"/>
+  <polygon class="reg r1" points="300,40 335,40 330,310 290,310" fill="#388bfd"/>
+  <polygon class="reg r3" points="335,40 470,40 430,215 332,215" fill="#f0883e"/>
+  <polygon class="reg r3" points="332,215 430,215 400,320 328,320" fill="#f0883e"/>
+  <polygon class="reg r0" points="470,40 560,40 560,320 400,320 430,215" fill="#3fb950"/>
+  <g fill="none" stroke="#30363d" stroke-width="1.5">
+    <path d="M 200 40 L 175 310"/><path d="M 265 40 L 250 310"/><path d="M 300 40 L 290 310"/><path d="M 335 40 L 330 310"/><path d="M 470 40 L 430 215 L 400 320"/><path d="M 332 215 L 430 215"/>
+  </g>
+</g>
+<!-- temporal lobe -->
+<path d="M 172 262 C 222 248 332 248 402 268 C 412 300 372 336 292 336 C 222 336 172 312 172 262 Z" fill="#161b22" stroke="#6e7681" stroke-width="2"/>
+<path class="reg r3" d="M 172 262 C 222 248 332 248 402 268 C 412 300 372 336 292 336 C 222 336 172 312 172 262 Z" fill="#f0883e"/>
+<ellipse class="reg r0" cx="300" cy="268" rx="34" ry="11" fill="#3fb950"/>
+<ellipse class="reg r2" cx="226" cy="226" rx="24" ry="16" fill="#e3b341"/>
+<ellipse class="reg r2" cx="378" cy="262" rx="22" ry="13" fill="#e3b341"/>
+<path d="M 90 250 C 50 200, 70 120, 150 90 C 230 55, 360 55, 440 90 C 510 120, 540 190, 520 250 C 505 290, 460 300, 420 295 L 300 290 C 250 300 200 300 160 285 C 120 280 100 270 90 250 Z" fill="none" stroke="#6e7681" stroke-width="2"/>
+<g fill="#e6edf3" font-size="11" text-anchor="middle">
+  <text x="130" y="180">prefrontal</text><text x="130" y="194">cortex</text>
+  <text x="228" y="130">frontal</text>
+  <text x="275" y="112" transform="rotate(-86 275 112)" font-size="10">movement</text>
+  <text x="312" y="112" transform="rotate(-86 312 112)" font-size="10">touch</text>
+  <text x="395" y="140">parietal</text>
+  <text x="478" y="200">occipital</text><text x="478" y="214">(vision)</text>
+  <text x="290" y="312">temporal</text>
+  <text x="300" y="272" font-size="9" fill="#0d1117">hearing</text>
+  <text x="226" y="230" font-size="9" fill="#0d1117">Broca</text>
+  <text x="378" y="266" font-size="9" fill="#0d1117">Wernicke</text>
+  <text x="505" y="384" fill="#8b949e">cerebellum</text>
+  <text x="350" y="420" fill="#8b949e">brain stem</text>
+</g>
+<text x="60" y="118" fill="#8b949e" font-size="11">front</text><text x="512" y="118" fill="#8b949e" font-size="11">back</text>
+<g class="row t0"><rect x="580" y="74" width="296" height="54" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="1.5"/><circle cx="600" cy="94" r="10" fill="#3fb950"/><text x="600" y="98" fill="#0d1117" font-size="12" font-weight="700" text-anchor="middle">1</text><text x="620" y="93" fill="#3fb950" font-size="13" font-weight="700">Seeing and hearing</text><text x="620" y="108" fill="#e6edf3" font-size="10.5">busiest ages 1 to 6, done near 11 or 12</text><text x="620" y="121" fill="#8b949e" font-size="10">occipital lobe, auditory cortex</text></g><g class="row t1"><rect x="580" y="136" width="296" height="54" rx="8" fill="#161b22" stroke="#388bfd" stroke-width="1.5"/><circle cx="600" cy="156" r="10" fill="#388bfd"/><text x="600" y="160" fill="#0d1117" font-size="12" font-weight="700" text-anchor="middle">2</text><text x="620" y="155" fill="#388bfd" font-size="13" font-weight="700">Touch and movement</text><text x="620" y="170" fill="#e6edf3" font-size="10.5">through childhood, about ages 2 to 10</text><text x="620" y="183" fill="#8b949e" font-size="10">sensory and motor strips</text></g><g class="row t2"><rect x="580" y="198" width="296" height="54" rx="8" fill="#161b22" stroke="#e3b341" stroke-width="1.5"/><circle cx="600" cy="218" r="10" fill="#e3b341"/><text x="600" y="222" fill="#0d1117" font-size="12" font-weight="700" text-anchor="middle">3</text><text x="620" y="217" fill="#e3b341" font-size="13" font-weight="700">Language</text><text x="620" y="232" fill="#e6edf3" font-size="10.5">about age 3 to the early teens</text><text x="620" y="245" fill="#8b949e" font-size="10">Broca's and Wernicke's areas</text></g><g class="row t3"><rect x="580" y="260" width="296" height="54" rx="8" fill="#161b22" stroke="#f0883e" stroke-width="1.5"/><circle cx="600" cy="280" r="10" fill="#f0883e"/><text x="600" y="284" fill="#0d1117" font-size="12" font-weight="700" text-anchor="middle">4</text><text x="620" y="279" fill="#f0883e" font-size="13" font-weight="700">Space, memory, meaning</text><text x="620" y="294" fill="#e6edf3" font-size="10.5">about ages 10 to 18</text><text x="620" y="307" fill="#8b949e" font-size="10">parietal and temporal lobes</text></g><g class="row t4"><rect x="580" y="322" width="296" height="54" rx="8" fill="#161b22" stroke="#a371f7" stroke-width="1.5"/><circle cx="600" cy="342" r="10" fill="#a371f7"/><text x="600" y="346" fill="#0d1117" font-size="12" font-weight="700" text-anchor="middle">5</text><text x="620" y="341" fill="#a371f7" font-size="13" font-weight="700">Planning and self-control</text><text x="620" y="356" fill="#e6edf3" font-size="10.5">about age 12 into the mid to late 20s</text><text x="620" y="369" fill="#8b949e" font-size="10">prefrontal cortex</text></g>
+<text x="30" y="450" fill="#8b949e">The last region to finish is the one you use to plan, judge, and decide. You are in those years right now.</text>
+</svg>

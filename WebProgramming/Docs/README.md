@@ -12,10 +12,10 @@ These are reference pages, not lessons — return to them whenever you need a re
 | Doc | Read before | What it covers |
 |---|---|---|
 | [HTML](html.md) | Lesson 1 | Document structure, common tags, attributes, semantic elements |
-| [CSS](css.md) | Lesson 2 | Selectors, the box model, colors, fonts, layout basics |
-| [JavaScript](javascript.md) | Lesson 3 | Variables, functions, DOM access, events, classes, console tools |
-| [Firebase Hosting](firebase-hosting.md) | Lesson 2 | CLI commands, project structure, deploy workflow, troubleshooting |
-| [Website Inspiration](website-inspiration.md) | Lesson 9 | Curated examples of innovative UX and interactive design |
+| [CSS](css.md) | Lesson 1 | Selectors, the box model, colors, fonts, layout basics |
+| [JavaScript](javascript.md) | Lesson 2 | Variables, functions, DOM access, packages, events, canvas and animation, classes |
+| [Firebase Hosting](firebase-hosting.md) | Lesson 1 | CLI commands, project structure, deploy workflow, troubleshooting |
+| [Website Inspiration](website-inspiration.md) | Lesson 8 | Curated examples of innovative UX and interactive design |
 
 ---
 

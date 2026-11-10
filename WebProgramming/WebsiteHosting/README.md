@@ -195,4 +195,4 @@ gh repo create <unique-public-website-name> --source=. --public --push
 
 [Assignment](ASSIGNMENT.md)
 
-← Back to [Web Programming](../) | Next: [JavaScript Events and Classes](../JavaScriptAndCursor/)
+← Back to [Web Programming](../) | Next: [DOM Events and Local Storage](../DOMEventsAndStorage/)

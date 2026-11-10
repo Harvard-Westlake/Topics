@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 320" width="600" height="320" font-family="-apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="600" height="320" rx="12" fill="#0d1117"/>
+
+  <!-- serve -->
+  <text x="24" y="34" fill="#79c0ff" font-size="14" font-weight="700" font-family="ui-monospace, Menlo, monospace">firebase serve</text>
+  <rect x="24" y="46" width="266" height="98" rx="10" fill="#161b22" stroke="#30363d"/>
+  <text x="40" y="78" fill="#c9d1d9" font-size="13" font-family="ui-monospace, Menlo, monospace">http://localhost:5000</text>
+  <text x="40" y="104" fill="#8b949e" font-size="12">private, only on your laptop</text>
+  <text x="40" y="126" fill="#8b949e" font-size="12">press Ctrl+C to stop</text>
+
+  <!-- deploy -->
+  <text x="310" y="34" fill="#79c0ff" font-size="13" font-weight="700" font-family="ui-monospace, Menlo, monospace">firebase deploy --only hosting</text>
+  <rect x="310" y="46" width="266" height="98" rx="10" fill="#161b22" stroke="#30363d"/>
+  <text x="326" y="78" fill="#3fb950" font-size="13" font-family="ui-monospace, Menlo, monospace">your-site.web.app</text>
+  <text x="326" y="104" fill="#8b949e" font-size="12">public, live for everyone</text>
+  <text x="326" y="126" fill="#f0883e" font-size="12">cached: hard refresh to update</text>
+
+  <!-- refresh strip -->
+  <rect x="24" y="168" width="552" height="128" rx="10" fill="#161b22" stroke="#30363d"/>
+  <text x="40" y="196" fill="#f0883e" font-size="13" font-weight="600">A plain variable forgets on refresh (this is not the cache)</text>
+
+  <rect x="96" y="210" width="120" height="60" rx="8" fill="#21262d" stroke="#30363d"/>
+  <text x="156" y="250" fill="#c9d1d9" font-size="30" font-weight="700" text-anchor="middle" font-family="ui-monospace, Menlo, monospace">5</text>
+  <text x="156" y="288" fill="#8b949e" font-size="12" text-anchor="middle">before refresh</text>
+
+  <line x1="232" y1="240" x2="360" y2="240" stroke="#8b949e" stroke-width="2"/>
+  <polygon points="360,235 369,240 360,245" fill="#8b949e"/>
+  <text x="296" y="230" fill="#8b949e" font-size="12" text-anchor="middle">refresh</text>
+
+  <rect x="384" y="210" width="120" height="60" rx="8" fill="#21262d" stroke="#f85149"/>
+  <text x="444" y="250" fill="#f85149" font-size="30" font-weight="700" text-anchor="middle" font-family="ui-monospace, Menlo, monospace">0</text>
+  <text x="444" y="288" fill="#8b949e" font-size="12" text-anchor="middle">after refresh</text>
+</svg>

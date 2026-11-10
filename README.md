@@ -86,17 +86,18 @@ Project Strata: build a tiny decoder-only transformer language model in Java fro
 **[Web Programming](WebProgramming/)**  
 Build and ship a live, database-backed educational widget — hosted on Firebase, styled to a production spec, and hardened through peer review — while learning to direct AI as a manager rather than lean on it.
 
-- [Website Hosting](WebProgramming/WebsiteHosting/) — HTML, CSS, and JS roles, your first page, and deploying a live site with Firebase
-- [JavaScript Events and Classes](WebProgramming/JavaScriptAndCursor/) — web events and JavaScript classes
-- [Debugging JavaScript](WebProgramming/DebuggingJavaScript/) — DevTools, console methods, and reading stack traces
+- [Website Hosting](WebProgramming/WebsiteHosting/) — one HTML file as a tree, the three languages, and deploying a live site with Firebase
+- [DOM Events and Local Storage](WebProgramming/DOMEventsAndStorage/) — the page as a tree your code changes, events, serve vs deploy and the cache, and localStorage
+- [JavaScript on the Web](WebProgramming/JavaScriptAndCursor/) — scripts inside the page, packages from npm, events, and canvas animation
 - [Persistence and Intermediate Web](WebProgramming/PersistenceAndIntermediateWeb/) — why page state vanishes and the ways websites remember
-- [Databases and Collections](WebProgramming/DatabasesAndCollections/) — local storage vs cookies, Firestore CRUD, and security rules
-- [Intro to AI Coding](WebProgramming/InterfacingWithAI/) — Codex CLI setup and permissions, assumptions in prompts, and running Codex CLI as Ask, Plan, and Agent
+- [Intro to AI Coding](WebProgramming/InterfacingWithAI/) — Codex CLI setup and permissions, and teaching the AI your tastes before it builds anything
+- [Databases and Collections](WebProgramming/DatabasesAndCollections/) — JSON, Firestore collections and documents, reading and writing by name, and security rules
 - [The Learning Widget Project](WebProgramming/LearningWidget/) — plan and build an educational widget published via GitHub and Firebase
 - [UX and Behavior Tracking](WebProgramming/UXAndBehaviorTracking/) — engagement, navigation, user flow, and heatmaps
 - [Widget Iteration from Feedback](WebProgramming/WidgetIteration/) — a shrinking feedback.md and a zero-error console
 - [Collaborative Peer Review](WebProgramming/PeerReview/) — reviewing a partner's widget and preparing to present it
 - [Widget Presentations](WebProgramming/WidgetPresentations/) — in-class walkthroughs of the reviewed widgets and their findings
+- [Debugging JavaScript](WebProgramming/DebuggingJavaScript/) — DevTools, console methods, and reading stack traces (reference, not a scheduled day)
 
 **[App Design and Planning](AppDesign/)**  
 Design a product for users before any implementation talk, converge as a class on one design, translate it into a technical specification, and plan the MVP — the exact path a real product team walks.

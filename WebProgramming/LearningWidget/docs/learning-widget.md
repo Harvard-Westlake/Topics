@@ -50,7 +50,7 @@ A strong plan answers:
 ## <font color="#388bfd">Building and Shipping</font>
 
 - **Branch first.** All widget code goes on a branch in your fork, never straight onto the default branch.
-- **Use the manager's loop** from [Intro to AI Coding](../../InterfacingWithAI/): Ask, Plan, then Agent one piece at a time, and test each piece in the browser with the [console open](../../DebuggingJavaScript/).
+- **Use the manager's loop** from [Intro to AI Coding](../../InterfacingWithAI/): Ask, Plan, then Agent one piece at a time in Codex CLI, and test each piece in the browser with the [console open](../../DebuggingJavaScript/).
 - **Make it remember.** Use what you learned about [persistence](../../PersistenceAndIntermediateWeb/) and [Firestore](../../DatabasesAndCollections/): a learner's progress should survive a reload.
 - **Match the house style.** The look must match the styles at [learnhw.web.app/admin](https://learnhw.web.app/admin) exactly.
 - **Ship it.** Deploy to your Firebase site, link to it from a button on your main page, and open a pull request.
