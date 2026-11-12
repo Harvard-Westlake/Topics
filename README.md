@@ -86,16 +86,19 @@ Project Strata: build a tiny decoder-only transformer language model in Java fro
 **[Web Programming](WebProgramming/)**  
 Build and ship a live, database-backed educational widget — hosted on Firebase, styled to a production spec, and hardened through peer review — while learning to direct AI as a manager rather than lean on it.
 
-- [Interfacing with AI](WebProgramming/InterfacingWithAI/) — assumptions in prompting, AI-guided research, and first HTML pages in Cursor
-- [Website Hosting](WebProgramming/WebsiteHosting/) — HTML/CSS/JS roles and deploying a live site with the Firebase CLI
-- [JavaScript and Coding with Cursor](WebProgramming/JavaScriptAndCursor/) — web event binding, classes, and Cursor's Ask/Plan/Agent modes
-- [Debugging JavaScript](WebProgramming/DebuggingJavaScript/) — DevTools, console methods, and reading stack traces
-- [The Learning Widget Project](WebProgramming/LearningWidget/) — research, plan, and build an educational widget published via GitHub and Firebase
-- [Persistence and Intermediate Web](WebProgramming/PersistenceAndIntermediateWeb/) — why page state vanishes and the ladder of ways websites remember
-- [Databases and Collections](WebProgramming/DatabasesAndCollections/) — local storage vs cookies, Firestore CRUD, and security rules
-- [UX and Behavior Tracking](WebProgramming/UXAndBehaviorTracking/) — engagement speed, navigation, user flow, and heatmaps
+- [Website Hosting](WebProgramming/WebsiteHosting/) — one HTML file as a tree, the three languages, and deploying a live site with Firebase
+- [DOM Events and Local Storage](WebProgramming/DOMEventsAndStorage/) — the page as a tree your code changes, events, serve vs deploy and the cache, and localStorage
+- [JavaScript on the Web](WebProgramming/JavaScriptAndCursor/) — scripts inside the page, packages from npm, events, and canvas animation
+- [Persistence and Intermediate Web](WebProgramming/PersistenceAndIntermediateWeb/) — why page state vanishes and the ways websites remember
+- [Intro to AI Coding](WebProgramming/InterfacingWithAI/) — Codex CLI setup and permissions, and teaching the AI your tastes before it builds anything
+- [Databases and Collections](WebProgramming/DatabasesAndCollections/) — JSON, Firestore collections and documents, reading and writing by name, and security rules
+- [User Flow and Logging](WebProgramming/UserFlowAndLogging/) — one specific user, the flow as a chart, and how sites log what visitors do
+- [The Learning Widget Project](WebProgramming/LearningWidget/) — plan and build an educational widget published via GitHub and Firebase
+- [UX and Behavior Tracking](WebProgramming/UXAndBehaviorTracking/) — engagement, navigation, user flow, and heatmaps
 - [Widget Iteration from Feedback](WebProgramming/WidgetIteration/) — a shrinking feedback.md and a zero-error console
-- [Collaborative Peer Review](WebProgramming/PeerReview/) — reviewing a partner's PR with your grade attached to the approval
+- [Collaborative Peer Review](WebProgramming/PeerReview/) — reviewing a partner's widget and preparing to present it
+- [Widget Presentations](WebProgramming/WidgetPresentations/) — in-class walkthroughs of the reviewed widgets and their findings
+- [Debugging JavaScript](WebProgramming/DebuggingJavaScript/) — DevTools, console methods, and reading stack traces (reference, not a scheduled day)
 
 **[App Design and Planning](AppDesign/)**  
 Design a product for users before any implementation talk, converge as a class on one design, translate it into a technical specification, and plan the MVP — the exact path a real product team walks.
@@ -156,8 +159,9 @@ Recreate the core of Git in Java — hashing, blobs, trees, and commits — to u
 - [Peer Code Verification](GitProject/PeerCodeVerification/) — fork a classmate's Part 2, read it cold, prove which behaviors work, and rename it for readability
 - [Trees](GitProject/Trees/) — index formatting, tree files, and building trees from staged files
 - [Peer Tree Verification](GitProject/PeerTreeVerification/) — fork a classmate's Part 3, hash their trees by hand, prove which behaviors work, and rename it for readability
-- [Commits](GitProject/Commits/) — commit files, HEAD chain, and the `GitWrapper` interface
-- [Branches](GitProject/Branches/) — branch pointers and HEAD *(coming soon)*
+- [Commits](GitProject/Commits/) — commit files, the HEAD chain, rebuilding the index, and checkout
+- [Branches](GitProject/Branches/) — branch files, HEAD, and switching branches
+- [Coding Standards](GitProject/CodingStandards/) — in-class wrap-up: the class agrees on shared coding rules
 
 **[Group Programming](GroupProgramming/)**  
 Working like an engineering team — work tracked in issues, shipped in branches, reviewed by non-authors, merged into a protected main, and handed off with documentation a stranger can continue.

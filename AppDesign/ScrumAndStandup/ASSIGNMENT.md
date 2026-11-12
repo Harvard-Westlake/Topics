@@ -1,7 +1,6 @@
 # Assignment — Scrum and Stand-ups
 
-*Lesson: [Scrum and Stand-ups](README.md)*
-
+**Lesson:** [Scrum and Stand-ups](README.md)  
 **Due:** End of class
 
 ---

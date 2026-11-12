@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 300" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrowB" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#388bfd"/></marker>
+  </defs>
+  <rect width="760" height="300" rx="10" fill="#0d1117"/>
+  <text x="30" y="40" fill="#e6edf3" font-size="17" font-weight="700">Install once, sign in once: the terminal borrows your ChatGPT account</text>
+
+  <!-- terminal: install + start -->
+  <rect x="30" y="70" width="210" height="130" rx="8" fill="#161b22" stroke="#a371f7"/>
+  <text x="46" y="94" fill="#a371f7" font-size="12" font-weight="600">1 · YOUR TERMINAL</text>
+  <text x="46" y="118" fill="#e6edf3" font-size="12" font-family="Menlo, Consolas, monospace">curl … install.sh | sh</text>
+  <text x="46" y="138" fill="#e6edf3" font-size="12" font-family="Menlo, Consolas, monospace">Start Codex now? y</text>
+  <text x="46" y="162" fill="#8b949e" font-size="12">choose</text>
+  <text x="46" y="180" fill="#79c0ff" font-size="12" font-family="Menlo, Consolas, monospace">1. Sign in with ChatGPT</text>
+
+  <line x1="242" y1="135" x2="270" y2="135" stroke="#388bfd" stroke-width="3" marker-end="url(#arrowB)"/>
+
+  <!-- browser -->
+  <rect x="275" y="70" width="210" height="130" rx="8" fill="#161b22" stroke="#388bfd"/>
+  <text x="291" y="94" fill="#388bfd" font-size="12" font-weight="600">2 · YOUR BROWSER · chatgpt.com</text>
+  <text x="291" y="118" fill="#e6edf3" font-size="12">log in, or create an account</text>
+  <text x="291" y="138" fill="#e6edf3" font-size="12">verify your age if asked</text>
+  <text x="291" y="158" fill="#e6edf3" font-size="12">upgrade to Plus ($20 / month)</text>
+  <text x="291" y="178" fill="#e3b341" font-size="12">pay with the class card on the board</text>
+
+  <line x1="487" y1="135" x2="515" y2="135" stroke="#388bfd" stroke-width="3" marker-end="url(#arrowB)"/>
+
+  <!-- terminal: signed in -->
+  <rect x="520" y="70" width="210" height="130" rx="8" fill="#161b22" stroke="#3fb950"/>
+  <text x="536" y="94" fill="#3fb950" font-size="12" font-weight="600">3 · BACK IN THE TERMINAL</text>
+  <text x="536" y="118" fill="#e6edf3" font-size="12">signed in, prompt appears</text>
+  <text x="536" y="142" fill="#e6edf3" font-size="12" font-family="Menlo, Consolas, monospace">/status</text>
+  <text x="536" y="160" fill="#8b949e" font-size="12">account · plan: Plus · model</text>
+  <text x="536" y="184" fill="#e6edf3" font-size="12" font-family="Menlo, Consolas, monospace">codex --version</text>
+
+  <text x="30" y="240" fill="#f85149" font-size="12" font-weight="600">The card goes into the browser's payment form once. Never into a file, a chat, or a commit.</text>
+  <text x="30" y="262" fill="#8b949e" font-size="12">Signed in on a free plan by mistake? Upgrade in the browser, then /logout and sign in again.</text>
+  <text x="30" y="282" fill="#8b949e" font-size="12">Two things to check, two commands: codex --version proves the install, /status proves the sign-in.</text>
+</svg>

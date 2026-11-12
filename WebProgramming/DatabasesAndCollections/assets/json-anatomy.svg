@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 380" width="900" height="380" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14">
+<title>The parts of a JSON object: curly braces around the object, keys in double quotes, a colon, then a value that is text, a number, true or false, a list, or another object</title>
+<rect width="900" height="380" rx="10" fill="#0d1117"/>
+<text x="30" y="36" fill="#e6edf3" font-size="17" font-weight="700" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">JSON: every line is a key, a colon, and a value</text>
+<rect x="30" y="56" width="470" height="296" rx="8" fill="#161b22" stroke="#30363d"/>
+<text x="50" y="86" fill="#8b949e">{</text>
+<text x="74" y="116"><tspan fill="#388bfd">"game"</tspan><tspan fill="#8b949e">: </tspan><tspan fill="#3fb950">"Wordle"</tspan><tspan fill="#8b949e">,</tspan></text>
+<text x="74" y="146"><tspan fill="#388bfd">"rating"</tspan><tspan fill="#8b949e">: </tspan><tspan fill="#f0883e">9</tspan><tspan fill="#8b949e">,</tspan></text>
+<text x="74" y="176"><tspan fill="#388bfd">"stillPlaying"</tspan><tspan fill="#8b949e">: </tspan><tspan fill="#a371f7">true</tspan><tspan fill="#8b949e">,</tspan></text>
+<text x="74" y="206"><tspan fill="#388bfd">"mechanics"</tspan><tspan fill="#8b949e">: </tspan><tspan fill="#e3b341">[</tspan><tspan fill="#3fb950">"daily streak"</tspan><tspan fill="#8b949e">, </tspan><tspan fill="#3fb950">"share grid"</tspan><tspan fill="#e3b341">]</tspan><tspan fill="#8b949e">,</tspan></text>
+<text x="74" y="236"><tspan fill="#388bfd">"session"</tspan><tspan fill="#8b949e">: </tspan><tspan fill="#e3b341">{</tspan></text>
+<text x="98" y="266"><tspan fill="#388bfd">"minutes"</tspan><tspan fill="#8b949e">: </tspan><tspan fill="#f0883e">5</tspan><tspan fill="#8b949e">,</tspan></text>
+<text x="98" y="296"><tspan fill="#388bfd">"device"</tspan><tspan fill="#8b949e">: </tspan><tspan fill="#3fb950">"phone"</tspan></text>
+<text x="74" y="326" fill="#e3b341">}</text>
+<text x="50" y="344" fill="#8b949e">}</text>
+<g font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13">
+<text x="530" y="86" fill="#8b949e">{ }  one object: a set of key and value pairs</text>
+<text x="530" y="116" fill="#388bfd">key<tspan fill="#8b949e">: the label, always in "double quotes"</tspan></text>
+<text x="530" y="146" fill="#3fb950">text<tspan fill="#8b949e"> in double quotes;  </tspan><tspan fill="#f0883e">number</tspan><tspan fill="#8b949e"> with no quotes</tspan></text>
+<text x="530" y="176" fill="#a371f7">true or false<tspan fill="#8b949e">, no quotes</tspan></text>
+<text x="530" y="206" fill="#e3b341">[ ]<tspan fill="#8b949e">  a list of values, in order</tspan></text>
+<text x="530" y="236" fill="#e3b341">{ }<tspan fill="#8b949e">  a value can be another object</tspan></text>
+<text x="530" y="281" fill="#e6edf3">A comma between pairs.</text>
+<text x="530" y="301" fill="#e6edf3">No comma after the last one.</text>
+<text x="530" y="336" fill="#8b949e">Break one rule and the whole text is invalid.</text>
+</g>
+</svg>

@@ -1,7 +1,6 @@
 # Assignment — Learning to Design
 
-*Lesson: [Learning to Design](README.md)*
-
+**Lesson:** [Learning to Design](README.md)  
 **Due:** End of class
 
 ---

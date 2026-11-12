@@ -1,7 +1,6 @@
 # Assignment — Communicating Design
 
-*Lesson: [Communicating Design](README.md)*
-
+**Lesson:** [Communicating Design](README.md)  
 **Due:** Next class
 
 ---

@@ -146,7 +146,7 @@ def check_structure():
                 assignment_paras = (lesson / "ASSIGNMENT.md").read_text().split("\n\n", 2)
                 lesson_link_para = assignment_paras[1] if len(assignment_paras) > 1 else ""
                 if "](README.md)" not in lesson_link_para:
-                    err(f"{rel}/ASSIGNMENT.md: missing the *Lesson: [...](README.md)* "
+                    err(f"{rel}/ASSIGNMENT.md: missing the **Lesson:** [...](README.md) "
                         "link under the title (see CLAUDE.md \"ASSIGNMENT.md format\")")
 
 

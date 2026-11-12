@@ -1,7 +1,6 @@
 # Assignment — Transactions and Ledgers
 
-*Lesson: [Transactions and Ledgers](README.md)*
-
+**Lesson:** [Transactions and Ledgers](README.md)  
 **Due:** Next class
 **Points:** 10
 

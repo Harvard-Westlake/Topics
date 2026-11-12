@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 910 410" width="910" height="410" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12">
+<title>Two panels. A core loop: a dot circles through do the action, see what happened, get a small reward, want to go again. A one-time experience: a dot travels once from arrive, up to the moment, and down to a clear ending</title>
+<style>@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}} .orb{transform-origin:215px 232px;animation:spin 6s linear infinite} @keyframes run{0%{offset-distance:0%;opacity:0}5%{opacity:1}92%{opacity:1}100%{offset-distance:100%;opacity:0}} .once{offset-path:path('M 500 300 C 580 300 600 172 690 172 C 760 172 770 300 850 300');animation:run 6s ease-in-out infinite} @media (prefers-reduced-motion: reduce){*{animation:none!important}}</style>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8b949e"/></marker></defs>
+<rect width="910" height="410" rx="10" fill="#0d1117"/>
+<text x="30" y="36" fill="#e6edf3" font-size="17" font-weight="700">Two honest shapes for an app</text>
+<text x="30" y="56" fill="#8b949e">Either is a good plan. The mistake is not knowing which one you are building.</text>
+<rect x="30" y="76" width="400" height="290" rx="10" fill="#161b22" stroke="#3fb950" stroke-width="1.5"/>
+<text x="50" y="102" fill="#3fb950" font-size="14" font-weight="700">A core loop</text>
+<text x="50" y="120" fill="#8b949e" font-size="11">One action the user repeats, and wants to.</text>
+<circle cx="215" cy="232" r="64" fill="none" stroke="#30363d" stroke-width="2" stroke-dasharray="4 5"/>
+<g class="orb"><circle cx="215" cy="168" r="7" fill="#e6edf3"/></g>
+<text x="215" y="152" text-anchor="middle" fill="#3fb950" font-weight="700">do the action</text>
+<text x="300" y="230" fill="#e3b341" font-weight="700">see what</text><text x="300" y="245" fill="#e3b341" font-weight="700">happened</text>
+<text x="215" y="322" text-anchor="middle" fill="#a371f7" font-weight="700">get a small reward</text>
+<text x="62" y="230" fill="#388bfd" font-weight="700">want to</text><text x="62" y="245" fill="#388bfd" font-weight="700">go again</text>
+<text x="50" y="350" fill="#e6edf3" font-size="11">Ask: is the fifth time as good as the first?</text>
+<rect x="470" y="76" width="410" height="290" rx="10" fill="#161b22" stroke="#a371f7" stroke-width="1.5"/>
+<text x="490" y="102" fill="#a371f7" font-size="14" font-weight="700">A one-time experience</text>
+<text x="490" y="120" fill="#8b949e" font-size="11">It builds to one moment, then it is over, on purpose.</text>
+<path d="M 500 300 C 580 300 600 172 690 172 C 760 172 770 300 850 300" fill="none" stroke="#30363d" stroke-width="2" stroke-dasharray="4 5"/>
+<circle class="once" r="7" fill="#e6edf3"/>
+<text x="500" y="322" fill="#388bfd" font-weight="700">arrive</text>
+<text x="690" y="156" text-anchor="middle" fill="#e3b341" font-weight="700">the moment</text>
+<text x="850" y="322" text-anchor="end" fill="#3fb950" font-weight="700">a clear ending</text>
+<text x="490" y="350" fill="#e6edf3" font-size="11">Ask: what is the moment, and how does the user know it is done?</text>
+<text x="30" y="392" fill="#8b949e" font-size="11.5">Say which one it is, in words, to your AI. "This is a one-time experience and that is intended" is a complete answer.</text>
+</svg>

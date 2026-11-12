@@ -1,7 +1,6 @@
 # Assignment — From Exact Symbols to Features
 
-*Lesson: [From Exact Symbols to Features](README.md)*
-
+**Lesson:** [From Exact Symbols to Features](README.md)  
 **Duration:** 2 class periods  
 **Due:** End of Week 5
 

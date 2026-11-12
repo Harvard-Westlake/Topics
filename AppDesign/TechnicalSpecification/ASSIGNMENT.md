@@ -1,7 +1,6 @@
 # Assignment — Technical Specification
 
-*Lesson: [Technical Specification](README.md)*
-
+**Lesson:** [Technical Specification](README.md)  
 **Due:** Next class
 
 ---

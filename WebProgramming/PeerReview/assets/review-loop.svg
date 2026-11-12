@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 340" width="760" height="340" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13">
+  <title>The review loop on a pull request: the author opens it, the reviewer tests and writes up findings, fixes are committed and re-tested, and the reviewer approves only when it passes</title>
+  <rect width="760" height="340" rx="10" fill="#0d1117"/>
+  <defs>
+    <marker id="gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8b949e"/>
+    </marker>
+    <marker id="orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#f0883e"/>
+    </marker>
+  </defs>
+
+  <text x="30" y="36" fill="#e6edf3" font-weight="700" font-size="15">One pull request, two names on it</text>
+
+  <rect x="30" y="70" width="150" height="70" rx="8" fill="#161b22" stroke="#388bfd" stroke-width="2"/>
+  <text x="105" y="98" fill="#388bfd" text-anchor="middle" font-weight="700">Author</text>
+  <text x="105" y="120" fill="#e6edf3" text-anchor="middle" font-size="12">opens the PR</text>
+
+  <line x1="186" y1="105" x2="234" y2="105" stroke="#8b949e" stroke-width="2" marker-end="url(#gray)"/>
+
+  <rect x="240" y="70" width="150" height="70" rx="8" fill="#161b22" stroke="#e3b341" stroke-width="2"/>
+  <text x="315" y="98" fill="#e3b341" text-anchor="middle" font-weight="700">Reviewer</text>
+  <text x="315" y="120" fill="#e6edf3" text-anchor="middle" font-size="12">tests everything</text>
+
+  <line x1="396" y1="105" x2="444" y2="105" stroke="#8b949e" stroke-width="2" marker-end="url(#gray)"/>
+
+  <rect x="450" y="70" width="150" height="70" rx="8" fill="#161b22" stroke="#f0883e" stroke-width="2"/>
+  <text x="525" y="98" fill="#f0883e" text-anchor="middle" font-weight="700">Write-up</text>
+  <text x="525" y="120" fill="#e6edf3" text-anchor="middle" font-size="12">findings + steps</text>
+
+  <!-- loop back -->
+  <path d="M525,146 C525,210 420,215 315,215" fill="none" stroke="#f0883e" stroke-width="2" marker-end="url(#orange)"/>
+  <rect x="240" y="196" width="150" height="40" rx="8" fill="#161b22" stroke="#f0883e" stroke-width="2"/>
+  <text x="315" y="221" fill="#e6edf3" text-anchor="middle" font-size="12">fix, then re-test</text>
+  <path d="M240,216 C190,216 190,150 300,146" fill="none" stroke="#8b949e" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#gray)"/>
+
+  <line x1="606" y1="105" x2="644" y2="105" stroke="#3fb950" stroke-width="2" marker-end="url(#gray)"/>
+  <rect x="650" y="70" width="90" height="70" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+  <text x="695" y="98" fill="#3fb950" text-anchor="middle" font-weight="700">Approve</text>
+  <text x="695" y="120" fill="#e6edf3" text-anchor="middle" font-size="12">only now</text>
+
+  <text x="30" y="282" fill="#8b949e" font-size="12">Approving is a signature: a bug you approve counts against you too.</text>
+  <text x="30" y="302" fill="#8b949e" font-size="12">Tomorrow you present this widget: a 1-minute walkthrough, then what you</text>
+  <text x="30" y="322" fill="#8b949e" font-size="12">tested, what you found, and what got fixed.</text>
+</svg>

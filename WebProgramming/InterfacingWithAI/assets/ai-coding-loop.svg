@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 360" width="760" height="360" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13">
+  <title>A prompt is what you said plus what you left out, and the manager's loop: Ask, Plan, Agent, then test in the browser</title>
+  <rect width="760" height="360" rx="10" fill="#0d1117"/>
+  <defs>
+    <marker id="gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8b949e"/>
+    </marker>
+  </defs>
+
+  <!-- left: the prompt -->
+  <text x="30" y="40" fill="#e6edf3" font-weight="700" font-size="15">Every prompt</text>
+  <rect x="30" y="56" width="300" height="56" rx="8" fill="#161b22" stroke="#388bfd" stroke-width="2"/>
+  <text x="46" y="80" fill="#79c0ff" font-weight="700">What you said</text>
+  <text x="46" y="100" fill="#e6edf3" font-size="12">"a quiz page about the heart"</text>
+  <rect x="30" y="120" width="300" height="104" rx="8" fill="#161b22" stroke="#8b949e" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="46" y="144" fill="#8b949e" font-weight="700">What you left out</text>
+  <text x="46" y="166" fill="#8b949e" font-size="12">colors, layout, how many questions,</text>
+  <text x="46" y="186" fill="#8b949e" font-size="12">what happens on a wrong answer,</text>
+  <text x="46" y="206" fill="#f0883e" font-size="12">the AI decides these for you</text>
+
+  <!-- right: the loop -->
+  <text x="400" y="40" fill="#e6edf3" font-weight="700" font-size="15">The manager's loop</text>
+  <rect x="400" y="56" width="140" height="44" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+  <text x="470" y="83" fill="#3fb950" text-anchor="middle" font-weight="700">1 Ask</text>
+  <rect x="590" y="56" width="140" height="44" rx="8" fill="#161b22" stroke="#a371f7" stroke-width="2"/>
+  <text x="660" y="83" fill="#a371f7" text-anchor="middle" font-weight="700">2 Plan</text>
+  <rect x="590" y="170" width="140" height="44" rx="8" fill="#161b22" stroke="#f0883e" stroke-width="2"/>
+  <text x="660" y="197" fill="#f0883e" text-anchor="middle" font-weight="700">3 Agent</text>
+  <rect x="400" y="170" width="140" height="44" rx="8" fill="#161b22" stroke="#388bfd" stroke-width="2"/>
+  <text x="470" y="197" fill="#79c0ff" text-anchor="middle" font-weight="700">4 Test</text>
+
+  <line x1="542" y1="78" x2="586" y2="78" stroke="#8b949e" stroke-width="2" marker-end="url(#gray)"/>
+  <line x1="660" y1="102" x2="660" y2="166" stroke="#8b949e" stroke-width="2" marker-end="url(#gray)"/>
+  <line x1="588" y1="192" x2="544" y2="192" stroke="#8b949e" stroke-width="2" marker-end="url(#gray)"/>
+  <path d="M470,168 C470,140 470,130 470,104" fill="none" stroke="#8b949e" stroke-width="2" marker-end="url(#gray)"/>
+  <text x="400" y="240" fill="#8b949e" font-size="12">Test means the browser and the console,</text>
+  <text x="400" y="258" fill="#8b949e" font-size="12">not the AI saying it works. Then the</text>
+  <text x="400" y="276" fill="#8b949e" font-size="12">next small piece starts the loop again.</text>
+
+  <text x="30" y="318" fill="#8b949e" font-size="12">State the decisions you care about. Leave the rest open on purpose.</text>
+  <text x="30" y="340" fill="#8b949e" font-size="12">The AI writes drafts. Your name is on the commit.</text>
+</svg>

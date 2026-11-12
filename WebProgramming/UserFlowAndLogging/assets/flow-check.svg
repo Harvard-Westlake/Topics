@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 740 312" width="740" height="312" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12">
+<title>Two lists side by side. Your plan in your words has four steps: arrive and see three emoji, type a guess, see if it was right, play again or share. The AI's flowchart matches three of them but replaced the third with sign in to see the answer, which is marked with a red X as a step the student never asked for</title>
+<style> @media (prefers-reduced-motion: reduce){*{animation:none!important}}</style>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8b949e"/></marker></defs>
+<rect width="740" height="312" rx="10" fill="#0d1117"/>
+<text x="30" y="34" fill="#e6edf3" font-size="16" font-weight="700">Your plan and the AI's flowchart must say the same thing</text>
+<text x="30" y="52" fill="#8b949e">Walk the chart one box at a time. Anything you did not say, or said differently, gets fixed before any code.</text>
+<rect x="30" y="72" width="300" height="200" rx="8" fill="#161b22" stroke="#388bfd"/><text x="46" y="96" fill="#388bfd" font-weight="700">Your plan, in your words</text>
+<text x="46" y="122" fill="#e6edf3">1. Arrive and see three emoji</text><text x="46" y="148" fill="#e6edf3">2. Type a guess</text><text x="46" y="174" fill="#e6edf3">3. See if it was right</text><text x="46" y="200" fill="#e6edf3">4. Play again or share</text>
+<text x="46" y="250" fill="#8b949e" font-size="11">You are the source of truth.</text>
+<rect x="410" y="72" width="300" height="200" rx="8" fill="#161b22" stroke="#a371f7"/><text x="426" y="96" fill="#a371f7" font-weight="700">The AI's flowchart</text>
+<text x="426" y="122" fill="#e6edf3">Arrive: three emoji</text><text x="426" y="148" fill="#e6edf3">Type a guess</text><text x="426" y="174" fill="#e6edf3">Sign in to see the answer</text><text x="426" y="200" fill="#e6edf3">Play again or share</text>
+<text x="426" y="250" fill="#8b949e" font-size="11">It draws fast. It also adds things.</text>
+<g font-size="15" font-weight="700" text-anchor="middle"><text x="370" y="124" fill="#3fb950">&#10003;</text><text x="370" y="150" fill="#3fb950">&#10003;</text><text x="370" y="176" fill="#f85149">&#10007;</text><text x="370" y="202" fill="#3fb950">&#10003;</text></g>
+<rect x="418" y="160" width="284" height="20" rx="4" fill="none" stroke="#f85149" stroke-dasharray="4 3"/>
+<text x="30" y="296" fill="#f85149" font-size="11.5">A sign-in step you never asked for. Tell the AI to remove it, then check the whole chart again.</text>
+</svg>

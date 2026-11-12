@@ -1,7 +1,6 @@
 # Assignment — Crypto Research Project
 
-*Lesson: [Crypto Research Project](README.md)*
-
+**Lesson:** [Crypto Research Project](README.md)  
 **Due:** Presentation day, set in class
 **Points:** 200
 

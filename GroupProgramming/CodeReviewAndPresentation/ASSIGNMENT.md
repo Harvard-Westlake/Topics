@@ -1,7 +1,6 @@
 # Assignment — Code Review and MVP Presentation
 
-*Lesson: [Code Review and MVP Presentation](README.md)*
-
+**Lesson:** [Code Review and MVP Presentation](README.md)  
 **Due:** Presentation day (next class)
 
 **Points:** 500

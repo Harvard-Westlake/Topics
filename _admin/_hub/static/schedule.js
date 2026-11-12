@@ -16,6 +16,7 @@ let courses = null, favoriteIds = new Set();
 let saveTimer = null;
 let editingFinal = null;
 let syncBlockId = null;
+let branchInfo = null;         // /api/branches — which branches GitHub has (for the Sync dialog)
 let syncItems = [];            // /sync-items rows for the block open in the sync dialog
 let syncSelected = new Set();  // slot indexes ticked in the sync dialog (empty = whole unit)
 let syncPlanBySlot = {};       // slot -> what the dry run says Sync would do to that day
@@ -250,12 +251,13 @@ function peekLink(s) {
   else if (s.lesson_ref && s.lesson_ref.module && s.lesson_ref.path) lesson = s.lesson_ref.module + '/' + s.lesson_ref.path;
   if (!lesson) return '';
   const params = {lesson};
+  if (s.ref) params.ref = s.ref;   // a unit or day pointed at another branch
   if (s.lesson && s.lesson.no_assignment) params.hw = '0';
   const revs = s.lesson ? (Array.isArray(s.lesson.review) ? s.lesson.review : (s.lesson.review ? [s.lesson.review] : [])) : [];
   const url = new URL(studentUrl(params));
   revs.forEach(r => { if (r && r.module && r.path && r.file) url.searchParams.append('review', r.module + '/' + r.path + '/review/' + r.file); });
   return '<a class="peek" href="' + esc(url.href.replace(/%2F/g, '/')) + '" target="_blank" rel="noopener"' +
-         ' title="Student view — the live page this day\'s Canvas item opens (ref ' + esc(scheduleRef()) + ')">&#8599;</a>';
+         ' title="Student view — the live page this day\'s Canvas item opens (ref ' + esc(s.ref || scheduleRef()) + ')">&#8599;</a>';
 }
 
 // ── Class calendar (imported .ics) ────────────────────────────────────────────
@@ -630,6 +632,8 @@ function slotRow(blk, s, num, slotIdx) {
     : ' class="slot-title' + (s.kind === 'gap' ? ' gap' : '') + '"';
   const from = s.lesson && s.lesson._module ? ' <span class="from">' + esc(s.lesson._module) + '/' + esc(s.lesson.path || '') + '</span>'
     : (s.lesson_ref ? ' <span class="from">' + esc(s.lesson_ref.module) + '/' + esc(s.lesson_ref.path) + '</span>' : '');
+  const refTag = s.ref && s.ref !== scheduleRef() && slotLessonKey(s)
+    ? ' <span class="ref-tag" title="Students see this day from branch ' + esc(s.ref) + '">' + esc(s.ref) + '</span>' : '';
   const timeTip = s.time
     ? ' title="Class ' + s.time.start + '–' + s.time.end +
       (s.next_date ? ' · HW due 11:59 PM the night before ' + fmtShort(s.next_date) : '') + '"'
@@ -639,7 +643,7 @@ function slotRow(blk, s, num, slotIdx) {
     '<span class="slot-date"' + timeTip + '>' + fmtD(s.date) + '</span>' +
     '<span class="slot-num">' + num + '</span>' +
     '<span>' + badge + '</span>' +
-    '<span' + titleAttr + '>' + esc(s.title) + from + '</span>' +
+    '<span' + titleAttr + '>' + esc(s.title) + from + refTag + '</span>' +
     '<span class="slot-controls">' + (later ? '' : peekLink(s)) + controls + '</span>' +
   '</div>';
 }
@@ -937,6 +941,8 @@ async function openSync(blockId) {
   syncPlanBySlot = {};
   document.getElementById('syncDays').style.display = 'none';
   document.getElementById('syncDays').innerHTML = '';
+  document.getElementById('syncBranchRow').style.display = 'none';
+  document.getElementById('syncRepointGraded').checked = false;
 
   const isModule = r.type === 'module';
   document.getElementById('syncTitle').textContent = isModule
@@ -949,35 +955,34 @@ async function openSync(blockId) {
     else if (s.kind === 'lesson' && s.lesson && s.lesson.no_assignment) counts.nohw = (counts.nohw || 0) + 1;
     else counts[s.kind] = (counts[s.kind] || 0) + 1;
   });
+  // Keep this short: it is read with a hand on the Sync button. One line says
+  // what Sync does, one says what it never does, and one line counts the unit.
   let lines = [];
   if (isModule) {
     const pts = smartRound((r.points || 10) * Math.pow(r.scale || 1.15, r.unit_number));
-    lines.push('<div>Canvas module <b>“Unit ' + r.unit_number + '”</b> is created if it is missing; otherwise its '
-      + 'items are updated <b>in place</b> — renamed, re-dated, re-pointed — and days no longer in the schedule are '
-      + 'unpublished. Nothing is ever deleted. Due dates come from the schedule. '
-      + 'Tick days below to sync only those — unticked days are then left exactly as they are:</div>');
-    lines.push('<div style="color:var(--muted)">Content is never copied into Canvas: every item links to the live '
-      + 'lesson view for ref <b>' + esc(scheduleRef()) + '</b>, so students always see the current version.</div>');
-    if (counts.lesson) lines.push('<div>&bull; ' + counts.lesson + ' lesson assignment' + (counts.lesson > 1 ? 's' : '') + ' @ ' + pts + ' pts (review + ASSIGNMENT.md content)</div>');
-    if (counts.nohw) lines.push('<div>&bull; ' + counts.nohw + ' content page' + (counts.nohw > 1 ? 's' : '') + ' — no assignment due (lesson + reviews, no points)</div>');
-    if (counts.test)   lines.push('<div>&bull; ' + counts.test + ' test placeholder' + (counts.test > 1 ? 's' : '') + ' (title + date only — no content)</div>');
-    if (counts.final)  lines.push('<div>&bull; ' + counts.final + ' final placeholder' + (counts.final > 1 ? 's' : '') + ' (title + date only — exam content stays private)</div>');
-    if (counts.quiz) {
-      lines.push('<div>&bull; ' + counts.quiz + ' quiz' + (counts.quiz > 1 ? 'zes' : '') + ' from the private Exams repo (assignment carrying the quiz id, due that day)</div>');
-      lines.push('<label style="display:block;margin:4px 0 0 14px"><input type="checkbox" id="syncPushQuizzes" onchange="Schedule.previewPlan()"> '
-        + 'Also push the quiz questions as a Canvas <b>New Quiz</b> (New Quizzes API) — needs the quiz folder unlocked in ../Exams. '
-        + 'A day that is only a placeholder so far is upgraded to a New Quiz.</label>');
-      lines.push('<div style="color:var(--muted);margin:2px 0 0 14px">Questions already on Canvas are refreshed automatically: '
-        + 'the version stamped on the Canvas quiz is compared with the Exams copy, and a changed quiz is pushed again '
-        + '(folder unlocked; refused once students have submitted).</div>');
-    }
+    lines.push('<div><b>Puts Unit ' + r.unit_number + ' on Canvas.</b> New days are added, changed days are updated '
+      + 'in place, and days no longer on the schedule are unpublished. Nothing is deleted.</div>');
+    lines.push('<div style="color:var(--muted)">Each item is a link to the live lesson on branch <b>' + esc(scheduleRef())
+      + '</b>, so content edits reach students without another sync.</div>');
+    const parts = [];
+    if (counts.lesson) parts.push(counts.lesson + ' assignment' + (counts.lesson > 1 ? 's' : '') + ' @ ' + pts + ' pts');
+    if (counts.nohw)   parts.push(counts.nohw + ' in-class page' + (counts.nohw > 1 ? 's' : '') + ' (no points)');
+    if (counts.test)   parts.push(counts.test + ' test day' + (counts.test > 1 ? 's' : '') + ' (title and date only)');
+    if (counts.final)  parts.push(counts.final + ' final day' + (counts.final > 1 ? 's' : '') + ' (title and date only)');
+    if (counts.quiz)   parts.push(counts.quiz + ' quiz' + (counts.quiz > 1 ? 'zes' : ''));
     const skipped = (counts.review || 0) + (counts.flex || 0) + (counts.custom || 0) + (counts.gap || 0);
-    if (skipped) lines.push('<div style="color:var(--muted)">&bull; ' + skipped + ' review/flex/custom day' + (skipped > 1 ? 's' : '') + ' stay schedule-only</div>');
+    if (skipped)       parts.push(skipped + ' schedule-only day' + (skipped > 1 ? 's' : ''));
+    if (parts.length) lines.push('<div>' + parts.join(' &middot; ') + '</div>');
+    if (counts.quiz) {
+      lines.push('<label class="sync-graded"><input type="checkbox" id="syncPushQuizzes" onchange="Schedule.previewPlan()"> '
+        + 'Also push the quiz questions to Canvas as a New Quiz</label>');
+      lines.push('<div style="color:var(--muted);margin-left:18px">Needs the quiz folder unlocked in ../Exams. '
+        + 'A changed quiz is pushed again next sync; a quiz with submissions is left alone.</div>');
+    }
   } else if (r.type === 'test' || r.type === 'final') {
-    lines.push('<div>One unpublished placeholder assignment — title, date, and points only. '
-      + (r.type === 'final' ? 'Exam content in the private Admin repo never leaves it.' : '') + '</div>');
+    lines.push('<div>One placeholder assignment: title, date, and points. No exam content leaves the private repo.</div>');
   } else {
-    lines.push('<div>One unpublished assignment with content from the lesson’s ASSIGNMENT.md.</div>');
+    lines.push('<div>One assignment linking to the live lesson view.</div>');
   }
   lines.push('<div style="color:var(--muted)">' + fmtD(r.start) + (r.days > 1 ? ' &rarr; ' + fmtD(r.end) : '') + '</div>');
   document.getElementById('syncPreview').innerHTML = lines.join('');
@@ -991,6 +996,8 @@ async function openSync(blockId) {
       syncItems = d.items || [];
       renderSyncDays();
     }
+    await loadBranches();
+    renderSyncBranch();
     await loadCourses();
   } catch (e) {
     sel.innerHTML = '';
@@ -1052,7 +1059,8 @@ async function previewPlan() {
   const seq = ++planSeq;
   box.innerHTML = '<div style="color:var(--muted)">Checking what is already on Canvas…</div>';
   const body = {course_id: parseInt(courseId), block_id: syncBlockId, dry_run: true,
-                push_quizzes: !!(document.getElementById('syncPushQuizzes') || {}).checked};
+                push_quizzes: !!(document.getElementById('syncPushQuizzes') || {}).checked,
+                repoint_graded: document.getElementById('syncRepointGraded').checked};
   if (syncSelected.size) body.slots = Array.from(syncSelected).sort((a, b) => a - b);
   const res = await fetch('/api/schedules/' + encodeURIComponent(schedName) + '/sync-block', {
     method: 'POST', headers: {'Content-Type': 'application/json'},
@@ -1071,26 +1079,33 @@ async function previewPlan() {
   (p.skipped || []).forEach(x => { if (x.slot != null) syncPlanBySlot[x.slot] = {status: x.would || 'unchanged', detail: (x.changes || []).join('; ')}; });
   renderSyncDays();
   const row = (icon, cls, text, sub) =>
-    '<div class="result-row"><span class="' + cls + '">' + icon + '</span> ' + esc(text) +
+    '<div class="result-row"><span class="' + cls + '">' + icon + '</span> <span style="white-space:nowrap">' + esc(text) + '</span>' +
     (sub ? ' <span style="color:var(--muted)">— ' + esc(sub) + '</span>' : '') + '</div>';
   const create = p.create || [], update = p.update || [], retire = p.retire || [], same = p.unchanged || [];
   let h = '<div style="font-weight:600;margin-bottom:4px">' +
-    (p.module_exists === false ? 'Nothing on Canvas yet — Sync will create:' : 'Already on Canvas — Sync will:') + '</div>';
-  create.forEach(x => h += row('+', 'result-ok', x.title,
-    x.quiz ? (x.quiz.known ? 'create — quiz ' + x.quiz.quiz_id + (x.quiz.unlocked ? ' (unlocked: questions can be pushed)' : ' (locked: placeholder only)')
-                           : 'create — quiz ' + x.quiz.quiz_id + ' NOT FOUND in ../Exams')
-           : 'create'));
+    (p.module_exists === false ? 'Nothing on Canvas yet. Sync will:' : 'Sync will:') + '</div>';
+  // Plain new days are one line: the day list below marks each of them with an
+  // up arrow, so listing every title twice only makes the dialog longer.
+  const plainCreate = create.filter(x => !x.quiz), quizCreate = create.filter(x => x.quiz);
+  if (plainCreate.length) h += row('+', 'result-ok', 'Add ' + plainCreate.length + ' day' + (plainCreate.length > 1 ? 's' : ''),
+    plainCreate.length <= 3 ? plainCreate.map(x => x.title).join(', ') : 'marked ↑ below');
+  quizCreate.forEach(x => h += row('+', 'result-ok', x.title,
+    x.quiz.known ? 'add quiz ' + x.quiz.quiz_id + (x.quiz.unlocked ? ' (unlocked: questions can be pushed)' : ' (locked: placeholder only)')
+                 : 'quiz ' + x.quiz.quiz_id + ' is not in ../Exams'));
   update.forEach(x => h += row('&#x21bb;', 'result-ok', x.title, (x.changes || []).join('; ')));
-  retire.forEach(x => h += row('&#x25CC;', 'result-err', x.title, 'no longer in the schedule — unpublished, not deleted'));
-  if (same.length) h += '<div style="color:var(--muted)">' + same.length + ' item' + (same.length > 1 ? 's' : '') + ' already match</div>';
-  if (p.reorder) h += '<div style="color:var(--muted)">module order will be restored</div>';
+  retire.forEach(x => h += row('&#x25CC;', 'result-err', x.title, 'unpublish (no longer on the schedule)'));
+  const held = same.filter(x => (x.changes || []).length);
+  held.forEach(x => h += row('&#x23F8;', 'result-err', x.title, (x.changes || []).join('; ') + ' (held: has grades; tick the box above to apply)'));
+  const matching = same.length - held.length;
+  if (matching) h += '<div style="color:var(--muted)">' + matching + ' item' + (matching > 1 ? 's already match' : ' already matches') + '</div>';
+  if (p.reorder) h += '<div style="color:var(--muted)">module order will be fixed</div>';
   if (p.partial) {
     const sk = p.skipped || [];
     const stale = sk.filter(x => x.would && x.would !== 'unchanged').length;
-    h += '<div style="color:var(--muted)">' + sk.length + ' unticked day' + (sk.length !== 1 ? 's' : '') + ' left untouched'
-      + (stale ? ' (' + stale + ' of them would change in a full sync)' : '') + '; nothing is unpublished</div>';
+    h += '<div style="color:var(--muted)">' + sk.length + ' unticked day' + (sk.length !== 1 ? 's' : '') + ' left alone'
+      + (stale ? ' (' + stale + ' out of date)' : '') + '</div>';
   }
-  if (!create.length && !update.length && !retire.length) h += '<div style="color:var(--green)">Everything matches — nothing to do.</div>';
+  if (!create.length && !update.length && !retire.length) h += '<div style="color:var(--green)">Everything matches. Nothing to do.</div>';
   box.innerHTML = h;
 }
 
@@ -1169,18 +1184,23 @@ function renderSyncDays() {
     + (hasPlan ? ' &middot; <a onclick="Schedule.selectSyncDays(\'stale\')">out of date (' + stale + ')</a>' : '')
     + '</span></div>';
   html += '<div class="sync-days-note">' + (n
-    ? n + ' day' + (n > 1 ? 's' : '') + ' selected — only these are written; every other day stays exactly as it is on Canvas.'
-    : 'Nothing selected — the whole unit syncs. Hover a row and use “from here ↓” to pick a day and everything after it.')
+    ? n + ' day' + (n > 1 ? 's' : '') + ' ticked: only these change on Canvas.'
+    : 'Nothing ticked: the whole unit syncs. Tick days to sync only those.')
     + '</div>';
   syncItems.forEach(it => {
     const on = syncSelected.has(it.slot);
-    const meta = (it.type === 'Page' ? 'page' : (it.points != null ? it.points + ' pts' : ''))
+    const meta = (it.type === 'Page' ? 'page'
+        : it.points == null ? ''
+        : it.points_raw != null && it.points_raw !== it.points ? it.points_raw + ' (' + it.points + ') pts'
+        : it.points + ' pts')
       + (it.due && it.type !== 'Page' ? ' &middot; due ' + fmtShort(it.due) : '');
     html += '<label class="sync-day' + (on ? ' on' : '') + '">'
       + '<input type="checkbox"' + (on ? ' checked' : '') + ' onchange="Schedule.toggleSyncDay(' + it.slot + ', this.checked)">'
       + glyph(syncPlanBySlot[it.slot])
-      + '<span class="sync-day-title" title="' + esc(it.title) + '">' + esc(it.title) + '</span>'
-      + '<span class="sync-day-meta">' + meta + '</span>'
+      + '<span class="sync-day-title" title="' + esc(it.title) + '">' + esc(it.title)
+      + (it.content && it.ref && it.ref !== scheduleRef()
+         ? ' <span class="ref-tag">' + esc(it.ref) + '</span>' : '') + '</span>'
+      + '<span class="sync-day-meta" title="base points (points on Canvas after the unit multiplier)">' + meta + '</span>'
       + '<button type="button" class="sync-day-from" title="Select this day and every day after it" '
       + 'onclick="Schedule.selectSyncFrom(' + it.slot + ')">from here &darr;</button>'
       + '</label>';
@@ -1188,6 +1208,98 @@ function renderSyncDays() {
   box.innerHTML = html;
   box.style.display = 'flex';
   updateSyncButton();
+  renderSyncBranch();
+}
+
+// ── Branch overrides ─────────────────────────────────────────────────────────
+// The Sync dialog's Branch picker points the whole unit (no days ticked) or just
+// the ticked days at another git branch. Saved in the schedule — a unit's
+// `branch` and the schedule's `lesson_refs` {"Module/Lesson": branch} — so the
+// status dot, later syncs, and the board's student-view links all agree.
+// Most specific wins: day → unit → the schedule's ref.
+
+async function loadBranches() {
+  try { branchInfo = await fetch('/api/branches').then(r => r.json()); }
+  catch (e) { branchInfo = {branches: []}; }
+}
+
+function slotLessonKey(s) {
+  if (s.lesson && s.lesson._module && s.lesson.path) return s.lesson._module + '/' + s.lesson.path;
+  if (s.lesson_ref && s.lesson_ref.module && s.lesson_ref.path) return s.lesson_ref.module + '/' + s.lesson_ref.path;
+  return null;
+}
+
+function seqBlock(id) { return (schedule.sequence || []).find(b => b.id === id); }
+
+function renderSyncBranch() {
+  const row = document.getElementById('syncBranchRow');
+  const r = resolvedById(syncBlockId);
+  if (!r || !branchInfo || !(r.slots || []).some(slotLessonKey)) { row.style.display = 'none'; return; }
+  row.style.display = 'block';
+  const n = syncSelected.size;
+  let cur;
+  if (n) {
+    const refs = new Set(Array.from(syncSelected).map(i => (r.slots[i] || {}).ref).filter(Boolean));
+    cur = refs.size === 1 ? Array.from(refs)[0] : '';
+  } else {
+    cur = (seqBlock(syncBlockId) || {}).branch || scheduleRef();
+  }
+  const list = (branchInfo.branches || []).slice();
+  if (cur && !list.some(b => b.name === cur)) list.push({name: cur, status: 'unknown'});
+  const suffix = {'local-only': ' (not on GitHub)', 'differs': ' (not pushed)', 'unknown': ' (not found)'};
+  let opts = n && !cur ? '<option value="" selected>(days differ)</option>' : '';
+  list.forEach(b => {
+    opts += '<option value="' + esc(b.name) + '"' + (b.name === cur ? ' selected' : '') + '>'
+      + esc(b.name) + (b.name === scheduleRef() ? ' (schedule default)' : '') + esc(suffix[b.status] || '') + '</option>';
+  });
+  const sel = document.getElementById('syncBranch');
+  sel.innerHTML = opts;
+  const label = document.getElementById('syncBranchLabel');
+  label.textContent = n ? 'Branch for the ' + n + ' ticked day' + (n > 1 ? 's' : '') : 'Branch for the whole unit';
+  label.title = 'A day’s branch beats its unit’s, which beats the schedule’s (' + scheduleRef() + ').';
+  const info = list.find(b => b.name === cur) || {};
+  const notes = [];
+  if (info.status === 'local-only')
+    notes.push('<span class="warn">“' + esc(cur) + '” is not on GitHub, so students would see nothing. '
+      + 'Commit, then run <code>git push -u origin ' + esc(cur) + '</code>.</span>');
+  else if (info.status === 'differs')
+    notes.push('<span class="warn">GitHub’s “' + esc(cur) + '” is behind this machine. '
+      + 'Students see GitHub’s copy until you <code>git push</code>.</span>');
+  else if (info.status === 'unknown')
+    notes.push('<span class="warn">No branch named “' + esc(cur) + '” here or on GitHub.</span>');
+  if (cur && branchInfo.current === cur && branchInfo.dirty)
+    notes.push('<span class="warn">' + branchInfo.dirty + ' uncommitted change' + (branchInfo.dirty > 1 ? 's' : '')
+      + ' on “' + esc(cur) + '” stay invisible to students until pushed.</span>');
+  notes.push('Students open lessons from this branch. Saved for this schedule only.');
+  document.getElementById('syncBranchNote').innerHTML = notes.join('<br>');
+}
+
+async function setSyncBranch(value) {
+  const r = resolvedById(syncBlockId);
+  const b = seqBlock(syncBlockId);
+  if (!r || !b || !value) return;
+  const n = syncSelected.size;
+  const refs = Object.assign({}, schedule.lesson_refs || {});
+  const keys = (n ? Array.from(syncSelected).map(i => r.slots[i] || {}) : (r.slots || []))
+    .map(slotLessonKey).filter(Boolean);
+  if (n) {
+    const unit = b.branch || scheduleRef();
+    keys.forEach(k => { if (value === unit) delete refs[k]; else refs[k] = value; });
+  } else {
+    if (value === scheduleRef()) delete b.branch; else b.branch = value;
+    keys.forEach(k => delete refs[k]);   // the whole unit means every day in it
+  }
+  if (Object.keys(refs).length) schedule.lesson_refs = refs; else delete schedule.lesson_refs;
+  clearTimeout(saveTimer);
+  setPill('saving');
+  await doSave();
+  // the per-day rows carry each day's branch; re-plan against Canvas with the new links
+  const d = await fetch('/api/schedules/' + encodeURIComponent(schedName) +
+                        '/sync-items?block_id=' + encodeURIComponent(syncBlockId)).then(r => r.json()).catch(() => ({}));
+  if (d.items) syncItems = d.items;
+  renderSyncDays();
+  renderSyncBranch();
+  previewPlan();
 }
 
 function selectionChanged() {
@@ -1237,13 +1349,13 @@ function onSyncCourseChange() {
     return;
   }
   btn.disabled = false;
-  target.innerHTML = 'Will write to: <b>' + esc(opt.textContent) + '</b>';
+  target.innerHTML = 'Writes to: <b>' + esc(opt.textContent) + '</b>';
   updateSyncButton();
   previewPlan();
   const last = schedName ? localStorage.getItem('syncCourseId_' + schedName) : null;
   const switched = last && String(opt.value) !== last;
   warn.style.display = switched ? 'block' : 'none';
-  if (switched) warn.textContent = '⚠ Different course than this schedule last synced to — double-check before syncing.';
+  if (switched) warn.textContent = '⚠ Not the course this schedule last synced to.';
 }
 
 function closeSync() {
@@ -1257,15 +1369,16 @@ async function doSync() {
   if (!courseId || !schedName) return;
   const n = syncSelected.size;
   const msg = n
-    ? 'Sync ' + n + ' selected day' + (n > 1 ? 's' : '') + ' to “' + sel.selectedOptions[0].textContent + '”?\n\nOnly those days are created or updated. Every other day is left exactly as it is; nothing is unpublished or deleted.'
-    : 'Sync to “' + sel.selectedOptions[0].textContent + '”?\n\nExisting items are updated in place; days no longer in the schedule are unpublished. Nothing is deleted.';
+    ? 'Sync ' + n + ' ticked day' + (n > 1 ? 's' : '') + ' to “' + sel.selectedOptions[0].textContent + '”?\n\nOnly those days change. Nothing else is touched.'
+    : 'Sync to “' + sel.selectedOptions[0].textContent + '”?\n\nChanged days are updated in place and dropped days are unpublished. Nothing is deleted.';
   if (!confirm(msg)) return;
   localStorage.setItem('syncCourseId_' + schedName, courseId);
   const btn = document.getElementById('syncBtn');
   btn.disabled = true;
   btn.textContent = 'Syncing…';
   const body = {course_id: parseInt(courseId), block_id: syncBlockId,
-                push_quizzes: !!(document.getElementById('syncPushQuizzes') || {}).checked};
+                push_quizzes: !!(document.getElementById('syncPushQuizzes') || {}).checked,
+                repoint_graded: document.getElementById('syncRepointGraded').checked};
   if (n) body.slots = Array.from(syncSelected).sort((a, b) => a - b);
   const res = await fetch('/api/schedules/' + encodeURIComponent(schedName) + '/sync-block', {
     method: 'POST', headers: {'Content-Type': 'application/json'},
@@ -1352,6 +1465,6 @@ return {init, onShow: loadPalette, pickSchedule, newSchedule, loadPalette, toggl
         addNoSchool, removeNoSchool, toggleTopic, toggleBlock, removeBlock,
         stepBlock, setBlockPoints, removeInsert, stepInsert, setInsertPoints,
         editBlockTitle, editInsertTitle, openSync, closeSync, doSync, onSyncCourseChange,
-        previewPlan, toggleSyncDay, selectSyncFrom, selectSyncDays, togglePick,
+        previewPlan, toggleSyncDay, selectSyncFrom, selectSyncDays, togglePick, setSyncBranch,
         newFinal, openFinalEditor, closeFinalEditor, saveFinal, deleteFinal};
 })();

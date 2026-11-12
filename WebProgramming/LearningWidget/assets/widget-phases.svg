@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 340" width="760" height="340" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13">
+  <title>The Learning Widget path: an approved topic, a PLAN.md committed before any code, the build on a branch, then a live widget and a pull request</title>
+  <rect width="760" height="340" rx="10" fill="#0d1117"/>
+  <defs>
+    <marker id="gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8b949e"/>
+    </marker>
+  </defs>
+
+  <text x="30" y="40" fill="#e6edf3" font-weight="700" font-size="15">Four steps, always in this order</text>
+
+  <rect x="30" y="60" width="160" height="86" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="2"/>
+  <text x="110" y="88" fill="#3fb950" text-anchor="middle" font-weight="700">1 Topic</text>
+  <text x="110" y="112" fill="#e6edf3" text-anchor="middle" font-size="12">your teacher</text>
+  <text x="110" y="130" fill="#e6edf3" text-anchor="middle" font-size="12">approves it</text>
+
+  <rect x="210" y="60" width="160" height="86" rx="8" fill="#161b22" stroke="#a371f7" stroke-width="2"/>
+  <text x="290" y="88" fill="#a371f7" text-anchor="middle" font-weight="700">2 PLAN.md</text>
+  <text x="290" y="112" fill="#e6edf3" text-anchor="middle" font-size="12">your own words,</text>
+  <text x="290" y="130" fill="#e6edf3" text-anchor="middle" font-size="12">committed first</text>
+
+  <rect x="390" y="60" width="160" height="86" rx="8" fill="#161b22" stroke="#f0883e" stroke-width="2"/>
+  <text x="470" y="88" fill="#f0883e" text-anchor="middle" font-weight="700">3 Build</text>
+  <text x="470" y="112" fill="#e6edf3" text-anchor="middle" font-size="12">on a branch,</text>
+  <text x="470" y="130" fill="#e6edf3" text-anchor="middle" font-size="12">one piece at a time</text>
+
+  <rect x="570" y="60" width="160" height="86" rx="8" fill="#161b22" stroke="#388bfd" stroke-width="2"/>
+  <text x="650" y="88" fill="#79c0ff" text-anchor="middle" font-weight="700">4 Ship</text>
+  <text x="650" y="112" fill="#e6edf3" text-anchor="middle" font-size="12">live on Firebase,</text>
+  <text x="650" y="130" fill="#e6edf3" text-anchor="middle" font-size="12">pull request open</text>
+
+  <line x1="192" y1="103" x2="206" y2="103" stroke="#8b949e" stroke-width="2" marker-end="url(#gray)"/>
+  <line x1="372" y1="103" x2="386" y2="103" stroke="#8b949e" stroke-width="2" marker-end="url(#gray)"/>
+  <line x1="552" y1="103" x2="566" y2="103" stroke="#8b949e" stroke-width="2" marker-end="url(#gray)"/>
+
+  <!-- git history -->
+  <text x="30" y="196" fill="#e6edf3" font-weight="700" font-size="15">What your Git history must show</text>
+  <line x1="60" y1="240" x2="700" y2="240" stroke="#8b949e" stroke-width="2"/>
+  <circle cx="90" cy="240" r="10" fill="#a371f7"/>
+  <text x="90" y="272" fill="#a371f7" text-anchor="middle" font-size="12">PLAN.md</text>
+  <circle cx="250" cy="240" r="10" fill="#f0883e"/>
+  <circle cx="370" cy="240" r="10" fill="#f0883e"/>
+  <circle cx="490" cy="240" r="10" fill="#f0883e"/>
+  <text x="370" y="272" fill="#f0883e" text-anchor="middle" font-size="12">widget code, small commits</text>
+  <circle cx="650" cy="240" r="10" fill="#388bfd"/>
+  <text x="650" y="272" fill="#79c0ff" text-anchor="middle" font-size="12">pull request</text>
+  <text x="30" y="316" fill="#8b949e" font-size="12">The plan comes before the first line of code. That is the proof the thinking is yours.</text>
+</svg>

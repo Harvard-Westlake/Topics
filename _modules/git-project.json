@@ -16,7 +16,8 @@
       "title": "Project Setup",
       "path": "ProjectSetup",
       "_module": "GitProject",
-      "review": null
+      "review": null,
+      "base_points": 5
     },
     {
       "day": 2,
@@ -24,7 +25,8 @@
       "title": "Initialization and Blobs",
       "path": "InitAndBlobs",
       "_module": "GitProject",
-      "review": null
+      "review": null,
+      "base_points": 25
     },
     {
       "day": 5,
@@ -46,6 +48,7 @@
       "_module": "GitProject",
       "review": null,
       "sub": 1,
+      "base_points": 15,
       "duration_override": true
     },
     {
@@ -54,7 +57,8 @@
       "title": "Trees",
       "path": "Trees",
       "_module": "GitProject",
-      "review": null
+      "review": null,
+      "base_points": 25
     },
     {
       "day": 9,
@@ -64,6 +68,7 @@
       "_module": "",
       "review": null,
       "sub": 0,
+      "base_points": 25,
       "placeholder": true,
       "kind": "quiz",
       "quiz_id": "004df05af92b7b74"
@@ -76,6 +81,7 @@
       "_module": "GitProject",
       "review": null,
       "sub": 1,
+      "base_points": 15,
       "duration_override": true
     },
     {
@@ -85,8 +91,27 @@
       "path": "Commits",
       "_module": "GitProject",
       "review": null,
+      "base_points": 50,
       "duration_override": true
+    },
+    {
+      "day": 12,
+      "duration": 1,
+      "title": "Branches",
+      "path": "Branches",
+      "_module": "GitProject",
+      "review": null,
+      "base_points": 15
+    },
+    {
+      "day": 13,
+      "duration": 1,
+      "title": "Coding Standards",
+      "path": "CodingStandards",
+      "_module": "GitProject",
+      "review": null,
+      "no_assignment": true
     }
   ],
-  "updated": "2026-10-08"
+  "updated": "2026-10-21"
 }

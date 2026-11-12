@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300" width="600" height="300" font-family="-apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="600" height="300" rx="12" fill="#0d1117"/>
+  <text x="24" y="34" fill="#388bfd" font-size="15" font-weight="700">Pick an element, name an event, attach a function</text>
+
+  <!-- Step 1 -->
+  <rect x="24" y="52" width="168" height="96" rx="10" fill="#161b22" stroke="#30363d"/>
+  <text x="38" y="76" fill="#79c0ff" font-size="13" font-weight="600">1  element</text>
+  <rect x="48" y="92" width="120" height="36" rx="8" fill="#21262d" stroke="#388bfd"/>
+  <text x="108" y="115" fill="#c9d1d9" font-size="13" text-anchor="middle" font-family="ui-monospace, Menlo, monospace">button #go</text>
+
+  <!-- arrow 1 -->
+  <line x1="194" y1="100" x2="214" y2="100" stroke="#8b949e" stroke-width="2"/>
+  <polygon points="214,96 222,100 214,104" fill="#8b949e"/>
+  <text x="204" y="90" fill="#8b949e" font-size="11" text-anchor="middle">on</text>
+
+  <!-- Step 2 -->
+  <rect x="224" y="52" width="150" height="96" rx="10" fill="#161b22" stroke="#30363d"/>
+  <text x="238" y="76" fill="#79c0ff" font-size="13" font-weight="600">2  event</text>
+  <rect x="252" y="92" width="94" height="32" rx="16" fill="#388bfd"/>
+  <text x="299" y="114" fill="#0d1117" font-size="13" font-weight="700" text-anchor="middle" font-family="ui-monospace, Menlo, monospace">click</text>
+
+  <!-- arrow 2 -->
+  <line x1="376" y1="100" x2="396" y2="100" stroke="#8b949e" stroke-width="2"/>
+  <polygon points="396,96 404,100 396,104" fill="#8b949e"/>
+  <text x="386" y="90" fill="#8b949e" font-size="11" text-anchor="middle">run</text>
+
+  <!-- Step 3 -->
+  <rect x="406" y="52" width="170" height="96" rx="10" fill="#161b22" stroke="#30363d"/>
+  <text x="420" y="76" fill="#79c0ff" font-size="13" font-weight="600">3  function</text>
+  <text x="420" y="100" fill="#3fb950" font-size="12" font-family="ui-monospace, Menlo, monospace">count += 1</text>
+  <text x="420" y="122" fill="#c9d1d9" font-size="12" font-family="ui-monospace, Menlo, monospace">output &#8594; 3</text>
+
+  <!-- events strip -->
+  <text x="24" y="196" fill="#8b949e" font-size="12">Events a page can listen for</text>
+  <g font-size="12" font-family="ui-monospace, Menlo, monospace" fill="#c9d1d9">
+    <rect x="24" y="210" width="72" height="32" rx="8" fill="#21262d" stroke="#30363d"/>
+    <text x="60" y="231" text-anchor="middle">click</text>
+    <rect x="104" y="210" width="92" height="32" rx="8" fill="#21262d" stroke="#30363d"/>
+    <text x="150" y="231" text-anchor="middle">keydown</text>
+    <rect x="204" y="210" width="104" height="32" rx="8" fill="#21262d" stroke="#30363d"/>
+    <text x="256" y="231" text-anchor="middle">mouseover</text>
+    <rect x="316" y="210" width="72" height="32" rx="8" fill="#21262d" stroke="#30363d"/>
+    <text x="352" y="231" text-anchor="middle">input</text>
+    <rect x="396" y="210" width="80" height="32" rx="8" fill="#21262d" stroke="#30363d"/>
+    <text x="436" y="231" text-anchor="middle">submit</text>
+    <rect x="484" y="210" width="96" height="32" rx="8" fill="#21262d" stroke="#30363d"/>
+    <text x="532" y="231" text-anchor="middle">setInterval</text>
+  </g>
+  <text x="24" y="270" fill="#8b949e" font-size="11">One page can listen for many at once; one of yours must be a click.</text>
+</svg>

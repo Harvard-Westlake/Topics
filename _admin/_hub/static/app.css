@@ -430,7 +430,7 @@ section.tab.active { display: block; }
 .saved-item .meta { font-size: 11px; color: var(--muted); margin-top: 3px; }
 .btn-new { background: transparent; border: 1px dashed var(--border); color: var(--muted); padding: 9px; border-radius: 8px; font-size: 12px; cursor: pointer; font-family: inherit; transition: border-color .15s, color .15s; }
 .btn-new:hover { border-color: var(--accent); color: var(--accent); }
-.pl-main { padding: 24px 32px; max-width: 620px; display: flex; flex-direction: column; gap: 16px; }
+.pl-main { padding: 24px 32px; max-width: 980px; display: flex; flex-direction: column; gap: 16px; }
 .pl-main .field input, .pl-main .field select, .pl-main .field textarea { background: var(--surface); }
 .scale-note { font-size: 12px; color: var(--purple); }
 .stale-note { background: #2d1e0d; color: var(--yellow); font-size: 12px; padding: 8px 12px; border-radius: 6px; }
@@ -540,7 +540,16 @@ section.tab.active { display: block; }
 /* Module Planner: drag-to-reorder rows (interleave lessons across topics).
    Extra leading column for the drag handle — planner table only; the Courses
    drawer keeps the original 4-column grid. */
-#plLessonsBlock .lesson-table-head, #plLessonRows .lesson-row { grid-template-columns: 14px 24px 44px 1fr 112px 64px 110px; }
+/* minmax(0, …) on the title so a long title wraps instead of widening its own
+   row: every row is its own grid, so any auto-sized track would drift per row */
+#plLessonsBlock .lesson-table-head, #plLessonRows .lesson-row { grid-template-columns: 14px 24px 44px minmax(0, 1fr) 112px 64px 64px 104px; }
+#plLessonRows .lesson-row > * { min-width: 0; }
+#plLessonsBlock .lesson-table-head > div:nth-child(6) { text-align: right; }
+.pts-cell { display: flex; flex-direction: column; align-items: stretch; gap: 1px; }
+.pts-cell input { width: 100%; padding: 3px 6px; font-size: 12px; text-align: right; background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 6px; font-family: inherit; }
+.pts-cell input.overridden { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.pts-cell .pts-scaled { font-size: 10px; line-height: 1.2; color: var(--muted); text-align: right; white-space: nowrap; }
+.lesson-title-cell .ph-kind { min-width: 0; }
 .nohw-toggle { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); cursor: pointer; user-select: none; white-space: nowrap; }
 .nohw-toggle input { accent-color: var(--yellow); cursor: pointer; }
 .nohw-toggle.on { color: var(--yellow); }
@@ -661,7 +670,8 @@ html[data-theme="light"] .panel { box-shadow: 0 1px 3px rgba(0,0,0,.08); }
 .sync-days-links a, .sync-day-from { color: var(--accent); cursor: pointer; background: none; border: 0; font: inherit; padding: 0; }
 .sync-days-links a:hover, .sync-day-from:hover { text-decoration: underline; }
 .sync-days-note { color: var(--muted); margin-bottom: 6px; }
-.sync-day { display: flex; align-items: center; gap: 8px; padding: 3px 4px; border-radius: 5px; cursor: pointer; }
+/* `.modal-body label` (block, muted) would otherwise win over these rows: title, points and date ran together */
+.modal-body .sync-day { display: flex; align-items: center; gap: 8px; padding: 3px 4px; margin: 0; border-radius: 5px; cursor: pointer; color: var(--text); font-weight: 400; }
 .sync-day:hover { background: var(--surface2); }
 .sync-day.on { background: rgba(79, 142, 247, .12); }
 .sync-day input { margin: 0; accent-color: var(--accent); }
@@ -669,3 +679,11 @@ html[data-theme="light"] .panel { box-shadow: 0 1px 3px rgba(0,0,0,.08); }
 .sync-day-meta { color: var(--muted); white-space: nowrap; }
 .sync-day-from { white-space: nowrap; opacity: 0; }
 .sync-day:hover .sync-day-from, .sync-day-from:focus { opacity: 1; }
+
+/* Year Schedule: branch overrides (a unit or day following another git branch) */
+.ref-tag { display: inline-block; margin-left: 6px; padding: 0 6px; border-radius: 9px; font-size: 10px; font-weight: 600; line-height: 16px; background: rgba(237, 163, 0, .18); color: var(--yellow); border: 1px solid rgba(237, 163, 0, .45); vertical-align: 1px; }
+.sync-branch-note { font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.45; }
+.sync-branch-note .warn { color: var(--yellow); font-weight: 600; }
+.sync-branch-note code { font-size: 11px; }
+.modal-body .sync-graded { display: block; font-size: 12px; margin-top: 6px; font-weight: 400; color: var(--text); }
+#syncModal { width: 600px; }

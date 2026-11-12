@@ -73,7 +73,7 @@ NEW_QUIZZES_BASE = BASE.replace("/api/v1", "/api/quiz/v1")
 
 SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 NAME_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9 _\-]*$")
-FILE_RE = re.compile(r"^(review/|activities/|milestones/)?[A-Za-z0-9._-]+\.md$|^demos/[A-Za-z0-9._-]+\.html$")
+FILE_RE = re.compile(r"^(review/|activities/|milestones/|docs/)?[A-Za-z0-9._-]+\.md$|^demos/[A-Za-z0-9._-]+\.html$")
 
 # ── Markdown helpers (Canvas upload rendering) ─────────────────────────────────
 
@@ -255,6 +255,36 @@ def schedule_ref(sched):
     ref = (sched or {}).get("ref") or ""
     return ref.strip() if REF_RE.match(ref.strip() or "") else GITHUB_BRANCH
 
+# Branch overrides. A teacher can point part of a schedule at a different ref
+# than the schedule's own, without touching anyone else's course: a module
+# block's "branch" moves the whole unit, and the schedule's "lesson_refs"
+# ({"Module/Lesson": ref}) moves single days. Days are keyed by lesson, not by
+# slot index, so an override survives days being inserted or renumbered.
+# Most specific wins: lesson_refs → block branch → schedule ref.
+
+def _clean_ref(value):
+    """A valid git ref name, or None."""
+    v = (value or "").strip() if isinstance(value, str) else ""
+    return v if v and REF_RE.match(v) else None
+
+def _clean_points(value):
+    """A positive number of points, or None."""
+    try:
+        v = float(value)
+    except (TypeError, ValueError):
+        return None
+    return (int(v) if v == int(v) else v) if v > 0 else None
+
+def _slot_lesson_key(s):
+    """'Module/Lesson' a schedule slot links to, or None (quiz, test, gap …)."""
+    a = s.get("lesson") or {}
+    if a.get("_module") and a.get("path"):
+        return f"{a['_module']}/{a['path']}"
+    lr = s.get("lesson_ref") or {}
+    if lr.get("module") and lr.get("path"):
+        return f"{lr['module']}/{lr['path']}"
+    return None
+
 def viewer_url(ref, lesson=None, path=None, reviews=(), homework=True, local=False):
     """URL of view.html for one lesson day or one file.
 
@@ -287,28 +317,24 @@ def _review_paths(review_ref):
             out.append(f"{rev['module']}/{rev['path']}/review/{rev['file']}")
     return out
 
-# HW brand red, matching the hub's light-theme primary buttons. Canvas strips
-# :hover rules, so the gold hover state can't follow it into a description.
-STUB_BUTTON_BG = "#DA0016"
-_STUB_STYLE_RE = re.compile(r"da0016|218,\s*0,\s*22", re.IGNORECASE)
+# The whole Canvas description is the live view in a borderless frame. No
+# button or header above it: the lesson always sits inside the frame, and the
+# frame's own bar has "Open full page". Stubs from before this layout (a red
+# "Open the lesson" button over a bordered frame) are re-styled by the next sync.
+_STUB_CURRENT_RE = re.compile(r"<iframe[^>]*border:\s*0", re.IGNORECASE)
 
 def stub_style_current(description):
-    """True when a live-view stub already carries the current button style."""
-    return bool(_STUB_STYLE_RE.search(description or ""))
+    """True when a live-view stub already has the current frame-only layout."""
+    d = description or ""
+    return bool(_STUB_CURRENT_RE.search(d)) and "Open the lesson" not in d
 
 def live_stub_html(url, has_homework=True):
-    """The whole Canvas description: a button to the live page plus an embedded
-    frame of it. Inline styles only — Canvas strips classes and scripts."""
-    what = "lesson and assignment" if has_homework else "lesson"
+    """The whole Canvas description: the live page in a borderless, full-width
+    frame. Inline styles only — Canvas strips classes and scripts."""
+    title = "Lesson and assignment" if has_homework else "Lesson"
     u = html.escape(url, quote=True)
-    return (f'<p><a href="{u}" target="_blank" rel="noopener" '
-            f'style="display:inline-block;background:{STUB_BUTTON_BG};color:#ffffff;font-weight:600;'
-            'padding:8px 14px;border-radius:6px;text-decoration:none">'
-            f'&#128214;&nbsp;Open the {what}</a> '
-            '<span style="color:#57606a;margin-left:8px">Always the current version, '
-            f'straight from the {html.escape(REPO_LABEL)} repo.</span></p>\n'
-            f'<iframe src="{u}" title="Lesson" width="100%" height="900" loading="lazy" allowfullscreen '
-            'style="width:100%;height:900px;border:1px solid #d0d7de;border-radius:6px;background:#ffffff">'
+    return (f'<iframe src="{u}" title="{title}" width="100%" height="1000" loading="lazy" allowfullscreen '
+            'style="display:block;width:100%;height:1000px;border:0;margin:0;background:#ffffff">'
             '</iframe>')
 
 def live_description(ref, module_dir, lesson_path, review_ref, include_assignment=True):
@@ -1158,6 +1184,7 @@ def lesson_file_listing(module, path):
         "review": [f"review/{f}" for f in review_files(module, path)],
         "activities": [f"activities/{f}" for f in _sub_md_files(module, path, "activities")],
         "milestones": [f"milestones/{f}" for f in _sub_md_files(module, path, "milestones")],
+        "docs": [f"docs/{f}" for f in _sub_md_files(module, path, "docs")],
         "demos": [f"demos/{f}" for f in demo_files(module, path)],
         "assets": asset_files(module, path),
         "can_create": [] if "ASSIGNMENT.md" in files else ["ASSIGNMENT.md"],
@@ -1556,6 +1583,7 @@ def expand_module_block(block):
                                          "sub": a.get("sub"), "kind": a.get("kind"),
                                          "quiz_id": a.get("quiz_id"),
                                          "no_assignment": a.get("no_assignment"),
+                                         "base_points": a.get("base_points"),
                                          "review": a.get("review")}})
         else:
             slots.append({"kind": "gap", "title": "(open day)", "module_day": day,
@@ -1577,6 +1605,8 @@ def resolve_schedule(sched):
     if sched.get("show_day0_syllabus") and dates:
         day0_date, dates = dates[0], dates[1:]
     blocks, warnings, idx, unit = [], [], 0, 0
+    sched_ref = schedule_ref(sched)
+    lesson_refs = sched.get("lesson_refs") or {}
     cal, cls = schedule_calendar_class(sched)
     if sched.get("calendar_class") and not cls:
         warnings.append(f"Calendar class '{sched.get('calendar_class')}' not found in "
@@ -1618,7 +1648,11 @@ def resolve_schedule(sched):
                    "file": block.get("file"), "points": block.get("points"),
                    "slots": _insert_slots(block)}
         day_num, last_date = -1, None  # first day in a block is day_num 0, matching Unit 0
+        out["branch"] = _clean_ref(block.get("branch"))
+        block_ref = out["branch"] or sched_ref
         for s in out["slots"]:
+            key = _slot_lesson_key(s)
+            s["ref"] = (_clean_ref(lesson_refs.get(key)) if key else None) or block_ref
             if s.get("co_day"):
                 s["date"] = last_date          # shares the class day of the slot above
             else:
@@ -1679,6 +1713,20 @@ def api_schedule(name):
         sched["ref"] = (sched.get("ref") or "").strip() or GITHUB_BRANCH
         if not REF_RE.match(sched["ref"]):
             return jsonify({"error": f"invalid git ref '{sched['ref']}' — use a branch or tag name"}), 400
+        for b in sched.get("sequence") or []:
+            if "branch" in b:
+                if not b["branch"]:
+                    del b["branch"]
+                elif not _clean_ref(b["branch"]):
+                    return jsonify({"error": f"invalid branch '{b['branch']}' on a unit"}), 400
+        lrefs = {k: v for k, v in (sched.get("lesson_refs") or {}).items() if v}
+        bad = [v for v in lrefs.values() if not _clean_ref(v)]
+        if bad:
+            return jsonify({"error": f"invalid branch '{bad[0]}' on a day"}), 400
+        if lrefs:
+            sched["lesson_refs"] = lrefs
+        else:
+            sched.pop("lesson_refs", None)
         sched["updated"] = datetime.now().isoformat(timespec="seconds")
         SCHEDULES_DIR.mkdir(parents=True, exist_ok=True)
         schedule_path(name).write_text(json.dumps(sched, indent=2) + "\n")
@@ -1912,7 +1960,18 @@ def _expected_block_items(block, ref):
     'page:' / 'test:' / 'final:' plus the un-numbered title."""
     slots = block.get("slots", [])
     unit = block["unit_number"]
-    pts = smart_round((block.get("points") or 10) * ((block.get("scale") or 1.15) ** unit))
+    # Canvas points = base × scale^unit. The base is the module's
+    # points_per_assignment unless a row sets its own base_points (Module
+    # Planner's Points column); the unit multiplier is only applied here, at sync.
+    mult = (block.get("scale") or 1.15) ** unit
+    pts = smart_round((block.get("points") or 10) * mult)
+
+    def row_points(a, default):
+        bp = _clean_points((a or {}).get("base_points"))
+        return smart_round(bp * mult) if bp else default
+
+    def row_base(a, default_base):
+        return _clean_points((a or {}).get("base_points")) or default_base
 
     def group_end(s):
         dated = [x.get("date") for x in slots
@@ -1920,17 +1979,19 @@ def _expected_block_items(block, ref):
         return dated[-1] if dated else s.get("date")
 
     cur_slot = [0]   # index of the slot being expanded — the key the Sync dialog's per-day checkboxes use
+    default_ref = ref
 
     def item(title, type_, identity, points=None, due=None, unlock=None, description="", content=False):
         return {"title": title, "type": type_, "identity": identity, "base_title": _base_title(title),
                 "points": points, "due": due, "unlock": unlock, "description": description,
-                "content": content, "slot": cur_slot[0]}
+                "content": content, "slot": cur_slot[0], "ref": ref}
 
     expected = []
     for i, s in enumerate(slots):
         if s.get("part", 1) != 1:
             continue  # later day of a multi-day item — covered by its first day
         cur_slot[0] = i
+        ref = s.get("ref") or default_ref   # this day's branch override, if any (see resolve_schedule)
         day_num = s.get("day_num", i + 1)
         kind = s.get("kind")
         if kind == "lesson" and s.get("lesson"):
@@ -1945,8 +2006,10 @@ def _expected_block_items(block, ref):
                     desc = (f"<p>In-class quiz — {html.escape((q or {}).get('title') or a['title'])}. "
                             "Questions are delivered in Canvas; the source stays in the private Exams repo.</p>"
                             f'<p style="color:#57606a;font-size:12px">Quiz ID: <code>{html.escape(str(a["quiz_id"]))}</code></p>')
-                    it = item(name, "Assignment", f"quiz:{a['quiz_id']}", (q or {}).get("points") or 100,
+                    it = item(name, "Assignment", f"quiz:{a['quiz_id']}",
+                              row_points(a, (q or {}).get("points") or 100),
                               group_end(s), s.get("date"), desc)
+                    it["points_raw"] = row_base(a, (q or {}).get("points") or 100)
                     it["quiz"] = {"quiz_id": str(a["quiz_id"]), "known": q is not None,
                                   "unlocked": bool(q and q["unlocked"]), "folder": (q or {}).get("folder"),
                                   "version": (q or {}).get("version"),
@@ -1965,9 +2028,10 @@ def _expected_block_items(block, ref):
                                         include_assignment=False)
                 expected.append(item(name, "Page", lesson_id, description=desc, content=True))
                 continue
-            expected.append(item(name, "Assignment", lesson_id, pts, group_end(s), s.get("date"),
-                                 live_description(ref, a["_module"], a["path"], a.get("review")),
-                                 content=True))
+            it = item(name, "Assignment", lesson_id, row_points(a, pts), group_end(s), s.get("date"),
+                      live_description(ref, a["_module"], a["path"], a.get("review")), content=True)
+            it["points_raw"] = row_base(a, block.get("points") or 10)
+            expected.append(it)
         elif kind == "lesson" and s.get("lesson_ref"):
             lref = s["lesson_ref"]
             expected.append(item(f"{unit}.{day_num}: {s.get('base_title') or s['title']}", "Assignment",
@@ -2000,10 +2064,11 @@ def _canvas_course_state(course_id, ttl):
                 "published": a.get("published"), "html_url": a.get("html_url"),
                 "viewer_url": viewer_url_in(desc), "viewer_ref": viewer_ref_in(desc),
                 "stub_current": stub_style_current(desc),
+                "graded": bool(a.get("graded_submissions_exist", a.get("has_submitted_submissions"))),
                 "lesson": viewer_lesson_in(desc), "quiz": quiz_id_in(desc),
                 "quiz_version": quiz_version_in(desc),
                 "new_quiz": bool(a.get("is_quiz_lti_assignment"))}
-    assignments, _, _ = cached(f"assignments_sync_v3_{course_id}", ttl, lambda: [
+    assignments, _, _ = cached(f"assignments_sync_v5_{course_id}", ttl, lambda: [
         _asgn(a) for a in canvas_paged(f"/courses/{course_id}/assignments", {"order_by": "due_at"})])
 
     def module_items(mid):
@@ -2018,7 +2083,7 @@ def _canvas_course_state(course_id, ttl):
 def _invalidate_course_caches(course_id):
     for key in [f"modules_{course_id}", f"assignments_{course_id}",
                 f"assignments_ref_{course_id}", f"assignments_sync_{course_id}",
-                f"assignments_sync_v3_{course_id}"]:
+                f"assignments_sync_v5_{course_id}"]:
         p = cache_path(key)
         if p.exists():
             p.unlink()
@@ -2031,6 +2096,16 @@ def _quiz_refresh_change(qz, a):
     note = "" if qz.get("unlocked") else " — unlock the quiz folder in ../Exams first"
     return f"quiz questions → version {qz['version']} ({tail}){note}"
 
+def _points_allowed(a, options=None):
+    """Sync may change an assignment's points unless students already have
+    grades on it: Canvas keeps each raw score, so every percentage would shift.
+    options["repoint_graded"] (a Sync-dialog checkbox) allows it anyway."""
+    return not a.get("graded") or bool((options or {}).get("repoint_graded"))
+
+def _actionable(changes):
+    """Changes a sync will actually make ('held:' ones are reported only)."""
+    return [c for c in changes if not c.startswith("held:")]
+
 def _assignment_changes(e, a, due_at, unlock_at, options=None):
     """Human-readable drift between an expected item and a Canvas assignment
     (empty list = nothing to update). For a quiz day: a pushed New Quiz whose
@@ -2042,7 +2117,10 @@ def _assignment_changes(e, a, due_at, unlock_at, options=None):
         ch.append(f"rename from “{a['name']}”")
     if e.get("points") is not None and a.get("points") is not None \
             and float(a["points"]) != float(e["points"]):
-        ch.append(f"points {a['points']:g} → {e['points']:g}")
+        if _points_allowed(a, options):
+            ch.append(f"points {a['points']:g} → {e['points']:g}")
+        else:
+            ch.append(f"held: points {a['points']:g} → {e['points']:g} (already graded)")
     if e.get("due"):
         exp = due_at(e["due"])
         if exp and not a.get("due_at"):
@@ -2062,7 +2140,7 @@ def _assignment_changes(e, a, due_at, unlock_at, options=None):
         elif want and a["viewer_url"] != want:
             ch.append("live view link → " + want.split("?", 1)[-1])
         elif not a.get("stub_current"):
-            ch.append("restyle the open-lesson button")
+            ch.append("restyle the open-lesson frame (drop the button, edge to edge)")
     if e.get("quiz"):
         qz = e["quiz"]
         if a.get("quiz") != qz["quiz_id"]:
@@ -2155,10 +2233,10 @@ def _plan_module_sync(block, ref, state, due_at, unlock_at, options=None):
         entry = {"expected": e, "match": c, "title": e["title"], "type": e["type"],
                  "from": c["name"], "changes": changes, "slot": e["slot"]}
         if not chosen:
-            entry["would"] = "update" if changes else "unchanged"
+            entry["would"] = "update" if _actionable(changes) else "unchanged"
             plan["skipped"].append(entry)
             continue
-        (plan["update"] if changes else plan["unchanged"]).append(entry)
+        (plan["update"] if _actionable(changes) else plan["unchanged"]).append(entry)
     if matched_positions != sorted(matched_positions):
         plan["reorder"] = True
     if only is None:
@@ -2307,7 +2385,7 @@ def _apply_module_sync(course_id, plan, ref, due_at, unlock_at, options=None):
                 else:
                     refreshed = version
             payload = {"assignment": {"name": e["title"]}}
-            if e.get("points") is not None:
+            if e.get("points") is not None and _points_allowed(a, options):
                 payload["assignment"]["points_possible"] = e["points"]
             if e.get("due"):
                 payload["assignment"]["due_at"] = due_at(e["due"])
@@ -2391,6 +2469,7 @@ def _standalone_expected(block, ref):
     """The one assignment a standalone test / final / lesson block syncs to."""
     kind = block["type"]
     first = block["slots"][0] if block.get("slots") else {}
+    ref = first.get("ref") or ref
     title = first.get("base_title") or block.get("title") or kind.title()
     if kind in ("test", "final"):
         label = "final exam" if kind == "final" else "test"
@@ -2458,7 +2537,9 @@ def api_schedule_sync_status(name):
             items = ([{"slot": e["slot"], "title": e["title"], "status": "missing"} for e in plan["create"]]
                      + [{"slot": u["slot"], "title": u["title"], "status": "drifted",
                          "detail": "; ".join(u["changes"])} for u in plan["update"]]
-                     + [{"slot": u["slot"], "title": u["title"], "status": "synced"} for u in plan["unchanged"]])
+                     + [dict({"slot": u["slot"], "title": u["title"], "status": "synced"},
+                            **({"detail": "; ".join(u["changes"])} if u["changes"] else {}))
+                       for u in plan["unchanged"]])
             statuses[bid] = {"status": status, "detail": detail,
                              "items": sorted(items, key=lambda x: x["slot"])}
         elif block["type"] in ("test", "final", "lesson"):
@@ -2468,13 +2549,50 @@ def api_schedule_sync_status(name):
                 statuses[bid] = {"status": "unsynced",
                                  "detail": f"Ready to sync — no assignment named “{e['title']}” in the course yet"}
                 continue
-            changes = _assignment_changes(e, a, _due_at, _unlock_at)
+            changes = _actionable(_assignment_changes(e, a, _due_at, _unlock_at))
             statuses[bid] = ({"status": "synced",
                               "detail": f"It seems to be synced — “{e['title']}” found with matching points and due date"}
                              if not changes else
                              {"status": "partial", "detail": "Partially synced — " + "; ".join(changes)
                                                              + ". Sync updates in place."})
     return jsonify({"course_id": course_id, "statuses": statuses})
+
+# ── Git branches (for per-unit / per-day overrides) ───────────────────────────
+# The live view reads from GitHub, so a branch only shows students anything once
+# it is pushed. The Sync dialog lists branches with that status so a teacher
+# can see why a day would show old content.
+
+def _git(*args):
+    r = subprocess.run(["git", "-C", str(TOPICS), *args], capture_output=True, text=True, timeout=20)
+    return r.stdout if r.returncode == 0 else ""
+
+@app.route("/api/branches")
+def api_branches():
+    """Branches the hub knows about: each with whether GitHub has it and
+    whether this machine has commits GitHub doesn't. Also the checked-out
+    branch and its count of uncommitted files (they never reach students)."""
+    remote = {}
+    for line in _git("ls-remote", "--heads", "origin").splitlines():
+        sha, _, name = line.partition("\t")
+        if name.startswith("refs/heads/"):
+            remote[name[len("refs/heads/"):]] = sha
+    local = {}
+    for line in _git("for-each-ref", "--format=%(objectname) %(refname:short)", "refs/heads").splitlines():
+        sha, _, name = line.partition(" ")
+        local[name] = sha
+    current = _git("branch", "--show-current").strip()
+    dirty = len([l for l in _git("status", "--porcelain").splitlines() if l.strip()])
+    out = []
+    for name in sorted(set(remote) | set(local), key=lambda n: (n != GITHUB_BRANCH, n.lower())):
+        if name not in remote:
+            status = "local-only"      # never pushed: the live view cannot show it
+        elif name in local and local[name] != remote[name]:
+            status = "differs"         # pushed, but this machine's copy is not what GitHub has
+        else:
+            status = "pushed"
+        out.append({"name": name, "status": status, "current": name == current})
+    return jsonify({"branches": out, "current": current, "dirty": dirty,
+                    "default": GITHUB_BRANCH, "remote_ok": bool(remote)})
 
 @app.route("/api/schedules/<name>/sync-items")
 def api_schedule_sync_items(name):
@@ -2492,8 +2610,8 @@ def api_schedule_sync_items(name):
         return jsonify({"error": "block not found in schedule"}), 404
     if block["type"] != "module" or block.get("missing"):
         return jsonify({"items": []})
-    keys = ("slot", "title", "type", "points", "due")
-    return jsonify({"items": [{k: e[k] for k in keys}
+    keys = ("slot", "title", "type", "points", "points_raw", "due", "ref", "content")
+    return jsonify({"items": [{k: e.get(k) for k in keys}
                               for e in _expected_block_items(block, schedule_ref(sched))]})
 
 @app.route("/api/schedules/<name>/sync-block", methods=["POST"])
@@ -2518,7 +2636,8 @@ def api_schedule_sync_block(name):
     course_id = body.get("course_id")
     block_id = body.get("block_id")
     dry_run = bool(body.get("dry_run"))
-    options = {"push_quizzes": bool(body.get("push_quizzes"))}
+    options = {"push_quizzes": bool(body.get("push_quizzes")),
+               "repoint_graded": bool(body.get("repoint_graded"))}
     if not course_id or not block_id:
         return jsonify({"error": "course_id and block_id required"}), 400
     if body.get("slots") is not None:
@@ -2559,13 +2678,13 @@ def api_schedule_sync_block(name):
     if e is None:
         return jsonify({"error": f"'{block['type']}' days are schedule-only — nothing to sync"}), 422
     a = _match_standalone(e, assignments)
-    changes = _assignment_changes(e, a, _due_at, _unlock_at) if a else []
+    changes = _assignment_changes(e, a, _due_at, _unlock_at, options) if a else []
     if dry_run:
         return jsonify({"dry_run": True, "ref": ref, "plan": {
             "module_name": None, "module_exists": True,
             "create": [] if a else [{"title": e["title"], "type": "Assignment"}],
-            "update": [{"title": e["title"], "type": "Assignment", "from": a["name"], "changes": changes}] if a and changes else [],
-            "unchanged": [{"title": e["title"], "type": "Assignment", "from": a["name"], "changes": []}] if a and not changes else [],
+            "update": [{"title": e["title"], "type": "Assignment", "from": a["name"], "changes": changes}] if a and _actionable(changes) else [],
+            "unchanged": [{"title": e["title"], "type": "Assignment", "from": a["name"], "changes": changes}] if a and not _actionable(changes) else [],
             "retire": [], "reorder": False}})
     out = {"ref": ref, "created": [], "updated": [], "retired": [], "unchanged": [], "errors": []}
     if a is None:
@@ -2581,8 +2700,10 @@ def api_schedule_sync_block(name):
             out["created"].append({"name": e["title"], "assignment_id": r.json()["id"], "linked": False})
         else:
             out["errors"].append({"name": e["title"], "error": r.text})
-    elif changes:
-        payload = {"assignment": {"name": e["title"], "points_possible": e["points"]}}
+    elif _actionable(changes):
+        payload = {"assignment": {"name": e["title"]}}
+        if _points_allowed(a, options):
+            payload["assignment"]["points_possible"] = e["points"]
         if e.get("due"):
             payload["assignment"]["due_at"] = _due_at(e["due"])
         if e.get("unlock"):
@@ -2751,12 +2872,12 @@ def _rewrite_claude_topics_line(topic, assignments):
 
 def _nav_line(topic_title, prev_a, next_a):
     if prev_a and next_a:
-        return (f"← [{prev_a['title']}](../{prev_a['path']}/) — "
+        return (f"← [{prev_a['title']}](../{prev_a['path']}/) | "
                 f"Next: [{next_a['title']}](../{next_a['path']}/)")
     if next_a:
-        return f"← Back to [{topic_title}](../) — Next: [{next_a['title']}](../{next_a['path']}/)"
+        return f"← Back to [{topic_title}](../) | Next: [{next_a['title']}](../{next_a['path']}/)"
     if prev_a:
-        return f"← [{prev_a['title']}](../{prev_a['path']}/) — Back to [{topic_title}](../)"
+        return f"← [{prev_a['title']}](../{prev_a['path']}/) | Back to [{topic_title}](../)"
     return f"← Back to [{topic_title}](../)"
 
 def _rewrite_navs(topic, assignments):
@@ -2829,7 +2950,7 @@ def _sync_all_indexes(topic, assignments):
 # ── activity toggle sync (README <details> embeds) ─────────────────────────────
 
 def _parse_activity(content):
-    m = re.match(r"# Activity — (.+?)\n(.*)", content, re.DOTALL)
+    m = re.match(r"# Activity\s*[—:-]\s*(.+?)\n(.*)", content, re.DOTALL)   # "-" now; "—" in older files
     if not m:
         return None, content.strip()
     return m.group(1).strip(), m.group(2).strip()
@@ -2932,6 +3053,8 @@ def api_editor_bundle():
 
     add("LESSON README", lesson_dir / "README.md")
     add("ASSIGNMENT", lesson_dir / "ASSIGNMENT.md")
+    for f in _sub_md_files(topic, path, "docs"):
+        add(f"DOC: {f}", lesson_dir / "docs" / f)
     for f in _sub_md_files(topic, path, "milestones"):
         add(f"MILESTONE: {f}", lesson_dir / "milestones" / f)
     for f in _sub_md_files(topic, path, "review"):
@@ -3154,7 +3277,7 @@ def api_editor_review():
         if target.exists():
             return jsonify({"error": f"review/{file} already exists"}), 409
         target.parent.mkdir(exist_ok=True)
-        target.write_text(f"""# Review — {concept}
+        target.write_text(f"""# Review - {concept}
 
 *Originally covered in [{_lesson_title(topic, path)}](../README.md)*
 
@@ -3210,7 +3333,7 @@ def api_editor_activity():
         target = act_dir / file
         if target.exists():
             return jsonify({"error": f"activities/{file} already exists"}), 409
-        content = f"""# Activity — {title}
+        content = f"""# Activity - {title}
 
 *Concept: {concept}*
 
@@ -3233,7 +3356,7 @@ def api_editor_activity():
             content += "\n"
         title, act_body = _parse_activity(content)
         if not title:
-            return jsonify({"error": "activity must start with '# Activity — [Title]'"}), 400
+            return jsonify({"error": "activity must start with '# Activity - [Title]'"}), 400
         act_dir.mkdir(exist_ok=True)
         (act_dir / file).write_text(content)
         synced = _sync_activity_toggle(topic, path, file, title, act_body)

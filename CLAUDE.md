@@ -34,7 +34,7 @@ Topics/
     _verification/      — verify.py link/reference checker (also runs in CI on push)
 ```
 
-Current topics: `ComputerSetup/` (InitialInstall), `Terminal/` (Basics), `GitUsage/` (RepositoriesAndCommits, BranchingAndMerging, ForksAndCollaboration, FileHashing), `GitProject/` (ProjectSetup, InitAndBlobs, PeerCodeVerification, Trees, PeerTreeVerification, Commits, Branches), `MiniGPT/` (Tokenizer, MarkovBaseline, FixedAttention, TrainableBigram, ObjectNetwork, ScalarAutograd, DenseEngine, SingleHeadAttention, TransformerBlock, TrainingAndGeneration, Capstone), `WebProgramming/` (InterfacingWithAI, WebsiteHosting, JavaScriptAndCursor, DebuggingJavaScript, LearningWidget, PersistenceAndIntermediateWeb, DatabasesAndCollections, UXAndBehaviorTracking, WidgetIteration, PeerReview), `AppDesign/` (LearningToDesign, CommunicatingDesign, DesignChallenge, DesignReview, IterativeDesign, TeamDesignAndPitch, GroupDesignReview, DesignRefinement, MergeDesigns, UXAndArtDirection, AmbiguityAndArchitecture, TechnicalSpecification, CombineTechSpecs, MVPPlanning, ScrumAndStandup), `GroupProgramming/` (DeliverablesAndIssueTracking, SprintWork, MVPAndMergeDiscipline, CodeReviewAndPresentation, IssuesAsWorkRequests, RefactorAndReadme, HelpAClassmate, FinalWrapUp), `HashingCryptoP2P/` (HexadecimalAndHashing, DigitalSignatures, PeerToPeerNetworks), `Blockchains/` (TransactionsAndLedgers, BitcoinAndWallets, MempoolAndWalletProgramming, KeysAndLayerTwo, SmartChainsAndWrappedBitcoin, TokensInJava, ProofOfStake, WritingCodeOnEthereum, VyperCustomBehavior, ERC20Deployment, CryptoResearchProject), `AdvancedEVM/` (WrappedTokensAndLayerTwo, DecentralizedFinance, IPFSAndNFTs, Web2Web3App), `DNDReview/` (DNDReview)
+Current topics: `ComputerSetup/` (InitialInstall), `Terminal/` (Basics), `GitUsage/` (RepositoriesAndCommits, BranchingAndMerging, ForksAndCollaboration, FileHashing), `GitProject/` (ProjectSetup, InitAndBlobs, PeerCodeVerification, Trees, PeerTreeVerification, Commits, Branches, CodingStandards), `MiniGPT/` (Tokenizer, MarkovBaseline, FixedAttention, TrainableBigram, ObjectNetwork, ScalarAutograd, DenseEngine, SingleHeadAttention, TransformerBlock, TrainingAndGeneration, Capstone), `WebProgramming/` (WebsiteHosting, DOMEventsAndStorage, JavaScriptAndCursor, DebuggingJavaScript, PersistenceAndIntermediateWeb, InterfacingWithAI, DatabasesAndCollections, UserFlowAndLogging, LearningWidget, UXAndBehaviorTracking, WidgetIteration, PeerReview, WidgetPresentations), `AppDesign/` (LearningToDesign, CommunicatingDesign, DesignChallenge, DesignReview, IterativeDesign, TeamDesignAndPitch, GroupDesignReview, DesignRefinement, MergeDesigns, UXAndArtDirection, AmbiguityAndArchitecture, TechnicalSpecification, CombineTechSpecs, MVPPlanning, ScrumAndStandup), `GroupProgramming/` (DeliverablesAndIssueTracking, SprintWork, MVPAndMergeDiscipline, CodeReviewAndPresentation, IssuesAsWorkRequests, RefactorAndReadme, HelpAClassmate, FinalWrapUp), `HashingCryptoP2P/` (HexadecimalAndHashing, DigitalSignatures, PeerToPeerNetworks), `Blockchains/` (TransactionsAndLedgers, BitcoinAndWallets, MempoolAndWalletProgramming, KeysAndLayerTwo, SmartChainsAndWrappedBitcoin, TokensInJava, ProofOfStake, WritingCodeOnEthereum, VyperCustomBehavior, ERC20Deployment, CryptoResearchProject), `AdvancedEVM/` (WrappedTokensAndLayerTwo, DecentralizedFinance, IPFSAndNFTs, Web2Web3App), `DNDReview/` (DNDReview)
 
 ## Root README
 
@@ -51,6 +51,24 @@ One-sentence description of the topic.
 
 - [Subtopic](TopicFolder/Subtopic/) — one-line summary
 ```
+
+## Lesson writing rules (cross-check on every edit)
+
+Whenever a lesson README, ASSIGNMENT.md, doc, milestone, activity, or review file is created or modified, check the **whole file** against every rule below and the rest of this file, not just the lines you touched. Most lessons written before 2026-10 break some of these; `GitProject/Commits` is the reference lesson, and the rest are brought in line once it is approved. Until then, fix whatever file you touch.
+
+1. **No long dashes (—) in student-facing text**, including titles, tables, and nav lines. Use a colon, a period, or a comma; where a separator is needed use ` - ` in titles and ` | ` in nav lines. (Day ranges such as `2–4` keep their en dash.)
+2. **Titles:** `# Assignment - [Lesson Name]`, `# Activity - [Title]`, `# Review - [Concept Name]`, `# Git-X.N: Milestone Title`.
+3. **The title block's italic line is a one-sentence plain definition** of what the thing is (e.g. "Commits save a snapshot of the repository and link them into a history."; a doc may start "A commit is yet another Git object, but this one captures…"). No lesson type label (see Lesson classifications).
+4. **Explain like I'm five first**, technical detail after; minimal text; about three consolidated sections per lesson.
+5. **Duration and Due never contradict.** `**Due:**` is almost always before the class where the next assignment starts: "Before the start of next class" for a one-day lesson, "Before the start of the next lesson's class" when there is a `**Duration:**`. Never "End of this block" next to a Duration.
+6. **Back links name their destination, not the shared name.** A lesson's README, docs, and assignment are often all called the same thing ("Commits"), so write `← Back to [lesson](../README.md)` or `[Back to assignment](../ASSIGNMENT.md)`.
+7. **At most three checks and exactly one stretch goal** (next section).
+8. **Success criteria read `- [ ] **Item:** one sentence.`**
+9. **The README teaches the concept; the ASSIGNMENT holds the logistics.** A lesson README covers only the behavior and functionality of the thing as it is taught in class (what a commit holds, how the chain works, the steps in order). Whose code students work in (a classmate's fork), milestones, the shared interface, grading, and submission belong in ASSIGNMENT.md and its milestones, never in the README or its Check for Understanding.
+10. **Assignments and milestones say WHAT to build, not how.** State the behavior and the observable result (what files exist, what they contain, what HEAD holds, what counts as an error) plus a way to verify it. Do not require class names, method names, signatures, `static`, provided code templates, or step-by-step algorithms: the lesson README teaches how it works. (Later units will hand students interfaces to extend; until then, describe operations, not code.) **One exception:** the Git Project's shared `GitWrapper` class (`GitProject/Commits/milestones/Git-4-2.md`) is provided verbatim as a Java code block, and students must keep its class name and signatures, since it is the one standard way the whole class runs and grades every project.
+11. **Assignments open with `**Lesson:** [Name](README.md)`** on its own line above `**Duration:**`/`**Due:**`, the same bold-label format, never an italic `*Lesson: …*` line and never a dropdown. A day that revisits an earlier concept adds `**Review:** [Concept Name](../../Topic/Lesson/review/file.md)` on the very next line, linking the review fragment; the fragment is never pasted into the page (see "review/ folder").
+12. **Links are the standard blue everywhere** (the viewer styles every link the same: lesson, milestone, page-to-page, and nav). Never color a link with `<font>` or inline styles.
+13. **Commits are purple in diagrams** (`#a371f7` outline): a commit and the parent it points to use the same color. Trees are orange, blobs green; in branch diagrams a commit circle may take its branch's color.
 
 ## Check for Understanding and Stretch Goals
 
@@ -95,12 +113,13 @@ Folders whose names begin with `_` (e.g. `_admin/`, `_modules/`) are **ignored b
 
 ## Curated modules and course planning
 
-`_modules/<slug>.json` files are saved unit plans: an ordered selection of lessons (possibly spanning topics) with optional review fragments attached, plus unit number, base points, and scale factor. Format: `_admin/_configuration/module.schema.json`. Review fragments are stored as **references** (`{module, path, file}`), never inline content — the repo's markdown stays the single source of truth and the hub resolves content at import time. An assignment's `review` field holds one reference (legacy saves) **or a list of references** — several reviews can stack on a single day, each rendered as its own purple block in order; every consumer goes through `_review_refs` in `_admin/_hub/server.py` so both shapes work. In the Planner, attached reviews render as chips with a per-chip ✕; the three pickers are purely an "add another" tool and always reset after a pick.
+`_modules/<slug>.json` files are saved unit plans: an ordered selection of lessons (possibly spanning topics) with optional review fragments attached, plus unit number, base points, and scale factor. Format: `_admin/_configuration/module.schema.json`. Review fragments are stored as **references** (`{module, path, file}`), never inline content — the repo's markdown stays the single source of truth and the hub resolves content at import time. An assignment's `review` field holds one reference (legacy saves) **or a list of references** — several reviews can stack on a single day, each rendered as its own purple block in order; every consumer goes through `_review_refs` in `_admin/_hub/server.py` so both shapes work. In the Planner, attached reviews render as chips with a per-chip ✕; the three pickers are purely an "add another" tool and always reset after a pick. Attaching a review this way is legacy since 2026-10-21: new days link their review from the ASSIGNMENT.md header instead (see "review/ folder").
 
 - **The hub has two themes.** Dark is the default; the **Light theme** button at the top right switches to the HW look (learn.hw.com tokens: white surfaces over a khaki wash, black Source Sans type, brand-red primary buttons that turn gold, secondary-blue info accents). It is `<html data-theme="light">`, remembered in localStorage (`hubTheme`) and forceable with `?theme=light|dark`; every rule lives in `_admin/_hub/static/app.css` under `html[data-theme="light"]`. New hub CSS must use the `--bg/--surface/--border/--accent/--text/--muted` variables, and any hard-coded dark fill needs a light override in that block.
 - **The course hub** (`python3 _admin/_hub/server.py` → <http://127.0.0.1:5050>) is the one UI for everything: the **Module Planner** tab creates/edits `_modules/*.json` (with the same lesson file editor and Canvas-fidelity preview as the standalone planner), the **Year Schedule** tab drags modules/tests/finals onto real class dates (`_admin/_schedules/<teacher>.json`, one file per teacher), and the **Courses** tab talks to Canvas using the teacher's own token from the gitignored root `.env`.
 - **Sync is an upsert, and the sync-status dot is its dry run.** `/api/schedules/<name>/sync-block` plans a block with `_plan_module_sync` in `_admin/_hub/server.py`: every expected Canvas item (from `_expected_block_items`) is matched to what the course already holds by a **stable identity** — the `lesson=<Module>/<Lesson>` its live-view link composes (`viewer_lesson_in`), falling back to the un-numbered title — never by the `unit.day:` title alone. Matched items are updated in place (name, points, due/unlock dates, module link, and the live-view description when its link drifted), missing items are created, module order is restored, and items the schedule no longer expects are **unpublished, never deleted**. POST `{..., "dry_run": true}` returns the plan without writing; the Sync dialog shows it under the course picker. The status dot next to each Sync button runs the same planner against the course that schedule last synced to (`syncCourseId_<schedule>` in localStorage): green ✓ = nothing to do, yellow ● = the tooltip lists what a sync would create/update/unpublish, ↑ = no module on Canvas yet. Reads through the normal Canvas caches (`assignments_sync_*`, `module_items_v2_*`) and re-checks after every save and (live) after every sync.
 - **A sync can be limited to chosen days.** The Sync dialog lists a unit's class days with checkboxes (`/api/schedules/<name>/sync-items`, repo-only, keyed by the slot index every expected item now carries), with all / none / out-of-date links and a per-row "from here ↓" that selects a day and every day after it. With days ticked the request carries their slot indexes as `slots`, the button reads **Sync individual (N)**, and `_plan_module_sync` still matches every expected item (so module order can be restored) but only the chosen days land in create/update — the rest are reported under `skipped` with what a full sync would have done — and **nothing is retired**, so unticked days are left exactly as they are. The dry run re-plans for the selection and feeds the per-day glyphs in the dialog. The same days can be ticked directly on the board: every syncable row under an expanded unit has a checkbox (shift-click = that day and every day after), the unit's Sync button relabels to **Sync individual (N)**, and the dialog opens pre-selected; dialog changes paint back onto the board. No selection = the whole unit.
+- **Points: base per row, multiplier at sync, graded assignments held.** Canvas points = base × `scale_factor`^unit, where unit is the block's unit number in the schedule being synced. The base is a row's own `base_points` (the Module Planner's **Points** column), else the module's `points_per_assignment`: always 10 for a new module and no longer editable in the Planner, but an existing module keeps the value it already saved, and that value is what each row's box shows in grey. A quiz row defaults to the quiz's own points, unscaled. Points are shown as `raw (after bonus)`, e.g. `120 (160)`: under each Planner box (using the module's `unit_number`) and on each day in the Sync dialog (using the schedule's unit). Sync never changes `points_possible` on an assignment Canvas reports as `graded_submissions_exist` (raw scores stay, so every percentage would shift): the change shows as *held* in the preview, and only applies when the Sync dialog's **Also change points on assignments that already have grades** box is ticked (`repoint_graded`; `_points_allowed` in `server.py`). The standalone `_coursePlannerUI` planner does not know `base_points` and drops it on save, like `duration_override`.
 - **Half days:** the Planner's day-count dropdown includes **½ Day** — two consecutive ½-day assignments pair onto one class day, numbered with sub-indices `unit.day.0` (first) and `unit.day.1` on the board, in Canvas names, and in generated lesson plans. On disk they carry `"duration": 0.5` and `"sub": 0|1` (see module.schema.json); the Year Schedule gives both the same class date (the second rides as `co_day`), and an unpaired ½ day still consumes its whole slot. Sub-indices are recomputed by the planner's renumbering, never hand-maintained.
 - **Planner lesson rows are drag-reorderable and may interleave topics.** Each row has a `⋮⋮` drag handle; the table order IS the module order, so lessons from different selected topics can be intermixed day by day (with placeholders anywhere). The saved `assignments` array order is authoritative: loading a module rebuilds rows in saved order, appends repo lessons missing from the save unchecked, and reports saved-but-deleted lessons as stale. Adding/removing a topic chip preserves the existing row order and only appends/removes that topic's lessons. Tabs also refresh their repo-derived lists every time they're re-shown (`onShow` in `shell.js`), so topics/lessons created in the Module Editor appear in the Planner and Year Schedule palettes without a page reload.
 - **The Module Editor tab** edits the topic folders themselves — the content layer upstream of the Planner. Strict one-way flow: content → curated modules (references) → schedules (references); no tab writes upstream. Clicking a lesson opens everything in it (README, ASSIGNMENT, milestones, activities, reviews, demos, `assets/` uploads) in one workspace, with an impact banner showing which curated modules and schedules reference the lesson (`_scan_usage` in `server.py`). Structural ops (create/rename/delete/reorder lessons, new topics) regenerate every index file server-side (LESSONS.md, topic README table, root README bullets, the CLAUDE.md "Current topics" line, prev/next navs) and rewrite `_modules/*.json` references on rename; deleting a lesson or review file that a curated module still references is refused — detach it in the Planner first. Saving an activity file auto-regenerates its embedded `<details>` toggle in the README (matched by the standalone-file link), so the two intentional duplicates can't drift; creating one inserts the toggle above Check for Understanding, deleting one removes it. The workspace's file tabs are grouped into labeled rows (Lesson / Milestones / Activities / Reviews / Demos / Materials), and the new-review / new-activity dialogs include a one-click "Copy for AI" prompt: the lesson's full text (README + assignment + reviews + activities, from `/api/editor/bundle`) with an intention prompt appended, ready to paste into a chat. Uploads land in the lesson's `assets/` (filenames kebab-cased, extension whitelist) and return a ready-to-paste link snippet; asset deletion is refused while any markdown in the topic still links to the file.
@@ -142,20 +161,23 @@ Quiz questions never enter this public repo. They live in the private sibling **
 
 ### Live lesson view (`view.html`)
 
-**Canvas never holds rendered lesson content.** The hub used to bake each day's README, reviews, and ASSIGNMENT.md into the Canvas assignment description as HTML, which went stale the moment the repo changed. Now every assignment/page the hub creates is a short stub — a button plus an embedded frame — pointing at `view.html`, a single self-contained page at the repo root served by GitHub Pages:
+**Canvas never holds rendered lesson content.** The hub used to bake each day's README, reviews, and ASSIGNMENT.md into the Canvas assignment description as HTML, which went stale the moment the repo changed. Now every assignment/page the hub creates is a short stub, just a borderless full-width frame (no button or header above it; the frame's own bar has "Open full page"), pointing at `view.html`, a single self-contained page at the repo root served by GitHub Pages:
 
 ```
 https://harvard-westlake.github.io/Topics/view.html?ref=<git ref>&lesson=<Module>/<Lesson>[&review=<Module>/<Lesson>/review/<file>.md ...][&hw=0]
 https://harvard-westlake.github.io/Topics/view.html?ref=<git ref>&path=<Module>/<Lesson>/README.md
 ```
 
-The page fetches the markdown from `raw.githubusercontent.com` for that ref and renders it in the browser (marked, inlined — no build step, no server, no CDN except MathJax, loaded only when a page contains math). `lesson=` composes a class day exactly the way the hub used to: README (collapsed above the homework when there is an ASSIGNMENT.md), each `review=` fragment as a purple block, then ASSIGNMENT.md unless `hw=0`. `path=` shows one file; relative links to `.md` files and folders stay inside the viewer on the same ref, images load from raw GitHub, other files link to github.com. The repo is derived from the Pages host, so the file works unmodified in a fork.
+The page fetches the markdown from `raw.githubusercontent.com` for that ref and renders it in the browser (marked, inlined — no build step, no server, no CDN except MathJax, loaded only when a page contains math). `lesson=` composes a class day: each `review=` fragment first as a purple block labeled **Review (Before New Content)**, then ASSIGNMENT.md when there is one (unless `hw=0`), or the README when there is not. The lesson is **not** embedded on a homework day: the assignment's `**Lesson:** [Name](README.md)` line links to it, and that link opens the lesson in the viewer on the same ref. All links in the viewer (lesson, milestone, nav, and bar links) are the standard blue (`#0969da` light, `#4493f8` dark). `path=` shows one file; relative links to `.md` files and folders stay inside the viewer on the same ref, images load from raw GitHub, other files link to github.com. The repo is derived from the Pages host, so the file works unmodified in a fork.
 
 - **Content edits reach Canvas the moment they're pushed** — no re-sync is needed for prose changes. Re-sync when titles, points, dates, or the set of days change (the sync-status dot tracks those); Sync updates posted items in place, so re-syncing is always safe.
 - **Per-teacher branches:** a schedule's `ref` is the branch or tag its students see. Two teachers can run different branches of this one repo; a teacher takes main's changes by merging main into their branch (or by moving a tag). Only the ref named in the URL is ever shown — `main` is never silently substituted.
+- **Branch overrides (one unit or one day on another branch):** the Sync dialog's **Branch** picker points the whole unit (no days ticked) or only the ticked days at another branch, for this teacher's schedule only. Stored as a sequence block's `"branch"` and the schedule's `"lesson_refs": {"Module/Lesson": "<branch>"}` (keyed by lesson so renumbering can't break it); most specific wins: day → unit → schedule `ref`. `resolve_schedule` stamps each slot's effective `ref`, which `_expected_block_items` uses for its live-view link, so the status dot, Sync, and the board's student-view links agree, and the board tags overridden days. `/api/branches` reports which branches GitHub has: a branch that was never pushed (or whose newest commits weren't) shows students nothing new, and the picker says so.
 - **Building URLs:** always go through `viewer_url` / `live_description` in `_admin/_hub/server.py`; never hand-assemble a viewer link. `_admin/_configuration/course.json`'s `pages_url` is the Pages root (`PAGES_URL` in `mdrender.py`).
 - **Previewing the working tree:** the hub serves `/view.html` and `/raw/<path>` (markdown + images only, never dotfiles), and the Module Planner / Module Editor **Student View** button opens `view.html?src=/raw/&…` — the real page, reading saved files from this machine before they're pushed. `src` is honored only when same-origin, so nobody can render foreign HTML on the Pages domain; the viewer also strips scripts and event handlers from whatever it renders. Canvas Preview (server-side python-markdown) remains for editing a single file; the standalone `_admin/_coursePlannerUI` planner still previews the old baked form and is not used for sync.
 - **Sync-status** parses the ref out of each assignment's live-view link (`viewer_ref_in`) and reports drift against the schedule's `ref`; a description with no viewer link (a pre-live-view snapshot) is reported the same way.
+- **In-class-only days (no lesson).** A lesson folder whose README starts with `<!-- no-lesson … -->` (e.g. `GitProject/CodingStandards`) is a day that is only an in-class assignment. The README stays a short stub so the repo structure and `verify.py` hold, but the live view never shows it: it shows ASSIGNMENT.md alone, even for a `no_assignment` (no homework) day, which normally hides the assignment. Mark the module row `no_assignment` so Canvas gets a page with no points or due date, and write the assignment's Due as "End of class (in-class work, nothing to submit)".
+- **The viewer follows the branch too.** Pages only publishes main's `view.html`, so for any `ref` other than main a small script at the top of `<head>` fetches that branch's own `view.html` from raw GitHub and swaps it in (`document.write`), so a branch previews viewer changes as well as content. Skipped for `ref=main`, for `?src=` (the hub's local preview), and as the fallback `?viewer=self` when the branch has no `view.html`. This handoff itself had to reach main once (2026-10-12).
 - `view.html` follows the `demos/` rules (one self-contained file, keyboard-usable, light and dark themes) and is never listed in `LESSONS.md`, the root `README.md`, or module JSONs. It is served from `main` — a branch that changes the viewer itself only takes effect once merged.
 
 ### Placeholder ("Additional Day") entries
@@ -226,7 +248,9 @@ Column definitions:
 
 ## Lesson classifications
 
-Every README title block includes a lesson type label directly below the italic subtitle, inside the `<div align="center">` block. There are four labels that map to three colors:
+**Retired for lesson pages (2026-10).** Lesson README title blocks no longer carry a type label: remove it whenever a lesson is edited, and the live view hides any that remain. A day that has review fragments attached gets the label **Review (Before New Content)** on each review block instead, and the live view shows those reviews before the lesson and assignment. The labels below still group topics in the root README's Table of Contents.
+
+There are four labels that map to three colors:
 
 | Label | Color | Hex | Meaning |
 | --- | --- | --- | --- |
@@ -258,7 +282,7 @@ Every README must open with a centered title block, followed by a rule, then bod
 <div align="center">
 
 # Page Title
-*Short italic subtitle*
+*One plain sentence saying what this is.*
 
 </div>
 
@@ -293,14 +317,14 @@ When an `ASSIGNMENT.md` exists in the same folder as a `README.md`, the README m
 ```markdown
 [Assignment](ASSIGNMENT.md)
 
-← [Prev](../Prev/) — Next: [Next](../Next/)
+← [Prev](../Prev/) | Next: [Next](../Next/)
 ```
 
 Never add a placeholder link if no `ASSIGNMENT.md` exists — only include it when the file is actually present in that folder.
 
 ### review/ folder
 
-Every lesson folder may contain a `review/` subfolder. Inside it, any number of `.md` files can exist — one per concept being reviewed. These files are **composable review components**: the module importer can inject one or more of them at the beginning or end of any assignment, in any module, not just the one they live in.
+Every lesson folder may contain a `review/` subfolder. Inside it, any number of `.md` files can exist — one per concept being reviewed. These files are **composable review components**, reusable by any class day in any module, not just the one they live in. **Standard since 2026-10-21: a day uses a review by linking it**, with a `**Review:** [Concept Name](../../Topic/Lesson/review/file.md)` line directly under `**Lesson:**` in its ASSIGNMENT.md, so students (and the live view) get a link to the fragment instead of a copy pasted into the page. The Module Planner's `review` references in `_modules/*.json`, which the live view renders as inline purple blocks, are the legacy mechanism: they still work for days that already use them, but new days link instead.
 
 ```
 LessonFolder/
@@ -314,7 +338,7 @@ LessonFolder/
 **review file format:**
 
 ```markdown
-# Review — [Concept Name]
+# Review - [Concept Name]
 
 *Originally covered in [Lesson](../README.md)*
 
@@ -346,10 +370,10 @@ Rules for review files:
 Every assignment file follows this structure:
 
 ```markdown
-# Assignment — [Lesson Name]
+# Assignment - [Lesson Name]
 
-*Lesson: [Lesson Name](README.md)*
-
+**Lesson:** [Lesson Name](README.md)  
+**Review:** [Concept Name](../../Topic/Lesson/review/concept-name.md)  
 **Due:** [due date or relative deadline]
 
 ---
@@ -358,8 +382,8 @@ Every assignment file follows this structure:
 
 Confirm each of the following before submitting:
 
-- [ ] **Item** — one-sentence description of what "done" looks like
-- [ ] **Item** — ...
+- [ ] **Item:** one-sentence description of what "done" looks like.
+- [ ] **Item:** ...
 
 ---
 
@@ -388,7 +412,9 @@ When converting old-format assignments (pasted from Notion or elsewhere), always
 3. Specify exactly what the screenshot must show (and what disqualifies it)
 4. Clarify any ambiguous criteria with a `> [!NOTE]` callout
 
-The `*Lesson: [Lesson Name](README.md)*` line is required on every ASSIGNMENT.md — it's how a student looks up the day's context from inside Canvas. When the hub pushes this assignment to Canvas, the Canvas description is only a link to (and frame of) the live lesson view, which shows the README collapsed under "View the lesson for this assignment" above the reviews and this file (see "Live lesson view" and `live_description` in `_admin/_hub/server.py`) — that's pipeline behavior, not something to hand-author. Milestone files (`milestones/gp-X-N.md`) don't need their own lesson link — they already link to their parent ASSIGNMENT.md, which links to the lesson.
+The `**Lesson:** [Lesson Name](README.md)` line is required on every ASSIGNMENT.md, as the first line of the metadata block right under the title, formatted exactly like `**Duration:**` and `**Due:**` (bold label, colon, then the lesson name as the link; two trailing spaces end each line so they stack). It's how a student opens the day's lesson from inside Canvas. When the hub pushes this assignment to Canvas, the Canvas description is only a link to (and frame of) the live lesson view, which shows the reviews, then this file (the lesson is reached through that link, not embedded) (see "Live lesson view" and `live_description` in `_admin/_hub/server.py`) — that's pipeline behavior, not something to hand-author. Milestone files (`milestones/Git-X-N.md`) don't need their own lesson link — they already link to their parent ASSIGNMENT.md, which links to the lesson.
+
+The `**Review:**` line is optional and sits directly under `**Lesson:**`, in the same bold-label format: it appears only on a day that revisits an earlier concept, and links the review fragment (in the `review/` folder of the lesson that taught it, often in another topic). **Since 2026-10-21 this link is how a review reaches a class day**: students and the live view get a link to the fragment, never a copy of it pasted into the page.
 
 ## Content conventions
 
@@ -413,13 +439,14 @@ Applies to every file under a lesson's `starter/` folder, in any language — st
 
 ## Multi-day assignments
 
-When an assignment spans more than one class period, add a `**Duration:**` field on the line immediately after the title, before `**Due:**`:
+When an assignment spans more than one class period, add a `**Duration:**` field between `**Lesson:**` and `**Due:**`:
 
 ```markdown
-# Assignment — [Lesson Name]
+# Assignment - [Lesson Name]
 
+**Lesson:** [Lesson Name](README.md)  
 **Duration:** 3 class periods  
-**Due:** [due date or relative deadline]
+**Due:** Before the start of the next lesson's class
 ```
 
 In `LESSONS.md`, show the day range in the Day column using an en dash:
@@ -444,19 +471,18 @@ When an assignment contains multiple distinct milestones (typically multi-day wo
 LessonName/
   ASSIGNMENT.md            — menu only (links to docs + each milestone)
   milestones/
-    gp-X-1.md              — one file per milestone
-    gp-X-2.md
-    gp-X-3.md
+    Git-X-1.md              — one file per milestone
+    Git-X-2.md
+    Git-X-3.md
 ```
 
 **`ASSIGNMENT.md` menu format:**
 
 ```markdown
-# Assignment — [Lesson Name]
+# Assignment - [Lesson Name]
 
-*Lesson: [Lesson Name](README.md)*
-
-**Duration:** N class periods
+**Lesson:** [Lesson Name](README.md)  
+**Duration:** N class periods  
 **Due:** [due date]
 
 ---
@@ -465,7 +491,7 @@ LessonName/
 
 | Doc | Read before |
 |---|---|
-| [Doc Name](../Docs/doc-name.md) | Starting this assignment |
+| [Doc Name](docs/doc-name.md) | Starting this assignment |
 
 ---
 
@@ -473,20 +499,20 @@ LessonName/
 
 | Milestone | Description |
 |---|---|
-| [GP-X.1](milestones/gp-X-1.md) | One-line description |
-| [GP-X.2](milestones/gp-X-2.md) | One-line description |
+| [Git-X.1](milestones/Git-X-1.md) | One-line description |
+| [Git-X.2](milestones/Git-X-2.md) | One-line description |
 
 ---
 
 ## Success Criteria
 
-- [ ] **Item** — what "done" looks like overall
+- [ ] **Item:** what "done" looks like overall.
 ```
 
 **Individual milestone file format:**
 
 ```markdown
-# GP-X.N — Milestone Title
+# Git-X.N: Milestone Title
 
 *Part of the [LessonName](../ASSIGNMENT.md) assignment*
 
@@ -500,11 +526,11 @@ LessonName/
 
 ---
 
-**Commit summary:** `(GP-X.N): Short Description`
+**Commit summary:** `(Git-X.N): Short Description`
 
 ---
 
-← [GP-X.prev](gp-X-prev.md) — [Back to assignment](../ASSIGNMENT.md) — Next: [GP-X.next](gp-X-next.md) →
+← [Git-X.prev](Git-X-prev.md) | [Back to assignment](../ASSIGNMENT.md) | Next: [Git-X.next](Git-X-next.md) →
 ```
 
 Rules:
@@ -518,32 +544,36 @@ Rules:
 **When adding milestone files to an existing lesson (Common Operations checklist):**
 
 1. Create `LessonName/milestones/` folder
-2. Create `milestones/gp-X-N.md` for each milestone
+2. Create `milestones/Git-X-N.md` for each milestone
 3. Rewrite `LessonName/ASSIGNMENT.md` as a menu (links to docs + milestones table + overall success criteria)
 
 ---
 
-## Docs/ folders
+## docs/ folders (documentation lives with its lesson)
 
-A module may contain a `Docs/` folder for standalone reference documentation — conceptual explanations, data format specs, or key concept summaries that students consult throughout the module. These are not day lessons.
+**Documentation about a concept lives inside the lesson that teaches it**, in a lowercase `docs/` subfolder: everything about commits is in `GitProject/Commits/docs/`, everything about trees in `GitProject/Trees/docs/`. Never collect a module's concept docs into a separate top-level folder. (Moved 2026-10: `GitProject/Docs/` → `InitAndBlobs/docs/blobs.md`, `InitAndBlobs/docs/index-file.md`, `Trees/docs/trees.md`, `Commits/docs/commits.md`.)
 
-Rules for `Docs/` folders:
+```
+Commits/
+  README.md
+  ASSIGNMENT.md
+  docs/
+    commits.md        (one file per concept, kebab-case)
+  assets/
+    commits-and-parents.png   (doc images share the lesson's assets/, linked as ../assets/…)
+```
 
-- **Not added to `LESSONS.md`** — it is not a day lesson
-- **Not listed as a subtopic bullet in the root `README.md`** — it is not a course topic
-- **Linked from the module `README.md`** under a "Reference Documentation" section or table
-- **Linked from individual lesson READMEs** as relevant
-- The index file inside `Docs/` is named **`README.md`** (GitHub renders it automatically when browsing the folder)
-- Individual doc files use lowercase kebab-case: `blobs.md`, `index-file.md`
-- Doc files follow the standard title format (centered `<div>` block with `#` title and italic subtitle) but have **no lesson type label**, **no Check for Understanding section**, and **no bottom nav** — only a simple `← Back to [Docs](README.md)` link
-- Doc files use the same `##` / `###` color scheme as lesson pages
+Rules for `docs/` folders:
 
-**When adding a new module with reference documentation:**
+- **Not added to `LESSONS.md`, the root `README.md`, or module JSONs**: it is support material, like `review/` and `assets/`.
+- **A topic's doc and its lesson are identical.** The doc is the lesson README's teaching content (title block through the last concept section) with image paths as `../assets/…`, without Check for Understanding, Stretch Goals, the assignment link, or the nav, and ending with `← Back to [lesson](../README.md)`. When the README's teaching content changes, copy it to the doc again (`Commits/docs/commits.md` is the model).
+- **Never link a lesson's own doc from that lesson's README, ASSIGNMENT, or milestones:** the lesson is already on the page (milestones point at `../README.md` instead). A "Reference Docs" list appears only when a day pulls in *other* lessons, for example a Commits day that leans on the Trees doc. The module `README.md`'s "Reference Documentation" table still lists every doc.
+- Doc files follow the standard title format (centered `<div>` block with `#` title and a one-sentence definition) but have **no lesson type label**, **no Check for Understanding section**, and **no bottom nav**: only `← Back to [lesson](../README.md)`.
+- The doc exists so a teacher can build a different day around the same concept in the hub without pulling in that lesson's checks and assignment.
+- Doc files use the same `##` / `###` color scheme as lesson pages. Images go in the lesson's `assets/` and are linked `../assets/name.png`.
+- The hub's Module Editor shows them in a **Docs** tab row, and the "Copy for AI" bundle includes them.
 
-1. Create `ModuleName/Docs/README.md` — index of all docs in the folder
-2. Create individual doc files: `ModuleName/Docs/concept-name.md`
-3. Add a "Reference Documentation" table to `ModuleName/README.md` linking each doc file
-4. Do NOT add `Docs/` to `LESSONS.md` or the root `README.md`
+**Legacy module-level `Docs/` folders.** `WebProgramming/Docs/`, `AppDesign/Docs/`, and `MiniGPT/Docs/` still hold module-wide references (HTML/CSS/JS references, grading, design rationale) that several lessons share. Leave them until each is moved into the lesson it belongs to; `verify.py` still skips a folder named `Docs` when listing lessons.
 
 ---
 
@@ -600,7 +630,7 @@ LessonFolder/
 **Activity file format:**
 
 ```markdown
-# Activity — [Title]
+# Activity - [Title]
 
 *Concept: [one sentence naming the idea this activity proves]*
 
@@ -629,7 +659,7 @@ LessonFolder/
 </details>
 ```
 
-The `<details>` body is a **full, byte-for-byte duplicate** of the activity file's content (everything below its own `# Activity — [Title]` line) — GitHub markdown has no way to transclude another file, so this is the only way to get an inline toggle. This means every activity's content is intentionally maintained in two places; when you edit one, edit the other to match. **The one permitted divergence is asset paths:** an activity's diagram lives in the lesson's `assets/` folder, which the standalone file reaches as `../assets/…` and the README embed as `assets/…` — the hub's toggle auto-sync rewrites the prefix automatically (`_sync_activity_toggle` in `_admin/_hub/server.py`).
+The `<details>` body is a **full, byte-for-byte duplicate** of the activity file's content (everything below its own `# Activity - [Title]` line) — GitHub markdown has no way to transclude another file, so this is the only way to get an inline toggle. This means every activity's content is intentionally maintained in two places; when you edit one, edit the other to match. **The one permitted divergence is asset paths:** an activity's diagram lives in the lesson's `assets/` folder, which the standalone file reaches as `../assets/…` and the README embed as `assets/…` — the hub's toggle auto-sync rewrites the prefix automatically (`_sync_activity_toggle` in `_admin/_hub/server.py`).
 
 Rules:
 
@@ -673,7 +703,7 @@ A lesson is a new subfolder inside a module (e.g. `Terminal/PipeAndGREP/`).
 
 **Create:**
 
-1. `ModuleName/LessonName/README.md` — centered title block + type label + all lesson content woven with numbered `### Activity N` toggles + Check for Understanding / Stretch Goals sections + bottom nav
+1. `ModuleName/LessonName/README.md` — centered title block (one-sentence definition, no type label) + all lesson content woven with numbered `### Activity N` toggles + Check for Understanding / Stretch Goals sections + bottom nav
 2. `ModuleName/LessonName/activities/` — one numbered file per activity break referenced from the README; see **activities/ folders**
 3. `ModuleName/LessonName/ASSIGNMENT.md` — optional; if present, add `[Assignment](ASSIGNMENT.md)` link above the nav line in the README
 4. `ModuleName/LessonName/review/` — optional; see **Add review files** below
@@ -696,12 +726,13 @@ Review files are composable fragments in `LessonFolder/review/`. The module impo
 **Create:**
 
 1. `LessonFolder/review/descriptive-name.md` — named for what it covers, e.g. `branch-and-merge-basics.md` (add a `-N` suffix only when two files in the set cover the identical topic)
-   - Title: `# Review — [Concept Name]`
+   - Title: `# Review - [Concept Name]`
    - Source link: `*Originally covered in [Lesson Title](../README.md)*`
    - Terse reference table (commands/syntax only — no explanations)
    - `## Tasks` numbered list (concrete actions, not "Can you…" checkboxes)
    - Cumulative scope: cover content up to and including this lesson plus all prior lessons in the module
    - Progressive complexity: each file in a set must be harder than the last
+2. Link it from the ASSIGNMENT.md of each day that uses it: `**Review:** [Concept Name](<relative path to the file>)` directly under `**Lesson:**`. Do not attach it in the Module Planner as well, or the live view shows it twice.
 
 **No other files need updating.**
 
@@ -754,19 +785,19 @@ When updating content inside an existing lesson:
 Bottom nav lines use this pattern. Adapt based on position in the module:
 
 ```markdown
-← [Prev Lesson](../PrevLesson/) — Next: [Next Lesson](../NextLesson/)
+← [Prev Lesson](../PrevLesson/) | Next: [Next Lesson](../NextLesson/)
 ```
 
 First lesson in a module (no prev):
 
 ```markdown
-← Back to [Module Name](../) — Next: [NextLesson](../NextLesson/)
+← Back to [Module Name](../) | Next: [NextLesson](../NextLesson/)
 ```
 
 Last lesson in a module (no next):
 
 ```markdown
-← [PrevLesson](../PrevLesson/) — Back to [Module Name](../)
+← [PrevLesson](../PrevLesson/) | Back to [Module Name](../)
 ```
 
 When an `ASSIGNMENT.md` is present, the assignment link goes on the line immediately above the nav line with a blank line between them:
@@ -774,5 +805,5 @@ When an `ASSIGNMENT.md` is present, the assignment link goes on the line immedia
 ```markdown
 [Assignment](ASSIGNMENT.md)
 
-← [Prev](../Prev/) — Next: [Next](../Next/)
+← [Prev](../Prev/) | Next: [Next](../Next/)
 ```

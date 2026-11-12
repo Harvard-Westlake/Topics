@@ -1,7 +1,6 @@
 # Assignment — Initial Install
 
-*Lesson: [Initial Install](README.md)*
-
+**Lesson:** [Initial Install](README.md)  
 **Due:** Before the next school day
 
 ---

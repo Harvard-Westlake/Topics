@@ -1,7 +1,6 @@
 # Assignment — Decentralized Finance
 
-*Lesson: [Decentralized Finance](README.md)*
-
+**Lesson:** [Decentralized Finance](README.md)  
 **Due:** Next class
 
 ---

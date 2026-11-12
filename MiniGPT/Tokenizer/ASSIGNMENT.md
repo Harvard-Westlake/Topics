@@ -1,7 +1,6 @@
 # Assignment — Patterns Become Tokens
 
-*Lesson: [Patterns Become Tokens](README.md)*
-
+**Lesson:** [Patterns Become Tokens](README.md)  
 **Due:** End of Week 1
 
 ---

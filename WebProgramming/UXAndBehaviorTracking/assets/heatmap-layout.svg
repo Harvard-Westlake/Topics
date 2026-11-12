@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 380" width="760" height="380" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13">
+  <title>A heatmap laid over a widget page: hot where many users clicked, a hot spot on a heading that is not a link, and a scroll line below which most users never look</title>
+  <rect width="760" height="380" rx="10" fill="#0d1117"/>
+  <defs>
+    <radialGradient id="hot" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ff4d4d" stop-opacity="0.9"/>
+      <stop offset="45%" stop-color="#f0883e" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#f0883e" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="warm" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#e3b341" stop-opacity="0.75"/>
+      <stop offset="100%" stop-color="#e3b341" stop-opacity="0"/>
+    </radialGradient>
+    <marker id="gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8b949e"/>
+    </marker>
+  </defs>
+
+  <text x="30" y="36" fill="#e6edf3" font-weight="700" font-size="15">Your widget, with every visitor's clicks laid on top</text>
+
+  <!-- page -->
+  <rect x="30" y="52" width="360" height="310" rx="8" fill="#161b22" stroke="#30363d" stroke-width="2"/>
+  <rect x="50" y="70" width="320" height="30" rx="4" fill="#21262d"/>
+  <text x="62" y="90" fill="#e6edf3" font-weight="700">How Tides Work</text>
+  <rect x="50" y="114" width="320" height="80" rx="4" fill="#21262d"/>
+  <text x="62" y="160" fill="#8b949e">[ moon slider ]</text>
+  <rect x="140" y="208" width="140" height="32" rx="6" fill="#388bfd"/>
+  <text x="210" y="229" fill="#ffffff" text-anchor="middle" font-weight="700">Start quiz</text>
+  <rect x="50" y="300" width="320" height="44" rx="4" fill="#21262d"/>
+  <text x="62" y="327" fill="#8b949e">More examples...</text>
+
+  <!-- heat -->
+  <circle cx="200" cy="154" r="70" fill="url(#hot)"/>
+  <circle cx="210" cy="224" r="44" fill="url(#warm)"/>
+  <circle cx="120" cy="85" r="34" fill="url(#hot)"/>
+
+  <!-- scroll line -->
+  <line x1="30" y1="276" x2="390" y2="276" stroke="#79c0ff" stroke-width="2" stroke-dasharray="6 5"/>
+
+  <!-- callouts -->
+  <line x1="420" y1="85" x2="300" y2="85" stroke="#8b949e" stroke-width="1.5" marker-end="url(#gray)"/>
+  <text x="430" y="80" fill="#f0883e" font-weight="700">Dead clicks</text>
+  <text x="430" y="98" fill="#8b949e" font-size="12">users click the title, but it does nothing</text>
+
+  <line x1="420" y1="154" x2="275" y2="154" stroke="#8b949e" stroke-width="1.5" marker-end="url(#gray)"/>
+  <text x="430" y="149" fill="#ff4d4d" font-weight="700">Hot spot</text>
+  <text x="430" y="167" fill="#8b949e" font-size="12">the slider is what people came for</text>
+
+  <line x1="420" y1="276" x2="394" y2="276" stroke="#8b949e" stroke-width="1.5" marker-end="url(#gray)"/>
+  <text x="430" y="271" fill="#79c0ff" font-weight="700">Scroll line</text>
+  <text x="430" y="289" fill="#8b949e" font-size="12">most visitors never scroll below this</text>
+
+  <text x="430" y="330" fill="#8b949e" font-size="12">Hot = many users. Cold = nobody.</text>
+  <text x="430" y="348" fill="#8b949e" font-size="12">It shows what users do, not what they say.</text>
+</svg>

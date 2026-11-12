@@ -140,6 +140,7 @@ function buildTabs() {
 
   const lesson = (listing.files || []).map(f => btn(f, f)).join('') +
                  (listing.can_create || []).map(f => btn(f, '+ ' + f, ' create')).join('');
+  const docs = (listing.docs || []).map(f => btn(f, f.replace('docs/', ''))).join('');
   const milestones = (listing.milestones || []).map(f => btn(f, f.replace('milestones/', ''))).join('');
   const activities = (listing.activities || []).map(f => btn(f, f.replace('activities/', ''))).join('') +
                      newBtn('+ new activity', 'openNewActivity');
@@ -149,7 +150,7 @@ function buildTabs() {
   const materials = btn('::assets', 'Uploads (' + (listing.assets || []).length + ')');
 
   $('meTabs').innerHTML =
-    row('Lesson', lesson) + row('Milestones', milestones) +
+    row('Lesson', lesson) + row('Docs', docs) + row('Milestones', milestones) +
     row('Activities', activities) + row('Reviews', reviews) +
     row('Demos', demos) + row('Materials', materials);
 }
@@ -515,7 +516,7 @@ const REVIEW_AI_PROMPT =
   'activities if they are included. The review should cover a small section of this ' +
   'content and motivate the concepts here from another angle and with direct explanation ' +
   'and additional questions to check for understanding. Format it as a standalone review ' +
-  'fragment: "# Review — [Concept Name]", then "*Originally covered in [Lesson Title](../README.md)*", ' +
+  'fragment: "# Review - [Concept Name]", then "*Originally covered in [Lesson Title](../README.md)*", ' +
   'a terse reference table (commands/syntax only, no explanations), then a numbered ' +
   '"## Tasks" list of concrete actions the student performs.';
 
@@ -524,7 +525,7 @@ const ACTIVITY_AI_PROMPT =
   'attached reviews or activities if they are included. The activity should prove one ' +
   'concept from this content hands-on in a few minutes, motivating it from another angle ' +
   'than the lecture, with concrete numbered steps a student can follow without extra ' +
-  'instructions. Format: "# Activity — [Title]", then "*Concept: [one sentence naming ' +
+  'instructions. Format: "# Activity - [Title]", then "*Concept: [one sentence naming ' +
   'the idea this activity proves]*", then "## Task" with numbered steps.';
 
 let aiPromptFull = '';   // real multi-line prompt; the textarea shows a one-line condensed view

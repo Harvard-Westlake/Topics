@@ -1,52 +1,58 @@
-# Assignment — JavaScript and Coding with Cursor
+# Assignment - JavaScript on the Web
 
-*Lesson: [JavaScript and Coding with Cursor](README.md)*
-
-**Due:** Next class  
-**Points:** 5
+**Lesson:** [JavaScript on the Web](README.md)  
+**Due:** Before the start of next class
 
 ---
 
-## Objective
+## What to Build
 
-Add at least **two JavaScript files** to your website that include interaction of some type (buttons, timers, mouse events, keyboard input, etc.):
+Your live website reacts and moves: it borrows one package, answers at least two kinds of events, and runs one canvas animation.
 
-1. **File one — basic interactions.** Handle simple events like button clicks or keyboard input and visibly change the page in response.
-2. **File two — complex functionality.** Use logic to create a game, an interactive art project, or something similarly engaging. This is a good place to practice the Ask → Plan → Agent loop from the [lesson](README.md) — but you must understand and test everything the AI produces.
+| Result | What it means |
+|---|---|
+| **A borrowed package** | One npm package loaded from a CDN with a pinned version, used for something a visitor can see. |
+| **Two kinds of events** | At least two of: a click, a key press, a timer. Each one visibly changes the page. |
+| **A canvas animation** | A `<canvas>` drawn by a `requestAnimationFrame` loop, where at least one event changes what it draws. |
+| **No errors** | The page loads with no errors in the browser console, or you can explain every one that remains. |
+| **Live** | Everything works on your `*.web.app` address, not just on your laptop. |
 
-Link both files from your site's HTML, verify them in the browser with the console open, and deploy the updated site.
+**Verify:**
+
+1. Open your live site in a private window with the console open (`Cmd+Option+J` on Mac, `Ctrl+Shift+J` on Windows).
+2. Use each event. Each one visibly changes the page, and the animation reacts to at least one of them.
+3. Read the console. It is empty, or every error is one you can explain.
 
 ---
 
 ## Success Criteria
 
-Confirm each of the following before submitting:
-
-- [ ] **Two JavaScript files added** — both are linked from your HTML and actually run on the page
-- [ ] **Basic interaction works** — file one visibly responds to at least one user event
-- [ ] **Complex feature works** — file two implements game-like or creative logic, not just another button
-- [ ] **Zero console errors** — the page loads with an empty error console (or you can explain every error that remains)
-- [ ] **Deployed** — the interactions work on your live `*.web.app` URL, not just locally
+- [ ] **Package loaded:** one CDN script tag with a pinned version, and its code does something visible.
+- [ ] **Events work:** two different kinds of events each change the page.
+- [ ] **Animation runs:** a canvas loop draws frames, and an event changes it.
+- [ ] **No unexplained errors:** the console is empty, or each remaining error is explained.
+- [ ] **Deployed:** all of it works at your live `*.web.app` address.
 
 ---
 
 ## Submission
 
-Submit **both a text response and a screenshot** on Canvas.
+Submit **text and a screenshot** on Canvas.
 
 ### Text response
 
-In no more than **2 sentences**, explain the user interactions you implemented via JavaScript. Copy the stencil below, fill it in, and paste it into the Canvas text box:
+Copy the stencil below, fill in each line, and paste it into the Canvas text box:
 
 ```
-Live URL:                      https://
-Interactions (max 2 sent.):    
-Errors remaining (if any):     none / explanation
+Live URL:                        https://
+Package and what it does:        
+Events used (name each):         
+What the animation reacts to:    
+Errors remaining (if any):       none / explanation
 ```
 
 ### Screenshot
 
-Submit a screenshot of your page **with the developer console open**, showing that everything loaded with **0 errors**. If you have errors, explain why in the text response.
+Your live page with the console open, showing the animation and no errors.
 
-> **Note:**
-> A known acceptable case: pages that load outdated third-party libraries can throw initialization errors that are not your code's fault — for example, a library that tries to talk to the Ethereum blockchain will error out if the browser has no wallet extension installed. If your error is of that kind, say so and identify the library. An unexplained error in **your own** code disqualifies the screenshot.
+> **Note:** An error from a package is acceptable if you name the package and why it fails. An unexplained error in your own code is not.

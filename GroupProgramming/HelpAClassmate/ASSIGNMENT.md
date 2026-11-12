@@ -1,7 +1,6 @@
 # Assignment — Help a Classmate
 
-*Lesson: [Help a Classmate](README.md)*
-
+**Lesson:** [Help a Classmate](README.md)  
 **Duration:** 2 class periods  
 **Due:** End of each class period (one run per class, a different classmate's project each time)
 
