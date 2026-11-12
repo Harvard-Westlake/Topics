@@ -92,6 +92,7 @@ Build and ship a live, database-backed educational widget — hosted on Firebase
 - [Persistence and Intermediate Web](WebProgramming/PersistenceAndIntermediateWeb/) — why page state vanishes and the ways websites remember
 - [Intro to AI Coding](WebProgramming/InterfacingWithAI/) — Codex CLI setup and permissions, and teaching the AI your tastes before it builds anything
 - [Databases and Collections](WebProgramming/DatabasesAndCollections/) — JSON, Firestore collections and documents, reading and writing by name, and security rules
+- [User Flow and Logging](WebProgramming/UserFlowAndLogging/) — one specific user, the flow as a chart, and how sites log what visitors do
 - [The Learning Widget Project](WebProgramming/LearningWidget/) — plan and build an educational widget published via GitHub and Firebase
 - [UX and Behavior Tracking](WebProgramming/UXAndBehaviorTracking/) — engagement, navigation, user flow, and heatmaps
 - [Widget Iteration from Feedback](WebProgramming/WidgetIteration/) — a shrinking feedback.md and a zero-error console

@@ -408,4 +408,4 @@ There is no single right answer, and it is yours to work out. Start by making su
 
 [Assignment](ASSIGNMENT.md)
 
-← [Intro to AI Coding](../InterfacingWithAI/) | Next: [The Learning Widget Project](../LearningWidget/)
+← [Intro to AI Coding](../InterfacingWithAI/) | Next: [User Flow and Logging](../UserFlowAndLogging/)

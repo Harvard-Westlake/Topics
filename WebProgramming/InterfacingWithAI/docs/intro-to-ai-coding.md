@@ -447,4 +447,4 @@ Managers who skip straight to Agent get code they do not understand, solving a p
 
 ---
 
-← Back to [lesson](../../README.md)
+← Back to [lesson](../README.md)

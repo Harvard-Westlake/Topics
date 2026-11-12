@@ -8,9 +8,10 @@
 | 4 | Persistence and Intermediate Web | [PersistenceAndIntermediateWeb/](PersistenceAndIntermediateWeb/) |
 | 5 | Intro to AI Coding | [InterfacingWithAI/](InterfacingWithAI/) |
 | 6 | Databases and Collections | [DatabasesAndCollections/](DatabasesAndCollections/) |
-| 7–8 | The Learning Widget Project | [LearningWidget/](LearningWidget/) |
-| 9 | UX and Behavior Tracking | [UXAndBehaviorTracking/](UXAndBehaviorTracking/) |
-| 10 | Widget Iteration from Feedback | [WidgetIteration/](WidgetIteration/) |
-| 11 | Collaborative Peer Review | [PeerReview/](PeerReview/) |
-| 12 | Widget Presentations | [WidgetPresentations/](WidgetPresentations/) |
+| 7 | User Flow and Logging | [UserFlowAndLogging/](UserFlowAndLogging/) |
+| 8–9 | The Learning Widget Project | [LearningWidget/](LearningWidget/) |
+| 10 | UX and Behavior Tracking | [UXAndBehaviorTracking/](UXAndBehaviorTracking/) |
+| 11 | Widget Iteration from Feedback | [WidgetIteration/](WidgetIteration/) |
+| 12 | Collaborative Peer Review | [PeerReview/](PeerReview/) |
+| 13 | Widget Presentations | [WidgetPresentations/](WidgetPresentations/) |
 | Extra | Debugging JavaScript | [DebuggingJavaScript/](DebuggingJavaScript/) |
