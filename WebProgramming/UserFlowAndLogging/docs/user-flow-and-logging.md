@@ -11,15 +11,15 @@
 
 Before anything gets built, picture one person using it.
 
-- **One user:** a specific person, and what they see and do in their first ten seconds.
+- **One user:** a specific person, what they see and do in their first ten seconds, and how fast the page has to appear.
 - **The flow:** every step and every choice, drawn as a chart, ending in what the user leaves with.
-- **Logging:** how a site records clicks, data, and time, so you can see whether the flow you planned is the flow people take.
+- **Logging:** how a site records clicks, data, and time, and how a heatmap turns that record into a picture, so you can see whether the flow you planned is the flow people take.
 
 ## <font color="#388bfd">Table of Contents</font>
 
-1. [Start with one user and their first ten seconds](#start-with-one-user)
+1. [Start with one user, their first ten seconds, and how fast the page must load](#start-with-one-user)
 2. [The flow, the loop, and the outcome you want for the user](#the-flow-and-the-loop)
-3. [Logging: how sites record interactions, data, and time on the site](#logging)
+3. [Logging and heatmaps: how sites record interactions, data, and time on the site](#logging)
 
 ## <font color="#388bfd">Start With One User</font>
 
@@ -39,6 +39,22 @@ The **first ten seconds** decide whether they stay. In that time, the screen alo
 - **Why would I stay?**
 
 If the page needs instructions to answer them, the design is not done yet.
+
+### <font color="#79c0ff">Load time</font>
+
+The ten seconds start when the user taps the link, not when the page finishes loading. Every second spent waiting is a second they are not using your app, and many leave before it appears.
+
+- **The target:** the main content is on screen within about **2.5 seconds**.
+- **Social apps are the hardest case.** A link tapped inside a feed opens while the user is mid-scroll, with the next video one swipe away. A slow page loses to the feed.
+- **Speed decides purchases.** The companies that measured it report the same thing: faster pages get more people all the way to buying.
+
+| What was measured | Result | Who measured it |
+|---|---|---|
+| Mobile visitors who leave a page that takes more than 3 seconds to load | 53% | [Google](https://www.thinkwithgoogle.com/marketing-strategies/app-and-mobile/mobile-page-speed-new-industry-benchmarks/) |
+| Chance a visitor leaves at once when load time goes from 1 second to 3 seconds | 32% higher | [Google](https://www.thinkwithgoogle.com/data/page-load-time-statistics/) |
+| Visitors who abandon a link tapped in the Facebook feed after 3 seconds of delay | As many as 40% | [Facebook](https://about.fb.com/news/2017/08/news-feed-fyi-showing-you-stories-that-link-to-faster-loading-webpages/) |
+| Purchases on retail sites when the mobile site got 0.1 seconds faster | 8.4% more purchases, and 9.2% more spent per order | [Deloitte, for Google](https://www.deloitte.com/ie/en/services/consulting/research/milliseconds-make-millions.html) |
+| Pinterest sign-ups when the wait for the mobile page was cut by 60% | 40% more | [Pinterest](https://medium.com/pinterest-engineering/driving-user-growth-with-performance-improvements-cfc50dafadd7) |
 
 ### <font color="#79c0ff">Activity 1</font>
 <details>
@@ -62,24 +78,9 @@ If the page needs instructions to answer them, the design is not done yet.
 
 ## <font color="#388bfd">The Flow and the Loop</font>
 
-A **user flow** is the whole visit, step by step. Draw it as a chart like the one at the top of this page:
-
-| Shape | Means |
-|---|---|
-| **Box** | Something the user sees or does. |
-| **Diamond** | A choice. Every option needs its own arrow. |
-| **Arrow** | What happens next. A box with no arrow out is a dead end. |
-| **Last box** | The outcome: what the user leaves with. |
-
-The **outcome** is the reason the app exists, written from the user's side: a laugh, a score to beat, a thing they made, a fact they will remember. Name it, then add the details that make it land: what they see at the end, and what they can do with it.
-
-Most engaging apps have a **core loop**: one action the user repeats and wants to repeat. Not every app needs one.
+A **user flow** is the whole visit, step by step, ending in what the user leaves with. Most apps repeat one **core loop**. A one-time, unique experience is just as good, as long as you call it out.
 
 ![Two panels. On the left, a core loop: a dot circles through do the action, see what happened, get a small reward, and want to go again, with the question: is the fifth time as good as the first? On the right, a one-time experience: a dot travels once from arrive, up to the moment, and down to a clear ending, with the question: what is the moment, and how does the user know it is done? A caption says either is a good plan, and that saying this is a one-time experience and that is intended is a complete answer.](../assets/loop-or-one-time.svg)
-
-> **Note:** A one-time, unique experience is a completely good plan. Call it out: say that it happens once, what the moment is, and how the user knows it is over.
-
-An AI can draw the chart for you in seconds. That is fine, as long as the chart says exactly what you planned. You are the source of truth, so check it box by box.
 
 ### <font color="#79c0ff">Activity 2</font>
 <details>
@@ -130,6 +131,16 @@ How logging is usually handled:
 `console.log` is logging too. It is the version only you can see, on your own machine.
 
 > **Warning:** Log what people do, never who they are. No names, no passwords, nothing typed into a text box, and tell visitors that you collect it.
+
+### <font color="#79c0ff">Heatmaps</font>
+
+A **heatmap** is the log drawn as a picture. The events of many visitors are laid over the page: hot colors where activity piles up, cold where nothing happens.
+
+![A screenshot of the German Wikipedia main page with an eye-tracking heat map laid over it. The article of the day in the upper left glows red and orange, where people looked longest. The news column on the right and the lower boxes are yellow and green. The sidebar of links on the far left, the search box, and the footer stay blue or untouched, because almost nobody looked there.](../assets/eyetracking-heatmap-wikipedia.jpg)
+
+<sub>Example: where people looked on the Wikipedia main page. Image by Tschneidr, [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0), from [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Eyetracking_heat_map_Wikipedia.jpg). More pictures: the [F-shaped reading heatmaps](https://www.nngroup.com/articles/f-shaped-pattern-reading-web-content-discovered/) and [scroll attention charts](https://www.nngroup.com/articles/scrolling-and-attention/) from Nielsen Norman Group.</sub>
+
+There are three types: the **click map**, the **scroll map**, and the **move map**.
 
 ### <font color="#79c0ff">Activity 3</font>
 <details>

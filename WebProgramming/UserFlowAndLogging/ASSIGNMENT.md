@@ -22,7 +22,8 @@ A full working web app that is interesting, engaging, and enjoyable. Your idea, 
    - **One specific user:** a real person in a real moment.
    - **Arrival and the first ten seconds:** what they see, what they understand, and the first thing they do.
    - **The core loop:** the one action they repeat, and why the fifth time is as good as the first. A one-time, unique experience is OK, as long as you call it out and say how it ends.
-   - **The flow:** every step and every choice, and where each option leads.
+   - **The flow for the core use:** tell the AI your user flow, step by step, for the main thing people come to do.
+   - **Common edge cases:** tell it what happens when things go differently: a wrong or empty input, a first visit with nothing to show yet, a refresh or a back button halfway through.
    - **The outcome:** what the user leaves with, and the details that make it land.
 3. **Get the flowchart.** The AI may draw it, saved in your repository as `FLOW.md`, as long as it is totally aligned with your plan. Check it box by box and have the AI fix anything you did not say.
 4. **Then build.** Have the AI build the app from the plan, and put it live.
@@ -36,7 +37,7 @@ A full working web app that is interesting, engaging, and enjoyable. Your idea, 
 ## Success Criteria
 
 - [ ] **Working app:** the live link opens and the whole flow works from arrival to outcome.
-- [ ] **Planned before built:** `prompts.md` shows the user, the first ten seconds, the loop or one-time experience, the flow, and the outcome discussed before the prompt that asks for the build.
+- [ ] **Prompts that solve the problem:** your prompts work out who the user is, their first ten seconds, the loop or one-time experience, the flow, and the outcome, before the prompt that asks for the build.
 - [ ] **Chart matches plan:** `FLOW.md` shows every step and choice you described, and nothing you did not.
 - [ ] **Exact prompts:** `prompts.md` holds every prompt you sent, in your exact words, unedited.
 
@@ -44,11 +45,11 @@ A full working web app that is interesting, engaging, and enjoyable. Your idea, 
 
 ## Submission
 
-Submit **text** on Canvas. Copy the stencil below, fill in each line, and paste it into the Canvas text box:
+Submit your **`prompts.md`** on Canvas: paste the whole file into the text box, with your live app link on the first line.
 
-```
-Live app link:        
-Repository link:      
-Loop or one-time:     
-prompts.md (paste the whole file below this line):
-```
+Before you submit, read your own prompts from top to bottom and answer honestly:
+
+- **Do your prompts actually try to solve these issues?** Who the user is, what they do when they arrive, what keeps them there, where each choice leads, and what they leave with.
+- **Or do they merely try to fulfill the requirements, using work you already did?** A prompt like "write a user flow for the app we made" fills in a requirement after the fact. It does not solve anything.
+
+You need to have GOOD answers to these questions, and your prompts need to show the behavior: thinking about the user first, in your own words, and building second. That is what we read for.
