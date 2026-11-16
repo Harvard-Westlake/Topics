@@ -155,6 +155,16 @@
   .md blockquote { padding: .85em 1em; color: var(--quote-fg); background: var(--quote-bg);
                    border-left: 3px solid var(--quote-border); border-radius: var(--radius); }
   .md blockquote > :last-child { margin-bottom: 0; }
+  /* Picture pairs: name-eli5.svg is shown, and name-technical.svg fades in over it on hover, focus, or tap. */
+  .md .swap { position: relative; display: inline-block; max-width: 100%; vertical-align: top; cursor: help; border-radius: 10px; }
+  .md .swap:focus-visible { outline: 2px solid var(--link); outline-offset: 3px; }
+  .md .swap img { display: block; }
+  .md .swap .swap-tech { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity .18s; }
+  .md .swap:hover .swap-tech, .md .swap:focus-visible .swap-tech, .md .swap.show-tech .swap-tech { opacity: 1; }
+  .md .swap::after { content: "Simple version. Hover for the technical one."; position: absolute; top: 10px; right: 12px; padding: 2px 10px;
+                     border-radius: 999px; font-size: 12px; line-height: 1.6; color: #fff; background: rgba(0, 0, 0, .62); pointer-events: none; }
+  .md .swap:hover::after, .md .swap:focus-visible::after, .md .swap.show-tech::after { content: "Technical version"; background: #7c3aed; }
+  @media (prefers-reduced-motion: reduce) { .md .swap .swap-tech { transition: none; } }
   /* The running Mini-Site Project thread: a purple callout and a purple success criterion. */
   .md blockquote.mini-site { background: var(--mini-bg); border-left-color: var(--mini); }
   .md .mini-site font { color: var(--mini); }
@@ -460,6 +470,20 @@ if(__exports != exports)module.exports = exports;return module.exports}));
     root.querySelectorAll('img[src], video[src], audio[src], source[src]').forEach(function (el) {
       var s = el.getAttribute('src');
       if (s && !isAbsolute(s)) el.setAttribute('src', rawUrl(resolvePath(base, decodeURIComponent(s))));
+    });
+    // A picture named *-eli5.svg has a twin named *-technical.svg, the same size: stack the twin on top, hidden until hover.
+    root.querySelectorAll('img[src]').forEach(function (img) {
+      var src = img.getAttribute('src');
+      if (!/-eli5\.svg(\?|#|$)/.test(src)) return;
+      var wrap = document.createElement('span');
+      wrap.className = 'swap'; wrap.tabIndex = 0;
+      wrap.setAttribute('aria-label', 'Simple version shown. Hover, focus, or tap for the technical version.');
+      img.parentNode.insertBefore(wrap, img); wrap.appendChild(img);
+      var tech = document.createElement('img');
+      tech.className = 'swap-tech'; tech.alt = ''; tech.setAttribute('aria-hidden', 'true');
+      tech.src = src.replace(/-eli5\.svg/, '-technical.svg');
+      wrap.appendChild(tech);
+      wrap.addEventListener('click', function () { wrap.classList.toggle('show-tech'); });
     });
     root.querySelectorAll('source[srcset], img[srcset]').forEach(function (el) {
       var out = el.getAttribute('srcset').split(',').map(function (part) {

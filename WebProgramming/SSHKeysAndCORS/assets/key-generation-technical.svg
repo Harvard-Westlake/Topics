@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 910 488" width="910" height="488" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12">
+<title>Making a key pair, technical version</title>
+<style>@keyframes cov{0%,3%{transform:scaleX(1)}17%,100%{transform:scaleX(0)}} .cov{transform:scaleX(0);transform-box:fill-box;transform-origin:right center;animation:cov 16s steps(21,end) infinite} @keyframes cur{0%,3%{transform:translateX(-152px);opacity:1}17%,21%{transform:translateX(0);opacity:1}22%,100%{transform:translateX(0);opacity:0}} .cur{opacity:0;animation:cur 16s steps(21,end) infinite} @keyframes ent{0%,18%{opacity:0}19%,24%{opacity:1}26%,100%{opacity:0}} .ent{opacity:0;animation:ent 16s linear infinite} @keyframes o1{0%,24%{opacity:0}26%,96%{opacity:1}100%{opacity:0}} .o1{animation:o1 16s linear infinite} @keyframes o2{0%,30%{opacity:0}32%,96%{opacity:1}100%{opacity:0}} .o2{animation:o2 16s linear infinite} @keyframes o3{0%,60%{opacity:0}62%,96%{opacity:1}100%{opacity:0}} .o3{animation:o3 16s linear infinite} @keyframes kf{0%,54%{opacity:0.15}56%,96%{opacity:1}100%{opacity:0.15}} .kf{animation:kf 16s linear infinite} @keyframes pair{0%,60%{opacity:0.1}62%,96%{opacity:1}100%{opacity:0.1}} .pair{animation:pair 16s linear infinite} @keyframes n0{0%{opacity:0;transform:translate(0,0)}40%{opacity:0;transform:translate(0,0)}40.5%{opacity:1}54%{opacity:1;transform:translate(380px,6px)}55%,100%{opacity:0;transform:translate(380px,6px)}} .n0{opacity:0;animation:n0 16s linear infinite} @keyframes n1{0%{opacity:0;transform:translate(0,0)}40%{opacity:0;transform:translate(0,0)}40.5%{opacity:1}54%{opacity:1;transform:translate(566px,6px)}55%,100%{opacity:0;transform:translate(566px,6px)}} .n1{opacity:0;animation:n1 16s linear infinite} @media (prefers-reduced-motion: reduce){*{animation:none!important}}</style>
+<defs><marker id="m8b949e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8b949e"/></marker><marker id="mffc2e2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#ffc2e2"/></marker></defs>
+<rect width="910" height="488" rx="10" fill="#0d1117"/>
+<text x="30" y="36" fill="#e6edf3" font-size="17" font-weight="700">Making a key pair: one person, one command, two key files</text>
+<text x="30" y="56" fill="#8b949e" font-size="12">ssh-keygen draws 256 random bits and writes them out as a private key and the public key derived from it.</text>
+<rect x="30" y="80" width="850" height="318" rx="14" fill="#0b0f14" stroke="#8b949e" stroke-width="2"/>
+<path d="M8 398 H902 L878 422 H32 Z" fill="#161b22" stroke="#8b949e" stroke-width="2" stroke-linejoin="round"/>
+<circle cx="58" cy="99" r="7" fill="none" stroke="#388bfd" stroke-width="2"/><path d="M45 114 a13 12 0 0 1 26 0" fill="none" stroke="#388bfd" stroke-width="2" stroke-linecap="round"/>
+<text x="80" y="104" fill="#388bfd" font-size="13" font-weight="700">Maya's laptop</text>
+<text x="80" y="119" fill="#8b949e" font-size="10.5">All local: this command opens no network connection.</text>
+<rect x="50" y="132" width="410" height="250" rx="8" fill="#010409" stroke="#30363d" stroke-width="1"/>
+<text x="64" y="150" fill="#8b949e" font-size="10">terminal</text>
+<line x1="50" y1="158" x2="460" y2="158" stroke="#30363d" stroke-width="1"/>
+<text x="64" y="186" fill="#8b949e" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">maya@laptop ~ $</text>
+<text x="180" y="186" fill="#e6edf3" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">ssh-keygen -t ed25519</text>
+<rect class="cov" x="178" y="173" width="156" height="18" fill="#010409"/>
+<rect class="cur" x="333" y="174" width="7" height="15" fill="#e6edf3"/>
+<g class="ent"><rect x="378" y="170" width="70" height="24" rx="5" fill="#161b22" stroke="#e6edf3" stroke-width="1.4"/><text x="413" y="186" text-anchor="middle" fill="#e6edf3" font-size="11" font-weight="700">Enter ⏎</text></g>
+<text x="64" y="214" fill="#e6edf3" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" class="o1">Generating public/private ed25519 key pair.</text>
+<g class="o2">
+<text x="64" y="242" fill="#e3b341" font-size="13" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">83 1f a7 c2 09 5e d4 b6 20 ...</text>
+<text x="64" y="260" fill="#8b949e" font-size="10.5">256 random bits. The real command never prints them.</text>
+</g>
+<text x="64" y="294" fill="#e6edf3" font-size="11.5" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" class="o3">Saved id_ed25519 and id_ed25519.pub in ~/.ssh</text>
+<text x="64" y="322" fill="#8b949e" font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" class="o3">maya@laptop ~ $</text>
+<path d="M490 146 V382 H856 V146 H643.72 L631.72 132 H490 Z" fill="none" stroke="#8b949e" stroke-width="1.6" stroke-linejoin="round"/>
+<text x="506" y="162" fill="#8b949e" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">~/.ssh/</text>
+<g class="kf">
+<path d="M545 180 H599 L615 196 V268 H545 Z M599 180 V196 H615" fill="none" stroke="#db61a2" stroke-width="2" stroke-linejoin="round"/>
+<g transform="translate(568,228) scale(1.0)" fill="none" stroke="#db61a2" stroke-width="2.4" stroke-linecap="round"><circle cx="0" cy="0" r="7"/><path d="M7 0 H27 M21 0 V6 M26 0 V5"/></g>
+<text x="580" y="292" text-anchor="middle" fill="#db61a2" font-size="12.5" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">id_ed25519</text>
+<text x="580" y="310" text-anchor="middle" fill="#e6edf3" font-size="10.5">32 secret bytes, mode 600</text>
+<text x="580" y="326" text-anchor="middle" fill="#8b949e" font-size="10.5">signs. Never copied.</text>
+</g>
+<g class="kf">
+<path d="M731 180 H785 L801 196 V268 H731 Z M785 180 V196 H801" fill="none" stroke="#ffc2e2" stroke-width="2" stroke-linejoin="round"/>
+<g transform="translate(754,228) scale(1.0)" fill="none" stroke="#ffc2e2" stroke-width="2.4" stroke-linecap="round"><circle cx="0" cy="0" r="7"/><path d="M7 0 H27 M21 0 V6 M26 0 V5"/></g>
+<text x="766" y="292" text-anchor="middle" fill="#ffc2e2" font-size="12.5" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">id_ed25519.pub</text>
+<text x="766" y="310" text-anchor="middle" fill="#e6edf3" font-size="10.5">one line of text, mode 644</text>
+<text x="766" y="326" text-anchor="middle" fill="#8b949e" font-size="10.5">checks signatures</text>
+</g>
+<g class="pair">
+<line x1="622" y1="224" x2="724" y2="224" stroke="#ffc2e2" stroke-width="1.6" marker-end="url(#mffc2e2)"/>
+<text x="673" y="356" text-anchor="middle" fill="#e6edf3" font-size="10.5">public is computed from private. It cannot be reversed.</text>
+</g>
+<circle class="n0" cx="200" cy="238" r="6" fill="#db61a2"/>
+<circle class="n1" cx="200" cy="238" r="6" fill="#ffc2e2"/>
+<rect x="30" y="436" width="850" height="34" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+<text x="46" y="458" fill="#e6edf3" font-size="11.5">Ed25519: the private key is a random 256-bit seed. Working the seed back out of the public key is not feasible.</text>
+</svg>

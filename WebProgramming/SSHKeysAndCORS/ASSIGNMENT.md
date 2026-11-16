@@ -109,6 +109,7 @@ Write `PLAN.md` in your website's repository and answer each of these:
 - [ ] **Rules read:** you can state your address, your port, how a service stays up, and what the proxy does for you.
 - [ ] **Folders made by hand:** your project folder and at least two folders inside it exist under `~/projects`.
 - [ ] **A plan for many people:** `PLAN.md` answers all five questions for people using your site at the same moment.
+- [ ] **Site link submitted:** your submission starts with a working link to your current live site.
 - [ ] **No login anywhere:** the server's username and password appear nowhere in your repository, screenshot, or submission.
 - [ ] <font color="#a371f7">**Mini-Site Project:**</font> you worked on your app with today's context and pushed the latest to GitHub and Firebase.
 
@@ -120,9 +121,10 @@ Submit **text and a screenshot** on Canvas.
 
 ### Text response
 
-Copy the stencil below, fill in each line, and paste it into the Canvas text box, with your whole `PLAN.md` pasted underneath:
+Copy the stencil below, fill in each line, and paste it into the Canvas text box, with your whole `PLAN.md` pasted underneath. The link to your current live site is required: a submission without it is not complete.
 
 ```
+Link to my current live site (required): 
 My address on the box:                  
 The port my service must listen on:     
 What stays up after I log out, and how: 

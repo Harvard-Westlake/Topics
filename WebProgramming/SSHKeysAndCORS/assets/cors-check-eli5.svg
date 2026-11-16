@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 910 466" width="910" height="466" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12">
+<title>CORS, plain version</title>
+<style>@keyframes cq0{0%,4%{opacity:0.12}6%,96%{opacity:1}100%{opacity:0.12}} .cq0{animation:cq0 16s linear infinite} @keyframes cd0{0%{opacity:0;transform:translate(0,0)}4%{opacity:0;transform:translate(0,0)}4.5%{opacity:1}18%{opacity:1;transform:translate(424px,0px)}19%,100%{opacity:0;transform:translate(424px,0px)}} .cd0{opacity:0;animation:cd0 16s linear infinite} @keyframes cr0{0%,21%{opacity:0.12}23%,96%{opacity:1}100%{opacity:0.12}} .cr0{animation:cr0 16s linear infinite} @keyframes ce0{0%{opacity:0;transform:translate(0,0)}21%{opacity:0;transform:translate(0,0)}21.5%{opacity:1}36%{opacity:1;transform:translate(-432px,0px)}37%,100%{opacity:0;transform:translate(-432px,0px)}} .ce0{opacity:0;animation:ce0 16s linear infinite} @keyframes cv0{0%,37%{opacity:0}39%,96%{opacity:1}100%{opacity:0}} .cv0{animation:cv0 16s linear infinite} @keyframes cq1{0%,50%{opacity:0.12}52%,96%{opacity:1}100%{opacity:0.12}} .cq1{animation:cq1 16s linear infinite} @keyframes cd1{0%{opacity:0;transform:translate(0,0)}50%{opacity:0;transform:translate(0,0)}50.5%{opacity:1}64%{opacity:1;transform:translate(424px,0px)}65%,100%{opacity:0;transform:translate(424px,0px)}} .cd1{opacity:0;animation:cd1 16s linear infinite} @keyframes cr1{0%,67%{opacity:0.12}69%,96%{opacity:1}100%{opacity:0.12}} .cr1{animation:cr1 16s linear infinite} @keyframes ce1{0%{opacity:0;transform:translate(0,0)}67%{opacity:0;transform:translate(0,0)}67.5%{opacity:1}82%{opacity:1;transform:translate(-498px,0px)}83%,100%{opacity:0;transform:translate(-498px,0px)}} .ce1{opacity:0;animation:ce1 16s linear infinite} @keyframes cv1{0%,83%{opacity:0}85%,96%{opacity:1}100%{opacity:0}} .cv1{animation:cv1 16s linear infinite} @media (prefers-reduced-motion: reduce){*{animation:none!important}}</style>
+<defs><marker id="m8b949e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8b949e"/></marker><marker id="m388bfd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#388bfd"/></marker><marker id="mf85149" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#f85149"/></marker><marker id="m3fb950" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#3fb950"/></marker></defs>
+<rect width="910" height="466" rx="10" fill="#0d1117"/>
+<text x="30" y="36" fill="#e6edf3" font-size="17" font-weight="700">CORS: the browser checks before your page may read the answer</text>
+<text x="30" y="56" fill="#8b949e" font-size="12">Your page asks a different website for something. Your browser stands guard and looks for a permission note on the answer.</text>
+<rect x="30" y="84" width="236" height="300" rx="8" fill="#161b22" stroke="#388bfd" stroke-width="1.5"/>
+<text x="148" y="106" text-anchor="middle" fill="#388bfd" font-size="13" font-weight="700">Your browser</text>
+<rect x="44" y="118" width="146" height="252" rx="8" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
+<text x="117" y="142" text-anchor="middle" fill="#8b949e" font-size="10.5">Your page, from</text>
+<text x="117" y="160" text-anchor="middle" fill="#e6edf3" font-size="11" font-weight="700">my-site</text>
+<rect x="200" y="118" width="56" height="252" rx="8" fill="#0d1117" stroke="#e3b341" stroke-width="1.5"/>
+<text x="228" y="138" text-anchor="middle" fill="#e3b341" font-size="10.5" font-weight="700">the</text>
+<text x="228" y="152" text-anchor="middle" fill="#e3b341" font-size="10.5" font-weight="700">guard</text>
+<rect x="690" y="120" width="190" height="84" rx="8" fill="#161b22" stroke="#f85149" stroke-width="1.5"/>
+<text x="785" y="144" text-anchor="middle" fill="#f85149" font-size="12" font-weight="700">Another website</text>
+<text x="785" y="163" text-anchor="middle" fill="#e6edf3" font-size="10.5">forgot the permission note</text>
+<text x="785" y="182" text-anchor="middle" fill="#8b949e" font-size="10">not where your page came from</text>
+<g class="cq0">
+<line x1="266" y1="150" x2="688" y2="150" stroke="#388bfd" stroke-width="1.6" marker-end="url(#m388bfd)"/>
+<text x="477" y="143" text-anchor="middle" fill="#e6edf3" font-size="11">Can I have the scores? Asked by a page from my-site.</text>
+</g>
+<circle class="cd0" cx="266" cy="150" r="5" fill="#e6edf3"/>
+<g class="cr0">
+<line x1="690" y1="188" x2="258" y2="188" stroke="#f85149" stroke-width="1.6" marker-end="url(#mf85149)"/>
+<text x="477" y="181" text-anchor="middle" fill="#f85149" font-size="11">Here are the scores.</text>
+</g>
+<circle class="ce0" cx="690" cy="188" r="5" fill="#f85149"/>
+<g class="cv0">
+<text x="228" y="194" text-anchor="middle" fill="#f85149" font-size="18" font-weight="700">✕</text>
+<text x="117" y="186" text-anchor="middle" fill="#f85149" font-size="10.5">No note, so the guard</text>
+<text x="117" y="201" text-anchor="middle" fill="#f85149" font-size="10.5">keeps the answer</text>
+</g>
+<rect x="690" y="266" width="190" height="84" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="1.5"/>
+<text x="785" y="290" text-anchor="middle" fill="#3fb950" font-size="12" font-weight="700">Another website</text>
+<text x="785" y="309" text-anchor="middle" fill="#e6edf3" font-size="10.5">added the permission note</text>
+<text x="785" y="328" text-anchor="middle" fill="#8b949e" font-size="10">not where your page came from</text>
+<g class="cq1">
+<line x1="266" y1="296" x2="688" y2="296" stroke="#388bfd" stroke-width="1.6" marker-end="url(#m388bfd)"/>
+<text x="477" y="289" text-anchor="middle" fill="#e6edf3" font-size="11">Can I have the scores? Asked by a page from my-site.</text>
+</g>
+<circle class="cd1" cx="266" cy="296" r="5" fill="#e6edf3"/>
+<g class="cr1">
+<line x1="690" y1="334" x2="192" y2="334" stroke="#3fb950" stroke-width="1.6" marker-end="url(#m3fb950)"/>
+<text x="477" y="327" text-anchor="middle" fill="#3fb950" font-size="11">Here are the scores. Note: pages from my-site may read this.</text>
+</g>
+<circle class="ce1" cx="690" cy="334" r="5" fill="#3fb950"/>
+<g class="cv1">
+<text x="228" y="324" text-anchor="middle" fill="#3fb950" font-size="18" font-weight="700">✓</text>
+<text x="117" y="332" text-anchor="middle" fill="#3fb950" font-size="10.5">Note found: the page</text>
+<text x="117" y="347" text-anchor="middle" fill="#3fb950" font-size="10.5">gets the scores</text>
+</g>
+<rect x="30" y="400" width="850" height="48" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+<text x="46" y="420" fill="#e6edf3" font-size="11.5">The other website answered both times. The guard is your own browser, deciding whether your page may see the answer.</text>
+<text x="46" y="437" fill="#8b949e" font-size="11">Only the other website can add the note. Your page cannot write its own permission slip.</text>
+</svg>

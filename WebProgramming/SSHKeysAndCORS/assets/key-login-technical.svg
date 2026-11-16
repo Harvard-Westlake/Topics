@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 910 482" width="910" height="482" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12">
+<title>Logging in with a key, technical version</title>
+<style>@keyframes match{0%,36%{opacity:.45}38%,62%{opacity:1}66%,100%{opacity:.45}} .match{animation:match 22s linear infinite} @keyframes a0{0%,4%{opacity:0.12}6%,96%{opacity:1}100%{opacity:0.12}} .a0{animation:a0 22s linear infinite} @keyframes d0{0%{opacity:0;transform:translate(0,0)}4%{opacity:0;transform:translate(0,0)}4.5%{opacity:1}12%{opacity:1;transform:translate(370px,0px)}13%,100%{opacity:0;transform:translate(370px,0px)}} .d0{opacity:0;animation:d0 22s linear infinite} @keyframes a1{0%,14%{opacity:0.12}16%,96%{opacity:1}100%{opacity:0.12}} .a1{animation:a1 22s linear infinite} @keyframes d1{0%{opacity:0;transform:translate(0,0)}14%{opacity:0;transform:translate(0,0)}14.5%{opacity:1}22%{opacity:1;transform:translate(-370px,0px)}23%,100%{opacity:0;transform:translate(-370px,0px)}} .d1{opacity:0;animation:d1 22s linear infinite} @keyframes v0{0%,23%{opacity:0.1}25%,96%{opacity:1}100%{opacity:0.1}} .v0{animation:v0 22s linear infinite} @keyframes a2{0%,28%{opacity:0.12}30%,96%{opacity:1}100%{opacity:0.12}} .a2{animation:a2 22s linear infinite} @keyframes d2{0%{opacity:0;transform:translate(0,0)}28%{opacity:0;transform:translate(0,0)}28.5%{opacity:1}36%{opacity:1;transform:translate(370px,0px)}37%,100%{opacity:0;transform:translate(370px,0px)}} .d2{opacity:0;animation:d2 22s linear infinite} @keyframes a3{0%,38%{opacity:0.12}40%,96%{opacity:1}100%{opacity:0.12}} .a3{animation:a3 22s linear infinite} @keyframes d3{0%{opacity:0;transform:translate(0,0)}38%{opacity:0;transform:translate(0,0)}38.5%{opacity:1}46%{opacity:1;transform:translate(-370px,0px)}47%,100%{opacity:0;transform:translate(-370px,0px)}} .d3{opacity:0;animation:d3 22s linear infinite} @keyframes a4{0%,48%{opacity:0.12}50%,96%{opacity:1}100%{opacity:0.12}} .a4{animation:a4 22s linear infinite} @keyframes d4{0%{opacity:0;transform:translate(0,0)}48%{opacity:0;transform:translate(0,0)}48.5%{opacity:1}56%{opacity:1;transform:translate(370px,0px)}57%,100%{opacity:0;transform:translate(370px,0px)}} .d4{opacity:0;animation:d4 22s linear infinite} @keyframes v1{0%,58%{opacity:0.1}60%,96%{opacity:1}100%{opacity:0.1}} .v1{animation:v1 22s linear infinite} @keyframes a5{0%,68%{opacity:0.12}70%,96%{opacity:1}100%{opacity:0.12}} .a5{animation:a5 22s linear infinite} @keyframes d5{0%{opacity:0;transform:translate(0,0)}68%{opacity:0;transform:translate(0,0)}68.5%{opacity:1}76%{opacity:1;transform:translate(370px,0px)}77%,100%{opacity:0;transform:translate(370px,0px)}} .d5{opacity:0;animation:d5 22s linear infinite} @keyframes a6{0%,78%{opacity:0.12}80%,96%{opacity:1}100%{opacity:0.12}} .a6{animation:a6 22s linear infinite} @keyframes d6{0%{opacity:0;transform:translate(0,0)}78%{opacity:0;transform:translate(0,0)}78.5%{opacity:1}86%{opacity:1;transform:translate(-370px,0px)}87%,100%{opacity:0;transform:translate(-370px,0px)}} .d6{opacity:0;animation:d6 22s linear infinite} @keyframes v2{0%,87%{opacity:0.1}89%,96%{opacity:1}100%{opacity:0.1}} .v2{animation:v2 22s linear infinite} @media (prefers-reduced-motion: reduce){*{animation:none!important}}</style>
+<defs><marker id="m8b949e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8b949e"/></marker><marker id="m388bfd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#388bfd"/></marker><marker id="mf85149" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#f85149"/></marker><marker id="m79c0ff" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker><marker id="me3b341" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#e3b341"/></marker></defs>
+<rect width="910" height="482" rx="10" fill="#0d1117"/>
+<text x="30" y="36" fill="#e6edf3" font-size="17" font-weight="700">Logging in with a key: the server checks its folder of allowed keys</text>
+<text x="30" y="56" fill="#8b949e" font-size="12">sshd looks for the offered public key in authorized_keys, then demands a signature only the private key can make.</text>
+<rect x="610" y="84" width="270" height="318" rx="8" fill="#161b22" stroke="#388bfd" stroke-width="1.5"/>
+<text x="745" y="106" text-anchor="middle" fill="#388bfd" font-size="13" font-weight="700">The server</text>
+<path d="M756 136 V384 H866 V136 H802.2 L790.2 122 H756 Z" fill="none" stroke="#ffc2e2" stroke-width="1.6" stroke-linejoin="round"/>
+<text x="811" y="152" text-anchor="middle" fill="#ffc2e2" font-size="10.5" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">authorized_keys</text>
+<g class="match">
+<path d="M790 164 H816 L832 180 V210 H790 Z M816 164 V180 H832" fill="none" stroke="#ffc2e2" stroke-width="1.8" stroke-linejoin="round"/>
+<g transform="translate(801,190) scale(0.7)" fill="none" stroke="#ffc2e2" stroke-width="2.4" stroke-linecap="round"><circle cx="0" cy="0" r="7"/><path d="M7 0 H27 M21 0 V6 M26 0 V5"/></g>
+<text x="811" y="222" text-anchor="middle" fill="#e6edf3" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">maya.pub</text>
+</g>
+<g>
+<path d="M790 234 H816 L832 250 V280 H790 Z M816 234 V250 H832" fill="none" stroke="#ffc2e2" stroke-width="1.8" stroke-linejoin="round"/>
+<g transform="translate(801,260) scale(0.7)" fill="none" stroke="#ffc2e2" stroke-width="2.4" stroke-linecap="round"><circle cx="0" cy="0" r="7"/><path d="M7 0 H27 M21 0 V6 M26 0 V5"/></g>
+<text x="811" y="292" text-anchor="middle" fill="#e6edf3" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">noor.pub</text>
+</g>
+<g>
+<path d="M790 304 H816 L832 320 V350 H790 Z M816 304 V320 H832" fill="none" stroke="#ffc2e2" stroke-width="1.8" stroke-linejoin="round"/>
+<g transform="translate(801,330) scale(0.7)" fill="none" stroke="#ffc2e2" stroke-width="2.4" stroke-linecap="round"><circle cx="0" cy="0" r="7"/><path d="M7 0 H27 M21 0 V6 M26 0 V5"/></g>
+<text x="811" y="362" text-anchor="middle" fill="#e6edf3" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">kai.pub</text>
+</g>
+<text x="745" y="394" text-anchor="middle" fill="#8b949e" font-size="9.5">really one file: one public key per line</text>
+<circle cx="46" cy="105" r="7" fill="none" stroke="#388bfd" stroke-width="2"/><path d="M33 120 a13 12 0 0 1 26 0" fill="none" stroke="#388bfd" stroke-width="2" stroke-linecap="round"/>
+<text x="70" y="110" fill="#388bfd" font-size="12.5" font-weight="700">Dev</text>
+<text x="70" y="126" fill="#e6edf3" font-size="10">key not in authorized_keys</text>
+<path d="M70 136 H80 L96 152 V166 H70 Z M80 136 V152 H96" fill="none" stroke="#db61a2" stroke-width="1.6" stroke-linejoin="round"/>
+<path d="M104 136 H114 L130 152 V166 H104 Z M114 136 V152 H130" fill="none" stroke="#ffc2e2" stroke-width="1.6" stroke-linejoin="round"/>
+<text x="138" y="156" fill="#8b949e" font-size="9.5">his key pair</text>
+<g class="a0">
+<line x1="236" y1="122" x2="606" y2="122" stroke="#388bfd" stroke-width="1.6" marker-end="url(#m388bfd)"/>
+<text x="421.0" y="116" text-anchor="middle" fill="#e6edf3" font-size="10.5">offers public key SHA256:Qm81...</text>
+</g>
+<circle class="d0" cx="236" cy="122" r="5" fill="#388bfd"/>
+<g class="a1">
+<line x1="606" y1="150" x2="236" y2="150" stroke="#f85149" stroke-width="1.6" marker-end="url(#mf85149)"/>
+<text x="421.0" y="144" text-anchor="middle" fill="#e6edf3" font-size="10.5">no matching line: publickey rejected</text>
+</g>
+<circle class="d1" cx="606" cy="150" r="5" fill="#f85149"/>
+<g class="v0">
+<text x="624" y="128" fill="#f85149" font-size="11.5" font-weight="700">✕ denied</text>
+<text x="624" y="144" fill="#e6edf3" font-size="10">not in the folder</text>
+</g>
+<circle cx="46" cy="209" r="7" fill="none" stroke="#388bfd" stroke-width="2"/><path d="M33 224 a13 12 0 0 1 26 0" fill="none" stroke="#388bfd" stroke-width="2" stroke-linecap="round"/>
+<text x="70" y="214" fill="#388bfd" font-size="12.5" font-weight="700">Maya</text>
+<text x="70" y="230" fill="#e6edf3" font-size="10">key is in authorized_keys</text>
+<path d="M70 240 H80 L96 256 V270 H70 Z M80 240 V256 H96" fill="none" stroke="#db61a2" stroke-width="1.6" stroke-linejoin="round"/>
+<path d="M104 240 H114 L130 256 V270 H104 Z M114 240 V256 H130" fill="none" stroke="#ffc2e2" stroke-width="1.6" stroke-linejoin="round"/>
+<text x="138" y="260" fill="#8b949e" font-size="9.5">her key pair</text>
+<g class="a2">
+<line x1="236" y1="222" x2="606" y2="222" stroke="#388bfd" stroke-width="1.6" marker-end="url(#m388bfd)"/>
+<text x="421.0" y="216" text-anchor="middle" fill="#e6edf3" font-size="10.5">offers public key SHA256:9bQx...</text>
+</g>
+<circle class="d2" cx="236" cy="222" r="5" fill="#388bfd"/>
+<g class="a3">
+<line x1="606" y1="250" x2="236" y2="250" stroke="#79c0ff" stroke-width="1.6" marker-end="url(#m79c0ff)"/>
+<text x="421.0" y="244" text-anchor="middle" fill="#e6edf3" font-size="10.5">found it. Now sign this session id.</text>
+</g>
+<circle class="d3" cx="606" cy="250" r="5" fill="#79c0ff"/>
+<g class="a4">
+<line x1="236" y1="278" x2="606" y2="278" stroke="#e3b341" stroke-width="1.6" marker-end="url(#me3b341)"/>
+<text x="421.0" y="272" text-anchor="middle" fill="#e6edf3" font-size="10.5">signature made with the private key</text>
+</g>
+<circle class="d4" cx="236" cy="278" r="5" fill="#e3b341"/>
+<g class="v1">
+<text x="624" y="236" fill="#3fb950" font-size="11.5" font-weight="700">✓ session opens</text>
+<text x="624" y="252" fill="#e6edf3" font-size="10">signature verifies</text>
+</g>
+<circle cx="46" cy="325" r="7" fill="none" stroke="#388bfd" stroke-width="2"/><path d="M33 340 a13 12 0 0 1 26 0" fill="none" stroke="#388bfd" stroke-width="2" stroke-linecap="round"/>
+<text x="70" y="330" fill="#388bfd" font-size="12.5" font-weight="700">Sam</text>
+<text x="70" y="346" fill="#e6edf3" font-size="10">no identity to offer</text>
+<path d="M70 356 H80 L96 372 V386 H70 Z M80 356 V372 H96" fill="none" stroke="#8b949e" stroke-width="1.4" stroke-linejoin="round" stroke-dasharray="5 4"/>
+<text x="104" y="376" fill="#8b949e" font-size="9.5">no key files</text>
+<g class="a5">
+<line x1="236" y1="342" x2="606" y2="342" stroke="#388bfd" stroke-width="1.6" marker-end="url(#m388bfd)"/>
+<text x="421.0" y="336" text-anchor="middle" fill="#e6edf3" font-size="10.5">no public key to offer</text>
+</g>
+<circle class="d5" cx="236" cy="342" r="5" fill="#388bfd"/>
+<g class="a6">
+<line x1="606" y1="370" x2="236" y2="370" stroke="#f85149" stroke-width="1.6" marker-end="url(#mf85149)"/>
+<text x="421.0" y="364" text-anchor="middle" fill="#e6edf3" font-size="10.5">Permission denied (publickey)</text>
+</g>
+<circle class="d6" cx="606" cy="370" r="5" fill="#f85149"/>
+<g class="v2">
+<text x="624" y="348" fill="#f85149" font-size="11.5" font-weight="700">✕ denied</text>
+<text x="624" y="364" fill="#e6edf3" font-size="10">nothing to check</text>
+</g>
+<line x1="30" y1="190" x2="600" y2="190" stroke="#30363d" stroke-width="1" stroke-dasharray="3 5"/>
+<line x1="30" y1="306" x2="600" y2="306" stroke="#30363d" stroke-width="1" stroke-dasharray="3 5"/>
+<rect x="30" y="416" width="850" height="48" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+<text x="46" y="436" fill="#e6edf3" font-size="11.5">The private key never travels: only a signature bound to this one session does. The server stores public keys only.</text>
+<text x="46" y="453" fill="#8b949e" font-size="11">A server that also allows passwords would ask Dev and Sam for one next. Key-only servers stop here.</text>
+</svg>

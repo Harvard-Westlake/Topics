@@ -39,7 +39,9 @@ ssh username@server-address
 
 ## <font color="#388bfd">Keys</font>
 
-![Animated diagram of making a key pair. In a terminal, the command ssh-keygen -t ed25519 picks a huge random number. That number becomes the private key, in the file id_ed25519, which can sign and is kept secret on this computer. The public key, in the file id_ed25519.pub, is calculated from the private key: it is the matching half, can only check a signature, and is safe to share. An arrow back from public to private is crossed out. A note says going from private to public is quick arithmetic, and going back would take every computer on Earth longer than the age of the universe, which is why the public key is safe to hand out.](../assets/key-generation.svg)
+![Animated diagram of making a key pair, all on one laptop that belongs to one person, Maya. In a terminal on her laptop she types the command ssh-keygen and presses Enter. Underneath, the terminal says it is rolling a giant random number and shows the number, so big that nobody could ever guess it, then says it made 2 key files from it. The number travels into a folder on the same laptop and becomes two outlined key files: the private key, the secret half that never leaves this laptop, and the public key, the half she hands out and that is safe for anyone to see. They are a matching pair, and each one only works with the other. Nothing is sent anywhere.](../assets/key-generation-eli5.svg)
+
+<sub>Hover over the picture for the technical version, or open it: [making a key pair, technical](../assets/key-generation-technical.svg)</sub>
 
 A **key pair** is a lock and the one key that opens it. Hand out copies of the lock to anyone. Keep the key. One command makes both halves:
 
@@ -49,7 +51,9 @@ ssh-keygen -t ed25519
 
 ### <font color="#79c0ff">Logging in with a key</font>
 
-![Animated diagram of logging in with a key pair. Your laptop holds a public key, in the file id_ed25519.pub, that is safe to hand to anyone, and a private key, in the file id_ed25519, that never leaves the computer. Once, at setup, a copy of the public key travels to the server's authorized_keys file. To log in, the server asks the laptop to prove itself by signing the number 48151. The laptop signs it with the private key, and only the signature travels to the server. The server sees that the signature fits the public key and lets you in, and no secret was sent. A caption says a password is different because it has to be sent, so it can be shared, guessed, or leaked, and that GitHub already holds the public half of the SSH key made on setup day.](../assets/key-pair.svg)
+![Animated diagram of three people trying to log in to a server that keeps a folder of allowed keys holding key files for maya, noor, and kai. First, Dev knocks and shows his key. He has a key pair, but his key was never put in the folder, so the server says no entry. Second, Maya knocks and shows her key. It is in the folder, so the server asks her to prove the key is hers. She sends proof stamped with her secret key, the proof fits her key in the folder, and the server lets her in. Third, Sam knocks with no key files at all, and the server says no key, no entry. A caption says Maya never showed her secret key, only proof that she has it, and the proof works one time.](../assets/key-login-eli5.svg)
+
+<sub>Hover over the picture for the technical version, or open it: [logging in with a key, technical](../assets/key-login-technical.svg)</sub>
 
 | | Password | Key pair |
 |---|---|---|
@@ -120,7 +124,9 @@ alias box="ssh box"
 
 ## <font color="#388bfd">CORS</font>
 
-![Animated diagram of CORS. A page from my-site.web.app, inside your browser, asks a service at a different origin for scores, and the browser adds the header Origin: https://my-site.web.app. Before the fix, the service answers 200 OK with no Access-Control-Allow-Origin header, and the browser's check stops the answer: the page gets an error and no data. After the fix, the service answers 200 OK with Access-Control-Allow-Origin: https://my-site.web.app, and the browser hands the scores to the page. A caption says the service answered both times, that CORS is the browser deciding whether your page may read the answer, and that an origin is scheme plus host plus port.](../assets/cors-check.svg)
+![Animated diagram of CORS in plain words. Your page, from my-site, sits inside your browser, and your browser acts as a guard. The page asks another website: can I have the scores? The first time, the other website answers with the scores but forgot the permission note, so the guard keeps the answer and the page gets nothing. The second time, the other website answers with the scores and a note saying pages from my-site may read this, so the guard hands the scores to the page. A caption says the other website answered both times, the guard is your own browser, and only the other website can add the note.](../assets/cors-check-eli5.svg)
+
+<sub>Hover over the picture for the technical version, or open it: [CORS, technical](../assets/cors-check-technical.svg)</sub>
 
 Every request and every answer on the web starts with short labeled lines called **headers**. A page may always talk to the place it came from. To read an answer from anywhere else, that other server has to send a header saying your page is allowed. That permission slip is **CORS**.
 
