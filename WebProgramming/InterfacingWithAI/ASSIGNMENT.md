@@ -24,12 +24,15 @@ The goal of today is **not** to have the AI build or create anything for you. Th
 
 > **Note:** Do not ask it to build anything until it understands your tastes.
 
+> <font color="#a371f7">**Mini-Site Project:**</font> Make sure your AI can read your deployed site, and keep communicating your tastes to it.
+
 ---
 
 ## Success Criteria
 
 - [ ] **Nothing built:** the AI made no pages or code, it only learned about you.
 - [ ] **Recognizably you:** we can tell WHO you are from its answer, without any names, because its understanding of your tastes is that complete.
+- [ ] <font color="#a371f7">**Mini-Site Project:**</font> you worked on your app with today's context and pushed the latest to GitHub and Firebase.
 
 ---
 

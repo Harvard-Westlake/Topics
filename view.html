@@ -87,6 +87,7 @@
     --th-bg: rgb(191 194 153 / 20%); --tr-alt: #fcfcfc; --cell-border: #f1f3f5;
     --bar-bg: #ffffff; --bar-fg: #000000; --bar-link: #0969da; --bar-hover: rgb(191 194 153 / 20%);
     --badge-bg: rgb(83 154 220 / 20%); --badge-fg: #1d4f7c; --badge-alt-bg: rgb(237 163 0 / 25%); --badge-alt-fg: #6b4a00;
+    --mini: #7c3aed; --mini-bg: #f5f0ff;
     --review: #8957e5; --review-bg: #f6f3fc; --lesson-bg: #f8f7f4; --error: #DA0016;
     --activity-head-bg: rgb(237 163 0 / 22%); --activity-bg: #fffaee; --activity-edge: #EDA300;
     --radius: 6px; --font: "Source Sans 3", "Source Sans Pro", "Source Sans", Arial, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", sans-serif;
@@ -103,6 +104,7 @@
     --th-bg: #161b22; --tr-alt: #10151c; --cell-border: #262c36;
     --bar-bg: #010409; --bar-fg: #e6edf3; --bar-link: #4493f8; --bar-hover: #161b22;
     --badge-bg: #122a3d; --badge-fg: #79b8ff; --badge-alt-bg: #3a2a08; --badge-alt-fg: #f0b323;
+    --mini: #b794f6; --mini-bg: #1a1430;
     --review: #ab7df8; --review-bg: #161226; --lesson-bg: #10151c;
     --activity-head-bg: #3a2a08; --activity-bg: #1f1a0e; --activity-edge: #EDA300;
     color-scheme: dark;
@@ -153,6 +155,9 @@
   .md blockquote { padding: .85em 1em; color: var(--quote-fg); background: var(--quote-bg);
                    border-left: 3px solid var(--quote-border); border-radius: var(--radius); }
   .md blockquote > :last-child { margin-bottom: 0; }
+  /* The running Mini-Site Project thread: a purple callout and a purple success criterion. */
+  .md blockquote.mini-site { background: var(--mini-bg); border-left-color: var(--mini); }
+  .md .mini-site font { color: var(--mini); }
   .md ul, .md ol { padding-left: 2em; }
   .md li + li { margin-top: .25em; }
   .md li > p { margin-bottom: 8px; }
@@ -448,6 +453,9 @@ if(__exports != exports)module.exports = exports;return module.exports}));
       if (looksLikeDir(rel, resolved)) resolved = (resolved ? resolved + '/' : '') + 'README.md';
       if (/\.md$/i.test(resolved)) a.setAttribute('href', viewerUrl(resolved, hash));
       else { a.setAttribute('href', blobUrl(resolved) + hash); a.target = '_blank'; a.rel = 'noopener'; }
+    });
+    root.querySelectorAll('blockquote, li').forEach(function (el) {
+      if (/^\s*Mini-Site Project:/.test(el.textContent)) el.classList.add('mini-site');
     });
     root.querySelectorAll('img[src], video[src], audio[src], source[src]').forEach(function (el) {
       var s = el.getAttribute('src');

@@ -86,7 +86,7 @@ No AI for this part. You type every command.
 
 ## Part 5: Plan Something People Do Together
 
-Your site so far has one visitor at a time. Plan an experience that only works when several people are on your site at the same moment. No code today: the plan is the work, and it is in your own words.
+Your site so far has one visitor at a time. Plan an experience that only works when several people are on your site at the same moment. No code for this part today: the plan is the work, and it is in your own words.
 
 Write `PLAN.md` in your website's repository and answer each of these:
 
@@ -98,6 +98,8 @@ Write `PLAN.md` in your website's repository and answer each of these:
 
 **Verify:** read the plan to a neighbor. They can act out two people using it at once, without asking you a question.
 
+> <font color="#a371f7">**Mini-Site Project:**</font> PLAN how your site will engage several users at once, and keep vibe coding to make it more robust, enjoyable, and interactive.
+
 ---
 
 ## Success Criteria
@@ -108,6 +110,7 @@ Write `PLAN.md` in your website's repository and answer each of these:
 - [ ] **Folders made by hand:** your project folder and at least two folders inside it exist under `~/projects`.
 - [ ] **A plan for many people:** `PLAN.md` answers all five questions for people using your site at the same moment.
 - [ ] **No login anywhere:** the server's username and password appear nowhere in your repository, screenshot, or submission.
+- [ ] <font color="#a371f7">**Mini-Site Project:**</font> you worked on your app with today's context and pushed the latest to GitHub and Firebase.
 
 ---
 

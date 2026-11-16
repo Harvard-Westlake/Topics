@@ -65,6 +65,8 @@ A full working website experience that is interesting, engaging, and enjoyable. 
 
 **Verify:** open your live link on a phone or in a private window and walk your own flowchart. Every box and every option on the chart exists in the app, and nothing in the app is missing from the chart. Then open your log: every box you walked through is there as a row, in order, with a time.
 
+> <font color="#a371f7">**Mini-Site Project:**</font> Your site must log what its users do, in some way.
+
 ---
 
 ## Success Criteria
@@ -75,6 +77,7 @@ A full working website experience that is interesting, engaging, and enjoyable. 
 - [ ] **Prompts that solve the problem:** your prompts work out who the user is, their first ten seconds, the loop or one-time experience, the flow, the outcome, and what to log, before the prompt that asks for the build.
 - [ ] **Chart matches plan:** `FLOW.md` shows every step and choice you described, and nothing you did not.
 - [ ] **Exact prompts:** `prompts.md` holds every prompt you sent, in your exact words, unedited.
+- [ ] <font color="#a371f7">**Mini-Site Project:**</font> you worked on your app with today's context and pushed the latest to GitHub and Firebase.
 
 ---
 

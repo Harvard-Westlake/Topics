@@ -417,6 +417,20 @@ The `**Lesson:** [Lesson Name](README.md)` line is required on every ASSIGNMENT.
 
 The `**Review:**` line is optional and sits directly under `**Lesson:**`, in the same bold-label format: it appears only on a day that revisits an earlier concept, and links the review fragment (in the `review/` folder of the lesson that taught it, often in another topic). **Since 2026-10-21 this link is how a review reaches a class day**: students and the live view get a link to the fragment, never a copy of it pasted into the page.
 
+### Mini-Site Project callout (purple)
+
+A unit can carry one product that students keep building across several days (in Web Programming, the **Mini-Site Project**: Intro to AI Coding through The Network Stack). Each of those days' ASSIGNMENT.md ends its task portion with one purple callout, and its Success Criteria end with one purple item:
+
+```markdown
+> <font color="#a371f7">**Mini-Site Project:**</font> One short sentence saying what to do on your own site today.
+
+- [ ] <font color="#a371f7">**Mini-Site Project:**</font> you worked on your app with today's context and pushed the latest to GitHub and Firebase.
+```
+
+- The label text and the purple `#a371f7` are fixed. The live view finds the label and draws the callout with a purple bar and background (`.mini-site` in `view.html`) instead of the gold used for Warning, Note, and Tip.
+- The callout sits directly above the `---` before `## Success Criteria`, and the item is the last criterion. It follows rule 14 (one short sentence) and does not count toward that rule's one callout per section.
+- The success item is the same sentence on every day. Only the callout changes.
+
 ## Content conventions
 
 - All lessons are GitHub-rendered Markdown — write for GitHub's renderer, not a local previewer.

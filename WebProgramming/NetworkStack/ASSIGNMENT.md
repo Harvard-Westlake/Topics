@@ -54,6 +54,8 @@ Look at your own service through today's lesson, with DevTools open on the **Net
 - **The transport:** whether it rides on TCP or UDP, and how you know.
 - **The trip:** the address and port your browser reached, and which machine on the way added the CORS header.
 
+> <font color="#a371f7">**Mini-Site Project:**</font> Add a server-based interaction that works through the class box, and get your app playable and customer-ready for next class.
+
 ---
 
 ## Success Criteria
@@ -65,6 +67,7 @@ Look at your own service through today's lesson, with DevTools open on the **Net
 - [ ] **Explained:** you can say which connection and which transport your service uses, and why.
 - [ ] **Exact prompts:** `prompts.md` holds every prompt you sent, in your exact words.
 - [ ] **No login anywhere:** the server's username and password appear nowhere in your repository, `prompts.md`, screenshot, or submission.
+- [ ] <font color="#a371f7">**Mini-Site Project:**</font> you worked on your app with today's context and pushed the latest to GitHub and Firebase.
 
 ---
 

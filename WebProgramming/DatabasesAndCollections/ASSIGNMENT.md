@@ -21,6 +21,8 @@ Still no building. Last class the AI learned your tastes. Today it learns them i
 
 > **Note:** The AI only knows the part of you that you put into words. Precise words let more of you through.
 
+> <font color="#a371f7">**Mini-Site Project:**</font> Work on figuring out what your site could store to make a visit more interesting.
+
 ---
 
 ## Success Criteria
@@ -28,6 +30,7 @@ Still no building. Last class the AI learned your tastes. Today it learns them i
 - [ ] **Nothing built:** the AI made no pages or code, it only learned about you.
 - [ ] **More detailed than last class:** its answer covers mechanics you enjoy, what you wish sites had more of, and why.
 - [ ] **Recognizably you:** we can tell WHO you are from its answer, without any names.
+- [ ] <font color="#a371f7">**Mini-Site Project:**</font> you worked on your app with today's context and pushed the latest to GitHub and Firebase.
 
 ---
 
