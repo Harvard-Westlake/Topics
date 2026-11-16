@@ -21,7 +21,9 @@ Your website has lived on someone else's computers. Today you get onto a server 
 
 ## <font color="#388bfd">SSH</font>
 
-![Animated diagram of SSH as a network protocol. Your terminal and a server on port 22 are joined by an encrypted tunnel that passes through three routers. You type ls, a scrambled packet travels through the tunnel, the server runs ls, and a scrambled packet carries the output back to your terminal. A note says a router can read where a packet is going and cannot read what is inside. Below, one SSH packet is shown in three parts: an IP header with the server's address and a TCP header with port 22, which any router on the way can read, and your keystrokes, encrypted, which only your terminal and the server can read. A caption says SSH is a protocol like HTTP, an agreed way for two programs to talk, whose special rule is that everything is locked first.](assets/ssh-protocol.svg)
+### <font color="#79c0ff">A secret tunnel</font> <sub>[technical](assets/ssh-protocol-technical.svg)</sub>
+
+![Animated diagram of SSH in plain words. Your computer and a far-away computer are joined by a secret tunnel that passes three computers on the way. You type ls, and it travels through the tunnel as a locked box showing only question marks. The far-away computer runs ls and sends the answer back the same way, and README.md appears on your computer. A note on a computer on the way says it can see the address on the box and cannot see what you typed. Below, one locked box is drawn in three parts: the address, which computer it is for; the door number, which program gets it; and, locked inside, what you typed. Anyone passing the box along can read the first two, and only your computer and the far-away one can open the third. A caption says SSH lets you use a far-away computer as if you were sitting at it, and nobody in between can listen in.](assets/ssh-protocol-eli5.svg)
 
 **SSH** is a terminal that runs on another computer. You type here, and the commands run there.
 
@@ -61,9 +63,9 @@ ssh-keygen -t ed25519
 
 > **Warning:** A private key never leaves your computer. A public key can go anywhere.
 
-### <font color="#79c0ff">Where each file lives</font>
+### <font color="#79c0ff">Where each file lives</font> <sub>[technical](assets/key-files-access-technical.svg)</sub>
 
-![Animated diagram of the files behind an SSH key login. On your computer, the .ssh folder holds four files: config, a nickname for the server with its address, login, and key, id_ed25519, the private key that signs and never leaves the folder, id_ed25519.pub, the public key you hand out, and known_hosts, the server's remembered fingerprint. On the server, the file authorized_keys lists the public keys allowed in, one per line, and one of the lines is yours. Step 1, once: your public key line is added to authorized_keys. Step 2: you type ssh box, and config fills in the address, the login, and which key to use. Step 3: the private key signs the server's challenge, and only the signature travels. Step 4: the server finds the line that fits the signature and lets you in with no password. Step 5: the server's fingerprint is saved in known_hosts, so a fake server would be noticed next time.](assets/key-files-access.svg)
+![Animated diagram of the files behind a key login, in plain words. On your computer, the .ssh folder holds four files: an address book with the server's nickname, its address, and your login; the secret key, which stamps your proof and never leaves this folder; the public key, the copy you hand out; and servers you trust, which remembers what the real server looks like. On the server, a file of allowed keys has one line for each person allowed in, with yours among them. Five steps light up in order: once, a copy of your public key is added to the server's list; you type ssh box and your address book fills in where to go and who you are; your secret key stamps a proof and only the proof travels; the server finds your line, checks the proof against it, and lets you in with no password; and your computer remembers this server, so a fake one would be noticed next time.](assets/key-files-access-eli5.svg)
 
 Every piece is a plain text file in a folder named `.ssh`.
 

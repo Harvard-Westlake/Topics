@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 910 465" width="910" height="465" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12">
+<title>The key files, technical version</title>
+<style>@keyframes door{0%,64%{opacity:0.12}66%,96%{opacity:1}100%{opacity:0.12}} .door{animation:door 18s linear infinite} @keyframes f2{0%,4%{opacity:0.35}6%,96%{opacity:1}100%{opacity:0.35}} .f2{animation:f2 18s linear infinite} @keyframes yours{0%,20%{opacity:0.1}22%,96%{opacity:1}100%{opacity:0.1}} .yours{animation:yours 18s linear infinite} @keyframes f0{0%,26%{opacity:0.35}28%,96%{opacity:1}100%{opacity:0.35}} .f0{animation:f0 18s linear infinite} @keyframes f1{0%,36%{opacity:0.35}38%,96%{opacity:1}100%{opacity:0.35}} .f1{animation:f1 18s linear infinite} @keyframes f3{0%,78%{opacity:0.35}80%,96%{opacity:1}100%{opacity:0.35}} .f3{animation:f3 18s linear infinite} @keyframes i1{0%{opacity:0;transform:translate(0,0)}6%{opacity:0;transform:translate(0,0)}6.5%{opacity:1}20%{opacity:1;transform:translate(150px,-38px)}21%,100%{opacity:0;transform:translate(150px,-38px)}} .i1{opacity:0;animation:i1 18s linear infinite} @keyframes i3{0%{opacity:0;transform:translate(0,0)}42%{opacity:0;transform:translate(0,0)}42.5%{opacity:1}60%{opacity:1;transform:translate(150px,10px)}61%,100%{opacity:0;transform:translate(150px,10px)}} .i3{opacity:0;animation:i3 18s linear infinite} @keyframes st0{0%,4%{opacity:0.3}6%,96%{opacity:1}100%{opacity:0.3}} .st0{animation:st0 18s linear infinite} @keyframes st1{0%,26%{opacity:0.3}28%,96%{opacity:1}100%{opacity:0.3}} .st1{animation:st1 18s linear infinite} @keyframes st2{0%,36%{opacity:0.3}38%,96%{opacity:1}100%{opacity:0.3}} .st2{animation:st2 18s linear infinite} @keyframes st3{0%,64%{opacity:0.3}66%,96%{opacity:1}100%{opacity:0.3}} .st3{animation:st3 18s linear infinite} @keyframes st4{0%,78%{opacity:0.3}80%,96%{opacity:1}100%{opacity:0.3}} .st4{animation:st4 18s linear infinite} @media (prefers-reduced-motion: reduce){*{animation:none!important}}</style>
+<defs><marker id="m8b949e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8b949e"/></marker><marker id="mffc2e2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#ffc2e2"/></marker><marker id="me3b341" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#e3b341"/></marker></defs>
+<rect width="910" height="465" rx="10" fill="#0d1117"/>
+<text x="30" y="36" fill="#e6edf3" font-size="17" font-weight="700">The key files: which file sits where, and what each one does</text>
+<text x="30" y="56" fill="#8b949e" font-size="12">Four small text files on your computer and one on the server. Together they are the whole login.</text>
+<rect x="30" y="84" width="400" height="232" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+<text x="46" y="106" fill="#388bfd" font-size="13" font-weight="700">Your computer</text>
+<text x="414" y="106" text-anchor="end" fill="#8b949e" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">~/.ssh/</text>
+<g class="f0">
+<rect x="44" y="118" width="372" height="40" rx="8" fill="#0d1117" stroke="#388bfd" stroke-width="1.2"/>
+<text x="58" y="135" fill="#388bfd" font-size="11.5" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">config</text>
+<text x="58" y="151" fill="#e6edf3" font-size="10.5">a nickname for the server: address, login, key</text>
+</g>
+<g class="f1">
+<rect x="44" y="166" width="372" height="40" rx="8" fill="#0d1117" stroke="#db61a2" stroke-width="1.6"/>
+<g transform="translate(62,186) scale(0.8)" fill="none" stroke="#db61a2" stroke-width="2.4" stroke-linecap="round"><circle cx="0" cy="0" r="7"/><path d="M7 0 H27 M21 0 V6 M26 0 V5"/></g>
+<text x="96" y="183" fill="#db61a2" font-size="11.5" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">id_ed25519</text>
+<text x="96" y="199" fill="#e6edf3" font-size="10.5">private key: signs. Never leaves this folder.</text>
+</g>
+<g class="f2">
+<rect x="44" y="214" width="372" height="40" rx="8" fill="#0d1117" stroke="#ffc2e2" stroke-width="1.6"/>
+<g transform="translate(62,234) scale(0.8)" fill="none" stroke="#ffc2e2" stroke-width="2.4" stroke-linecap="round"><circle cx="0" cy="0" r="7"/><path d="M7 0 H27 M21 0 V6 M26 0 V5"/></g>
+<text x="96" y="231" fill="#ffc2e2" font-size="11.5" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">id_ed25519.pub</text>
+<text x="96" y="247" fill="#e6edf3" font-size="10.5">public key: the copy you hand out</text>
+</g>
+<g class="f3">
+<rect x="44" y="262" width="372" height="40" rx="8" fill="#0d1117" stroke="#8b949e" stroke-width="1.2"/>
+<text x="58" y="279" fill="#e6edf3" font-size="11.5" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">known_hosts</text>
+<text x="58" y="295" fill="#e6edf3" font-size="10.5">the server's fingerprint, remembered</text>
+</g>
+<rect x="560" y="84" width="320" height="232" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+<text x="576" y="106" fill="#388bfd" font-size="13" font-weight="700">The server</text>
+<text x="864" y="106" text-anchor="end" fill="#8b949e" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">~/.ssh/</text>
+<rect x="574" y="118" width="292" height="112" rx="8" fill="#0d1117" stroke="#ffc2e2" stroke-width="1.6"/>
+<text x="588" y="138" fill="#ffc2e2" font-size="11.5" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">authorized_keys</text>
+<text x="588" y="156" fill="#e6edf3" font-size="10.5">public keys allowed in, one per line</text>
+<text x="588" y="180" fill="#8b949e" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">ssh-ed25519 AAAA...k2Lm maya</text>
+<text x="588" y="200" fill="#ffc2e2" font-size="10.5" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" class="yours">ssh-ed25519 AAAA...x7Qp you</text>
+<text x="588" y="218" fill="#8b949e" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">ssh-ed25519 AAAA...9dRt dev</text>
+<g class="door">
+<rect x="574" y="244" width="292" height="56" rx="8" fill="#0d1117" stroke="#3fb950" stroke-width="1.5"/>
+<text x="588" y="266" fill="#3fb950" font-size="12" font-weight="700">✓ the signature fits your line</text>
+<text x="588" y="286" fill="#e6edf3" font-size="10.5">the door opens: no password asked</text>
+</g>
+<line x1="420" y1="234" x2="570" y2="196" stroke="#ffc2e2" stroke-width="1.2" marker-end="url(#mffc2e2)" stroke-dasharray="4 4"/>
+<text x="495" y="205" text-anchor="middle" fill="#ffc2e2" font-size="11" font-weight="700">1</text>
+<line x1="420" y1="186" x2="570" y2="196" stroke="#e3b341" stroke-width="1.2" marker-end="url(#me3b341)" stroke-dasharray="4 4"/>
+<text x="495" y="180" text-anchor="middle" fill="#e3b341" font-size="11" font-weight="700">3</text>
+<circle class="i1" cx="420" cy="234" r="5" fill="#ffc2e2"/>
+<circle class="i3" cx="420" cy="186" r="5" fill="#e3b341"/>
+<rect x="30" y="332" width="850" height="115" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+<text x="46" y="353" fill="#ffc2e2" font-size="11.5" class="st0">1. Once: your public key line is added to the server's authorized_keys.</text>
+<text x="46" y="372" fill="#388bfd" font-size="11.5" class="st1">2. You type ssh box. The config file fills in the address, the login, and which key to use.</text>
+<text x="46" y="391" fill="#e3b341" font-size="11.5" class="st2">3. The private key signs the server's challenge. Only the signature travels.</text>
+<text x="46" y="410" fill="#3fb950" font-size="11.5" class="st3">4. The server finds the line that fits the signature and lets you in.</text>
+<text x="46" y="429" fill="#e6edf3" font-size="11.5" class="st4">5. The server's fingerprint is saved in known_hosts, so a fake server would be noticed next time.</text>
+</svg>
