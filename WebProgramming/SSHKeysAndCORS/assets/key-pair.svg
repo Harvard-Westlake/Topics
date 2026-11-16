@@ -1,37 +1,37 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 910 432" width="910" height="432" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12">
 <title>Animated diagram of logging in with a key pair. Your laptop holds a public key, safe to hand to anyone, and a private key that never leaves the computer. Once, at setup, a copy of the public key goes to the server's authorized_keys file. To log in, the server asks the laptop to sign the number 48151, the laptop signs it with the private key, and only the signature travels to the server. The server checks that the signature fits the public key and lets you in. No secret was sent.</title>
 <style>@keyframes ak{0%,16%{opacity:0.15}18%,96%{opacity:1}100%{opacity:0.15}} .ak{animation:ak 16s linear infinite} @keyframes ok{0%,66%{opacity:0.12}68%,96%{opacity:1}100%{opacity:0.12}} .ok{animation:ok 16s linear infinite} @keyframes k0{0%,4%{opacity:0.12}6%,96%{opacity:1}100%{opacity:0.12}} .k0{animation:k0 16s linear infinite} @keyframes kd0{0%{opacity:0;transform:translate(0,0)}4%{opacity:0;transform:translate(0,0)}4.5%{opacity:1}16%{opacity:1;transform:translate(342px,0px)}17%,100%{opacity:0;transform:translate(342px,0px)}} .kd0{opacity:0;animation:kd0 16s linear infinite} @keyframes k1{0%,24%{opacity:0.12}26%,96%{opacity:1}100%{opacity:0.12}} .k1{animation:k1 16s linear infinite} @keyframes kd1{0%{opacity:0;transform:translate(0,0)}24%{opacity:0;transform:translate(0,0)}24.5%{opacity:1}38%{opacity:1;transform:translate(-342px,0px)}39%,100%{opacity:0;transform:translate(-342px,0px)}} .kd1{opacity:0;animation:kd1 16s linear infinite} @keyframes k2{0%,46%{opacity:0.12}48%,96%{opacity:1}100%{opacity:0.12}} .k2{animation:k2 16s linear infinite} @keyframes kd2{0%{opacity:0;transform:translate(0,0)}46%{opacity:0;transform:translate(0,0)}46.5%{opacity:1}62%{opacity:1;transform:translate(342px,0px)}63%,100%{opacity:0;transform:translate(342px,0px)}} .kd2{opacity:0;animation:kd2 16s linear infinite} @keyframes sg{0%,40%{opacity:0.12}42%,96%{opacity:1}100%{opacity:0.12}} .sg{animation:sg 16s linear infinite} @keyframes pk{0%,39%{stroke-width:1.5}42%,46%{stroke-width:5}50%,100%{stroke-width:1.5}} .pk{animation:pk 16s linear infinite} @media (prefers-reduced-motion: reduce){*{animation:none!important}}</style>
-<defs><marker id="m8b949e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8b949e"/></marker><marker id="m3fb950" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#3fb950"/></marker><marker id="m79c0ff" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker><marker id="me3b341" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#e3b341"/></marker></defs>
+<defs><marker id="m8b949e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8b949e"/></marker><marker id="mffc2e2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#ffc2e2"/></marker><marker id="m79c0ff" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker><marker id="me3b341" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#e3b341"/></marker></defs>
 <rect width="910" height="432" rx="10" fill="#0d1117"/>
 <text x="30" y="36" fill="#e6edf3" font-size="17" font-weight="700">Keys: prove who you are without sending a secret</text>
 <text x="30" y="56" fill="#8b949e" font-size="12">A key pair is two matching halves. The public half is a lock you can hand to anyone. The private half is the only thing that fits it.</text>
 <rect x="30" y="84" width="250" height="250" rx="8" fill="#161b22" stroke="#388bfd" stroke-width="1.5"/>
 <text x="155" y="106" text-anchor="middle" fill="#388bfd" font-size="13" font-weight="700">Your laptop</text>
-<rect x="44" y="120" width="222" height="60" rx="8" fill="#0d1117" stroke="#3fb950" stroke-width="1.5"/>
-<text x="58" y="143" fill="#3fb950" font-size="12" font-weight="700">Public key</text>
+<rect x="44" y="120" width="222" height="60" rx="8" fill="#0d1117" stroke="#ffc2e2" stroke-width="1.5"/>
+<text x="58" y="143" fill="#ffc2e2" font-size="12" font-weight="700">Public key</text>
 <text x="252" y="143" text-anchor="end" fill="#8b949e" font-size="9.5" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">id_ed25519.pub</text>
 <text x="58" y="163" fill="#e6edf3" font-size="10.5">safe to hand to anyone</text>
-<rect x="44" y="250" width="222" height="60" rx="8" fill="#0d1117" stroke="#f85149" stroke-width="1.5" class="pk"/>
-<text x="58" y="273" fill="#f85149" font-size="12" font-weight="700">Private key</text>
+<rect x="44" y="250" width="222" height="60" rx="8" fill="#0d1117" stroke="#db61a2" stroke-width="1.5" class="pk"/>
+<text x="58" y="273" fill="#db61a2" font-size="12" font-weight="700">Private key</text>
 <text x="252" y="273" text-anchor="end" fill="#8b949e" font-size="9.5" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">id_ed25519</text>
 <text x="58" y="293" fill="#e6edf3" font-size="10.5">never leaves this computer</text>
 <rect x="630" y="84" width="250" height="250" rx="8" fill="#161b22" stroke="#388bfd" stroke-width="1.5"/>
 <text x="755" y="106" text-anchor="middle" fill="#388bfd" font-size="13" font-weight="700">Server</text>
 <g class="ak">
-<rect x="644" y="120" width="222" height="60" rx="8" fill="#0d1117" stroke="#3fb950" stroke-width="1.5"/>
-<text x="658" y="143" fill="#3fb950" font-size="12" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">authorized_keys</text>
+<rect x="644" y="120" width="222" height="60" rx="8" fill="#0d1117" stroke="#ffc2e2" stroke-width="1.5"/>
+<text x="658" y="143" fill="#ffc2e2" font-size="12" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">authorized_keys</text>
 <text x="658" y="163" fill="#e6edf3" font-size="10.5">a copy of your public key</text>
 </g>
 <g class="ok">
-<rect x="644" y="250" width="222" height="60" rx="8" fill="#0d1117" stroke="#3fb950" stroke-width="1.5"/>
-<text x="658" y="273" fill="#3fb950" font-size="12" font-weight="700">✓ the signature fits the lock</text>
+<rect x="644" y="250" width="222" height="60" rx="8" fill="#0d1117" stroke="#ffc2e2" stroke-width="1.5"/>
+<text x="658" y="273" fill="#ffc2e2" font-size="12" font-weight="700">✓ the signature fits the lock</text>
 <text x="658" y="293" fill="#e6edf3" font-size="10.5">you are in, and no secret was sent</text>
 </g>
 <g class="k0">
-<line x1="284" y1="150" x2="626" y2="150" stroke="#3fb950" stroke-width="1.6" marker-end="url(#m3fb950)"/>
+<line x1="284" y1="150" x2="626" y2="150" stroke="#ffc2e2" stroke-width="1.6" marker-end="url(#mffc2e2)"/>
 <text x="455" y="143" text-anchor="middle" fill="#e6edf3" font-size="11">once, at setup: a copy of the public key</text>
 </g>
-<circle class="kd0" cx="284" cy="150" r="5" fill="#3fb950"/>
+<circle class="kd0" cx="284" cy="150" r="5" fill="#ffc2e2"/>
 <g class="k1">
 <line x1="626" y1="215" x2="284" y2="215" stroke="#79c0ff" stroke-width="1.6" marker-end="url(#m79c0ff)"/>
 <text x="455" y="208" text-anchor="middle" fill="#e6edf3" font-size="11">prove it is you: sign this number, 48151</text>

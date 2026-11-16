@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 910 404" width="910" height="404" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12">
+<title>Animated diagram of SSH as a network protocol. Your terminal and a server on port 22 are joined by an encrypted tunnel that passes through three routers. You type ls, a scrambled packet travels through the tunnel, the server runs ls, and a scrambled packet carries the output back. A router can read where a packet is going and cannot read what is inside. One SSH packet is an IP header with the server's address, a TCP header with port 22, and your keystrokes, encrypted.</title>
+<style>@keyframes typ{0%,4%{opacity:0.25}6%,96%{opacity:1}100%{opacity:0.25}} .typ{animation:typ 14s linear infinite} @keyframes run{0%,40%{opacity:0.15}42%,96%{opacity:1}100%{opacity:0.15}} .run{animation:run 14s linear infinite} @keyframes out{0%,80%{opacity:0.15}82%,96%{opacity:1}100%{opacity:0.15}} .out{animation:out 14s linear infinite} @keyframes pk0{0%{opacity:0;transform:translate(0,0)}6%{opacity:0;transform:translate(0,0)}6.5%{opacity:1}38%{opacity:1;transform:translate(518px,0px)}39%,100%{opacity:0;transform:translate(518px,0px)}} .pk0{opacity:0;animation:pk0 14s linear infinite} @keyframes pk1{0%{opacity:0;transform:translate(0,0)}46%{opacity:0;transform:translate(0,0)}46.5%{opacity:1}78%{opacity:1;transform:translate(-518px,0px)}79%,100%{opacity:0;transform:translate(-518px,0px)}} .pk1{opacity:0;animation:pk1 14s linear infinite} @media (prefers-reduced-motion: reduce){*{animation:none!important}}</style>
+<defs><marker id="m8b949e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8b949e"/></marker></defs>
+<rect width="910" height="404" rx="10" fill="#0d1117"/>
+<text x="30" y="36" fill="#e6edf3" font-size="17" font-weight="700">SSH as a network protocol: a locked tunnel inside ordinary packets</text>
+<text x="30" y="56" fill="#8b949e" font-size="12">Your keystrokes cross the same routers as everything else. The routers see where each packet is going, and nothing of what is in it.</text>
+<line x1="180" y1="196" x2="730" y2="196" stroke="#484f58" stroke-width="2"/>
+<circle cx="330" cy="196" r="24" fill="#161b22" stroke="#f0883e" stroke-width="1.6"/>
+<text x="330" y="242" text-anchor="middle" fill="#f0883e" font-size="10.5" font-weight="700">router</text>
+<circle cx="455" cy="196" r="24" fill="#161b22" stroke="#f0883e" stroke-width="1.6"/>
+<text x="455" y="242" text-anchor="middle" fill="#f0883e" font-size="10.5" font-weight="700">router</text>
+<circle cx="580" cy="196" r="24" fill="#161b22" stroke="#f0883e" stroke-width="1.6"/>
+<text x="580" y="242" text-anchor="middle" fill="#f0883e" font-size="10.5" font-weight="700">router</text>
+<rect x="180" y="181" width="550" height="30" rx="15" fill="#e3b341" fill-opacity=".13" stroke="#e3b341" stroke-width="1.4"/>
+<text x="255" y="172" text-anchor="middle" fill="#e3b341" font-size="10.5" font-weight="700">encrypted tunnel</text>
+<rect x="30" y="152" width="150" height="88" rx="8" fill="#161b22" stroke="#388bfd" stroke-width="1.5"/>
+<text x="105" y="174" text-anchor="middle" fill="#388bfd" font-size="12.5" font-weight="700">Your terminal</text>
+<text x="105" y="198" text-anchor="middle" fill="#e6edf3" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" class="typ">you type:  ls</text>
+<text x="105" y="220" text-anchor="middle" fill="#3fb950" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" class="out">README.md</text>
+<rect x="730" y="152" width="150" height="88" rx="8" fill="#161b22" stroke="#388bfd" stroke-width="1.5"/>
+<text x="805" y="174" text-anchor="middle" fill="#388bfd" font-size="12.5" font-weight="700">Server, port 22</text>
+<text x="805" y="198" text-anchor="middle" fill="#e6edf3" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" class="run">runs:  ls</text>
+<text x="805" y="220" text-anchor="middle" fill="#8b949e" font-size="10.5" class="run">sends the output</text>
+<g class="pk0"><rect x="170" y="186" width="52" height="20" rx="4" fill="#e3b341"/><text x="196" y="200" text-anchor="middle" fill="#0d1117" font-size="10" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">9f3a c7</text></g>
+<g class="pk1"><rect x="688" y="186" width="52" height="20" rx="4" fill="#e3b341"/><text x="714" y="200" text-anchor="middle" fill="#0d1117" font-size="10" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">9f3a c7</text></g>
+<rect x="330" y="84" width="250" height="46" rx="8" fill="#161b22" stroke="#f0883e" stroke-width="1.2"/>
+<text x="455" y="103" text-anchor="middle" fill="#e6edf3" font-size="11">A router can read: where it is going.</text>
+<text x="455" y="120" text-anchor="middle" fill="#e3b341" font-size="11">A router cannot read: what is inside.</text>
+<line x1="455" y1="130" x2="455" y2="170" stroke="#f0883e" stroke-width="1.2" stroke-dasharray="4 4"/>
+<text x="30" y="303" fill="#e6edf3" font-size="12" font-weight="700">One SSH packet:</text>
+<rect x="150" y="276" width="200" height="44" rx="4" fill="#161b22" stroke="#f0883e" stroke-width="1.5"/>
+<text x="250" y="295" text-anchor="middle" fill="#f0883e" font-size="11.5" font-weight="700">IP header</text>
+<text x="250" y="311" text-anchor="middle" fill="#e6edf3" font-size="10.5">the server's address</text>
+<rect x="350" y="276" width="150" height="44" rx="4" fill="#161b22" stroke="#3fb950" stroke-width="1.5"/>
+<text x="425" y="295" text-anchor="middle" fill="#3fb950" font-size="11.5" font-weight="700">TCP header</text>
+<text x="425" y="311" text-anchor="middle" fill="#e6edf3" font-size="10.5">port 22</text>
+<rect x="500" y="276" width="380" height="44" rx="4" fill="#1c2330" stroke="#e3b341" stroke-width="2"/>
+<text x="690" y="295" text-anchor="middle" fill="#e3b341" font-size="11.5" font-weight="700">SSH: your keystrokes, encrypted</text>
+<text x="690" y="311" text-anchor="middle" fill="#e6edf3" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">9f 3a c7 01 e4 5b 88 d2 6e 10 b3 ...</text>
+<text x="325" y="338" text-anchor="middle" fill="#8b949e" font-size="10.5">any router on the way can read these</text>
+<text x="690" y="338" text-anchor="middle" fill="#e3b341" font-size="10.5">only your terminal and the server can read this</text>
+<rect x="30" y="356" width="850" height="30" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+<text x="46" y="376" fill="#e6edf3" font-size="11.5">SSH is a protocol like HTTP: an agreed way for two programs to talk. Its special rule is that everything is locked first.</text>
+</svg>

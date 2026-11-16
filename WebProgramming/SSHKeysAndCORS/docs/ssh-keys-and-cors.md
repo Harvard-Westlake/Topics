@@ -16,12 +16,12 @@ Your website has lived on someone else's computers. Today you get onto a server 
 ## <font color="#388bfd">Table of Contents</font>
 
 1. [SSH: a terminal on another computer, and what the tunnel hides](#ssh)
-2. [Keys: logging in without sending a secret, and where each file lives](#keys)
+2. [Keys: making a pair, logging in without sending a secret, and where each file lives](#keys)
 3. [CORS: why the browser blocks an answer, with a working example to load](#cors)
 
 ## <font color="#388bfd">SSH</font>
 
-![Animated diagram of one SSH session between your terminal and a server on port 22, in six steps. Step 1: your terminal connects to port 22. Step 2: the server sends its fingerprint, so you know it is really the server. Step 3: both sides agree on a secret code for this one session. From there an encrypted tunnel covers the rest: step 4, logging in with a password or a key, step 5, a command you type, ls, and step 6, what the server prints back. A router in between sees only scrambled bytes for steps 4 to 6. A caption says that the first time you connect, ssh shows the fingerprint and asks whether you trust it, and warns you if it ever changes.](../assets/ssh-session.svg)
+![Animated diagram of SSH as a network protocol. Your terminal and a server on port 22 are joined by an encrypted tunnel that passes through three routers. You type ls, a scrambled packet travels through the tunnel, the server runs ls, and a scrambled packet carries the output back to your terminal. A note says a router can read where a packet is going and cannot read what is inside. Below, one SSH packet is shown in three parts: an IP header with the server's address and a TCP header with port 22, which any router on the way can read, and your keystrokes, encrypted, which only your terminal and the server can read. A caption says SSH is a protocol like HTTP, an agreed way for two programs to talk, whose special rule is that everything is locked first.](../assets/ssh-protocol.svg)
 
 **SSH** is a terminal that runs on another computer. You type here, and the commands run there.
 
@@ -33,11 +33,23 @@ ssh username@server-address
 - **The fingerprint question** appears the first time you connect. Answering yes saves it. A later warning that it changed means stop and ask.
 - **`exit`** closes the session and puts you back on your own computer.
 
+### <font color="#79c0ff">One session, step by step</font>
+
+![Animated diagram of one SSH session between your terminal and a server on port 22, in six steps. Step 1: your terminal connects to port 22. Step 2: the server sends its fingerprint, so you know it is really the server. Step 3: both sides agree on a secret code for this one session. From there an encrypted tunnel covers the rest: step 4, logging in with a password or a key, step 5, a command you type, ls, and step 6, what the server prints back. A router in between sees only scrambled bytes for steps 4 to 6. A caption says that the first time you connect, ssh shows the fingerprint and asks whether you trust it, and warns you if it ever changes.](../assets/ssh-session.svg)
+
 ## <font color="#388bfd">Keys</font>
 
-![Animated diagram of logging in with a key pair. Your laptop holds a public key, in the file id_ed25519.pub, that is safe to hand to anyone, and a private key, in the file id_ed25519, that never leaves the computer. Once, at setup, a copy of the public key travels to the server's authorized_keys file. To log in, the server asks the laptop to prove itself by signing the number 48151. The laptop signs it with the private key, and only the signature travels to the server. The server sees that the signature fits the public key and lets you in, and no secret was sent. A caption says a password is different because it has to be sent, so it can be shared, guessed, or leaked, and that GitHub already holds the public half of the SSH key made on setup day.](../assets/key-pair.svg)
+![Animated diagram of making a key pair. In a terminal, the command ssh-keygen -t ed25519 picks a huge random number. That number becomes the private key, in the file id_ed25519, which can sign and is kept secret on this computer. The public key, in the file id_ed25519.pub, is calculated from the private key: it is the matching half, can only check a signature, and is safe to share. An arrow back from public to private is crossed out. A note says going from private to public is quick arithmetic, and going back would take every computer on Earth longer than the age of the universe, which is why the public key is safe to hand out.](../assets/key-generation.svg)
 
-A **key pair** is a lock and the one key that opens it. Hand out copies of the lock to anyone. Keep the key.
+A **key pair** is a lock and the one key that opens it. Hand out copies of the lock to anyone. Keep the key. One command makes both halves:
+
+```bash
+ssh-keygen -t ed25519
+```
+
+### <font color="#79c0ff">Logging in with a key</font>
+
+![Animated diagram of logging in with a key pair. Your laptop holds a public key, in the file id_ed25519.pub, that is safe to hand to anyone, and a private key, in the file id_ed25519, that never leaves the computer. Once, at setup, a copy of the public key travels to the server's authorized_keys file. To log in, the server asks the laptop to prove itself by signing the number 48151. The laptop signs it with the private key, and only the signature travels to the server. The server sees that the signature fits the public key and lets you in, and no secret was sent. A caption says a password is different because it has to be sent, so it can be shared, guessed, or leaked, and that GitHub already holds the public half of the SSH key made on setup day.](../assets/key-pair.svg)
 
 | | Password | Key pair |
 |---|---|---|
@@ -48,6 +60,8 @@ A **key pair** is a lock and the one key that opens it. Hand out copies of the l
 > **Warning:** A private key never leaves your computer. A public key can go anywhere.
 
 ### <font color="#79c0ff">Where each file lives</font>
+
+![Animated diagram of the files behind an SSH key login. On your computer, the .ssh folder holds four files: config, a nickname for the server with its address, login, and key, id_ed25519, the private key that signs and never leaves the folder, id_ed25519.pub, the public key you hand out, and known_hosts, the server's remembered fingerprint. On the server, the file authorized_keys lists the public keys allowed in, one per line, and one of the lines is yours. Step 1, once: your public key line is added to authorized_keys. Step 2: you type ssh box, and config fills in the address, the login, and which key to use. Step 3: the private key signs the server's challenge, and only the signature travels. Step 4: the server finds the line that fits the signature and lets you in with no password. Step 5: the server's fingerprint is saved in known_hosts, so a fake server would be noticed next time.](../assets/key-files-access.svg)
 
 Every piece is a plain text file in a folder named `.ssh`.
 
