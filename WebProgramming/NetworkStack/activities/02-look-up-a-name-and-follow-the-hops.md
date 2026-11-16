@@ -16,7 +16,7 @@
    traceroute my-site.web.app
    ```
 4. Count the hops. Name hop 1, and say how you know which hop is the last one.
-5. Find a line of `* * *` if you have one. That router passed your packets along but refused to answer the question.
+5. Find a line of `* * *` if you have one. That router passed your packets along but refused to answer the question. A school network may show many.
 6. Run `traceroute` again for a site in another country, such as `www.bbc.co.uk`. Compare the number of hops and the times.
 
-> **Note:** In WSL, if `traceroute` is not found, install it with `sudo apt install traceroute`. On a school network many hops may show `* * *`: the packets still got through.
+> **Note:** In WSL, `sudo apt install traceroute` adds the command if it is missing.

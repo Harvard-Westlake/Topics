@@ -69,13 +69,21 @@
     {
       "day": 7,
       "duration": 1,
+      "title": "SSH, Keys, and CORS",
+      "path": "SSHKeysAndCORS",
+      "_module": "WebProgramming",
+      "review": null
+    },
+    {
+      "day": 8,
+      "duration": 1,
       "title": "The Network Stack",
       "path": "NetworkStack",
       "_module": "WebProgramming",
       "review": null
     },
     {
-      "day": 8,
+      "day": 9,
       "duration": 2,
       "title": "The Learning Widget Project",
       "path": "LearningWidget",
@@ -83,7 +91,7 @@
       "review": null
     },
     {
-      "day": 10,
+      "day": 11,
       "duration": 1,
       "title": "UX and Behavior Tracking",
       "path": "UXAndBehaviorTracking",
@@ -91,7 +99,7 @@
       "review": null
     },
     {
-      "day": 11,
+      "day": 12,
       "duration": 1,
       "title": "Widget Iteration from Feedback",
       "path": "WidgetIteration",
@@ -99,7 +107,7 @@
       "review": null
     },
     {
-      "day": 12,
+      "day": 13,
       "duration": 1,
       "title": "Collaborative Peer Review",
       "path": "PeerReview",
@@ -107,7 +115,7 @@
       "review": null
     },
     {
-      "day": 13,
+      "day": 14,
       "duration": 1,
       "title": "Widget Presentations",
       "path": "WidgetPresentations",

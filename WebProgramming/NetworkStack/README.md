@@ -13,15 +13,11 @@ Your website does not travel as one thing. It is cut into small pieces, and ever
 
 - **Packets and layers:** a message is cut into packets, and four layers each wrap it once. Two layers give you a choice: TCP or UDP, HTTP or WebSocket.
 - **The machines in between:** name servers turn a name into an address, routers pass packets hop by hop, and data centers hold the computers that answer.
-- **SSH and keys:** a terminal on a far-away computer through an encrypted tunnel, and a way to prove who you are without sending a secret.
-- **CORS and headers:** short lines at the top of every message that decide whether a browser will accept the answer at all.
 
 ## <font color="#388bfd">Table of Contents</font>
 
 1. [Packets and the four layers, with TCP against UDP and HTTP against WebSocket](#packets-and-the-four-layers)
 2. [The machines in between: name servers, routers, and data centers](#the-machines-in-between)
-3. [SSH and keys: a terminal on another computer, and logging in without sending a secret](#ssh-and-keys)
-4. [CORS and the headers every website needs to work](#cors-and-headers)
 
 ## <font color="#388bfd">Packets and the Four Layers</font>
 
@@ -46,7 +42,7 @@ A **port** is a numbered door on one computer, so many programs can share one ad
 |---|---|
 | `80` | HTTP, a website with no encryption |
 | `443` | HTTPS, a website with encryption |
-| `22` | SSH, a terminal on a far-away computer |
+| `22` | [SSH](../SSHKeysAndCORS/), a terminal on a far-away computer |
 | `53` | DNS, the name servers |
 
 ### <font color="#79c0ff">Application: HTTP and WebSocket</font>
@@ -141,102 +137,20 @@ One building is also rated by how much can break before it goes dark:
    traceroute my-site.web.app
    ```
 4. Count the hops. Name hop 1, and say how you know which hop is the last one.
-5. Find a line of `* * *` if you have one. That router passed your packets along but refused to answer the question.
+5. Find a line of `* * *` if you have one. That router passed your packets along but refused to answer the question. A school network may show many.
 6. Run `traceroute` again for a site in another country, such as `www.bbc.co.uk`. Compare the number of hops and the times.
 
-> **Note:** In WSL, if `traceroute` is not found, install it with `sudo apt install traceroute`. On a school network many hops may show `* * *`: the packets still got through.
+> **Note:** In WSL, `sudo apt install traceroute` adds the command if it is missing.
 
 *(Standalone file: [activities/02-look-up-a-name-and-follow-the-hops.md](activities/02-look-up-a-name-and-follow-the-hops.md))*
 
 </details>
 
-## <font color="#388bfd">SSH and Keys</font>
-
-So far the browser did the talking. To work on a server yourself, you need your own terminal on it.
-
-### <font color="#79c0ff">SSH</font>
-
-![Animated diagram of one SSH session between your terminal and a server on port 22, in six steps. Step 1: your terminal connects to port 22. Step 2: the server sends its fingerprint, so you know it is really the server. Step 3: both sides agree on a secret code for this one session. From there an encrypted tunnel covers the rest: step 4, logging in with a password or a key, step 5, a command you type, ls, and step 6, what the server prints back. A router in between sees only scrambled bytes for steps 4 to 6. A caption says that the first time you connect, ssh shows the fingerprint and asks whether you trust it, and warns you if it ever changes.](assets/ssh-session.svg)
-
-**SSH** is a terminal that runs on another computer. You type here, and the commands run there.
-
-```bash
-ssh username@server-address
-```
-
-- **Everything is encrypted, the login included.** The routers in between carry your packets and cannot read them.
-- **The fingerprint question** appears the first time you connect. Answering yes saves it. A warning that it changed means you may be talking to a different computer: stop and ask.
-- **`exit`** closes the session and puts you back on your own computer.
-
-### <font color="#79c0ff">Keys</font>
-
-![Animated diagram of logging in with a key pair. Your laptop holds a public key, in the file id_ed25519.pub, that is safe to hand to anyone, and a private key, in the file id_ed25519, that never leaves the computer. Once, at setup, a copy of the public key travels to the server's authorized_keys file. To log in, the server asks the laptop to prove itself by signing the number 48151. The laptop signs it with the private key, and only the signature travels to the server. The server sees that the signature fits the public key and lets you in, and no secret was sent. A caption says a password is different because it has to be sent, so it can be shared, guessed, or leaked, and that GitHub already holds the public half of the SSH key made on setup day.](assets/key-pair.svg)
-
-A **key pair** is a lock and the one key that opens it. Hand out copies of the lock to anyone. Keep the key.
-
-| | Password | Key pair |
-|---|---|---|
-| **What you send to log in** | The secret itself | A signature that works once |
-| **If someone copies what was sent** | They can log in as you | They get nothing they can reuse |
-| **What to protect** | The password, everywhere it was ever typed | One file, the private key, on your own computer |
-
-> **Warning:** A private key or a password never goes in a repository, a prompt, a screenshot, or a message. A public key can go anywhere.
-
-## <font color="#388bfd">CORS and Headers</font>
-
-![Animated diagram of CORS. A page from my-site.web.app, inside your browser, asks a service at a different origin for scores, and the browser adds the header Origin: https://my-site.web.app. Before the fix, the service answers 200 OK with no Access-Control-Allow-Origin header, and the browser's check stops the answer: the page gets an error and no data. After the fix, the service answers 200 OK with Access-Control-Allow-Origin: https://my-site.web.app, and the browser hands the scores to the page. A caption says the service answered both times, that CORS is the browser deciding whether your page may read the answer, and that an origin is scheme plus host plus port.](assets/cors-check.svg)
-
-A page may always talk to the place it came from. To read an answer from anywhere else, that other server has to say your page is allowed. That permission slip is **CORS**, and it is one header.
-
-- **An origin** is scheme + host + port: `https://my-site.web.app`. Change any one and it is a different origin.
-- **The browser is the guard.** The service answers either way. The browser decides whether your page may read it.
-- **The preflight:** before a request that changes data or sends JSON, the browser first sends an `OPTIONS` request to ask permission. The service has to answer that one too.
-
-The headers and flags that decide whether a site works:
-
-| Header or flag | Sent by | What it decides |
-|---|---|---|
-| `Access-Control-Allow-Origin` | The service | Which origins' pages may read this answer. `*` means any. |
-| `Access-Control-Allow-Methods`, `Access-Control-Allow-Headers` | The service, answering the preflight | Which actions (`GET`, `POST`) and which request headers are allowed. |
-| `Content-Type` | Both sides | What the body is: `text/html`, `application/json`. The wrong type and the browser refuses to use it. |
-| `Cache-Control` | The server | How long the browser may reuse its saved copy instead of asking again. |
-| `Strict-Transport-Security` | The server | From now on, reach this site by HTTPS only. |
-| `Set-Cookie` with `Secure`, `HttpOnly`, `SameSite` | The server | The cookie travels only over HTTPS, JavaScript cannot read it, and other sites' requests do not carry it. |
-
-> **Warning:** A page loaded over `https://` may only call services that are also `https://` (or `wss://` for a WebSocket). The browser blocks a call to plain `http://` before it is ever sent.
-
-### <font color="#79c0ff">Activity 3</font>
-<details>
-<summary><strong>Get Blocked by CORS on Purpose</strong></summary>
-
-*Concept: Make your own page ask two other sites for data, and find the one header that explains why only one of them works.*
-
-![A browser console on your own site. A fetch to example.com fails with a red error: blocked by CORS policy, no Access-Control-Allow-Origin header is present. A fetch to api.github.com/zen succeeds and prints a line of text. A caption explains that GitHub's server sent access-control-allow-origin with a star, meaning any origin may read the answer, and example.com sent no such header.](assets/cors-two-fetches.svg)
-
-## Task
-
-1. Open your own live website, open DevTools, and select the **Console** tab.
-2. Paste this into the console and press Enter:
-   ```javascript
-   fetch("https://example.com").then((response) => response.text()).then(console.log);
-   ```
-3. Read the red error. Find the name of the header it says is missing.
-4. Now paste this one:
-   ```javascript
-   fetch("https://api.github.com/zen").then((response) => response.text()).then(console.log);
-   ```
-5. Switch to the **Network** tab, click the `zen` row, and find `access-control-allow-origin` under Response Headers. Write down its value.
-6. Find the `example.com` row. Its status reads **CORS error**, but the server did send an answer. Say who kept that answer away from your page.
-
-*(Standalone file: [activities/03-get-blocked-by-cors-on-purpose.md](activities/03-get-blocked-by-cors-on-purpose.md))*
-
-</details>
-
 ## <font color="#388bfd">☑️ Check for Understanding</font>
 
-- [ ] Name the four layers and what each wrapper adds, and pick TCP or UDP and HTTP or WebSocket for an app.
-- [ ] Trace a request from a typed name to a data center and back, and explain why a browser blocks an answer that has no CORS header.
-- [ ] Say what SSH hides from the routers in between, and why a private key never leaves your computer.
+- [ ] Name the four layers in order and say what each one's wrapper adds to a packet.
+- [ ] Pick TCP or UDP, and HTTP or WebSocket, for an app, and say what each choice costs.
+- [ ] Trace a request from a typed name, through name servers and routers, to a data center and back.
 
 ## <font color="#388bfd">🚀 Stretch Goals</font>
 
@@ -246,4 +160,4 @@ The headers and flags that decide whether a site works:
 
 [Assignment](ASSIGNMENT.md)
 
-← [User Flow and Logging](../UserFlowAndLogging/) | Next: [The Learning Widget Project](../LearningWidget/)
+← [SSH, Keys, and CORS](../SSHKeysAndCORS/) | Next: [The Learning Widget Project](../LearningWidget/)

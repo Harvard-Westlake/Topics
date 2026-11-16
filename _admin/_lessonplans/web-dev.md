@@ -12,9 +12,10 @@
 | 0.4 | Intro to AI Coding | [WebProgramming/InterfacingWithAI](../../WebProgramming/InterfacingWithAI/) | — |
 | 0.5 | Databases and Collections | [WebProgramming/DatabasesAndCollections](../../WebProgramming/DatabasesAndCollections/) | [The Four-Command Round Trip](../../Terminal/Basics/review/four-command-round-trip.md) |
 | 0.6 | User Flow and Logging | [WebProgramming/UserFlowAndLogging](../../WebProgramming/UserFlowAndLogging/) | — |
-| 0.7 | The Network Stack | [WebProgramming/NetworkStack](../../WebProgramming/NetworkStack/) | — |
-| 0.8 · 2d | The Learning Widget Project | [WebProgramming/LearningWidget](../../WebProgramming/LearningWidget/) | — |
-| 0.10 | UX and Behavior Tracking | [WebProgramming/UXAndBehaviorTracking](../../WebProgramming/UXAndBehaviorTracking/) | — |
-| 0.11 | Widget Iteration from Feedback | [WebProgramming/WidgetIteration](../../WebProgramming/WidgetIteration/) | — |
-| 0.12 | Collaborative Peer Review | [WebProgramming/PeerReview](../../WebProgramming/PeerReview/) | — |
-| 0.13 | Widget Presentations *(no assignment)* | [WebProgramming/WidgetPresentations](../../WebProgramming/WidgetPresentations/) | — |
+| 0.7 | SSH, Keys, and CORS | [WebProgramming/SSHKeysAndCORS](../../WebProgramming/SSHKeysAndCORS/) | — |
+| 0.8 | The Network Stack | [WebProgramming/NetworkStack](../../WebProgramming/NetworkStack/) | — |
+| 0.9 · 2d | The Learning Widget Project | [WebProgramming/LearningWidget](../../WebProgramming/LearningWidget/) | — |
+| 0.11 | UX and Behavior Tracking | [WebProgramming/UXAndBehaviorTracking](../../WebProgramming/UXAndBehaviorTracking/) | — |
+| 0.12 | Widget Iteration from Feedback | [WebProgramming/WidgetIteration](../../WebProgramming/WidgetIteration/) | — |
+| 0.13 | Collaborative Peer Review | [WebProgramming/PeerReview](../../WebProgramming/PeerReview/) | — |
+| 0.14 | Widget Presentations *(no assignment)* | [WebProgramming/WidgetPresentations](../../WebProgramming/WidgetPresentations/) | — |

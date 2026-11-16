@@ -156,4 +156,4 @@ There are three types: the **click map**, the **scroll map**, and the **move map
 
 [Assignment](ASSIGNMENT.md)
 
-← [Databases and Collections](../DatabasesAndCollections/) | Next: [The Network Stack](../NetworkStack/)
+← [Databases and Collections](../DatabasesAndCollections/) | Next: [SSH, Keys, and CORS](../SSHKeysAndCORS/)

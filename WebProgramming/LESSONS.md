@@ -9,10 +9,11 @@
 | 5 | Intro to AI Coding | [InterfacingWithAI/](InterfacingWithAI/) |
 | 6 | Databases and Collections | [DatabasesAndCollections/](DatabasesAndCollections/) |
 | 7 | User Flow and Logging | [UserFlowAndLogging/](UserFlowAndLogging/) |
-| 8 | The Network Stack | [NetworkStack/](NetworkStack/) |
-| 9–10 | The Learning Widget Project | [LearningWidget/](LearningWidget/) |
-| 11 | UX and Behavior Tracking | [UXAndBehaviorTracking/](UXAndBehaviorTracking/) |
-| 12 | Widget Iteration from Feedback | [WidgetIteration/](WidgetIteration/) |
-| 13 | Collaborative Peer Review | [PeerReview/](PeerReview/) |
-| 14 | Widget Presentations | [WidgetPresentations/](WidgetPresentations/) |
+| 8 | SSH, Keys, and CORS | [SSHKeysAndCORS/](SSHKeysAndCORS/) |
+| 9 | The Network Stack | [NetworkStack/](NetworkStack/) |
+| 10–11 | The Learning Widget Project | [LearningWidget/](LearningWidget/) |
+| 12 | UX and Behavior Tracking | [UXAndBehaviorTracking/](UXAndBehaviorTracking/) |
+| 13 | Widget Iteration from Feedback | [WidgetIteration/](WidgetIteration/) |
+| 14 | Collaborative Peer Review | [PeerReview/](PeerReview/) |
+| 15 | Widget Presentations | [WidgetPresentations/](WidgetPresentations/) |
 | Extra | Debugging JavaScript | [DebuggingJavaScript/](DebuggingJavaScript/) |
