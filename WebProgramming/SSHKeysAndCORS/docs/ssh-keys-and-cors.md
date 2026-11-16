@@ -39,9 +39,9 @@ ssh username@server-address
 
 ## <font color="#388bfd">Keys</font>
 
-![Animated diagram of making a key pair, all on one laptop that belongs to one person, Maya. In a terminal on her laptop she types the command ssh-keygen and presses Enter. Underneath, the terminal says it is rolling a giant random number and shows the number, so big that nobody could ever guess it, then says it made 2 key files from it. The number travels into a folder on the same laptop and becomes two outlined key files: the private key, the secret half that never leaves this laptop, and the public key, the half she hands out and that is safe for anyone to see. They are a matching pair, and each one only works with the other. Nothing is sent anywhere.](../assets/key-generation-eli5.svg)
+### <font color="#79c0ff">Making a key pair</font> <sub>[technical](../assets/key-generation-technical.svg)</sub>
 
-<sub>Hover over the picture for the technical version, or open it: [making a key pair, technical](../assets/key-generation-technical.svg)</sub>
+![Animated diagram of making a key pair, all on one laptop that belongs to one person, Maya. In a terminal on her laptop she types the command ssh-keygen and presses Enter. Underneath, the terminal says it is rolling a giant random number and shows the number, so big that nobody could ever guess it, then says it made 2 key files from it. The number travels into a folder on the same laptop and becomes two outlined key files: the private key, the secret half that never leaves this laptop, and the public key, the half she hands out and that is safe for anyone to see. They are a matching pair, and each one only works with the other. Nothing is sent anywhere.](../assets/key-generation-eli5.svg)
 
 A **key pair** is a lock and the one key that opens it. Hand out copies of the lock to anyone. Keep the key. One command makes both halves:
 
@@ -49,11 +49,9 @@ A **key pair** is a lock and the one key that opens it. Hand out copies of the l
 ssh-keygen -t ed25519
 ```
 
-### <font color="#79c0ff">Logging in with a key</font>
+### <font color="#79c0ff">Logging in with a key</font> <sub>[technical](../assets/key-login-technical.svg)</sub>
 
 ![Animated diagram of three people trying to log in to a server that keeps a folder of allowed keys holding key files for maya, noor, and kai. First, Dev knocks and shows his key. He has a key pair, but his key was never put in the folder, so the server says no entry. Second, Maya knocks and shows her key. It is in the folder, so the server asks her to prove the key is hers. She sends proof stamped with her secret key, the proof fits her key in the folder, and the server lets her in. Third, Sam knocks with no key files at all, and the server says no key, no entry. A caption says Maya never showed her secret key, only proof that she has it, and the proof works one time.](../assets/key-login-eli5.svg)
-
-<sub>Hover over the picture for the technical version, or open it: [logging in with a key, technical](../assets/key-login-technical.svg)</sub>
 
 | | Password | Key pair |
 |---|---|---|
@@ -124,9 +122,9 @@ alias box="ssh box"
 
 ## <font color="#388bfd">CORS</font>
 
-![Animated diagram of CORS in plain words. Your page, from my-site, sits inside your browser, and your browser acts as a guard. The page asks another website: can I have the scores? The first time, the other website answers with the scores but forgot the permission note, so the guard keeps the answer and the page gets nothing. The second time, the other website answers with the scores and a note saying pages from my-site may read this, so the guard hands the scores to the page. A caption says the other website answered both times, the guard is your own browser, and only the other website can add the note.](../assets/cors-check-eli5.svg)
+### <font color="#79c0ff">The browser's check</font> <sub>[technical](../assets/cors-check-technical.svg)</sub>
 
-<sub>Hover over the picture for the technical version, or open it: [CORS, technical](../assets/cors-check-technical.svg)</sub>
+![Animated diagram of CORS in plain words. Your page, from my-site, sits inside your browser, and your browser acts as a guard. The page asks another website: can I have the scores? The first time, the other website answers with the scores but forgot the permission note, so the guard keeps the answer and the page gets nothing. The second time, the other website answers with the scores and a note saying pages from my-site may read this, so the guard hands the scores to the page. A caption says the other website answered both times, the guard is your own browser, and only the other website can add the note.](../assets/cors-check-eli5.svg)
 
 Every request and every answer on the web starts with short labeled lines called **headers**. A page may always talk to the place it came from. To read an answer from anywhere else, that other server has to send a header saying your page is allowed. That permission slip is **CORS**.
 
