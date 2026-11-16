@@ -7,7 +7,7 @@
 
 ---
 
-Visit these with a designer's eye, not a player's: notice how fast each one engages you, how it teaches its controls without instructions, and what its click and scroll heatmaps would look like. Used in [UX and Behavior Tracking](../UXAndBehaviorTracking/).
+Visit these with a designer's eye, not a player's: notice how fast each one engages you, how it teaches its controls without instructions, and what its click and scroll heatmaps would look like. Used in [User Flow and Logging](../UserFlowAndLogging/).
 
 | Site | Why it is worth studying |
 |---|---|

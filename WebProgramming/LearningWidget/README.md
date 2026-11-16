@@ -57,7 +57,7 @@ A strong plan answers:
 
 ## <font color="#388bfd">What a Strong Widget Looks Like</font>
 
-The widget is not done when it deploys. It goes through [feedback](../UXAndBehaviorTracking/), [iteration](../WidgetIteration/), a [peer review](../PeerReview/), and a presentation. Build toward that from day one:
+The widget is not done when it deploys. It goes through [feedback](../Playtesting/), [iteration](../WidgetIteration/), a [peer review](../PeerReview/), and a presentation. Build toward that from day one:
 
 - Every flow works as described, with nothing that blocks the learner.
 - What it teaches is correct.
@@ -79,4 +79,4 @@ The widget is not done when it deploys. It goes through [feedback](../UXAndBehav
 
 [Assignment](ASSIGNMENT.md)
 
-← [The Network Stack](../NetworkStack/) | Next: [UX and Behavior Tracking](../UXAndBehaviorTracking/)
+← [Playtesting](../Playtesting/) | Next: [Widget Iteration from Feedback](../WidgetIteration/)

@@ -160,4 +160,4 @@ One building is also rated by how much can break before it goes dark:
 
 [Assignment](ASSIGNMENT.md)
 
-← [SSH, Keys, and CORS](../SSHKeysAndCORS/) | Next: [The Learning Widget Project](../LearningWidget/)
+← [SSH, Keys, and CORS](../SSHKeysAndCORS/) | Next: [Playtesting](../Playtesting/)

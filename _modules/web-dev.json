@@ -84,17 +84,17 @@
     },
     {
       "day": 9,
-      "duration": 2,
-      "title": "The Learning Widget Project",
-      "path": "LearningWidget",
+      "duration": 1,
+      "title": "Playtesting",
+      "path": "Playtesting",
       "_module": "WebProgramming",
       "review": null
     },
     {
-      "day": 11,
-      "duration": 1,
-      "title": "UX and Behavior Tracking",
-      "path": "UXAndBehaviorTracking",
+      "day": 10,
+      "duration": 2,
+      "title": "The Learning Widget Project",
+      "path": "LearningWidget",
       "_module": "WebProgramming",
       "review": null
     },

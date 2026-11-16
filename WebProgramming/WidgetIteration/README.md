@@ -25,7 +25,7 @@ You built the widget, so you are the one person who cannot see it fresh. Iterati
 
 Because you built it, you already know which parts are buttons, what order to read things in, and what every label means. Your brain fills in every confusing spot without noticing. This is the **curse of knowledge**: the better you know your own design, the worse you are at seeing its problems.
 
-Fresh testers are walking [heatmaps](../UXAndBehaviorTracking/). Watch where they hesitate, what they click that is not clickable, and where they ask "what now?" Write down their **exact words**, not your summary of them.
+Fresh testers are walking [heatmaps](../UserFlowAndLogging/). Watch where they hesitate, what they click that is not clickable, and where they ask "what now?" Write down their **exact words**, not your summary of them.
 
 | You see | A fresh tester sees |
 |---|---|
@@ -72,4 +72,4 @@ Then push. Your Learning Widget's [pull request](../LearningWidget/) updates on 
 
 [Assignment](ASSIGNMENT.md)
 
-← [UX and Behavior Tracking](../UXAndBehaviorTracking/) | Next: [Collaborative Peer Review](../PeerReview/)
+← [The Learning Widget Project](../LearningWidget/) | Next: [Collaborative Peer Review](../PeerReview/)

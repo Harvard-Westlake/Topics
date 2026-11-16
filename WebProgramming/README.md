@@ -29,7 +29,7 @@ This unit goes from "what is a web page, actually?" to shipping a real product: 
 | [JavaScript](Docs/javascript.md) | Lesson 2 | Variables, functions, DOM access, packages, events, canvas and animation, classes |
 | [Firebase Hosting](Docs/firebase-hosting.md) | Lesson 1 | CLI commands, project structure, deploy workflow, troubleshooting |
 | [Codex Commands](InterfacingWithAI/docs/codex-commands.md) | Lesson 5 | Every Codex slash command in one plain sentence, with the real risk behind the dangerous ones |
-| [Website Inspiration](Docs/website-inspiration.md) | Lesson 12 | Examples of innovative UX and interactive design |
+| [Website Inspiration](Docs/website-inspiration.md) | Lesson 7 | Examples of innovative UX and interactive design |
 
 ---
 
@@ -46,8 +46,8 @@ This unit goes from "what is a web page, actually?" to shipping a real product: 
 | 7 | [User Flow and Logging](UserFlowAndLogging/) | One specific user, their first ten seconds, the flow as a chart, and how sites log what visitors do |
 | 8 | [SSH, Keys, and CORS](SSHKeysAndCORS/) | A terminal on another computer, logging in with a key pair, and the browser's CORS check |
 | 9 | [The Network Stack](NetworkStack/) | Packets and the four layers, TCP and UDP, HTTP and WebSocket, name servers, routers, and data centers |
-| 10–11 | [The Learning Widget Project](LearningWidget/) | Plan and build an educational widget published via GitHub and Firebase |
-| 12 | [UX and Behavior Tracking](UXAndBehaviorTracking/) | Engagement, navigation, user flow, and heatmaps of real behavior |
+| 10 | [Playtesting](Playtesting/) | Testing classmates' apps as a stranger and reporting behaviors, not opinions |
+| 11–12 | [The Learning Widget Project](LearningWidget/) | Plan and build an educational widget published via GitHub and Firebase |
 | 13 | [Widget Iteration from Feedback](WidgetIteration/) | Turning feedback into a shrinking `feedback.md` and an error-free widget |
 | 14 | [Collaborative Peer Review](PeerReview/) | Reviewing a partner's widget and preparing to present what you found |
 | 15 | [Widget Presentations](WidgetPresentations/) | In class: a one-minute walkthrough of the widget you reviewed, and your findings |
