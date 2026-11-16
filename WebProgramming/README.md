@@ -29,7 +29,7 @@ This unit goes from "what is a web page, actually?" to shipping a real product: 
 | [JavaScript](Docs/javascript.md) | Lesson 2 | Variables, functions, DOM access, packages, events, canvas and animation, classes |
 | [Firebase Hosting](Docs/firebase-hosting.md) | Lesson 1 | CLI commands, project structure, deploy workflow, troubleshooting |
 | [Codex Commands](InterfacingWithAI/docs/codex-commands.md) | Lesson 5 | Every Codex slash command in one plain sentence, with the real risk behind the dangerous ones |
-| [Website Inspiration](Docs/website-inspiration.md) | Lesson 10 | Examples of innovative UX and interactive design |
+| [Website Inspiration](Docs/website-inspiration.md) | Lesson 11 | Examples of innovative UX and interactive design |
 
 ---
 
@@ -44,11 +44,12 @@ This unit goes from "what is a web page, actually?" to shipping a real product: 
 | 5 | [Intro to AI Coding](InterfacingWithAI/) | Codex CLI in your terminal, what an AI agent may touch, and teaching the AI your tastes before it builds anything |
 | 6 | [Databases and Collections](DatabasesAndCollections/) | JSON, Firestore collections and documents, reading and writing a document by name, and security rules |
 | 7 | [User Flow and Logging](UserFlowAndLogging/) | One specific user, their first ten seconds, the flow as a chart, and how sites log what visitors do |
-| 8–9 | [The Learning Widget Project](LearningWidget/) | Plan and build an educational widget published via GitHub and Firebase |
-| 10 | [UX and Behavior Tracking](UXAndBehaviorTracking/) | Engagement, navigation, user flow, and heatmaps of real behavior |
-| 11 | [Widget Iteration from Feedback](WidgetIteration/) | Turning feedback into a shrinking `feedback.md` and an error-free widget |
-| 12 | [Collaborative Peer Review](PeerReview/) | Reviewing a partner's widget and preparing to present what you found |
-| 13 | [Widget Presentations](WidgetPresentations/) | In class: a one-minute walkthrough of the widget you reviewed, and your findings |
+| 8 | [The Network Stack](NetworkStack/) | Packets and the four layers, TCP and UDP, HTTP and WebSocket, name servers, routers, data centers, SSH and keys, and CORS |
+| 9–10 | [The Learning Widget Project](LearningWidget/) | Plan and build an educational widget published via GitHub and Firebase |
+| 11 | [UX and Behavior Tracking](UXAndBehaviorTracking/) | Engagement, navigation, user flow, and heatmaps of real behavior |
+| 12 | [Widget Iteration from Feedback](WidgetIteration/) | Turning feedback into a shrinking `feedback.md` and an error-free widget |
+| 13 | [Collaborative Peer Review](PeerReview/) | Reviewing a partner's widget and preparing to present what you found |
+| 14 | [Widget Presentations](WidgetPresentations/) | In class: a one-minute walkthrough of the widget you reviewed, and your findings |
 | Extra | [Debugging JavaScript](DebuggingJavaScript/) | DevTools, the console, and reading stack traces: open it whenever something breaks |
 
 ---

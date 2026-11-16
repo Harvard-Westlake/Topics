@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 910 466" width="910" height="466" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12">
+<title>Animated diagram of one web request being wrapped by four layers. Application: the HTTP message GET /index.html. Transport adds a TCP header with port 443 and piece 1 of 3. Internet adds an IP header addressed to 199.36.158.100. Link adds a frame header addressed to the next hop.</title>
+<style>@keyframes r0{0%,5%{opacity:0.12}7%,96%{opacity:1}100%{opacity:0.12}} .r0{animation:r0 14s linear infinite} @keyframes h0{0%,5%{opacity:0;transform:translateX(-50px)}10%,96%{opacity:1;transform:translateX(0)}100%{opacity:0}} .h0{animation:h0 14s ease-out infinite} @keyframes r1{0%,26%{opacity:0.12}28%,96%{opacity:1}100%{opacity:0.12}} .r1{animation:r1 14s linear infinite} @keyframes h1{0%,26%{opacity:0;transform:translateX(-50px)}31%,96%{opacity:1;transform:translateX(0)}100%{opacity:0}} .h1{animation:h1 14s ease-out infinite} @keyframes r2{0%,47%{opacity:0.12}49%,96%{opacity:1}100%{opacity:0.12}} .r2{animation:r2 14s linear infinite} @keyframes h2{0%,47%{opacity:0;transform:translateX(-50px)}52%,96%{opacity:1;transform:translateX(0)}100%{opacity:0}} .h2{animation:h2 14s ease-out infinite} @keyframes r3{0%,68%{opacity:0.12}70%,96%{opacity:1}100%{opacity:0.12}} .r3{animation:r3 14s linear infinite} @keyframes h3{0%,68%{opacity:0;transform:translateX(-50px)}73%,96%{opacity:1;transform:translateX(0)}100%{opacity:0}} .h3{animation:h3 14s ease-out infinite} @media (prefers-reduced-motion: reduce){*{animation:none!important}}</style>
+<defs><marker id="m8b949e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8b949e"/></marker></defs>
+<rect width="910" height="466" rx="10" fill="#0d1117"/>
+<text x="30" y="36" fill="#e6edf3" font-size="17" font-weight="700">One message, four wrappers</text>
+<text x="30" y="56" fill="#8b949e" font-size="12">Each layer adds its own header in front of what the layer above handed it. Every layer has one job.</text>
+<g class="r0">
+<rect x="30" y="84" width="250" height="62" rx="8" fill="#161b22" stroke="#388bfd" stroke-width="1.5"/>
+<text x="44" y="104" fill="#388bfd" font-size="13" font-weight="700">4. Application</text>
+<text x="266" y="104" text-anchor="end" fill="#8b949e" font-size="10">unit: message</text>
+<text x="44" y="121" fill="#e6edf3" font-size="11">What to say</text>
+<text x="44" y="137" fill="#8b949e" font-size="10.5">HTTP, WebSocket, DNS</text>
+</g>
+<g class="h0">
+<rect x="700" y="90" width="180" height="50" rx="4" fill="#1c2330" stroke="#388bfd" stroke-width="2"/>
+<text x="790.0" y="111" text-anchor="middle" fill="#388bfd" font-size="11" font-weight="700">HTTP message</text>
+<text x="790.0" y="127" text-anchor="middle" fill="#e6edf3" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">GET /index.html</text>
+</g>
+<g class="r1">
+<rect x="30" y="162" width="250" height="62" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="1.5"/>
+<text x="44" y="182" fill="#3fb950" font-size="13" font-weight="700">3. Transport</text>
+<text x="266" y="182" text-anchor="end" fill="#8b949e" font-size="10">unit: segment</text>
+<text x="44" y="199" fill="#e6edf3" font-size="11">Which program, and did it all arrive?</text>
+<text x="44" y="215" fill="#8b949e" font-size="10.5">TCP, UDP</text>
+<rect x="700" y="168" width="180" height="50" rx="4" fill="#161b22" stroke="#388bfd" stroke-width="1.2" opacity=".55"/>
+<text x="790.0" y="189" text-anchor="middle" fill="#388bfd" font-size="11" font-weight="700" opacity=".7">HTTP message</text>
+<text x="790.0" y="205" text-anchor="middle" fill="#8b949e" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">GET /index.html</text>
+</g>
+<g class="h1">
+<rect x="550" y="168" width="150" height="50" rx="4" fill="#1c2330" stroke="#3fb950" stroke-width="2"/>
+<text x="625.0" y="189" text-anchor="middle" fill="#3fb950" font-size="11" font-weight="700">TCP header</text>
+<text x="625.0" y="205" text-anchor="middle" fill="#e6edf3" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">port 443, piece 1 of 3</text>
+</g>
+<g class="r2">
+<rect x="30" y="240" width="250" height="62" rx="8" fill="#161b22" stroke="#f0883e" stroke-width="1.5"/>
+<text x="44" y="260" fill="#f0883e" font-size="13" font-weight="700">2. Internet</text>
+<text x="266" y="260" text-anchor="end" fill="#8b949e" font-size="10">unit: packet</text>
+<text x="44" y="277" fill="#e6edf3" font-size="11">Which computer, anywhere on Earth?</text>
+<text x="44" y="293" fill="#8b949e" font-size="10.5">IP</text>
+<rect x="700" y="246" width="180" height="50" rx="4" fill="#161b22" stroke="#388bfd" stroke-width="1.2" opacity=".55"/>
+<text x="790.0" y="267" text-anchor="middle" fill="#388bfd" font-size="11" font-weight="700" opacity=".7">HTTP message</text>
+<text x="790.0" y="283" text-anchor="middle" fill="#8b949e" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">GET /index.html</text>
+<rect x="550" y="246" width="150" height="50" rx="4" fill="#161b22" stroke="#3fb950" stroke-width="1.2" opacity=".55"/>
+<text x="625.0" y="267" text-anchor="middle" fill="#3fb950" font-size="11" font-weight="700" opacity=".7">TCP header</text>
+<text x="625.0" y="283" text-anchor="middle" fill="#8b949e" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">port 443, piece 1 of 3</text>
+</g>
+<g class="h2">
+<rect x="400" y="246" width="150" height="50" rx="4" fill="#1c2330" stroke="#f0883e" stroke-width="2"/>
+<text x="475.0" y="267" text-anchor="middle" fill="#f0883e" font-size="11" font-weight="700">IP header</text>
+<text x="475.0" y="283" text-anchor="middle" fill="#e6edf3" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">to 199.36.158.100</text>
+</g>
+<g class="r3">
+<rect x="30" y="318" width="250" height="62" rx="8" fill="#161b22" stroke="#a371f7" stroke-width="1.5"/>
+<text x="44" y="338" fill="#a371f7" font-size="13" font-weight="700">1. Link</text>
+<text x="266" y="338" text-anchor="end" fill="#8b949e" font-size="10">unit: frame</text>
+<text x="44" y="355" fill="#e6edf3" font-size="11">The next hop only</text>
+<text x="44" y="371" fill="#8b949e" font-size="10.5">Wi-Fi, Ethernet, fiber</text>
+<rect x="700" y="324" width="180" height="50" rx="4" fill="#161b22" stroke="#388bfd" stroke-width="1.2" opacity=".55"/>
+<text x="790.0" y="345" text-anchor="middle" fill="#388bfd" font-size="11" font-weight="700" opacity=".7">HTTP message</text>
+<text x="790.0" y="361" text-anchor="middle" fill="#8b949e" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">GET /index.html</text>
+<rect x="550" y="324" width="150" height="50" rx="4" fill="#161b22" stroke="#3fb950" stroke-width="1.2" opacity=".55"/>
+<text x="625.0" y="345" text-anchor="middle" fill="#3fb950" font-size="11" font-weight="700" opacity=".7">TCP header</text>
+<text x="625.0" y="361" text-anchor="middle" fill="#8b949e" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">port 443, piece 1 of 3</text>
+<rect x="400" y="324" width="150" height="50" rx="4" fill="#161b22" stroke="#f0883e" stroke-width="1.2" opacity=".55"/>
+<text x="475.0" y="345" text-anchor="middle" fill="#f0883e" font-size="11" font-weight="700" opacity=".7">IP header</text>
+<text x="475.0" y="361" text-anchor="middle" fill="#8b949e" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">to 199.36.158.100</text>
+</g>
+<g class="h3">
+<rect x="300" y="324" width="100" height="50" rx="4" fill="#1c2330" stroke="#a371f7" stroke-width="2"/>
+<text x="350.0" y="345" text-anchor="middle" fill="#a371f7" font-size="11" font-weight="700">Frame header</text>
+<text x="350.0" y="361" text-anchor="middle" fill="#e6edf3" font-size="10" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">to next hop</text>
+</g>
+<rect x="30" y="402" width="850" height="46" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+<text x="46" y="421" fill="#e6edf3" font-size="11.5">On the way out, wrappers go on from top to bottom. On arrival they come off in reverse, and the app gets its message.</text>
+<text x="46" y="438" fill="#8b949e" font-size="11">A router opens only the frame and the IP header. It never reads your message.</text>
+</svg>

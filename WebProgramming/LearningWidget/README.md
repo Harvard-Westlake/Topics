@@ -79,4 +79,4 @@ The widget is not done when it deploys. It goes through [feedback](../UXAndBehav
 
 [Assignment](ASSIGNMENT.md)
 
-← [User Flow and Logging](../UserFlowAndLogging/) | Next: [UX and Behavior Tracking](../UXAndBehaviorTracking/)
+← [The Network Stack](../NetworkStack/) | Next: [UX and Behavior Tracking](../UXAndBehaviorTracking/)

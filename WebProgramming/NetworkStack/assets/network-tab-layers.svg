@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 910 282" width="910" height="282" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12">
+<title>One row of the browser's Network tab for index.html, with its columns labeled by layer: status 200 and protocol h2 are the application layer, port 443 is the transport layer, the address 199.36.158.100 is the internet layer, and the link layer is not shown.</title>
+<style> @media (prefers-reduced-motion: reduce){*{animation:none!important}}</style>
+<defs><marker id="m8b949e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8b949e"/></marker></defs>
+<rect width="910" height="282" rx="10" fill="#0d1117"/>
+<text x="30" y="36" fill="#e6edf3" font-size="17" font-weight="700">One row of the Network tab, read by layer</text>
+<text x="30" y="56" fill="#8b949e" font-size="12">Every row is one request. Its columns come from different layers of the stack.</text>
+<rect x="30" y="78" width="850" height="70" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+<line x1="30" y1="108" x2="880" y2="108" stroke="#30363d" stroke-width="1"/>
+<text x="46" y="98" fill="#8b949e" font-size="11">Name</text>
+<text x="46" y="133" fill="#e6edf3" font-size="12.5" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">index.html</text>
+<text x="226" y="98" fill="#8b949e" font-size="11">Status</text>
+<text x="226" y="133" fill="#388bfd" font-size="12.5" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">200</text>
+<text x="326" y="98" fill="#8b949e" font-size="11">Protocol</text>
+<text x="326" y="133" fill="#388bfd" font-size="12.5" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">h2</text>
+<text x="436" y="98" fill="#8b949e" font-size="11">Remote Address</text>
+<text x="676" y="98" fill="#8b949e" font-size="11">Size</text>
+<text x="676" y="133" fill="#e6edf3" font-size="12.5" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">1.2 kB</text>
+<text x="776" y="98" fill="#8b949e" font-size="11">Time</text>
+<text x="776" y="133" fill="#e6edf3" font-size="12.5" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">38 ms</text>
+<text x="436" y="133" fill="#f0883e" font-size="12.5" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">199.36.158.100</text>
+<text x="545" y="133" fill="#3fb950" font-size="12.5" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">:443</text>
+<rect x="30" y="166" width="205" height="96" rx="8" fill="#161b22" stroke="#388bfd" stroke-width="1.5"/>
+<text x="44" y="188" fill="#388bfd" font-size="13" font-weight="700">Application</text>
+<text x="44" y="208" fill="#e6edf3" font-size="10.5">Status 200 and protocol h2:</text>
+<text x="44" y="224" fill="#e6edf3" font-size="10.5">HTTP said OK, and which</text>
+<text x="44" y="240" fill="#e6edf3" font-size="10.5">version of HTTP was spoken.</text>
+<rect x="245" y="166" width="205" height="96" rx="8" fill="#161b22" stroke="#3fb950" stroke-width="1.5"/>
+<text x="259" y="188" fill="#3fb950" font-size="13" font-weight="700">Transport</text>
+<text x="259" y="208" fill="#e6edf3" font-size="10.5">Port 443: which program on</text>
+<text x="259" y="224" fill="#e6edf3" font-size="10.5">that computer gets the data.</text>
+<text x="259" y="240" fill="#e6edf3" font-size="10.5">443 means HTTPS.</text>
+<rect x="460" y="166" width="205" height="96" rx="8" fill="#161b22" stroke="#f0883e" stroke-width="1.5"/>
+<text x="474" y="188" fill="#f0883e" font-size="13" font-weight="700">Internet</text>
+<text x="474" y="208" fill="#e6edf3" font-size="10.5">The IP address: which</text>
+<text x="474" y="224" fill="#e6edf3" font-size="10.5">computer on the internet</text>
+<text x="474" y="240" fill="#e6edf3" font-size="10.5">the packets were sent to.</text>
+<rect x="675" y="166" width="205" height="96" rx="8" fill="#161b22" stroke="#a371f7" stroke-width="1.5"/>
+<text x="689" y="188" fill="#a371f7" font-size="13" font-weight="700">Link</text>
+<text x="689" y="208" fill="#e6edf3" font-size="10.5">Not in the tab at all.</text>
+<text x="689" y="224" fill="#e6edf3" font-size="10.5">Your Wi-Fi carried every</text>
+<text x="689" y="240" fill="#e6edf3" font-size="10.5">packet to the first router.</text>
+</svg>

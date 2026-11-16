@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 910 496" width="910" height="496" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12">
+<title>Animated diagram of one SSH session between your terminal and a server on port 22. Step 1: connect to port 22. Step 2: the server sends its fingerprint. Step 3: both sides agree on a secret code for the session. From there an encrypted tunnel covers step 4, logging in with a password or a key, step 5, a command you type, and step 6, the output the server prints back. A router in between sees only scrambled bytes.</title>
+<style>@keyframes tun{0%,38%{opacity:0}40%,96%{opacity:1}100%{opacity:0}} .tun{animation:tun 18s linear infinite} @keyframes sr0{0%,5%{opacity:0.12}7%,96%{opacity:1}100%{opacity:0.12}} .sr0{animation:sr0 18s linear infinite} @keyframes sd0{0%{opacity:0;transform:translate(0,0)}5%{opacity:0;transform:translate(0,0)}5.5%{opacity:1}14.35%{opacity:1;transform:translate(718px,0px)}15.35%,100%{opacity:0;transform:translate(718px,0px)}} .sd0{opacity:0;animation:sd0 18s linear infinite} @keyframes sr1{0%,16%{opacity:0.12}18%,96%{opacity:1}100%{opacity:0.12}} .sr1{animation:sr1 18s linear infinite} @keyframes sd1{0%{opacity:0;transform:translate(0,0)}16%{opacity:0;transform:translate(0,0)}16.5%{opacity:1}25.35%{opacity:1;transform:translate(-718px,0px)}26.35%,100%{opacity:0;transform:translate(-718px,0px)}} .sd1{opacity:0;animation:sd1 18s linear infinite} @keyframes sr2{0%,27%{opacity:0.12}29%,96%{opacity:1}100%{opacity:0.12}} .sr2{animation:sr2 18s linear infinite} @keyframes sd2{0%{opacity:0;transform:translate(0,0)}27%{opacity:0;transform:translate(0,0)}27.5%{opacity:1}36.35%{opacity:1;transform:translate(718px,0px)}37.35%,100%{opacity:0;transform:translate(718px,0px)}} .sd2{opacity:0;animation:sd2 18s linear infinite} @keyframes sr4{0%,49%{opacity:0.12}51%,96%{opacity:1}100%{opacity:0.12}} .sr4{animation:sr4 18s linear infinite} @keyframes sd4{0%{opacity:0;transform:translate(0,0)}49%{opacity:0;transform:translate(0,0)}49.5%{opacity:1}58.35%{opacity:1;transform:translate(718px,0px)}59.35%,100%{opacity:0;transform:translate(718px,0px)}} .sd4{opacity:0;animation:sd4 18s linear infinite} @keyframes sr5{0%,60%{opacity:0.12}62%,96%{opacity:1}100%{opacity:0.12}} .sr5{animation:sr5 18s linear infinite} @keyframes sd5{0%{opacity:0;transform:translate(0,0)}60%{opacity:0;transform:translate(0,0)}60.5%{opacity:1}69.35%{opacity:1;transform:translate(718px,0px)}70.35%,100%{opacity:0;transform:translate(718px,0px)}} .sd5{opacity:0;animation:sd5 18s linear infinite} @keyframes sr6{0%,71%{opacity:0.12}73%,96%{opacity:1}100%{opacity:0.12}} .sr6{animation:sr6 18s linear infinite} @keyframes sd6{0%{opacity:0;transform:translate(0,0)}71%{opacity:0;transform:translate(0,0)}71.5%{opacity:1}80.35%{opacity:1;transform:translate(-718px,0px)}81.35%,100%{opacity:0;transform:translate(-718px,0px)}} .sd6{opacity:0;animation:sd6 18s linear infinite} @keyframes wire{0%,49%{opacity:0.15}51%,96%{opacity:1}100%{opacity:0.15}} .wire{animation:wire 18s linear infinite} @media (prefers-reduced-motion: reduce){*{animation:none!important}}</style>
+<defs><marker id="m8b949e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8b949e"/></marker><marker id="m388bfd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#388bfd"/></marker><marker id="m79c0ff" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#79c0ff"/></marker></defs>
+<rect width="910" height="496" rx="10" fill="#0d1117"/>
+<text x="30" y="36" fill="#e6edf3" font-size="17" font-weight="700">SSH: your terminal, running on a computer somewhere else</text>
+<text x="30" y="56" fill="#8b949e" font-size="12">You type here, the commands run there. After the first three steps, everything on the wire is scrambled.</text>
+<rect x="30" y="74" width="850" height="404" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+<g class="tun">
+<rect x="96" y="255" width="718" height="123" fill="#e3b341" opacity=".09" rx="4"/>
+<text x="455" y="271" text-anchor="middle" fill="#e3b341" font-size="10.5" font-weight="700">encrypted tunnel: from here on, only the two ends can read it</text>
+</g>
+<text x="46" y="98" fill="#388bfd" font-size="14" font-weight="700">One SSH session, in order</text>
+<text x="46" y="115" fill="#8b949e" font-size="11">SSH is an application-layer protocol. It rides inside TCP, on port 22.</text>
+<rect x="46" y="126" width="92" height="22" rx="5" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
+<text x="92" y="141" text-anchor="middle" fill="#e6edf3" font-size="10.5">Your terminal</text>
+<rect x="772" y="126" width="92" height="22" rx="5" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
+<text x="818" y="141" text-anchor="middle" fill="#e6edf3" font-size="10.5">Server, port 22</text>
+<line x1="92" y1="148" x2="92" y2="380" stroke="#30363d" stroke-width="1.6"/>
+<line x1="818" y1="148" x2="818" y2="380" stroke="#30363d" stroke-width="1.6"/>
+<g class="sr0">
+<line x1="96" y1="180" x2="814" y2="180" stroke="#388bfd" stroke-width="1.6" marker-end="url(#m388bfd)"/>
+<text x="455.0" y="174" text-anchor="middle" fill="#e6edf3" font-size="11">1. connect to port 22</text>
+</g>
+<circle class="sd0" cx="96" cy="180" r="5" fill="#e6edf3"/>
+<g class="sr1">
+<line x1="814" y1="211" x2="96" y2="211" stroke="#79c0ff" stroke-width="1.6" marker-end="url(#m79c0ff)"/>
+<text x="455.0" y="205" text-anchor="middle" fill="#e6edf3" font-size="11">2. here is my fingerprint, so you know it is really me</text>
+</g>
+<circle class="sd1" cx="814" cy="211" r="5" fill="#e6edf3"/>
+<g class="sr2">
+<line x1="96" y1="242" x2="814" y2="242" stroke="#388bfd" stroke-width="1.6" marker-end="url(#m388bfd)"/>
+<text x="455.0" y="236" text-anchor="middle" fill="#e6edf3" font-size="11">3. agree on a secret code for this one session</text>
+</g>
+<circle class="sd2" cx="96" cy="242" r="5" fill="#e6edf3"/>
+<g class="sr4">
+<line x1="96" y1="304" x2="814" y2="304" stroke="#388bfd" stroke-width="1.6" marker-end="url(#m388bfd)"/>
+<text x="455.0" y="298" text-anchor="middle" fill="#e6edf3" font-size="11">4. log in: a password, or a key</text>
+</g>
+<circle class="sd4" cx="96" cy="304" r="5" fill="#e6edf3"/>
+<g class="sr5">
+<line x1="96" y1="335" x2="814" y2="335" stroke="#388bfd" stroke-width="1.6" marker-end="url(#m388bfd)"/>
+<text x="455.0" y="329" text-anchor="middle" fill="#e6edf3" font-size="11">5. a command you type:  ls</text>
+</g>
+<circle class="sd5" cx="96" cy="335" r="5" fill="#e6edf3"/>
+<g class="sr6">
+<line x1="814" y1="366" x2="96" y2="366" stroke="#79c0ff" stroke-width="1.6" marker-end="url(#m79c0ff)"/>
+<text x="455.0" y="360" text-anchor="middle" fill="#e6edf3" font-size="11">6. what the server prints back:  README.md  services/</text>
+</g>
+<circle class="sd6" cx="814" cy="366" r="5" fill="#e6edf3"/>
+<rect x="44" y="418" width="822" height="48" rx="6" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
+<g class="wire"><text x="56" y="437" fill="#e6edf3" font-size="11">What a router in between sees of steps 4 to 6:</text><text x="330" y="437" fill="#e3b341" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">9f 3a c7 01 e4 5b 88 d2 6e 10 b3 ...</text></g>
+<text x="56" y="454" fill="#8b949e" font-size="10.5">The first time you connect, ssh shows the fingerprint and asks whether you trust it. If it ever changes, ssh warns you.</text>
+</svg>

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 910 438" width="910" height="438" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12">
+<title>Animated diagram of routers. Packet 1 travels from a laptop through a Wi-Fi router and three more routers to a server. Then a link between two routers goes down, and packet 2 is sent a different way by the router next to the break and still reaches the server.</title>
+<style>@keyframes down{0%,44%{opacity:0}46%,96%{opacity:1}100%{opacity:0}} .down{animation:down 16s linear infinite} @keyframes p0{0%,5%{offset-distance:0%;opacity:0}6%{opacity:1}36%{offset-distance:100%;opacity:1}37%,100%{offset-distance:100%;opacity:0}} .p0{opacity:0;offset-rotate:0deg;offset-path:path('M 80 222 L 225 222 L 375 140 L 545 140 L 695 222 L 830 222');animation:p0 16s linear infinite} @keyframes p1{0%,54%{offset-distance:0%;opacity:0}55%{opacity:1}88%{offset-distance:100%;opacity:1}89%,100%{offset-distance:100%;opacity:0}} .p1{opacity:0;offset-rotate:0deg;offset-path:path('M 80 222 L 225 222 L 375 140 L 545 304 L 695 222 L 830 222');animation:p1 16s linear infinite} @keyframes n1{0%,5%{opacity:0.25}7%,96%{opacity:1}100%{opacity:0.25}} .n1{animation:n1 16s linear infinite} @keyframes n2{0%,54%{opacity:0.25}56%,96%{opacity:1}100%{opacity:0.25}} .n2{animation:n2 16s linear infinite} @media (prefers-reduced-motion: reduce){*{animation:none!important}}</style>
+<defs><marker id="m8b949e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8b949e"/></marker></defs>
+<rect width="910" height="438" rx="10" fill="#0d1117"/>
+<text x="30" y="36" fill="#e6edf3" font-size="17" font-weight="700">Routers: one hop at a time</text>
+<text x="30" y="56" fill="#8b949e" font-size="12">A router reads the destination in the IP header, picks the best next hop, and passes the packet on. Nothing more.</text>
+<line x1="80" y1="222" x2="225" y2="222" stroke="#484f58" stroke-width="2"/>
+<line x1="225" y1="222" x2="375" y2="140" stroke="#484f58" stroke-width="2"/>
+<line x1="225" y1="222" x2="375" y2="304" stroke="#484f58" stroke-width="2"/>
+<line x1="375" y1="140" x2="545" y2="304" stroke="#484f58" stroke-width="2"/>
+<line x1="375" y1="304" x2="545" y2="304" stroke="#484f58" stroke-width="2"/>
+<line x1="545" y1="140" x2="695" y2="222" stroke="#484f58" stroke-width="2"/>
+<line x1="545" y1="304" x2="695" y2="222" stroke="#484f58" stroke-width="2"/>
+<line x1="695" y1="222" x2="830" y2="222" stroke="#484f58" stroke-width="2"/>
+<line x1="375" y1="140" x2="545" y2="140" stroke="#484f58" stroke-width="2"/>
+<g class="down">
+<line x1="375" y1="140" x2="545" y2="140" stroke="#0d1117" stroke-width="4"/>
+<line x1="375" y1="140" x2="545" y2="140" stroke="#f85149" stroke-width="2" stroke-dasharray="6 5"/>
+<text x="460" y="128" text-anchor="middle" fill="#f85149" font-size="11" font-weight="700">✕ this link goes down</text>
+</g>
+<circle cx="375" cy="140" r="25" fill="#161b22" stroke="#f0883e" stroke-width="1.6"/>
+<text x="375" y="144" text-anchor="middle" fill="#f0883e" font-size="10.5" font-weight="700">router</text>
+<circle cx="375" cy="304" r="25" fill="#161b22" stroke="#f0883e" stroke-width="1.6"/>
+<text x="375" y="308" text-anchor="middle" fill="#f0883e" font-size="10.5" font-weight="700">router</text>
+<circle cx="545" cy="140" r="25" fill="#161b22" stroke="#f0883e" stroke-width="1.6"/>
+<text x="545" y="144" text-anchor="middle" fill="#f0883e" font-size="10.5" font-weight="700">router</text>
+<circle cx="545" cy="304" r="25" fill="#161b22" stroke="#f0883e" stroke-width="1.6"/>
+<text x="545" y="308" text-anchor="middle" fill="#f0883e" font-size="10.5" font-weight="700">router</text>
+<circle cx="695" cy="222" r="25" fill="#161b22" stroke="#f0883e" stroke-width="1.6"/>
+<text x="695" y="226" text-anchor="middle" fill="#f0883e" font-size="10.5" font-weight="700">router</text>
+<circle cx="225" cy="222" r="25" fill="#161b22" stroke="#f0883e" stroke-width="1.6"/>
+<text x="225" y="226" text-anchor="middle" fill="#f0883e" font-size="10.5" font-weight="700">router</text>
+<text x="225" y="266" text-anchor="middle" fill="#8b949e" font-size="10.5">your Wi-Fi router</text>
+<text x="375" y="98" text-anchor="middle" fill="#8b949e" font-size="10.5">your internet provider</text>
+<text x="695" y="266" text-anchor="middle" fill="#8b949e" font-size="10.5">the server's network</text>
+<rect x="26" y="194" width="108" height="56" rx="8" fill="#161b22" stroke="#388bfd" stroke-width="1.5"/>
+<text x="80" y="216" text-anchor="middle" fill="#388bfd" font-size="12" font-weight="700">Your laptop</text>
+<text x="80" y="234" text-anchor="middle" fill="#8b949e" font-size="9.5" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">192.168.1.20</text>
+<rect x="776" y="194" width="108" height="56" rx="8" fill="#161b22" stroke="#388bfd" stroke-width="1.5"/>
+<text x="830" y="216" text-anchor="middle" fill="#388bfd" font-size="12" font-weight="700">Server</text>
+<text x="830" y="234" text-anchor="middle" fill="#8b949e" font-size="9.5" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">199.36.158.100</text>
+<g class="p0"><rect x="-13" y="-9" width="26" height="18" rx="3" fill="#f0883e"/><text x="0" y="4" text-anchor="middle" fill="#0d1117" font-size="11" font-weight="700">1</text></g>
+<g class="p1"><rect x="-13" y="-9" width="26" height="18" rx="3" fill="#f0883e"/><text x="0" y="4" text-anchor="middle" fill="#0d1117" font-size="11" font-weight="700">2</text></g>
+<rect x="30" y="356" width="850" height="64" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+<text x="46" y="376" fill="#e6edf3" font-size="11.5" class="n1">Packet 1 takes the top road.</text>
+<text x="46" y="394" fill="#e6edf3" font-size="11.5" class="n2">Packet 2 leaves after the link breaks. The router next to the break sends it another way, and it still arrives.</text>
+<text x="46" y="411" fill="#8b949e" font-size="11">No router knows the whole route, and no one has to plan it. That is why the internet survives broken links.</text>
+</svg>

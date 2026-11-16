@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 910 520" width="910" height="520" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12">
+<title>Animated comparison of TCP and UDP. TCP: a three-step hello (SYN, SYN-ACK, ACK), then pieces 1, 2, and 3 are sent, piece 2 is lost, the server reports it still needs 2, piece 2 is sent again, and the server confirms all 3. UDP: pieces 1, 2, and 3 are sent with no hello, piece 2 is lost, and nothing is resent.</title>
+<style>@keyframes tr0{0%,5.0%{opacity:0.12}7.0%,96%{opacity:1}100%{opacity:0.12}} .tr0{animation:tr0 18s linear infinite} @keyframes td0{0%{opacity:0;transform:translate(0,0)}5.0%{opacity:0;transform:translate(0,0)}5.5%{opacity:1}13.16%{opacity:1;transform:translate(283px,0px)}14.16%,100%{opacity:0;transform:translate(283px,0px)}} .td0{opacity:0;animation:td0 18s linear infinite} @keyframes tr1{0%,14.6%{opacity:0.12}16.6%,96%{opacity:1}100%{opacity:0.12}} .tr1{animation:tr1 18s linear infinite} @keyframes td1{0%{opacity:0;transform:translate(0,0)}14.6%{opacity:0;transform:translate(0,0)}15.1%{opacity:1}22.759999999999998%{opacity:1;transform:translate(-283px,0px)}23.759999999999998%,100%{opacity:0;transform:translate(-283px,0px)}} .td1{opacity:0;animation:td1 18s linear infinite} @keyframes tr2{0%,24.2%{opacity:0.12}26.2%,96%{opacity:1}100%{opacity:0.12}} .tr2{animation:tr2 18s linear infinite} @keyframes td2{0%{opacity:0;transform:translate(0,0)}24.2%{opacity:0;transform:translate(0,0)}24.7%{opacity:1}32.36%{opacity:1;transform:translate(283px,0px)}33.36%,100%{opacity:0;transform:translate(283px,0px)}} .td2{opacity:0;animation:td2 18s linear infinite} @keyframes tr3{0%,33.8%{opacity:0.12}35.8%,96%{opacity:1}100%{opacity:0.12}} .tr3{animation:tr3 18s linear infinite} @keyframes td3{0%{opacity:0;transform:translate(0,0)}33.8%{opacity:0;transform:translate(0,0)}34.3%{opacity:1}41.959999999999994%{opacity:1;transform:translate(283px,0px)}42.959999999999994%,100%{opacity:0;transform:translate(283px,0px)}} .td3{opacity:0;animation:td3 18s linear infinite} @keyframes tr4{0%,43.4%{opacity:0.12}45.4%,96%{opacity:1}100%{opacity:0.12}} .tr4{animation:tr4 18s linear infinite} @keyframes td4{0%{opacity:0;transform:translate(0,0)}43.4%{opacity:0;transform:translate(0,0)}43.9%{opacity:1}51.56%{opacity:1;transform:translate(164.14px,0px)}52.56%,100%{opacity:0;transform:translate(164.14px,0px)}} .td4{opacity:0;animation:td4 18s linear infinite} @keyframes tr5{0%,53.0%{opacity:0.12}55.0%,96%{opacity:1}100%{opacity:0.12}} .tr5{animation:tr5 18s linear infinite} @keyframes td5{0%{opacity:0;transform:translate(0,0)}53.0%{opacity:0;transform:translate(0,0)}53.5%{opacity:1}61.16%{opacity:1;transform:translate(283px,0px)}62.16%,100%{opacity:0;transform:translate(283px,0px)}} .td5{opacity:0;animation:td5 18s linear infinite} @keyframes tr6{0%,62.599999999999994%{opacity:0.12}64.6%,96%{opacity:1}100%{opacity:0.12}} .tr6{animation:tr6 18s linear infinite} @keyframes td6{0%{opacity:0;transform:translate(0,0)}62.599999999999994%{opacity:0;transform:translate(0,0)}63.099999999999994%{opacity:1}70.75999999999999%{opacity:1;transform:translate(-283px,0px)}71.75999999999999%,100%{opacity:0;transform:translate(-283px,0px)}} .td6{opacity:0;animation:td6 18s linear infinite} @keyframes tr7{0%,72.2%{opacity:0.12}74.2%,96%{opacity:1}100%{opacity:0.12}} .tr7{animation:tr7 18s linear infinite} @keyframes td7{0%{opacity:0;transform:translate(0,0)}72.2%{opacity:0;transform:translate(0,0)}72.7%{opacity:1}80.36%{opacity:1;transform:translate(283px,0px)}81.36%,100%{opacity:0;transform:translate(283px,0px)}} .td7{opacity:0;animation:td7 18s linear infinite} @keyframes tr8{0%,81.8%{opacity:0.12}83.8%,96%{opacity:1}100%{opacity:0.12}} .tr8{animation:tr8 18s linear infinite} @keyframes td8{0%{opacity:0;transform:translate(0,0)}81.8%{opacity:0;transform:translate(0,0)}82.3%{opacity:1}89.96%{opacity:1;transform:translate(-283px,0px)}90.96%,100%{opacity:0;transform:translate(-283px,0px)}} .td8{opacity:0;animation:td8 18s linear infinite} @keyframes ur0{0%,5.0%{opacity:0.12}7.0%,96%{opacity:1}100%{opacity:0.12}} .ur0{animation:ur0 18s linear infinite} @keyframes ud0{0%{opacity:0;transform:translate(0,0)}5.0%{opacity:0;transform:translate(0,0)}5.5%{opacity:1}13.16%{opacity:1;transform:translate(283px,0px)}14.16%,100%{opacity:0;transform:translate(283px,0px)}} .ud0{opacity:0;animation:ud0 18s linear infinite} @keyframes ur1{0%,14.6%{opacity:0.12}16.6%,96%{opacity:1}100%{opacity:0.12}} .ur1{animation:ur1 18s linear infinite} @keyframes ud1{0%{opacity:0;transform:translate(0,0)}14.6%{opacity:0;transform:translate(0,0)}15.1%{opacity:1}22.759999999999998%{opacity:1;transform:translate(164.14px,0px)}23.759999999999998%,100%{opacity:0;transform:translate(164.14px,0px)}} .ud1{opacity:0;animation:ud1 18s linear infinite} @keyframes ur2{0%,24.2%{opacity:0.12}26.2%,96%{opacity:1}100%{opacity:0.12}} .ur2{animation:ur2 18s linear infinite} @keyframes ud2{0%{opacity:0;transform:translate(0,0)}24.2%{opacity:0;transform:translate(0,0)}24.7%{opacity:1}32.36%{opacity:1;transform:translate(283px,0px)}33.36%,100%{opacity:0;transform:translate(283px,0px)}} .ud2{opacity:0;animation:ud2 18s linear infinite} @keyframes udone{0%,35.8%{opacity:0}37.8%,96%{opacity:1}100%{opacity:0}} .udone{animation:udone 18s linear infinite} @media (prefers-reduced-motion: reduce){*{animation:none!important}}</style>
+<defs><marker id="m8b949e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8b949e"/></marker><marker id="m3fb950" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#3fb950"/></marker><marker id="m7ee787" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#7ee787"/></marker><marker id="mf85149" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#f85149"/></marker></defs>
+<rect width="910" height="520" rx="10" fill="#0d1117"/>
+<text x="30" y="36" fill="#e6edf3" font-size="17" font-weight="700">Transport layer: TCP checks everything, UDP just sends</text>
+<text x="30" y="56" fill="#8b949e" font-size="12">Same job, opposite promises. Both carry three pieces of data, and both lose piece 2 on the way.</text>
+<rect x="30" y="74" width="415" height="428" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+<text x="46" y="98" fill="#3fb950" font-size="14" font-weight="700">TCP: a phone call</text>
+<text x="46" y="115" fill="#8b949e" font-size="11">Say hello, number every piece, confirm, resend.</text>
+<rect x="46" y="126" width="92" height="22" rx="5" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
+<text x="92" y="141" text-anchor="middle" fill="#e6edf3" font-size="10.5">Your laptop</text>
+<rect x="337" y="126" width="92" height="22" rx="5" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
+<text x="383" y="141" text-anchor="middle" fill="#e6edf3" font-size="10.5">Server</text>
+<line x1="92" y1="148" x2="92" y2="424" stroke="#30363d" stroke-width="1.6"/>
+<line x1="383" y1="148" x2="383" y2="424" stroke="#30363d" stroke-width="1.6"/>
+<g class="tr0">
+<line x1="96" y1="178" x2="379" y2="178" stroke="#3fb950" stroke-width="1.6" marker-end="url(#m3fb950)"/>
+<text x="237.5" y="172" text-anchor="middle" fill="#e6edf3" font-size="11">SYN: can we talk?</text>
+</g>
+<circle class="td0" cx="96" cy="178" r="5" fill="#e6edf3"/>
+<g class="tr1">
+<line x1="379" y1="207" x2="96" y2="207" stroke="#7ee787" stroke-width="1.6" marker-end="url(#m7ee787)"/>
+<text x="237.5" y="201" text-anchor="middle" fill="#e6edf3" font-size="11">SYN-ACK: yes, ready</text>
+</g>
+<circle class="td1" cx="379" cy="207" r="5" fill="#e6edf3"/>
+<g class="tr2">
+<line x1="96" y1="236" x2="379" y2="236" stroke="#3fb950" stroke-width="1.6" marker-end="url(#m3fb950)"/>
+<text x="237.5" y="230" text-anchor="middle" fill="#e6edf3" font-size="11">ACK: starting</text>
+</g>
+<circle class="td2" cx="96" cy="236" r="5" fill="#e6edf3"/>
+<g class="tr3">
+<line x1="96" y1="265" x2="379" y2="265" stroke="#3fb950" stroke-width="1.6" marker-end="url(#m3fb950)"/>
+<text x="237.5" y="259" text-anchor="middle" fill="#e6edf3" font-size="11">piece 1</text>
+</g>
+<circle class="td3" cx="96" cy="265" r="5" fill="#e6edf3"/>
+<g class="tr4">
+<line x1="96" y1="294" x2="260.14" y2="294" stroke="#f85149" stroke-width="1.6"/>
+<text x="178.07" y="288" text-anchor="middle" fill="#f85149" font-size="11">piece 2</text>
+<text x="264.14" y="299" fill="#f85149" font-size="15" font-weight="700">✕</text>
+<text x="282.14" y="298" fill="#f85149" font-size="10.5">lost on the way</text>
+</g>
+<circle class="td4" cx="96" cy="294" r="5" fill="#e6edf3"/>
+<g class="tr5">
+<line x1="96" y1="323" x2="379" y2="323" stroke="#3fb950" stroke-width="1.6" marker-end="url(#m3fb950)"/>
+<text x="237.5" y="317" text-anchor="middle" fill="#e6edf3" font-size="11">piece 3</text>
+</g>
+<circle class="td5" cx="96" cy="323" r="5" fill="#e6edf3"/>
+<g class="tr6">
+<line x1="379" y1="352" x2="96" y2="352" stroke="#7ee787" stroke-width="1.6" marker-end="url(#m7ee787)"/>
+<text x="237.5" y="346" text-anchor="middle" fill="#e6edf3" font-size="11">ACK: have 1, still need 2</text>
+</g>
+<circle class="td6" cx="379" cy="352" r="5" fill="#e6edf3"/>
+<g class="tr7">
+<line x1="96" y1="381" x2="379" y2="381" stroke="#3fb950" stroke-width="1.6" marker-end="url(#m3fb950)"/>
+<text x="237.5" y="375" text-anchor="middle" fill="#e6edf3" font-size="11">piece 2 again</text>
+</g>
+<circle class="td7" cx="96" cy="381" r="5" fill="#e6edf3"/>
+<g class="tr8">
+<line x1="379" y1="410" x2="96" y2="410" stroke="#7ee787" stroke-width="1.6" marker-end="url(#m7ee787)"/>
+<text x="237.5" y="404" text-anchor="middle" fill="#e6edf3" font-size="11">ACK: have all 3</text>
+</g>
+<circle class="td8" cx="379" cy="410" r="5" fill="#e6edf3"/>
+<rect x="465" y="74" width="415" height="428" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+<text x="481" y="98" fill="#3fb950" font-size="14" font-weight="700">UDP: postcards</text>
+<text x="481" y="115" fill="#8b949e" font-size="11">No hello, no receipts, no resend.</text>
+<rect x="481" y="126" width="92" height="22" rx="5" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
+<text x="527" y="141" text-anchor="middle" fill="#e6edf3" font-size="10.5">Your laptop</text>
+<rect x="772" y="126" width="92" height="22" rx="5" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
+<text x="818" y="141" text-anchor="middle" fill="#e6edf3" font-size="10.5">Server</text>
+<line x1="527" y1="148" x2="527" y2="250" stroke="#30363d" stroke-width="1.6"/>
+<line x1="818" y1="148" x2="818" y2="250" stroke="#30363d" stroke-width="1.6"/>
+<g class="ur0">
+<line x1="531" y1="178" x2="814" y2="178" stroke="#3fb950" stroke-width="1.6" marker-end="url(#m3fb950)"/>
+<text x="672.5" y="172" text-anchor="middle" fill="#e6edf3" font-size="11">piece 1</text>
+</g>
+<circle class="ud0" cx="531" cy="178" r="5" fill="#e6edf3"/>
+<g class="ur1">
+<line x1="531" y1="207" x2="695.14" y2="207" stroke="#f85149" stroke-width="1.6"/>
+<text x="613.0699999999999" y="201" text-anchor="middle" fill="#f85149" font-size="11">piece 2</text>
+<text x="699.14" y="212" fill="#f85149" font-size="15" font-weight="700">✕</text>
+<text x="717.14" y="211" fill="#f85149" font-size="10.5">lost on the way</text>
+</g>
+<circle class="ud1" cx="531" cy="207" r="5" fill="#e6edf3"/>
+<g class="ur2">
+<line x1="531" y1="236" x2="814" y2="236" stroke="#3fb950" stroke-width="1.6" marker-end="url(#m3fb950)"/>
+<text x="672.5" y="230" text-anchor="middle" fill="#e6edf3" font-size="11">piece 3</text>
+</g>
+<circle class="ud2" cx="531" cy="236" r="5" fill="#e6edf3"/>
+<g class="udone">
+<text x="672" y="300" text-anchor="middle" fill="#7ee787" font-size="13" font-weight="700">Done already.</text>
+<text x="672" y="320" text-anchor="middle" fill="#8b949e" font-size="11">The sender never learns piece 2 was lost,</text>
+<text x="672" y="336" text-anchor="middle" fill="#8b949e" font-size="11">and never waits to find out.</text>
+</g>
+<rect x="44" y="440" width="387" height="48" rx="6" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
+<text x="56" y="459" fill="#e6edf3" font-size="11">Arrives: 1 2 3, complete and in order. Cost: extra trips and waiting.</text>
+<text x="56" y="476" fill="#8b949e" font-size="10.5">Used for web pages, files, logins: anything that must be exact.</text>
+<rect x="479" y="440" width="387" height="48" rx="6" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
+<text x="491" y="459" fill="#e6edf3" font-size="11">Arrives: 1 and 3, with a gap. Win: nothing ever waits.</text>
+<text x="491" y="476" fill="#8b949e" font-size="10.5">Used for video calls, games, live audio: late is worse than missing.</text>
+</svg>
