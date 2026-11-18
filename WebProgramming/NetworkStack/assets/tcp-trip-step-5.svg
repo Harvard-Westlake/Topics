@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 910 300" width="910" height="300" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12">
+<title>TCP step 5: send the chunks over the wire</title>
+<style>@keyframes p0{0%,6%{opacity:0;transform:translate(730px,180px)}6.5%{opacity:1;transform:translate(730px,180px)}19.0%{opacity:1;transform:translate(560px,126px)}32.0%{opacity:1;transform:translate(350px,126px)}45.0%{opacity:1;transform:translate(180px,180px)}58.0%{opacity:1;transform:translate(105px,172px)}59.5%,100%{opacity:1;transform:translate(105px,172px)}} .p0{opacity:1;transform:translate(105px,172px);animation:p0 11s linear infinite} @keyframes p1{0%,12%{opacity:0;transform:translate(730px,180px)}12.5%{opacity:1;transform:translate(730px,180px)}22.67%{opacity:1;transform:translate(455px,240px)}33.33%{opacity:1;transform:translate(180px,180px)}44.0%{opacity:1;transform:translate(105px,136px)}45.5%,100%{opacity:1;transform:translate(105px,136px)}} .p1{opacity:1;transform:translate(105px,136px);animation:p1 11s linear infinite} @keyframes p3{0%,34%{opacity:0;transform:translate(730px,180px)}34.5%{opacity:1;transform:translate(730px,180px)}46.67%{opacity:1;transform:translate(455px,240px)}59.33%{opacity:1;transform:translate(180px,180px)}72.0%{opacity:1;transform:translate(105px,208px)}73.5%,100%{opacity:1;transform:translate(105px,208px)}} .p3{opacity:1;transform:translate(105px,208px);animation:p3 11s linear infinite} @keyframes p2{0%,22%{opacity:0;transform:translate(730px,180px)}22.5%{opacity:1;transform:translate(730px,180px)}44.0%{opacity:1;transform:translate(560px,126px)}45.5%,100%{opacity:0;transform:translate(560px,126px)}} .p2{opacity:0;transform:translate(560px,126px);animation:p2 11s linear infinite} @keyframes lost{0%,45%{opacity:0}47%,96%{opacity:1}100%{opacity:0}} .lost{animation:lost 11s linear infinite} @media (prefers-reduced-motion: reduce){*{animation:none!important}}</style>
+<defs><marker id="m8b949e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8b949e"/></marker></defs>
+<rect width="910" height="300" rx="10" fill="#0d1117"/>
+<text x="30" y="36" fill="#3fb950" font-size="12" font-weight="700">TCP, step 5 of 8</text>
+<text x="30" y="58" fill="#e6edf3" font-size="17" font-weight="700">Send them over the wire</text>
+<text x="880" y="58" text-anchor="end" fill="#8b949e" font-size="11">each chunk finds its own way</text>
+<g>
+<rect x="30" y="84" width="150" height="192" rx="8" fill="#161b22" stroke="#388bfd" stroke-width="1.5"/>
+<text x="105" y="106" text-anchor="middle" fill="#388bfd" font-size="12.5" font-weight="700">Your browser</text>
+</g>
+<g>
+<rect x="730" y="84" width="150" height="192" rx="8" fill="#161b22" stroke="#388bfd" stroke-width="1.5"/>
+<text x="805" y="106" text-anchor="middle" fill="#388bfd" font-size="12.5" font-weight="700">Web server</text>
+</g>
+<line x1="730" y1="180" x2="560" y2="126" stroke="#30363d" stroke-width="1.4" stroke-dasharray="4 5"/>
+<line x1="560" y1="126" x2="350" y2="126" stroke="#30363d" stroke-width="1.4" stroke-dasharray="4 5"/>
+<line x1="350" y1="126" x2="180" y2="180" stroke="#30363d" stroke-width="1.4" stroke-dasharray="4 5"/>
+<line x1="730" y1="180" x2="455" y2="240" stroke="#30363d" stroke-width="1.4" stroke-dasharray="4 5"/>
+<line x1="455" y1="240" x2="180" y2="180" stroke="#30363d" stroke-width="1.4" stroke-dasharray="4 5"/>
+<circle cx="560" cy="126" r="15" fill="#161b22" stroke="#f0883e" stroke-width="1.5"/>
+<text x="560" y="104" text-anchor="middle" fill="#f0883e" font-size="10">router</text>
+<circle cx="350" cy="126" r="15" fill="#161b22" stroke="#f0883e" stroke-width="1.5"/>
+<text x="350" y="104" text-anchor="middle" fill="#f0883e" font-size="10">router</text>
+<circle cx="455" cy="240" r="15" fill="#161b22" stroke="#f0883e" stroke-width="1.5"/>
+<text x="455" y="272" text-anchor="middle" fill="#f0883e" font-size="10">router</text>
+<text x="105" y="262" text-anchor="middle" fill="#8b949e" font-size="10">arrived in this order</text>
+<text x="805" y="150" text-anchor="middle" fill="#8b949e" font-size="10.5">sends all four</text>
+<g class="p0">
+<rect x="-49.0" y="-13.0" width="98" height="26" rx="5" fill="#1c2330" stroke="#3fb950" stroke-width="1.5"/>
+<text x="0" y="4" text-anchor="middle" fill="#e6edf3" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">&lt;html&gt;</text>
+<circle cx="-49.0" cy="-13.0" r="10" fill="#3fb950"/>
+<text x="-49.0" y="-9.0" text-anchor="middle" fill="#0d1117" font-size="11" font-weight="700">1</text>
+</g>
+<g class="p1">
+<rect x="-49.0" y="-13.0" width="98" height="26" rx="5" fill="#1c2330" stroke="#3fb950" stroke-width="1.5"/>
+<text x="0" y="4" text-anchor="middle" fill="#e6edf3" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">&lt;h1&gt;Hi!&lt;/h1&gt;</text>
+<circle cx="-49.0" cy="-13.0" r="10" fill="#3fb950"/>
+<text x="-49.0" y="-9.0" text-anchor="middle" fill="#0d1117" font-size="11" font-weight="700">2</text>
+</g>
+<g class="p3">
+<rect x="-49.0" y="-13.0" width="98" height="26" rx="5" fill="#1c2330" stroke="#3fb950" stroke-width="1.5"/>
+<text x="0" y="4" text-anchor="middle" fill="#e6edf3" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">&lt;/html&gt;</text>
+<circle cx="-49.0" cy="-13.0" r="10" fill="#3fb950"/>
+<text x="-49.0" y="-9.0" text-anchor="middle" fill="#0d1117" font-size="11" font-weight="700">4</text>
+</g>
+<g class="p2">
+<rect x="-49.0" y="-13.0" width="98" height="26" rx="5" fill="#1c2330" stroke="#3fb950" stroke-width="1.5"/>
+<text x="0" y="4" text-anchor="middle" fill="#e6edf3" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">&lt;p&gt;...&lt;/p&gt;</text>
+<circle cx="-49.0" cy="-13.0" r="10" fill="#3fb950"/>
+<text x="-49.0" y="-9.0" text-anchor="middle" fill="#0d1117" font-size="11" font-weight="700">3</text>
+</g>
+<g class="lost">
+<text x="560" y="131" text-anchor="middle" fill="#f85149" font-size="17" font-weight="700">✕</text>
+<text x="584" y="130" fill="#f85149" font-size="11" font-weight="700">one never arrives</text>
+</g>
+</svg>

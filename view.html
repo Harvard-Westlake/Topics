@@ -165,6 +165,19 @@
                      border-radius: 999px; font-size: 12px; line-height: 1.6; color: #fff; background: rgba(0, 0, 0, .62); pointer-events: none; }
   .md .swap:hover::after, .md .swap:focus-visible::after, .md .swap.show-tech::after { content: "Technical version"; background: #7c3aed; }
   @media (prefers-reduced-motion: reduce) { .md .swap .swap-tech { transition: none; } }
+  /* Steppers: a numbered list whose items each open with a picture named *-step-N.svg shows one item at a time. */
+  .md .stepper { margin: 16px 0; border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; }
+  .md .stepper > ol { list-style: none; margin: 0; padding: 0; }
+  .md .stepper > ol > li { margin: 0; }
+  .md .stepper > ol > li[hidden] { display: none; }
+  .md .stepper img { display: block; width: 100%; height: auto; }
+  .md .stepper-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 10px; }
+  .md .stepper-bar span { color: var(--muted); font-weight: 600; }
+  .md .stepper-bar button { font: inherit; font-weight: 600; padding: 6px 18px; border-radius: 6px; cursor: pointer;
+                            color: var(--fg); background: transparent; border: 1px solid var(--border); }
+  .md .stepper-bar button.go { color: #fff; background: var(--link); border-color: var(--link); }
+  .md .stepper-bar button:disabled { opacity: .4; cursor: default; }
+  .md .stepper-bar button:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
   /* The running Mini-Site Project thread: a purple callout and a purple success criterion. */
   .md blockquote.mini-site { background: var(--mini-bg); border-left-color: var(--mini); }
   .md .mini-site font { color: var(--mini); }
@@ -484,6 +497,37 @@ if(__exports != exports)module.exports = exports;return module.exports}));
       tech.src = src.replace(/-eli5\.svg/, '-technical.svg');
       wrap.appendChild(tech);
       wrap.addEventListener('click', function () { wrap.classList.toggle('show-tech'); });
+    });
+    // A numbered list whose every item opens with a picture named *-step-N.svg becomes a stepper:
+    // one item on screen, Back and Continue under it, and the picture's animation restarted each time it is shown.
+    root.querySelectorAll('ol').forEach(function (ol) {
+      var items = Array.prototype.filter.call(ol.children, function (child) { return child.tagName === 'LI'; });
+      var pictures = items.map(function (item) { return item.querySelector('img'); });
+      var isStepper = items.length > 1 && pictures.every(function (img) {
+        return img && /-step-\d+\.svg(\?|#|$)/.test(img.getAttribute('src'));
+      });
+      if (!isStepper) return;
+      var wrap = document.createElement('div'); wrap.className = 'stepper';
+      ol.parentNode.insertBefore(wrap, ol); wrap.appendChild(ol);
+      var bar = document.createElement('div'); bar.className = 'stepper-bar';
+      var back = document.createElement('button'); back.type = 'button'; back.textContent = 'Back';
+      var count = document.createElement('span'); count.setAttribute('aria-live', 'polite');
+      var next = document.createElement('button'); next.type = 'button'; next.className = 'go';
+      bar.appendChild(back); bar.appendChild(count); bar.appendChild(next); wrap.appendChild(bar);
+      var current = 0, plays = 0;
+      function show(step) {
+        current = step;
+        items.forEach(function (item, index) { item.hidden = index !== step; });
+        var img = pictures[step];
+        var base = img.dataset.base || (img.dataset.base = img.getAttribute('src'));
+        if (plays++) img.src = base + (base.indexOf('?') < 0 ? '?' : '&') + 'play=' + plays;
+        back.disabled = step === 0;
+        next.textContent = step === items.length - 1 ? 'Start over' : 'Continue';
+        count.textContent = 'Step ' + (step + 1) + ' of ' + items.length;
+      }
+      back.addEventListener('click', function () { if (current > 0) show(current - 1); });
+      next.addEventListener('click', function () { show(current === items.length - 1 ? 0 : current + 1); });
+      show(0);
     });
     root.querySelectorAll('source[srcset], img[srcset]').forEach(function (el) {
       var out = el.getAttribute('srcset').split(',').map(function (part) {

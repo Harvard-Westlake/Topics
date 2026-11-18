@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 910 300" width="910" height="300" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12">
+<title>TCP step 4: number every chunk</title>
+<style>@keyframes n0{0%,8%{opacity:0}10%,96%{opacity:1}100%{opacity:0}} .n0{animation:n0 9s linear infinite} @keyframes to0{0%,68%{opacity:0}70%,96%{opacity:1}100%{opacity:0}} .to0{animation:to0 9s linear infinite} @keyframes n1{0%,22%{opacity:0}24%,96%{opacity:1}100%{opacity:0}} .n1{animation:n1 9s linear infinite} @keyframes to1{0%,68%{opacity:0}70%,96%{opacity:1}100%{opacity:0}} .to1{animation:to1 9s linear infinite} @keyframes n2{0%,36%{opacity:0}38%,96%{opacity:1}100%{opacity:0}} .n2{animation:n2 9s linear infinite} @keyframes to2{0%,68%{opacity:0}70%,96%{opacity:1}100%{opacity:0}} .to2{animation:to2 9s linear infinite} @keyframes n3{0%,50%{opacity:0}52%,96%{opacity:1}100%{opacity:0}} .n3{animation:n3 9s linear infinite} @keyframes to3{0%,68%{opacity:0}70%,96%{opacity:1}100%{opacity:0}} .to3{animation:to3 9s linear infinite} @media (prefers-reduced-motion: reduce){*{animation:none!important}}</style>
+<defs><marker id="m8b949e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8b949e"/></marker></defs>
+<rect width="910" height="300" rx="10" fill="#0d1117"/>
+<text x="30" y="36" fill="#3fb950" font-size="12" font-weight="700">TCP, step 4 of 8</text>
+<text x="30" y="58" fill="#e6edf3" font-size="17" font-weight="700">Number every chunk</text>
+<text x="880" y="58" text-anchor="end" fill="#8b949e" font-size="11">inside the server</text>
+<g opacity=".28">
+<rect x="30" y="84" width="150" height="192" rx="8" fill="#161b22" stroke="#388bfd" stroke-width="1.5"/>
+<text x="105" y="106" text-anchor="middle" fill="#388bfd" font-size="12.5" font-weight="700">Your browser</text>
+</g>
+<g>
+<rect x="730" y="84" width="150" height="192" rx="8" fill="#161b22" stroke="#388bfd" stroke-width="1.5"/>
+<text x="805" y="106" text-anchor="middle" fill="#388bfd" font-size="12.5" font-weight="700">Web server</text>
+</g>
+<text x="455" y="118" text-anchor="middle" fill="#e6edf3" font-size="12">each chunk gets a number, so the order can be rebuilt later</text>
+<g>
+<rect x="230.0" y="163.0" width="96" height="34" rx="5" fill="#1c2330" stroke="#3fb950" stroke-width="1.5"/>
+<text x="278.0" y="184" text-anchor="middle" fill="#e6edf3" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">&lt;html&gt;</text>
+</g>
+<g class="n0"><circle cx="230.0" cy="163" r="11" fill="#3fb950"/><text x="230.0" y="167" text-anchor="middle" fill="#0d1117" font-size="12" font-weight="700">1</text></g>
+<text x="278.0" y="218" text-anchor="middle" fill="#3fb950" font-size="11" font-weight="700" class="n0">1 of 4</text>
+<text x="278.0" y="236" text-anchor="middle" fill="#f0883e" font-size="10.5" class="to0">to: your browser</text>
+<g>
+<rect x="348.0" y="163.0" width="96" height="34" rx="5" fill="#1c2330" stroke="#3fb950" stroke-width="1.5"/>
+<text x="396.0" y="184" text-anchor="middle" fill="#e6edf3" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">&lt;h1&gt;Hi!&lt;/h1&gt;</text>
+</g>
+<g class="n1"><circle cx="348.0" cy="163" r="11" fill="#3fb950"/><text x="348.0" y="167" text-anchor="middle" fill="#0d1117" font-size="12" font-weight="700">2</text></g>
+<text x="396.0" y="218" text-anchor="middle" fill="#3fb950" font-size="11" font-weight="700" class="n1">2 of 4</text>
+<text x="396.0" y="236" text-anchor="middle" fill="#f0883e" font-size="10.5" class="to1">to: your browser</text>
+<g>
+<rect x="466.0" y="163.0" width="96" height="34" rx="5" fill="#1c2330" stroke="#3fb950" stroke-width="1.5"/>
+<text x="514.0" y="184" text-anchor="middle" fill="#e6edf3" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">&lt;p&gt;...&lt;/p&gt;</text>
+</g>
+<g class="n2"><circle cx="466.0" cy="163" r="11" fill="#3fb950"/><text x="466.0" y="167" text-anchor="middle" fill="#0d1117" font-size="12" font-weight="700">3</text></g>
+<text x="514.0" y="218" text-anchor="middle" fill="#3fb950" font-size="11" font-weight="700" class="n2">3 of 4</text>
+<text x="514.0" y="236" text-anchor="middle" fill="#f0883e" font-size="10.5" class="to2">to: your browser</text>
+<g>
+<rect x="584.0" y="163.0" width="96" height="34" rx="5" fill="#1c2330" stroke="#3fb950" stroke-width="1.5"/>
+<text x="632.0" y="184" text-anchor="middle" fill="#e6edf3" font-size="10.5" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">&lt;/html&gt;</text>
+</g>
+<g class="n3"><circle cx="584.0" cy="163" r="11" fill="#3fb950"/><text x="584.0" y="167" text-anchor="middle" fill="#0d1117" font-size="12" font-weight="700">4</text></g>
+<text x="632.0" y="218" text-anchor="middle" fill="#3fb950" font-size="11" font-weight="700" class="n3">4 of 4</text>
+<text x="632.0" y="236" text-anchor="middle" fill="#f0883e" font-size="10.5" class="to3">to: your browser</text>
+</svg>

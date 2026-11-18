@@ -11,15 +11,17 @@
 
 Your website does not travel as one thing. It is cut into small pieces, and every piece finds its own way.
 
-- **Packets and layers:** a message is cut into packets, and four layers each wrap it once. Two layers give you a choice: TCP or UDP, HTTP or WebSocket.
-- **The machines in between:** name servers turn a name into an address, routers pass packets hop by hop, and data centers hold the computers that answer.
+- **The four layers:** each layer wraps the message once and does one job.
+- **One page over TCP:** the careful way, where every piece is numbered, checked, and sent again if it is lost.
+- **The same page over UDP:** the fast way, where pieces are sent once and never checked.
 
 ## <font color="#388bfd">Table of Contents</font>
 
-1. [Packets and the four layers, with TCP against UDP and HTTP against WebSocket](#packets-and-the-four-layers)
-2. [The machines in between: name servers, routers, and data centers](#the-machines-in-between)
+1. [The four layers every message is wrapped in](#the-four-layers)
+2. [One page over TCP, stage by stage](#one-page-over-tcp)
+3. [The same page over UDP, and why anyone would choose it](#the-same-page-over-udp)
 
-## <font color="#388bfd">Packets and the Four Layers</font>
+## <font color="#388bfd">The Four Layers</font>
 
 Mailing a whole book is hard. Mailing it one numbered postcard at a time is easy: each postcard is small, each can take a different truck, and the reader puts them back in order. A **packet** is one postcard.
 
@@ -32,38 +34,8 @@ Each layer writes on the outside of the postcard and never reads what the other 
 | **2. Internet** | Which computer, anywhere on Earth | An **IP address** | IP, such as `199.36.158.100` |
 | **1. Link** | Reaching the very next device | The next hop's hardware address | Wi-Fi, Ethernet, fiber |
 
-### <font color="#79c0ff">Transport: TCP and UDP</font>
-
-![Animated comparison of TCP and UDP, each sending three pieces of data and each losing piece 2. TCP, a phone call: a three-step hello of SYN, SYN-ACK, and ACK, then pieces 1, 2, and 3, then the server reports it has 1 and still needs 2, piece 2 is sent again, and the server confirms it has all 3. Everything arrives complete and in order, at the cost of extra trips and waiting, which suits web pages, files, and logins. UDP, postcards: pieces 1, 2, and 3 are sent with no hello, piece 2 is lost, and the sender is done already without ever learning it. Pieces 1 and 3 arrive with a gap but nothing ever waits, which suits video calls, games, and live audio.](../assets/tcp-vs-udp.svg)
-
-A **port** is a numbered door on one computer, so many programs can share one address.
-
-| Port | Who answers there |
-|---|---|
-| `80` | HTTP, a website with no encryption |
-| `443` | HTTPS, a website with encryption |
-| `22` | [SSH](../../SSHKeysAndCORS/), a terminal on a far-away computer |
-| `53` | DNS, the name servers |
-
-### <font color="#79c0ff">Application: HTTP and WebSocket</font>
-
-![Animated comparison of HTTP and WebSocket, both carried inside TCP. HTTP, one question and one answer: the browser sends GET /scores and receives 200 OK with the scores, then nothing happens until the browser asks again, and it must keep asking to learn whether anything is new. WebSocket, an open line: the browser sends one GET with Upgrade: websocket, the server answers 101 Switching Protocols, the connection stays open, and from then on the server sends new score and player joined while the browser sends my move, each at any time. HTTP suits pages, images, forms, and saving data. WebSocket suits chat, multiplayer games, and live scores.](../assets/http-vs-websocket.svg)
-
-An HTTP message is plain text: one first line, then **headers**, then a blank line, then the body.
-
-```text
-GET /scores HTTP/1.1                 the request: a method and a path
-Host: my-site.web.app                a header
-Accept: application/json             a header
-
-HTTP/1.1 200 OK                      the response: a status code
-Content-Type: application/json       a header
-Cache-Control: max-age=600           a header
-
-{ "maya": 12, "dev": 9 }             the body
-```
-
-**HTTPS** is the same HTTP inside one more wrapper that encrypts it, so nobody between you and the server can read or change it.
+- **TCP and UDP** are the two ways the transport layer can carry the postcards. The next two sections follow one page through each.
+- **HTTP and WebSocket** are two ways the application layer can talk, and both ride on TCP: HTTP asks once and gets one answer, and a WebSocket keeps the line open.
 
 ### <font color="#79c0ff">Activity 1</font>
 <details>
@@ -86,65 +58,72 @@ Cache-Control: max-age=600           a header
 
 </details>
 
-## <font color="#388bfd">The Machines In Between</font>
+## <font color="#388bfd">One Page Over TCP</font>
 
-Three kinds of machine sit between your browser and the answer. None of them is in charge of the whole trip.
+You type an address and a page appears. Here is everything that happens in between, one stage at a time.
 
-### <font color="#79c0ff">Name servers</font>
+1. ![Animation of TCP step 1 of 8, say hello first. The browser says: hello, can we talk? The web server answers: yes, I am listening. The browser says: good, here comes my question. Nothing else is sent until all three messages have crossed.](../assets/tcp-trip-step-1.svg)
 
-![Animated diagram of a DNS lookup for my-site.web.app. Step 1: the browser asks a resolver, run by your internet provider or a public one such as 8.8.8.8, which does the asking for you. Step 2: the resolver asks a root name server, which knows who runs every ending and says to ask the .app servers. Step 3: the .app name server says to ask web.app's name server. Step 4: web.app's name server, which holds the real records, answers 199.36.158.100. Step 5: the resolver hands that address back to the browser. A caption says the resolver remembers the answer for a while, so the next lookup skips steps 2 to 4, and that a DNS question usually travels by UDP.](../assets/dns-lookup.svg)
+   **Say hello first.** Before anything is sent, the two computers check that the other one is really there and listening, like saying hello on the phone before you start talking.
 
-Packets need a number, and people type names. **DNS** is the phone book, split across many **name servers** so that no single one has to know everything.
+2. ![Animation of TCP step 2 of 8, ask for the page. One small message, GET /index.html, travels from the browser to the web server, and the server finds the file index.html.](../assets/tcp-trip-step-2.svg)
 
-### <font color="#79c0ff">Routers</font>
+   **Ask for the page.** Your browser sends one short note: please give me `index.html`. The server finds that file.
 
-![Animated diagram of routers. A laptop at 192.168.1.20 sends packet 1 through its Wi-Fi router, its internet provider's router, and two more routers to a server at 199.36.158.100. Then the link between two of the routers goes down. Packet 2 leaves afterward, and the router next to the break sends it another way, through a different router, and it still arrives. A caption says no router knows the whole route and no one has to plan it, which is why the internet survives broken links.](../assets/router-hops.svg)
+3. ![Animation of TCP step 3 of 8, cut the page into chunks, inside the server. The file index.html is too big to send as one piece, so it is cut at three places and the four pieces move apart: the opening html tag, a heading that says Hi, a paragraph, and the closing html tag. A label says 4 chunks, each small enough to travel.](../assets/tcp-trip-step-3.svg)
 
-A **router** is a mail sorter. It reads the destination address, picks the best next hop, and forgets the packet.
+   **Cut the page into chunks.** The page is too big to send in one go, so the server cuts it into small pieces, like tearing a letter into postcards.
 
-### <font color="#79c0ff">Data centers</font>
+4. ![Animation of TCP step 4 of 8, number every chunk, inside the server. The four chunks get the numbers 1, 2, 3, and 4 one at a time, each labeled as 1 of 4 through 4 of 4, and then every chunk is addressed to your browser.](../assets/tcp-trip-step-4.svg)
 
-![Animated diagram of three sizes of data center. An edge location is a few racks in or near your city that keeps copies of files, and Firebase Hosting serves your HTML from one. A data center is one building with thousands of servers. A region is several data centers linked together: it runs services and holds the databases, your Firestore data lives in one region, and if one building fails the others carry on. A green dot shows loading the page: a short trip to the edge and back, a few milliseconds. An orange dot shows saving a score: a long trip through the edge to the database in the region and back, often 50 to 150 milliseconds.](../assets/data-center-tiers.svg)
+   **Number every chunk.** Each postcard gets a number and your address, so they can be put back in order no matter how they arrive.
 
-The computers that answer live in **data centers**, and the size decides the distance: small ones are close and hold copies, big ones are far and hold the real data.
+5. ![Animation of TCP step 5 of 8, send them over the wire. The four numbered chunks leave the web server and travel through routers along two different routes. Chunk 2 arrives first, then chunk 1, then chunk 4. Chunk 3 disappears at a router and never arrives.](../assets/tcp-trip-step-5.svg)
 
-One building is also rated by how much can break before it goes dark:
+   **Send them over the wire.** Every chunk travels on its own. They take different roads, show up in a different order, and sometimes one gets lost.
 
-| Rating | What is built in | Time offline in a year |
+6. ![Animation of TCP step 6 of 8, put them back in order, inside your browser. The chunks arrived as 2, 1, 4. Each one moves into the slot that matches its number, leaving the third slot empty with a red question mark. The browser notes that chunk 3 is missing.](../assets/tcp-trip-step-6.svg)
+
+   **Put them back in order.** Your computer lines the chunks up by number. Now it can see that number 3 is not there.
+
+7. ![Animation of TCP step 7 of 8, ask again for the missing one. The browser tells the web server: I have 1, 2, and 4, please send 3 again. The server sends chunk 3 once more, it arrives, and the browser shows a green check: 1, 2, 3, 4, all here.](../assets/tcp-trip-step-7.svg)
+
+   **Ask again for the missing one.** Your computer tells the server exactly what it has, and the server sends the missing chunk again. TCP keeps asking until every chunk is there.
+
+8. ![Animation of TCP step 8 of 8, join the chunks into the page, inside your browser. The four numbered chunks slide together into one file, index.html, whole again and in the right order, and a small page that says Hi appears in the browser.](../assets/tcp-trip-step-8.svg)
+
+   **Join the chunks into the page.** With every chunk in place, they are glued back together and the page appears, exactly as it was written.
+
+## <font color="#388bfd">The Same Page Over UDP</font>
+
+Now send the same page the other way. UDP does less work at every stage, and that is the whole point of it.
+
+1. ![Animation of UDP step 1 of 5, no hello, just start. The browser says: send me the page. The web server answers at once: here it comes. A label says the three hello messages are skipped, so it starts sooner.](../assets/udp-trip-step-1.svg)
+
+   **No hello: just start.** Nobody checks that the other side is listening. The server just starts sending, which is faster.
+
+2. ![Animation of UDP step 2 of 5, cut into chunks with no numbers, inside the server. The page is cut into the same four chunks, but the circle where each number would go stays empty. A label says no numbers, and no list of what was sent.](../assets/udp-trip-step-2.svg)
+
+   **Cut into chunks, with no numbers.** The page is cut up the same way, but the postcards get no numbers and nobody keeps a list of them.
+
+3. ![Animation of UDP step 3 of 5, send them over the wire. The four unnumbered chunks travel through the same routers along two routes. The heading chunk arrives first, then the opening html tag, then the closing html tag. The paragraph chunk disappears at a router and never arrives.](../assets/udp-trip-step-3.svg)
+
+   **Send them over the wire.** Same roads, same routers, same trouble: the chunks arrive in a different order and one gets lost.
+
+4. ![Animation of UDP step 4 of 5, use them as they land, inside your browser. The three chunks that arrived are placed side by side in the order they came: the heading, then the opening html tag, then the closing html tag. A red label says wrong order, one chunk gone, and nobody asks for it again. The browser is left with a broken page.](../assets/udp-trip-step-4.svg)
+
+   **Use them as they land.** With no numbers, the chunks are used in the order they showed up. The lost one is never asked for, so the page comes out broken. That is why web pages travel by TCP.
+
+5. ![Animation of UDP step 5 of 5, so why does anyone use it, shown as a live video call sending one picture at a time. On the UDP row, pictures 1 and 2 arrive, the lost one is skipped, and pictures 4 and 5 arrive on time. On the TCP row, pictures 1 and 2 arrive, then the call freezes while it waits for the lost one, and pictures 3 and 4 arrive late. A caption says UDP has one tiny glitch and is still live, and TCP has every picture and is now behind.](../assets/udp-trip-step-5.svg)
+
+   **So why does anyone use it?** In a video call or a fast game, a late picture is useless. UDP skips what was lost and stays live, while TCP would freeze and wait.
+
+| | TCP | UDP |
 |---|---|---|
-| **Tier I** | One path for power and cooling, no spares | About 29 hours |
-| **Tier II** | Spare parts for power and cooling | About 22 hours |
-| **Tier III** | Any part can be repaired while everything stays on | About 1.6 hours |
-| **Tier IV** | Two of everything, so any single failure changes nothing | About 26 minutes |
-
-### <font color="#79c0ff">Activity 2</font>
-<details>
-<summary><strong>Look Up a Name and Follow the Hops</strong></summary>
-
-*Concept: Ask a name server for your site's address yourself, then list every router between you and it.*
-
-![A terminal showing two commands. nslookup web.app answers with the address 199.36.158.100. traceroute web.app then lists five hops, one per line: the Wi-Fi router, the internet provider, a router that refuses to answer and shows three stars, a big network between providers, and finally the server at 199.36.158.100, the same address the lookup returned.](../assets/lookup-and-trace.svg)
-
-## Task
-
-1. In your terminal, ask a name server for the address of your own site, using your site's name in place of `my-site`:
-   ```bash
-   nslookup my-site.web.app
-   ```
-2. Write down the address it returns. Compare it with the Remote Address you found in Activity 1.
-3. In your terminal, list the routers between you and that address:
-   ```bash
-   traceroute my-site.web.app
-   ```
-4. Count the hops. Name hop 1, and say how you know which hop is the last one.
-5. Find a line of `* * *` if you have one. That router passed your packets along but refused to answer the question. A school network may show many.
-6. Run `traceroute` again for a site in another country, such as `www.bbc.co.uk`. Compare the number of hops and the times.
-
-> **Note:** In WSL, `sudo apt install traceroute` adds the command if it is missing.
-
-*(Standalone file: [activities/02-look-up-a-name-and-follow-the-hops.md](../activities/02-look-up-a-name-and-follow-the-hops.md))*
-
-</details>
+| **Says hello first** | Yes | No |
+| **Numbers the chunks** | Yes | No |
+| **Sends a lost chunk again** | Yes | No |
+| **Good for** | Web pages, files, logins: every piece must arrive | Video calls, live games: being on time matters more |
 
 ---
 

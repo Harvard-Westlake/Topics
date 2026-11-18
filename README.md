@@ -94,7 +94,7 @@ Build and ship a live, database-backed educational widget — hosted on Firebase
 - [Databases and Collections](WebProgramming/DatabasesAndCollections/) — JSON, Firestore collections and documents, reading and writing by name, and security rules
 - [User Flow and Logging](WebProgramming/UserFlowAndLogging/) — one specific user, the flow as a chart, and how sites log what visitors do
 - [SSH, Keys, and CORS](WebProgramming/SSHKeysAndCORS/) — a terminal on another computer, logging in with a key pair, and the browser's CORS check
-- [The Network Stack](WebProgramming/NetworkStack/) — packets and layers, TCP, UDP, HTTP, and WebSocket, name servers, routers, and data centers
+- [The Network Stack](WebProgramming/NetworkStack/) — the four layers, then one web page followed stage by stage over TCP and again over UDP
 - [Playtesting](WebProgramming/Playtesting/) — testing classmates' apps as a stranger and reporting behaviors, not opinions
 - [The Learning Widget Project](WebProgramming/LearningWidget/) — plan and build an educational widget published via GitHub and Firebase
 - [Widget Iteration from Feedback](WebProgramming/WidgetIteration/) — a shrinking feedback.md and a zero-error console

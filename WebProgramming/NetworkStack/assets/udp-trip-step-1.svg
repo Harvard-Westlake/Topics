@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 910 300" width="910" height="300" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12">
+<title>UDP step 1: no hello, just start</title>
+<style>@keyframes a{0%,6%{opacity:0.12}8%,96%{opacity:1}100%{opacity:0.12}} .a{animation:a 8s linear infinite} @keyframes ad{0%{opacity:0;transform:translate(0,0)}6%{opacity:0;transform:translate(0,0)}6.5%{opacity:1}24%{opacity:1;transform:translate(530px,0px)}25%,100%{opacity:0;transform:translate(530px,0px)}} .ad{opacity:0;animation:ad 8s linear infinite} @keyframes b{0%,34%{opacity:0.12}36%,96%{opacity:1}100%{opacity:0.12}} .b{animation:b 8s linear infinite} @keyframes bd{0%{opacity:0;transform:translate(0,0)}34%{opacity:0;transform:translate(0,0)}34.5%{opacity:1}52%{opacity:1;transform:translate(-530px,0px)}53%,100%{opacity:0;transform:translate(-530px,0px)}} .bd{opacity:0;animation:bd 8s linear infinite} @keyframes skip{0%,60%{opacity:0}62%,96%{opacity:1}100%{opacity:0}} .skip{animation:skip 8s linear infinite} @media (prefers-reduced-motion: reduce){*{animation:none!important}}</style>
+<defs><marker id="m8b949e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8b949e"/></marker><marker id="m388bfd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#388bfd"/></marker><marker id="mf0883e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#f0883e"/></marker></defs>
+<rect width="910" height="300" rx="10" fill="#0d1117"/>
+<text x="30" y="36" fill="#f0883e" font-size="12" font-weight="700">UDP, step 1 of 5</text>
+<text x="30" y="58" fill="#e6edf3" font-size="17" font-weight="700">No hello: just start</text>
+<text x="880" y="58" text-anchor="end" fill="#8b949e" font-size="11">nobody agrees to anything first</text>
+<g>
+<rect x="30" y="84" width="150" height="192" rx="8" fill="#161b22" stroke="#388bfd" stroke-width="1.5"/>
+<text x="105" y="106" text-anchor="middle" fill="#388bfd" font-size="12.5" font-weight="700">Your browser</text>
+</g>
+<g>
+<rect x="730" y="84" width="150" height="192" rx="8" fill="#161b22" stroke="#388bfd" stroke-width="1.5"/>
+<text x="805" y="106" text-anchor="middle" fill="#388bfd" font-size="12.5" font-weight="700">Web server</text>
+</g>
+<g class="a">
+<line x1="190" y1="150" x2="720" y2="150" stroke="#388bfd" stroke-width="1.6" marker-end="url(#m388bfd)"/>
+<text x="455" y="142" text-anchor="middle" fill="#e6edf3" font-size="12">Send me the page.</text>
+</g>
+<circle class="ad" cx="190" cy="150" r="5" fill="#388bfd"/>
+<g class="b">
+<line x1="720" y1="215" x2="190" y2="215" stroke="#f0883e" stroke-width="1.6" marker-end="url(#mf0883e)"/>
+<text x="455" y="207" text-anchor="middle" fill="#e6edf3" font-size="12">Here it comes.</text>
+</g>
+<circle class="bd" cx="720" cy="215" r="5" fill="#f0883e"/>
+<text x="455" y="262" text-anchor="middle" fill="#f0883e" font-size="12" font-weight="700" class="skip">The three hello messages are skipped, so it starts sooner.</text>
+</svg>
