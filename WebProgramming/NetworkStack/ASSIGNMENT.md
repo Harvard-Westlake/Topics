@@ -13,7 +13,7 @@ That badge is a service at work. Today you install your own: the one that makes 
 
 ## Part 1: Bring Codex Onto the Box
 
-1. Log in with `box` and go to the project folder you made by hand.
+1. Log in with `box` and go to the project folder you made by hand. If `box` still asks for a password, log in the long way and run `addkey` with your public key: see [Part 2 of the last assignment](../SSHKeysAndCORS/ASSIGNMENT.md#part-2-install-your-key-and-make-a-shortcut).
 2. Start Codex there and sign in with your own account. It reads the box's rules on its own.
 3. Make this your first message, so every prompt is saved in your exact words:
    ```

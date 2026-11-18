@@ -18,9 +18,9 @@ A service on the class server counted you just now. Today you get onto that serv
    ssh CLASS-LOGIN@SERVER-ADDRESS
    ```
 2. The first time, `ssh` shows a fingerprint. Check it against the one shown in class, then answer `yes`.
-3. Type the class password, then **your first name** in lowercase. Use the same name every time.
+3. Type the class password, then your **first name** and your **last initial** when asked. The box joins them into your name on the box, such as `alicek`.
 
-**Verify:** `pwd` ends in your name. The box made that folder for you, and it is yours alone.
+**Verify:** `pwd` ends in your name on the box. The box made that folder for you, and it is yours alone.
 
 > **Warning:** Typing someone else's name is an Honor Code violation.
 
@@ -35,30 +35,36 @@ After this part you log in with one word, no password, and no name question.
    cat ~/.ssh/id_ed25519.pub
    ```
    If the file does not exist, make a key pair first with `ssh-keygen -t ed25519` and press Enter at each question.
-2. **Add it to the box.** In your terminal on the box, run these three lines, with your own key line pasted between the quotes:
+2. **Add it to the box with `addkey`.** In your terminal on the box, run this one command, with your own key line pasted between the quotes:
    ```bash
-   mkdir -p /home/$(whoami)/.ssh && chmod 700 /home/$(whoami)/.ssh
-   echo "PASTE-YOUR-PUBLIC-KEY-LINE-HERE" >> /home/$(whoami)/.ssh/authorized_keys
-   chmod 600 /home/$(whoami)/.ssh/authorized_keys
+   addkey "PASTE-YOUR-PUBLIC-KEY-LINE-HERE"
    ```
+   The box answers `Added your key`, or tells you in plain words what was wrong with the paste.
 3. **Name the box.** On your own computer, add this entry to the file `~/.ssh/config`, with the three values filled in:
    ```text
    Host box
      HostName SERVER-ADDRESS
      User CLASS-LOGIN
      IdentityFile ~/.ssh/id_ed25519
-     SetEnv STUDENT=yourfirstname
+     SetEnv STUDENT=yournameonthebox
    ```
 4. **Make the alias.** On your own computer, add this line to `~/.zshrc` (Mac) or `~/.bashrc` (WSL), then open a new terminal:
    ```bash
    alias box="ssh box"
    ```
 
-> **Warning:** Type `>>` with two arrows. One arrow erases every classmate's key.
+**What `addkey` does, and what it refuses:**
+
+- **It adds one line.** Your public key goes at the end of the class's shared `authorized_keys` file, labeled with your name and the date.
+- **It needs no special permission.** It runs as the class login you are already using.
+- **It is safe to repeat.** A key that is already there is skipped, and two classmates running it at once cannot damage the file.
+- **It refuses mistakes.** A private key, a key cut off in the middle, or a paste that spans several lines is rejected with a message, and nothing is written.
+
+> **Warning:** Always use `addkey`. Editing `authorized_keys` by hand can erase every classmate's key.
 
 | What you made | Where it lives | What it does |
 |---|---|---|
-| A line in `authorized_keys` | The box | Lets your key in. The class shares one file, one line per student. |
+| A line in `authorized_keys`, written by `addkey` | The box | Lets your key in. The class shares one file, one line per student. |
 | A `Host box` entry | `~/.ssh/config` on your computer | Remembers the address, the login, your key, and your name. |
 | An alias | `~/.zshrc` or `~/.bashrc` on your computer | Turns `ssh box` into `box`. |
 
