@@ -1,8 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 910 300" width="910" height="300" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 910 418" width="910" height="418" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12">
 <title>TCP step 4: number every chunk</title>
 <style>@keyframes n0{0%,8%{opacity:0}10%,96%{opacity:1}100%{opacity:0}} .n0{animation:n0 9s linear infinite} @keyframes to0{0%,68%{opacity:0}70%,96%{opacity:1}100%{opacity:0}} .to0{animation:to0 9s linear infinite} @keyframes n1{0%,22%{opacity:0}24%,96%{opacity:1}100%{opacity:0}} .n1{animation:n1 9s linear infinite} @keyframes to1{0%,68%{opacity:0}70%,96%{opacity:1}100%{opacity:0}} .to1{animation:to1 9s linear infinite} @keyframes n2{0%,36%{opacity:0}38%,96%{opacity:1}100%{opacity:0}} .n2{animation:n2 9s linear infinite} @keyframes to2{0%,68%{opacity:0}70%,96%{opacity:1}100%{opacity:0}} .to2{animation:to2 9s linear infinite} @keyframes n3{0%,50%{opacity:0}52%,96%{opacity:1}100%{opacity:0}} .n3{animation:n3 9s linear infinite} @keyframes to3{0%,68%{opacity:0}70%,96%{opacity:1}100%{opacity:0}} .to3{animation:to3 9s linear infinite} @media (prefers-reduced-motion: reduce){*{animation:none!important}}</style>
 <defs><marker id="m8b949e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8b949e"/></marker></defs>
-<rect width="910" height="300" rx="10" fill="#0d1117"/>
+<rect width="910" height="418" rx="10" fill="#0d1117"/>
 <text x="30" y="36" fill="#3fb950" font-size="12" font-weight="700">TCP, step 4 of 8</text>
 <text x="30" y="58" fill="#e6edf3" font-size="17" font-weight="700">Number every chunk</text>
 <text x="880" y="58" text-anchor="end" fill="#8b949e" font-size="11">inside the server</text>
@@ -43,4 +43,26 @@
 <g class="n3"><circle cx="584.0" cy="163" r="11" fill="#3fb950"/><text x="584.0" y="167" text-anchor="middle" fill="#0d1117" font-size="12" font-weight="700">4</text></g>
 <text x="632.0" y="218" text-anchor="middle" fill="#3fb950" font-size="11" font-weight="700" class="n3">4 of 4</text>
 <text x="632.0" y="236" text-anchor="middle" fill="#f0883e" font-size="10.5" class="to3">to: your browser</text>
+<line x1="30" y1="300" x2="880" y2="300" stroke="#30363d" stroke-width="1"/>
+<text x="30" y="322" fill="#e6edf3" font-size="12.5" font-weight="700">This stage is the work of the Transport and Internet layers.</text>
+<text x="880" y="322" text-anchor="end" fill="#8b949e" font-size="11">Every packet is a nest: each layer wraps the one inside it.</text>
+<g opacity="0.32">
+<rect x="30" y="334" width="850" height="70" rx="5" fill="#161b22" stroke="#a371f7" stroke-width="1.2"/>
+<text x="40" y="364" fill="#a371f7" font-size="10.5" font-weight="700">Link frame</text>
+<text x="40" y="379" fill="#e6edf3" font-size="10">to the next hop</text>
+</g>
+<g opacity="1">
+<rect x="190" y="341" width="682" height="56" rx="5" fill="#1c2330" stroke="#f0883e" stroke-width="2.2"/>
+<text x="200" y="364" fill="#f0883e" font-size="10.5" font-weight="700">IP packet</text>
+<text x="200" y="379" fill="#e6edf3" font-size="10">to: your browser</text>
+</g>
+<g opacity="1">
+<rect x="350" y="348" width="514" height="42" rx="5" fill="#1c2330" stroke="#3fb950" stroke-width="2.2"/>
+<text x="360" y="364" fill="#3fb950" font-size="10.5" font-weight="700">TCP segment</text>
+<text x="360" y="379" fill="#e6edf3" font-size="10">port 443, chunk 2 of 4</text>
+</g>
+<g opacity="0.32">
+<rect x="560" y="355" width="296" height="28" rx="5" fill="#161b22" stroke="#388bfd" stroke-width="1.2"/>
+<text x="708.0" y="373" text-anchor="middle" fill="#e6edf3" font-size="10.5">HTTP message: &lt;h1&gt;Hi!&lt;/h1&gt;</text>
+</g>
 </svg>

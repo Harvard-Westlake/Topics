@@ -1,8 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 910 300" width="910" height="300" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 910 418" width="910" height="418" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12">
 <title>TCP step 2: ask for the page</title>
 <style>@keyframes ask{0%,8%{opacity:1;transform:translate(260px,180px)}8.5%{opacity:1;transform:translate(260px,180px)}52.0%{opacity:1;transform:translate(650px,180px)}53.5%,100%{opacity:1;transform:translate(650px,180px)}} .ask{opacity:1;transform:translate(650px,180px);animation:ask 8s linear infinite} @keyframes found{0%,56%{opacity:0}58%,96%{opacity:1}100%{opacity:0}} .found{animation:found 8s linear infinite} @media (prefers-reduced-motion: reduce){*{animation:none!important}}</style>
 <defs><marker id="m8b949e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8b949e"/></marker></defs>
-<rect width="910" height="300" rx="10" fill="#0d1117"/>
+<rect width="910" height="418" rx="10" fill="#0d1117"/>
 <text x="30" y="36" fill="#3fb950" font-size="12" font-weight="700">TCP, step 2 of 8</text>
 <text x="30" y="58" fill="#e6edf3" font-size="17" font-weight="700">Ask for the page</text>
 <text x="880" y="58" text-anchor="end" fill="#8b949e" font-size="11">the request is one small message</text>
@@ -24,5 +24,27 @@
 <text x="805" y="176" text-anchor="middle" fill="#e6edf3" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">index</text>
 <text x="805" y="192" text-anchor="middle" fill="#e6edf3" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">.html</text>
 <text x="805" y="236" text-anchor="middle" fill="#3fb950" font-size="11" font-weight="700">found it</text>
+</g>
+<line x1="30" y1="300" x2="880" y2="300" stroke="#30363d" stroke-width="1"/>
+<text x="30" y="322" fill="#e6edf3" font-size="12.5" font-weight="700">This stage is the work of the Application layer.</text>
+<text x="880" y="322" text-anchor="end" fill="#8b949e" font-size="11">Every packet is a nest: each layer wraps the one inside it.</text>
+<g opacity="0.32">
+<rect x="30" y="334" width="850" height="70" rx="5" fill="#161b22" stroke="#a371f7" stroke-width="1.2"/>
+<text x="40" y="364" fill="#a371f7" font-size="10.5" font-weight="700">Link frame</text>
+<text x="40" y="379" fill="#e6edf3" font-size="10">to the next hop</text>
+</g>
+<g opacity="0.32">
+<rect x="190" y="341" width="682" height="56" rx="5" fill="#161b22" stroke="#f0883e" stroke-width="1.2"/>
+<text x="200" y="364" fill="#f0883e" font-size="10.5" font-weight="700">IP packet</text>
+<text x="200" y="379" fill="#e6edf3" font-size="10">to: your browser</text>
+</g>
+<g opacity="0.32">
+<rect x="350" y="348" width="514" height="42" rx="5" fill="#161b22" stroke="#3fb950" stroke-width="1.2"/>
+<text x="360" y="364" fill="#3fb950" font-size="10.5" font-weight="700">TCP segment</text>
+<text x="360" y="379" fill="#e6edf3" font-size="10">port 443</text>
+</g>
+<g opacity="1">
+<rect x="560" y="355" width="296" height="28" rx="5" fill="#1c2330" stroke="#388bfd" stroke-width="2.2"/>
+<text x="708.0" y="373" text-anchor="middle" fill="#388bfd" font-size="10.5" font-weight="700">HTTP message: GET /index.html</text>
 </g>
 </svg>

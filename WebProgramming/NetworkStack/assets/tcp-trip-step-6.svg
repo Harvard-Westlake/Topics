@@ -1,8 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 910 300" width="910" height="300" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 910 418" width="910" height="418" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12">
 <title>TCP step 6: put the chunks back in order</title>
 <style>@keyframes o1{0%,10%{opacity:1;transform:translate(345px,140px)}10.5%{opacity:1;transform:translate(345px,140px)}26.0%{opacity:1;transform:translate(410px,224px)}27.5%,100%{opacity:1;transform:translate(410px,224px)}} .o1{opacity:1;transform:translate(410px,224px);animation:o1 10s linear infinite} @keyframes o0{0%,30%{opacity:1;transform:translate(455px,140px)}30.5%{opacity:1;transform:translate(455px,140px)}46.0%{opacity:1;transform:translate(300px,224px)}47.5%,100%{opacity:1;transform:translate(300px,224px)}} .o0{opacity:1;transform:translate(300px,224px);animation:o0 10s linear infinite} @keyframes o3{0%,50%{opacity:1;transform:translate(565px,140px)}50.5%{opacity:1;transform:translate(565px,140px)}66.0%{opacity:1;transform:translate(630px,224px)}67.5%,100%{opacity:1;transform:translate(630px,224px)}} .o3{opacity:1;transform:translate(630px,224px);animation:o3 10s linear infinite} @keyframes gap{0%,72%{opacity:0}74%,96%{opacity:1}100%{opacity:0}} .gap{animation:gap 10s linear infinite} @media (prefers-reduced-motion: reduce){*{animation:none!important}}</style>
 <defs><marker id="m8b949e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8b949e"/></marker></defs>
-<rect width="910" height="300" rx="10" fill="#0d1117"/>
+<rect width="910" height="418" rx="10" fill="#0d1117"/>
 <text x="30" y="36" fill="#3fb950" font-size="12" font-weight="700">TCP, step 6 of 8</text>
 <text x="30" y="58" fill="#e6edf3" font-size="17" font-weight="700">Put them back in order</text>
 <text x="880" y="58" text-anchor="end" fill="#8b949e" font-size="11">inside your browser</text>
@@ -41,4 +41,26 @@
 <text x="520" y="229" text-anchor="middle" fill="#f85149" font-size="14" font-weight="700" class="gap">3 ?</text>
 <text x="105" y="180" text-anchor="middle" fill="#f85149" font-size="12" font-weight="700" class="gap">chunk 3</text>
 <text x="105" y="198" text-anchor="middle" fill="#f85149" font-size="12" font-weight="700" class="gap">is missing</text>
+<line x1="30" y1="300" x2="880" y2="300" stroke="#30363d" stroke-width="1"/>
+<text x="30" y="322" fill="#e6edf3" font-size="12.5" font-weight="700">This stage is the work of the Transport layer.</text>
+<text x="880" y="322" text-anchor="end" fill="#8b949e" font-size="11">Every packet is a nest: each layer wraps the one inside it.</text>
+<g opacity="0.32">
+<rect x="30" y="334" width="850" height="70" rx="5" fill="#161b22" stroke="#a371f7" stroke-width="1.2"/>
+<text x="40" y="364" fill="#a371f7" font-size="10.5" font-weight="700">Link frame</text>
+<text x="40" y="379" fill="#e6edf3" font-size="10">to the next hop</text>
+</g>
+<g opacity="0.32">
+<rect x="190" y="341" width="682" height="56" rx="5" fill="#161b22" stroke="#f0883e" stroke-width="1.2"/>
+<text x="200" y="364" fill="#f0883e" font-size="10.5" font-weight="700">IP packet</text>
+<text x="200" y="379" fill="#e6edf3" font-size="10">to: your browser</text>
+</g>
+<g opacity="1">
+<rect x="350" y="348" width="514" height="42" rx="5" fill="#1c2330" stroke="#3fb950" stroke-width="2.2"/>
+<text x="360" y="364" fill="#3fb950" font-size="10.5" font-weight="700">TCP segment</text>
+<text x="360" y="379" fill="#e6edf3" font-size="10">port 443, chunk 2 of 4</text>
+</g>
+<g opacity="0.32">
+<rect x="560" y="355" width="296" height="28" rx="5" fill="#161b22" stroke="#388bfd" stroke-width="1.2"/>
+<text x="708.0" y="373" text-anchor="middle" fill="#e6edf3" font-size="10.5">HTTP message: &lt;h1&gt;Hi!&lt;/h1&gt;</text>
+</g>
 </svg>

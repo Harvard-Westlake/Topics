@@ -62,35 +62,37 @@ Each layer writes on the outside of the postcard and never reads what the other 
 
 You type an address and a page appears. Here is everything that happens in between, one stage at a time.
 
-1. ![Animation of TCP step 1 of 8, say hello first. The browser says: hello, can we talk? The web server answers: yes, I am listening. The browser says: good, here comes my question. Nothing else is sent until all three messages have crossed.](assets/tcp-trip-step-1.svg)
+Under every stage is the whole packet, drawn as a nest: each layer's wrapper holds the wrapper of the layer above it. The lit layers are the ones doing that stage's work, and the greyed ones are still there, just not busy.
+
+1. ![Animation of TCP step 1 of 8, say hello first. The browser says: hello, can we talk? The web server answers: yes, I am listening. The browser says: good, here comes my question. Nothing else is sent until all three messages have crossed. Underneath, the whole packet is drawn as a nest of four wrappers, link frame around IP packet around TCP wrapper around the data, with the Transport layer lit and the rest greyed out.](assets/tcp-trip-step-1.svg)
 
    **Say hello first.** Before anything is sent, the two computers check that the other one is really there and listening, like saying hello on the phone before you start talking.
 
-2. ![Animation of TCP step 2 of 8, ask for the page. One small message, GET /index.html, travels from the browser to the web server, and the server finds the file index.html.](assets/tcp-trip-step-2.svg)
+2. ![Animation of TCP step 2 of 8, ask for the page. One small message, GET /index.html, travels from the browser to the web server, and the server finds the file index.html. Underneath, the whole packet is drawn as a nest of four wrappers, link frame around IP packet around TCP wrapper around the data, with the Application layer lit and the rest greyed out.](assets/tcp-trip-step-2.svg)
 
    **Ask for the page.** Your browser sends one short note: please give me `index.html`. The server finds that file.
 
-3. ![Animation of TCP step 3 of 8, cut the page into chunks, inside the server. The file index.html is too big to send as one piece, so it is cut at three places and the four pieces move apart: the opening html tag, a heading that says Hi, a paragraph, and the closing html tag. A label says 4 chunks, each small enough to travel.](assets/tcp-trip-step-3.svg)
+3. ![Animation of TCP step 3 of 8, cut the page into chunks, inside the server. The file index.html is too big to send as one piece, so it is cut at three places and the four pieces move apart: the opening html tag, a heading that says Hi, a paragraph, and the closing html tag. A label says 4 chunks, each small enough to travel. Underneath, the whole packet is drawn as a nest of four wrappers, link frame around IP packet around TCP wrapper around the data, with the Transport layer lit and the rest greyed out.](assets/tcp-trip-step-3.svg)
 
    **Cut the page into chunks.** The page is too big to send in one go, so the server cuts it into small pieces, like tearing a letter into postcards.
 
-4. ![Animation of TCP step 4 of 8, number every chunk, inside the server. The four chunks get the numbers 1, 2, 3, and 4 one at a time, each labeled as 1 of 4 through 4 of 4, and then every chunk is addressed to your browser.](assets/tcp-trip-step-4.svg)
+4. ![Animation of TCP step 4 of 8, number every chunk, inside the server. The four chunks get the numbers 1, 2, 3, and 4 one at a time, each labeled as 1 of 4 through 4 of 4, and then every chunk is addressed to your browser. Underneath, the whole packet is drawn as a nest of four wrappers, link frame around IP packet around TCP wrapper around the data, with the Transport and Internet layers lit and the rest greyed out.](assets/tcp-trip-step-4.svg)
 
    **Number every chunk.** Each postcard gets a number and your address, so they can be put back in order no matter how they arrive.
 
-5. ![Animation of TCP step 5 of 8, send them over the wire. The four numbered chunks leave the web server and travel through routers along two different routes. Chunk 2 arrives first, then chunk 1, then chunk 4. Chunk 3 disappears at a router and never arrives.](assets/tcp-trip-step-5.svg)
+5. ![Animation of TCP step 5 of 8, send them over the wire. The four numbered chunks leave the web server and travel through routers along two different routes. Chunk 2 arrives first, then chunk 1, then chunk 4. Chunk 3 disappears at a router and never arrives. Underneath, the whole packet is drawn as a nest of four wrappers, link frame around IP packet around TCP wrapper around the data, with the Internet and Link layers lit and the rest greyed out.](assets/tcp-trip-step-5.svg)
 
    **Send them over the wire.** Every chunk travels on its own. They take different roads, show up in a different order, and sometimes one gets lost.
 
-6. ![Animation of TCP step 6 of 8, put them back in order, inside your browser. The chunks arrived as 2, 1, 4. Each one moves into the slot that matches its number, leaving the third slot empty with a red question mark. The browser notes that chunk 3 is missing.](assets/tcp-trip-step-6.svg)
+6. ![Animation of TCP step 6 of 8, put them back in order, inside your browser. The chunks arrived as 2, 1, 4. Each one moves into the slot that matches its number, leaving the third slot empty with a red question mark. The browser notes that chunk 3 is missing. Underneath, the whole packet is drawn as a nest of four wrappers, link frame around IP packet around TCP wrapper around the data, with the Transport layer lit and the rest greyed out.](assets/tcp-trip-step-6.svg)
 
    **Put them back in order.** Your computer lines the chunks up by number. Now it can see that number 3 is not there.
 
-7. ![Animation of TCP step 7 of 8, ask again for the missing one. The browser tells the web server: I have 1, 2, and 4, please send 3 again. The server sends chunk 3 once more, it arrives, and the browser shows a green check: 1, 2, 3, 4, all here.](assets/tcp-trip-step-7.svg)
+7. ![Animation of TCP step 7 of 8, ask again for the missing one. The browser tells the web server: I have 1, 2, and 4, please send 3 again. The server sends chunk 3 once more, it arrives, and the browser shows a green check: 1, 2, 3, 4, all here. Underneath, the whole packet is drawn as a nest of four wrappers, link frame around IP packet around TCP wrapper around the data, with the Transport layer lit and the rest greyed out.](assets/tcp-trip-step-7.svg)
 
    **Ask again for the missing one.** Your computer tells the server exactly what it has, and the server sends the missing chunk again. TCP keeps asking until every chunk is there.
 
-8. ![Animation of TCP step 8 of 8, join the chunks into the page, inside your browser. The four numbered chunks slide together into one file, index.html, whole again and in the right order, and a small page that says Hi appears in the browser.](assets/tcp-trip-step-8.svg)
+8. ![Animation of TCP step 8 of 8, join the chunks into the page, inside your browser. The four numbered chunks slide together into one file, index.html, whole again and in the right order, and a small page that says Hi appears in the browser. Underneath, the whole packet is drawn as a nest of four wrappers, link frame around IP packet around TCP wrapper around the data, with the Application and Transport layers lit and the rest greyed out.](assets/tcp-trip-step-8.svg)
 
    **Join the chunks into the page.** With every chunk in place, they are glued back together and the page appears, exactly as it was written.
 
@@ -98,23 +100,23 @@ You type an address and a page appears. Here is everything that happens in betwe
 
 Now send the same page the other way. UDP does less work at every stage, and that is the whole point of it.
 
-1. ![Animation of UDP step 1 of 5, no hello, just start. The browser says: send me the page. The web server answers at once: here it comes. A label says the three hello messages are skipped, so it starts sooner.](assets/udp-trip-step-1.svg)
+1. ![Animation of UDP step 1 of 5, no hello, just start. The browser says: send me the page. The web server answers at once: here it comes. A label says the three hello messages are skipped, so it starts sooner. Underneath, the whole packet is drawn as a nest of four wrappers, link frame around IP packet around UDP wrapper around the data, with the Transport layer lit and the rest greyed out.](assets/udp-trip-step-1.svg)
 
    **No hello: just start.** Nobody checks that the other side is listening. The server just starts sending, which is faster.
 
-2. ![Animation of UDP step 2 of 5, cut into chunks with no numbers, inside the server. The page is cut into the same four chunks, but the circle where each number would go stays empty. A label says no numbers, and no list of what was sent.](assets/udp-trip-step-2.svg)
+2. ![Animation of UDP step 2 of 5, cut into chunks with no numbers, inside the server. The page is cut into the same four chunks, but the circle where each number would go stays empty. A label says no numbers, and no list of what was sent. Underneath, the whole packet is drawn as a nest of four wrappers, link frame around IP packet around UDP wrapper around the data, with the Transport layer lit and the rest greyed out.](assets/udp-trip-step-2.svg)
 
    **Cut into chunks, with no numbers.** The page is cut up the same way, but the postcards get no numbers and nobody keeps a list of them.
 
-3. ![Animation of UDP step 3 of 5, send them over the wire. The four unnumbered chunks travel through the same routers along two routes. The heading chunk arrives first, then the opening html tag, then the closing html tag. The paragraph chunk disappears at a router and never arrives.](assets/udp-trip-step-3.svg)
+3. ![Animation of UDP step 3 of 5, send them over the wire. The four unnumbered chunks travel through the same routers along two routes. The heading chunk arrives first, then the opening html tag, then the closing html tag. The paragraph chunk disappears at a router and never arrives. Underneath, the whole packet is drawn as a nest of four wrappers, link frame around IP packet around UDP wrapper around the data, with the Internet and Link layers lit and the rest greyed out.](assets/udp-trip-step-3.svg)
 
    **Send them over the wire.** Same roads, same routers, same trouble: the chunks arrive in a different order and one gets lost.
 
-4. ![Animation of UDP step 4 of 5, use them as they land, inside your browser. The three chunks that arrived are placed side by side in the order they came: the heading, then the opening html tag, then the closing html tag. A red label says wrong order, one chunk gone, and nobody asks for it again. The browser is left with a broken page.](assets/udp-trip-step-4.svg)
+4. ![Animation of UDP step 4 of 5, use them as they land, inside your browser. The three chunks that arrived are placed side by side in the order they came: the heading, then the opening html tag, then the closing html tag. A red label says wrong order, one chunk gone, and nobody asks for it again. The browser is left with a broken page. Underneath, the whole packet is drawn as a nest of four wrappers, link frame around IP packet around UDP wrapper around the data, with the Application and Transport layers lit and the rest greyed out.](assets/udp-trip-step-4.svg)
 
    **Use them as they land.** With no numbers, the chunks are used in the order they showed up. The lost one is never asked for, so the page comes out broken. That is why web pages travel by TCP.
 
-5. ![Animation of UDP step 5 of 5, so why does anyone use it, shown as a live video call sending one picture at a time. On the UDP row, pictures 1 and 2 arrive, the lost one is skipped, and pictures 4 and 5 arrive on time. On the TCP row, pictures 1 and 2 arrive, then the call freezes while it waits for the lost one, and pictures 3 and 4 arrive late. A caption says UDP has one tiny glitch and is still live, and TCP has every picture and is now behind.](assets/udp-trip-step-5.svg)
+5. ![Animation of UDP step 5 of 5, so why does anyone use it, shown as a live video call sending one picture at a time. On the UDP row, pictures 1 and 2 arrive, the lost one is skipped, and pictures 4 and 5 arrive on time. On the TCP row, pictures 1 and 2 arrive, then the call freezes while it waits for the lost one, and pictures 3 and 4 arrive late. A caption says UDP has one tiny glitch and is still live, and TCP has every picture and is now behind. Underneath, the whole packet is drawn as a nest of four wrappers, link frame around IP packet around UDP wrapper around the data, with the Application and Transport layers lit and the rest greyed out.](assets/udp-trip-step-5.svg)
 
    **So why does anyone use it?** In a video call or a fast game, a late picture is useless. UDP skips what was lost and stays live, while TCP would freeze and wait.
 
