@@ -79,4 +79,4 @@ The widget is not done when it deploys. It goes through [feedback](../Playtestin
 
 [Assignment](ASSIGNMENT.md)
 
-← [Playtesting](../Playtesting/) | Next: [Widget Iteration from Feedback](../WidgetIteration/)
+← [Testing](../Playtesting/) | Next: [Widget Iteration from Feedback](../WidgetIteration/)

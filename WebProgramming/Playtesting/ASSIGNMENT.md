@@ -1,6 +1,6 @@
-# Assignment - Playtesting
+# Assignment - Testing
 
-**Lesson:** [Playtesting](README.md)  
+**Lesson:** [Testing](README.md)  
 **Due:** Before the start of next class
 
 ---

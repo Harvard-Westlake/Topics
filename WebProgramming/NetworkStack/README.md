@@ -141,4 +141,4 @@ Now send the same page the other way. UDP does less work at every stage, and tha
 
 [Assignment](ASSIGNMENT.md)
 
-← [SSH, Keys, and CORS](../SSHKeysAndCORS/) | Next: [Playtesting](../Playtesting/)
+← [SSH, Keys, and CORS](../SSHKeysAndCORS/) | Next: [Testing](../Playtesting/)

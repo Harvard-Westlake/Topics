@@ -11,7 +11,7 @@
 | 7 | User Flow and Logging | [UserFlowAndLogging/](UserFlowAndLogging/) |
 | 8 | SSH, Keys, and CORS | [SSHKeysAndCORS/](SSHKeysAndCORS/) |
 | 9 | The Network Stack | [NetworkStack/](NetworkStack/) |
-| 10 | Playtesting | [Playtesting/](Playtesting/) |
+| 10 | Testing | [Playtesting/](Playtesting/) |
 | 11–12 | The Learning Widget Project | [LearningWidget/](LearningWidget/) |
 | 13 | Widget Iteration from Feedback | [WidgetIteration/](WidgetIteration/) |
 | 14 | Collaborative Peer Review | [PeerReview/](PeerReview/) |

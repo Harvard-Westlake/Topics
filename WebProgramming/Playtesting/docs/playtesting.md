@@ -1,7 +1,7 @@
 <div align="center">
 
-# Playtesting
-*<font color="#8b949e">Playtesting is measuring what an app is worth to a stranger: whether it left them better off than what they would have used instead.</font>*
+# Testing
+*<font color="#8b949e">Testing is measuring what an app is worth to a stranger: whether it left them better off than what they would have used instead.</font>*
 
 </div>
 
