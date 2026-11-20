@@ -31,20 +31,20 @@ Open this assignment in the live lesson view to see the table.
 
 ## The Rubric
 
-Use each app for at least three minutes, for what it is built for. Everyone answers the first three questions. Then choose **three** of the five grey ones.
+Use each app for at least three minutes, for what it is built for. Everyone answers the first three questions. Then choose **two** of the five grey ones.
 
 | # | Question | How to test it |
 |---|---|---|
 | 1 | **Was it worth my time?** | Answer yes or no after everything else, then say why or why not |
 | 2 | **Better than what I'd use instead?** | Name what you would otherwise use for the same thing, and compare |
 | 3 | **Did I find mistakes?** | Reload, submit twice, and type something wrong |
-| <font color="#8b949e">pick 3</font> | <font color="#8b949e">Did I do what it is for, with no help?</font> | <font color="#8b949e">Pick the app's main goal and try it without asking anyone</font> |
-| <font color="#8b949e">pick 3</font> | <font color="#8b949e">Intuitive?</font> | <font color="#8b949e">Notice your first click: what you expected, and what happened</font> |
-| <font color="#8b949e">pick 3</font> | <font color="#8b949e">Do the visuals help?</font> | <font color="#8b949e">Look for five seconds, then say who it is for and what to do first</font> |
-| <font color="#8b949e">pick 3</font> | <font color="#8b949e">Fast?</font> | <font color="#8b949e">Count the seconds to the first result you care about, and watch each touch get an answer</font> |
-| <font color="#8b949e">pick 3</font> | <font color="#8b949e">Good at its own purpose?</font> | <font color="#8b949e">Judge what it is built for: fun, holding attention, playing together, or a reason to return</font> |
+| | <font color="#8b949e">Did I do what it is for, with no help?</font> | <font color="#8b949e">Pick the app's main goal and try it without asking anyone</font> |
+| | <font color="#8b949e">Intuitive?</font> | <font color="#8b949e">Notice your first click: what you expected, and what happened</font> |
+| | <font color="#8b949e">Do the visuals help?</font> | <font color="#8b949e">Look for five seconds, then say who it is for and what to do first</font> |
+| | <font color="#8b949e">Fast?</font> | <font color="#8b949e">Count the seconds to the first result you care about, and watch each touch get an answer</font> |
+| | <font color="#8b949e">Good at its own purpose?</font> | <font color="#8b949e">Judge what it is built for: fun, holding attention, playing together, or a reason to return</font> |
 
-Select this whole chart, copy it, and paste it into Canvas once for each app you were assigned. Fill in rows 1 to 3 and the three grey rows you chose. Each **Why** is two sentences at most.
+Select this whole chart, copy it, and paste it into Canvas once for each app you were assigned. Fill in rows 1 to 3 and the two grey rows you chose. Each **Why** is two sentences at most.
 
 | # | Question | Score | Why (2 sentences at most) |
 |---|---|---|---|
@@ -80,7 +80,7 @@ Use these only if you do not know what to look for. AI now builds a clean, worki
 
 - [ ] **Link on the list:** your own app's live link is on the class list and opens on someone else's device.
 - [ ] **Every app tested:** you used each app in your row for at least three minutes, as a stranger.
-- [ ] **One chart per app:** rows 1 to 3 and three grey rows of your choice are filled in.
+- [ ] **One chart per app:** rows 1 to 3 and two grey rows of your choice are filled in.
 - [ ] **Short and specific:** each Why is two sentences at most and names what you did and what the screen did.
 - [ ] **Usable alone:** the builder could act on your chart without asking you a question.
 
