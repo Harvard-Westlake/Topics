@@ -44,9 +44,9 @@ Use each app for at least three minutes, for what it is built for. Everyone answ
 | | <font color="#8b949e">Fast?</font> | <font color="#8b949e">Count the seconds to the first result you care about, and watch each touch get an answer</font> |
 | | <font color="#8b949e">Good at its own purpose?</font> | <font color="#8b949e">Judge what it is built for: fun, holding attention, playing together, or a reason to return</font> |
 
-Select this whole chart, copy it, and paste it into Canvas once for each app you were assigned. Fill in rows 1 to 3 and the two grey rows you chose. Each **Why** is two sentences at most.
+Select this whole chart, copy it, and paste it into Canvas once for each app you were assigned. Fill in rows 1 to 3 and the two grey rows you chose. Each **What / Why** is two sentences at most.
 
-| # | Question | Score | Why (2 sentences at most) |
+| # | Question | Score | What / Why (2 sentences at most) |
 |---|---|---|---|
 | | **App:** | **Tester:** | |
 | 1 | Was it worth my time? | yes / no | |
@@ -81,7 +81,7 @@ Use these only if you do not know what to look for. AI now builds a clean, worki
 - [ ] **Link on the list:** your own app's live link is on the class list and opens on someone else's device.
 - [ ] **Every app tested:** you used each app in your row for at least three minutes, as a stranger.
 - [ ] **One chart per app:** rows 1 to 3 and two grey rows of your choice are filled in.
-- [ ] **Short and specific:** each Why is two sentences at most and names what you did and what the screen did.
+- [ ] **Short and specific:** each What / Why is two sentences at most and names what you did and what the screen did.
 - [ ] **Usable alone:** the builder could act on your chart without asking you a question.
 
 ---
