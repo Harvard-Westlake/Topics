@@ -46,23 +46,21 @@ Use each app for at least three minutes, for what it is built for. The first que
 | 9 | **Works by keyboard?** | Do the main goal with Tab and Enter only |
 | 10 | **Good at its own purpose?** | Judge what it is built for: fun, holding attention, playing together, or a reason to return |
 
-Copy this chart once for each app you were assigned and fill it in. Each **Why** is two sentences at most.
+Select this whole chart, copy it, and paste it into Canvas once for each app you were assigned. Each **Why** is two sentences at most.
 
-```
-App: ____        Tester: ____
-
- # | Question                              | Score  | Why (2 sentences at most)
- 1 | Was it worth my time?                 | yes/no |
- 2 | Better than what I'd use instead?     | __/5   |
- 3 | Did what it is for, with no help?     | __/5   |
- 4 | Correct and complete?                 | __/5   |
- 5 | Intuitive?                            | __/5   |
- 6 | Do the visuals help?                  | __/5   |
- 7 | Survives mistakes?                    | __/5   |
- 8 | Fast?                                 | __/5   |
- 9 | Works by keyboard?                    | __/5   |
-10 | Good at its own purpose?              | __/5   |
-```
+| # | Question | Score | Why (2 sentences at most) |
+|---|---|---|---|
+| | **App:** | **Tester:** | |
+| 1 | Was it worth my time? | yes / no | |
+| 2 | Better than what I'd use instead? | &nbsp;&nbsp;&nbsp;/ 5 | |
+| 3 | Did what it is for, with no help? | &nbsp;&nbsp;&nbsp;/ 5 | |
+| 4 | Correct and complete? | &nbsp;&nbsp;&nbsp;/ 5 | |
+| 5 | Intuitive? | &nbsp;&nbsp;&nbsp;/ 5 | |
+| 6 | Do the visuals help? | &nbsp;&nbsp;&nbsp;/ 5 | |
+| 7 | Survives mistakes? | &nbsp;&nbsp;&nbsp;/ 5 | |
+| 8 | Fast? | &nbsp;&nbsp;&nbsp;/ 5 | |
+| 9 | Works by keyboard? | &nbsp;&nbsp;&nbsp;/ 5 | |
+| 10 | Good at its own purpose? | &nbsp;&nbsp;&nbsp;/ 5 | |
 
 <details>
 <summary><strong>Questions to Ask to Gauge Quality</strong></summary>
