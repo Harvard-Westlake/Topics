@@ -36,7 +36,7 @@ Use each app for at least three minutes, for what it is built for. Everyone answ
 | # | Question | How to test it |
 |---|---|---|
 | 1 | **Was it worth my time?** | Answer yes or no after everything else, then say why or why not |
-| 2 | **Better than what I'd use instead?** | Name what you would otherwise use for the same thing, and compare |
+| 2 | **What would I change?** | Name one change, as what a user would then do differently |
 | 3 | **Did I find mistakes?** | Reload, submit twice, and type something wrong |
 | | <font color="#8b949e">Did I do what it is for, with no help?</font> | <font color="#8b949e">Pick the app's main goal and try it without asking anyone</font> |
 | | <font color="#8b949e">Intuitive?</font> | <font color="#8b949e">Notice your first click: what you expected, and what happened</font> |
@@ -50,7 +50,7 @@ Select this whole chart, copy it, and paste it into Canvas once for each app you
 |---|---|---|---|
 | | **App:** | **Tester:** | |
 | 1 | Was it worth my time? | yes / no | |
-| 2 | Better than what I'd use instead? | &nbsp;&nbsp;&nbsp;/ 5 | |
+| 2 | What would I change? | | |
 | 3 | Did I find mistakes? | yes / no | |
 | | <font color="#8b949e">Did I do what it is for, with no help?</font> | <font color="#8b949e">&nbsp;&nbsp;&nbsp;/ 5</font> | |
 | | <font color="#8b949e">Intuitive?</font> | <font color="#8b949e">&nbsp;&nbsp;&nbsp;/ 5</font> | |
@@ -64,7 +64,7 @@ Select this whole chart, copy it, and paste it into Canvas once for each app you
 Use these only if you do not know what to look for. AI now builds a clean, working app in an afternoon, so that earns a 3: these ask about what is left.
 
 - **Worth my time:** Am I glad I spent these minutes, or did it only keep me tapping?
-- **Better than the alternative:** Did I learn more, decide better, save effort, or enjoy it more than my usual way?
+- **What I would change:** What one thing, if fixed, would have made me stay longer or finish sooner?
 - **Mistakes:** Did it lose my work, show something wrong, or leave me with no way forward?
 - **No help:** Did I finish, give up, or only think I finished?
 - **Intuitive:** Did I ever have to guess what a thing was for?
