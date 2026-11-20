@@ -46,7 +46,7 @@ This unit goes from "what is a web page, actually?" to shipping a real product: 
 | 7 | [User Flow and Logging](UserFlowAndLogging/) | One specific user, their first ten seconds, the flow as a chart, and how sites log what visitors do |
 | 8 | [SSH, Keys, and CORS](SSHKeysAndCORS/) | A terminal on another computer, logging in with a key pair, and the browser's CORS check |
 | 9 | [The Network Stack](NetworkStack/) | The four layers, then one web page followed stage by stage over TCP and again over UDP |
-| 10 | [Playtesting](Playtesting/) | Testing classmates' apps as a stranger and reporting behaviors, not opinions |
+| 10 | [Playtesting](Playtesting/) | Measuring what a classmate's app is worth: activation, activity, attention, and retention, scored with evidence |
 | 11–12 | [The Learning Widget Project](LearningWidget/) | Plan and build an educational widget published via GitHub and Firebase |
 | 13 | [Widget Iteration from Feedback](WidgetIteration/) | Turning feedback into a shrinking `feedback.md` and an error-free widget |
 | 14 | [Collaborative Peer Review](PeerReview/) | Reviewing a partner's widget and preparing to present what you found |

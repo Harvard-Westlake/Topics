@@ -88,7 +88,8 @@
       "title": "Playtesting",
       "path": "Playtesting",
       "_module": "WebProgramming",
-      "review": null
+      "review": null,
+      "base_points": 50
     },
     {
       "day": 10,

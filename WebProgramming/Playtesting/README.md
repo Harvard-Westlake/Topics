@@ -1,52 +1,57 @@
 <div align="center">
 
 # Playtesting
-*<font color="#8b949e">Playtesting is using someone else's app the way a stranger would, and writing down what you did and what happened.</font>*
+*<font color="#8b949e">Playtesting is measuring what an app is worth to a stranger: whether it earns their attention, keeps it, and brings them back.</font>*
 
 </div>
 
 ---
 
-![Animated diagram of one playtest. On the left, five things a tester did in two minutes, with times: clicks the title twice and nothing happens, finds Start and taps an emoji tile, plays a fourth round in a row, scrolls up, down, and up again, and closes the tab. On the right, each one becomes a line on the playtest form. First ten seconds: thought the title was the Start button. Most interactive element: the emoji tiles bounce when tapped. Best moment: the streak hit 3 and the whole page flashed gold. Where I got stuck: looked for a way to share my score and found none. The moment I left: a second wrong answer, and still no hint. A caption says every line names something that happened on the screen, none of them says good or bad, and the builder can act on all five without asking a question.](assets/playtest-notes.svg)
+![Four boxes in a row, joined by arrows. Activation: how fast did it give me something, measured as seconds to first reward. Activity: am I doing or only watching, measured as actions per minute. Attention: when did I first look away, measured as minutes per visit. Retention: would I open it again tomorrow, measured as the share of people who come back. Below, a caption says retention is the result and the other three are the causes, over a chart of how many people are still using an app from day 1 to day 30. One line falls to zero and is labeled novelty: fun once, then forgotten. The other line drops and then flattens, labeled: some people stay, the app is worth something.](assets/value-signals.svg)
 
-You built your app, so you are the one person who cannot see it fresh.
+An app is worth the attention people choose to give it.
 
-- **A fresh tester:** shows where a first-time visitor gets stuck, and what they enjoy.
-- **Behaviors, not opinions:** what the tester did and what the screen did, never just "good" or "bad".
-- **Notes a builder can use:** specific enough to act on without asking the tester anything.
+- **You cannot ask "is it good":** people are polite, and they do not know.
+- **You can watch what they do:** how fast they start, how much they do, how long they stay, whether they return.
+- **Today you are the stranger:** your behavior in a classmate's app is the measurement.
 
-## <font color="#388bfd">Table of Contents</font>
+## <font color="#388bfd">What Value Looks Like</font>
 
-1. [Why the builder cannot test their own app](#why-you-cannot-test-your-own-app)
-2. [Behaviors, not opinions: what to write down while you play](#behaviors-not-opinions)
-3. [Notes the builder can act on without asking you a question](#notes-a-builder-can-use)
+Every product review at a serious company comes down to the same four signals, in this order.
 
-## <font color="#388bfd">Why You Cannot Test Your Own App</font>
+| Signal | The plain question | What a product team measures |
+|---|---|---|
+| **Activation** | How fast did it give me something? | Seconds from arriving to the first reward |
+| **Activity** | Am I doing, or only watching? | Actions per minute, and how many kinds |
+| **Attention** | When did I first look away? | Length of a visit, and the exact screen where it ended |
+| **Retention** | Would I open it again tomorrow? | Share of people who return after 1, 7, and 30 days |
 
-You already know which parts are buttons, what order to read things in, and what every label means. Your brain fills in every confusing spot without noticing. This is the **curse of knowledge**.
+- **Retention is the result:** the other three are its causes, so a team fixes them to move it.
+- **The curve tells the truth:** a novelty falls to zero, and a valuable app flattens because some people stay.
+- **Engaging is not addictive:** engaging is attention a person is glad they gave, addictive is attention they wish they had back.
 
-| The builder sees | A fresh tester sees |
-|---|---|
-| The obvious start button | Three equally sized boxes, none saying "start" |
-| A clever minimal icon | A mystery symbol they are afraid to click |
-| The intended order | A page they read bottom to top on a phone |
+## <font color="#388bfd">What Earns It</font>
 
-So the tester's job is to be a stranger: no instructions, no questions to the builder, no being polite about getting lost.
+Attention is earned by stimulus: what the app gives back each time you act. Too little and you are bored. Too much and you are lost. The class's six criteria are the levers.
 
-## <font color="#388bfd">Behaviors, Not Opinions</font>
+| Criterion | What it means | The signal it moves |
+|---|---|---|
+| **How intuitive** | You act correctly with no instructions | Activation |
+| **Reactivity** | Every touch gets an answer in well under a second | Activity |
+| **Visuals** | The look shows what to do and what just happened | Activation and activity |
+| **Sustained attention** | Each reward gives a reason for one more action | Attention |
+| **Multi-user experience** | Other people make it better than it is alone | Attention and retention |
+| **Overall enjoyment** | You would choose it again over something else | Retention |
 
-"It was good" tells the builder nothing. Write what you **did** and what the **screen did**.
+- **The loop:** act, get a response, find a reason to act again. An app that holds people has a tight one.
+- **The bar moved:** AI now builds a clean, working app in an afternoon, so looking finished is the starting line, not the score.
 
-| What to watch for | Write it like this |
-|---|---|
-| **Your first ten seconds** | "I tapped the picture first. Nothing happened, so I scrolled." |
-| **The most interactive element** | "The slider: the color changed while I was still dragging it." |
-| **The best moment** | "My third right answer in a row, when the whole page flashed gold." |
-| **Where you got stuck** | "I looked for a back button for about ten seconds and reloaded instead." |
-| **Something that did nothing** | "The gray box looks like a button. I clicked it three times." |
-| **The moment you would have left** | "After the second wrong answer with no hint." |
+## <font color="#388bfd">Score With Evidence</font>
 
-A tester who is enjoying themselves is behaving too. Write down what kept you there, as exactly as what pushed you out.
+A score without a moment behind it is an opinion, and nobody can fix an opinion. Every score you give carries one moment in two parts.
+
+- **What I did:** the exact tap, click, or thing typed.
+- **What the screen did:** what happened next, and how long it took.
 
 ### <font color="#79c0ff">Activity 1</font>
 <details>
@@ -68,27 +73,15 @@ A tester who is enjoying themselves is behaving too. Write down what kept you th
 
 </details>
 
-## <font color="#388bfd">Notes a Builder Can Use</font>
-
-A note is useful when the builder can act on it without finding you to ask what you meant. Three things make it so:
-
-- **What I did:** the exact tap, click, or thing typed.
-- **What I expected:** what you thought would happen.
-- **What happened:** what the screen did instead.
-
-The same three lines work for a good moment: what you did, what you hoped for, and what the app did that was better.
-
-> **Tip:** "I didn't know what to do" is not an insult. It is a bug report.
-
 ## <font color="#388bfd">☑️ Check for Understanding</font>
 
-- [ ] Explain why the person who built an app is the worst person to test it.
-- [ ] Rewrite an opinion such as "it was confusing" as what you did and what the screen did.
-- [ ] Write a note with what you did, what you expected, and what happened, that a builder can act on alone.
+- [ ] Name the four signals of value and what each one measures.
+- [ ] Match each of the six criteria to the signal it moves.
+- [ ] Back a score with a moment: what you did and what the screen did.
 
 ## <font color="#388bfd">🚀 Stretch Goals</font>
 
-- [ ] Playtest one app twice, once on a laptop and once on a phone, and list every behavior that changed.
+- [ ] Open one classmate's app again a day later and write what, if anything, brought you back.
 
 ---
 
