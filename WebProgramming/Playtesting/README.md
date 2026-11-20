@@ -1,54 +1,48 @@
 <div align="center">
 
 # Playtesting
-*<font color="#8b949e">Playtesting is measuring what an app is worth to a stranger: whether it earns their attention, keeps it, and brings them back.</font>*
+*<font color="#8b949e">Playtesting is measuring what an app is worth to a stranger: whether it left them better off than what they would have used instead.</font>*
 
 </div>
 
 ---
 
-![Four boxes in a row, joined by arrows. Activation: how fast did it give me something, measured as seconds to first reward. Activity: am I doing or only watching, measured as actions per minute. Attention: when did I first look away, measured as minutes per visit. Retention: would I open it again tomorrow, measured as the share of people who come back. Below, a caption says retention is the result and the other three are the causes, over a chart of how many people are still using an app from day 1 to day 30. One line falls to zero and is labeled novelty: fun once, then forgotten. The other line drops and then flattens, labeled: some people stay, the app is worth something.](assets/value-signals.svg)
+![A banner across the top asks: was it worth the time you chose to spend? Under it, four boxes in a row. Outcome: am I better off than with what I would use instead. Success: did I finish with no help. First value: how many seconds until a result I care about. Return: when the need comes back, do I come back. Below, a chart of how many people are still using an app from day 1 to day 30. One line falls to zero, labeled fun once, then forgotten. The other drops and then flattens, labeled some people stay. A caption says the curve shows who came back and cannot say why, and that busy is not better because a broken app also gets more clicks.](assets/value-signals.svg)
 
-An app is worth the attention people choose to give it.
+An app is worth it when it leaves you better off than what you would have used instead.
 
-- **You cannot ask "is it good":** people are polite, and they do not know.
-- **You can watch what they do:** how fast they start, how much they do, how long they stay, whether they return.
-- **Today you are the stranger:** your behavior in a classmate's app is the measurement.
+- **One question first:** was it worth the time you chose to spend?
+- **Leaving can be success:** a student who finds the right classroom in 15 seconds and never reopens the page got full value.
+- **Today you are the stranger:** what happens to you in a classmate's app is the measurement.
 
 ## <font color="#388bfd">What Value Looks Like</font>
 
-Every product review at a serious company comes down to the same four signals, in this order.
-
 | Signal | The plain question | What a product team measures |
 |---|---|---|
-| **Activation** | How fast did it give me something? | Seconds from arriving to the first reward |
-| **Activity** | Am I doing, or only watching? | Actions per minute, and how many kinds |
-| **Attention** | When did I first look away? | Length of a visit, and the exact screen where it ended |
-| **Retention** | Would I open it again tomorrow? | Share of people who return after 1, 7, and 30 days |
+| **Outcome** | Am I better off than with what I'd use instead? | The same real task, done both ways and compared |
+| **Success** | Did I finish with no help? | Correct finishes, give-ups, and people who only think they finished |
+| **First value** | How fast did I get something I care about? | Share who reach the first real result, and the seconds it takes |
+| **Return** | When the need comes back, do I? | People who return and get value again, not page visits |
 
-- **Retention is the result:** the other three are its causes, so a team fixes them to move it.
-- **The curve tells the truth:** a novelty falls to zero, and a valuable app flattens because some people stay.
-- **Engaging is not addictive:** engaging is attention a person is glad they gave, addictive is attention they wish they had back.
+- **Busy is not better:** a broken app gets more clicks, so count results, not actions.
+- **The curve shows who, not why:** it tells you who came back and never the reason.
 
 ## <font color="#388bfd">What Earns It</font>
 
-Attention is earned by stimulus: what the app gives back each time you act. Too little and you are bored. Too much and you are lost. The class's six criteria are the levers.
+| For every app | Only when the app is built for it |
+|---|---|
+| **Correct:** what it tells you is right and complete | **Enjoyment:** you would choose another round |
+| **Intuitive:** your first click does what you expected | **Attention:** it holds you, and the time pays off |
+| **Visuals:** your eye lands on the right thing first | **Multi-user:** two people can finish something together |
+| **Fast:** every touch gets an answer at once | **Return:** the need comes back, and so do you |
+| **Survives mistakes:** a reload or a wrong entry loses nothing | |
+| **Works by keyboard:** nobody is locked out | |
 
-| Criterion | What it means | The signal it moves |
-|---|---|---|
-| **How intuitive** | You act correctly with no instructions | Activation |
-| **Reactivity** | Every touch gets an answer in well under a second | Activity |
-| **Visuals** | The look shows what to do and what just happened | Activation and activity |
-| **Sustained attention** | Each reward gives a reason for one more action | Attention |
-| **Multi-user experience** | Other people make it better than it is alone | Attention and retention |
-| **Overall enjoyment** | You would choose it again over something else | Retention |
-
-- **The loop:** act, get a response, find a reason to act again. An app that holds people has a tight one.
 - **The bar moved:** AI now builds a clean, working app in an afternoon, so looking finished is the starting line, not the score.
 
 ## <font color="#388bfd">Score With Evidence</font>
 
-A score without a moment behind it is an opinion, and nobody can fix an opinion. Every score you give carries one moment in two parts.
+A score without a moment behind it is an opinion, and nobody can fix an opinion. Every score carries one moment in two parts.
 
 - **What I did:** the exact tap, click, or thing typed.
 - **What the screen did:** what happened next, and how long it took.
@@ -75,13 +69,13 @@ A score without a moment behind it is an opinion, and nobody can fix an opinion.
 
 ## <font color="#388bfd">☑️ Check for Understanding</font>
 
-- [ ] Name the four signals of value and what each one measures.
-- [ ] Match each of the six criteria to the signal it moves.
+- [ ] Say whether an app was worth your time, compared with what you would use instead.
+- [ ] Explain why more clicks or a longer visit does not prove an app is better.
 - [ ] Back a score with a moment: what you did and what the screen did.
 
 ## <font color="#388bfd">🚀 Stretch Goals</font>
 
-- [ ] Open one classmate's app again a day later and write what, if anything, brought you back.
+- [ ] Do one real task in a classmate's app and again your usual way, and say which left you better off.
 
 ---
 

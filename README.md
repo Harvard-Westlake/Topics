@@ -95,7 +95,7 @@ Build and ship a live, database-backed educational widget — hosted on Firebase
 - [User Flow and Logging](WebProgramming/UserFlowAndLogging/) — one specific user, the flow as a chart, and how sites log what visitors do
 - [SSH, Keys, and CORS](WebProgramming/SSHKeysAndCORS/) — a terminal on another computer, logging in with a key pair, and the browser's CORS check
 - [The Network Stack](WebProgramming/NetworkStack/) — the four layers, then one web page followed stage by stage over TCP and again over UDP
-- [Playtesting](WebProgramming/Playtesting/) — measuring what a classmate's app is worth: activation, activity, attention, and retention, scored with evidence
+- [Playtesting](WebProgramming/Playtesting/) — measuring what a classmate's app is worth to a stranger: whether it beat what they would use instead, scored with evidence
 - [The Learning Widget Project](WebProgramming/LearningWidget/) — plan and build an educational widget published via GitHub and Firebase
 - [Widget Iteration from Feedback](WebProgramming/WidgetIteration/) — a shrinking feedback.md and a zero-error console
 - [Collaborative Peer Review](WebProgramming/PeerReview/) — reviewing a partner's widget and preparing to present it
