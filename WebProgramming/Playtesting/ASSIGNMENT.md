@@ -19,6 +19,7 @@ Open this assignment in the live lesson view to see the table.
 
 - **Never your own:** no row ever holds its own number.
 - **Test another:** adds a column of new apps, and no one is ever given the same app twice.
+- **Names:** click a number in the first column and type a name: the table shows its first three letters, in this browser only.
 - **Same for everyone:** the table depends only on the number of students and the draw number, so set both to match the class.
 
 </details>

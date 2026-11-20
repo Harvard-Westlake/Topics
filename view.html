@@ -179,6 +179,9 @@
   .md .draw table { width: auto; }
   .md .draw th, .md .draw td { text-align: center; padding: 4px 14px; }
   .md .draw td:first-child, .md .draw th:first-child { font-weight: 700; }
+  .md .draw td input { font: inherit; font-weight: 700; width: 4.5em; text-align: center; padding: 2px 4px; border-radius: 6px;
+    border: 1px dashed var(--border); background: transparent; color: var(--fg); }
+  .md .draw td input:focus { border-style: solid; border-color: var(--link); outline: none; }
   .md .stepper { margin: 16px 0; border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; }
   .md .stepper > ol { list-style: none; margin: 0; padding: 0; }
   .md .stepper > ol > li { margin: 0; }
@@ -573,6 +576,23 @@ if(__exports != exports)module.exports = exports;return module.exports}));
         return list;
       }
       function numbers(from, count) { var list = []; for (var at = 0; at < count; at++) list.push(from + at); return list; }
+      // A number can be replaced by a name. The name is kept in this browser only, and shown as its first three letters.
+      function shortName(student) {
+        var name = (state.names && state.names[student] || '').trim();
+        return name ? name.slice(0, 3) : String(student);
+      }
+      function nameBox(student) {
+        var box = document.createElement('input'); box.type = 'text'; box.value = shortName(student);
+        box.setAttribute('aria-label', 'Name for student ' + student); box.title = 'Type a name to replace number ' + student;
+        box.addEventListener('focus', function () { box.value = (state.names && state.names[student]) || ''; box.placeholder = student; });
+        box.addEventListener('keydown', function (event) { if (event.key === 'Enter') box.blur(); });
+        box.addEventListener('blur', function () {
+          state.names = state.names || {};
+          if (box.value.trim()) state.names[student] = box.value.trim(); else delete state.names[student];
+          draw();
+        });
+        return box;
+      }
       function draw() {
         var students = Math.max(2, Math.min(99, Math.floor(state.students) || 2));
         state.students = students; state.rounds = Math.max(1, Math.min(students - 1, state.rounds));
@@ -588,9 +608,9 @@ if(__exports != exports)module.exports = exports;return module.exports}));
         });
         var body = table.createTBody();
         for (var student = 1; student <= students; student++) {
-          var row = body.insertRow(); row.insertCell().textContent = student;
+          var row = body.insertRow(); row.insertCell().appendChild(nameBox(student));
           for (var round = 0; round < state.rounds; round++) {
-            row.insertCell().textContent = circle[(seatOf[student] + steps[round]) % students];
+            row.insertCell().textContent = shortName(circle[(seatOf[student] + steps[round]) % students]);
           }
         }
         scroll.textContent = ''; scroll.appendChild(table);
